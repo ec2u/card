@@ -1,8 +1,11 @@
-# Default ignored files
-/shelf/
+
+# IntelliJ IDEA (see https://www.jetbrains.com/help/idea/managing-projects-under-version-control.html)
+
 /workspace.xml
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
-# Editor-based HTTP Client requests
+/modules.xml
+/tasks.xml
+
+/libraries/
+/dictionaries/
+/shelf/
 /httpRequests/
