@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Copyright © 2021 EC2U Consortium. All rights reserved.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>eu.ec2u</groupId>
+	<artifactId>ec2u-card</artifactId>
+	<version>0.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>EC2U eCard</name>
+	<description>EC2U mobile-based virtual eCard.</description>
+	<url>https://github.com/ec2u/card</url>
+	<inceptionYear>2021</inceptionYear>
+
+	<organization>
+		<name>EC2U</name>
+		<url>https://ec2u.eu/</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<name>EC2U Connect Centre</name>
+			<email>cc@ec2u.eu</email>
+			<organization>EC2U Consortium</organization>
+			<organizationUrl>https://ec2u.eu</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git@github.com:ec2u/card.git</connection>
+		<developerConnection>scm:git:git@github.com:ec2u/card.git</developerConnection>
+		<url>https://github.com/ec2u/card</url>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/ec2u/card/issues</url>
+	</issueManagement>
+
+	<properties>
+
+		<main>eu.ec2u.card.Card</main>
+
+		<java.version>11</java.version>
+		<maven.version>3.6</maven.version>
+
+		<node.version>14.15.4</node.version>
+		<npm.version>7.7.6</npm.version>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<maven.deploy.skip>true</maven.deploy.skip> <!-- no public artifact deployment -->
+		<maven.site.skip>skip</maven.site.skip> <!-- no site -->
+
+		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+
+		<timestamp>${maven.build.timestamp}</timestamp> <!-- ;( not directly available to filtered resources -->
+
+	</properties>
+
+	<dependencyManagement>
+
+		<dependencies>
+
+			<dependency>
+				<groupId>com.metreeca</groupId>
+				<artifactId>metreeca-link</artifactId>
+				<version>0.0.0-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+		</dependencies>
+
+	</dependencyManagement>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.metreeca</groupId>
+			<artifactId>metreeca-jse</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.metreeca</groupId>
+			<artifactId>metreeca-rest</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.metreeca</groupId>
+			<artifactId>metreeca-gcp</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<plugins>
+
+			<plugin> <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
+
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0-M2</version>
+
+				<executions>
+					<execution>
+
+						<id>enforce-maven</id>
+
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>${maven.version}</version>
+								</requireMavenVersion>
+							</rules>
+						</configuration>
+
+					</execution>
+				</executions>
+
+			</plugin>
+
+			<plugin> <!-- https://maven.apache.org/plugins/maven-clean-plugin/ -->
+
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.1.0</version>
+
+				<executions>
+					<execution>
+
+						<id>clean-work-folders</id>
+						<phase>clean</phase>
+
+						<goals>
+							<goal>clean</goal>
+						</goals>
+
+						<configuration>
+							<filesets>
+								<fileset>
+									<directory>${project.basedir}/node_modules</directory>
+								</fileset>
+							</filesets>
+						</configuration>
+
+					</execution>
+				</executions>
+
+			</plugin>
+
+			<plugin> <!-- https://maven.apache.org/plugins/maven-compiler-plugin -->
+
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+
+				<configuration>
+
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+
+				</configuration>
+
+			</plugin>
+
+			<plugin> <!-- https://maven.apache.org/surefire/maven-surefire-plugin/ -->
+
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.0</version>
+
+			</plugin>
+
+			<plugin> <!-- https://github.com/eirslett/frontend-maven-plugin -->
+
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>1.11.3</version>
+
+				<configuration>
+
+					<installDirectory>target</installDirectory>
+
+					<environmentVariables>
+						<code>${project.build.scriptSourceDirectory}</code>
+						<dist>${project.build.outputDirectory}/static</dist>
+					</environmentVariables>
+
+				</configuration>
+
+				<executions>
+
+					<execution>
+
+						<id>install-node-and-npm</id>
+						<phase>validate</phase>
+
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+
+						<configuration>
+							<nodeVersion>v${node.version}</nodeVersion>
+							<npmVersion>${npm.version}</npmVersion>
+						</configuration>
+
+					</execution>
+
+					<execution>
+
+						<id>npm-install</id>
+						<phase>initialize</phase>
+
+						<goals>
+							<goal>npm</goal>
+						</goals>
+
+						<configuration>
+							<arguments>install</arguments>
+						</configuration>
+
+					</execution>
+
+					<execution>
+
+						<id>npm-build</id>
+						<phase>generate-resources</phase>
+
+						<goals>
+							<goal>npm</goal>
+						</goals>
+
+						<configuration>
+							<arguments>run build</arguments>
+						</configuration>
+
+					</execution>
+
+				</executions>
+
+			</plugin>
+
+			<plugin> <!-- http://maven.apache.org/plugins/maven-shade-plugin/ -->
+
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.4</version>
+
+				<configuration>
+
+					<createDependencyReducedPom>false</createDependencyReducedPom>
+
+					<transformers>
+
+						<transformer
+								implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"
+						>
+							<mainClass>${main}</mainClass>
+						</transformer>
+
+						<transformer
+								implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"
+						/>
+
+					</transformers>
+
+					<filters> <!-- ;( exclude JAR signatures (https://stackoverflow.com/a/55215382/) -->
+						<filter>
+							<artifact>*:*</artifact>
+							<excludes>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
+						</filter>
+					</filters>
+
+				</configuration>
+
+				<executions>
+
+					<execution>
+
+						<goals>
+							<goal>shade</goal>
+						</goals>
+
+					</execution>
+
+				</executions>
+
+			</plugin>
+
+			<plugin> <!-- https://cloud.google.com/appengine/docs/standard/java/tools/maven-reference -->
+
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+				<version>2.4.0</version>
+
+				<configuration>
+					<projectId>${project.artifactId}</projectId>
+					<version>0</version>
+					<promote>true</promote>
+					<stopPreviousVersion>true</stopPreviousVersion>
+				</configuration>
+
+				<executions>
+					<execution>
+
+						<id>deploy-to-gae</id>
+						<phase>deploy</phase>
+
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+
+					</execution>
+				</executions>
+
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+</project>
