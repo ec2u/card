@@ -6,6 +6,13 @@ include 'include/header.php';
 ?>
 
 <div class="container my-4">
+
+<?php
+echo getcwd();
+?>
+
+Ciao a tutti
+
 <!--  <h1>Lorem Ipsum</h1>
   <p>Ab illo tempore, ab est sed immemorabili.<br/>
     Ullamco laboris nisi ut aliquid ex ea commodi consequat.<br/>

@@ -1,4 +1,4 @@
 <?php
-	return ['homePage' 	=> 'https://card.ec2u.net',
+	return ['homePage' 	=> 'http://ec2ucard.us-east-1.elasticbeanstalk.com',
 		'homeDir'	=> '/var/www/html/',
 	];
