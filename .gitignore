@@ -1,13 +1,6 @@
-/target/
-
-node_modules/
-
 *~
 ~*
 
 *.iml
 
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
+config.php
