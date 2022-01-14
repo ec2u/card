@@ -4,3 +4,7 @@
 *.iml
 
 config.php
+
+ws/vendor
+ws/runtime
+
