@@ -1,5 +1,5 @@
 /*
- * Copyright © 2021 EC2U Consortium. All rights reserved.
+ * Copyright © 2020-2022 EC2U Consortium. All rights reserved.
  */
 
 package eu.ec2u.card;
@@ -14,7 +14,6 @@ import static com.metreeca.rest.Toolbox.resource;
 import static com.metreeca.rest.handlers.Publisher.publisher;
 import static com.metreeca.rest.handlers.Router.router;
 import static com.metreeca.rest.services.Logger.Level.debug;
-import static com.metreeca.rest.wrappers.Bearer.bearer;
 import static com.metreeca.rest.wrappers.Server.server;
 
 public final class Card {
