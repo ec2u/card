@@ -4,10 +4,15 @@
 
 import * as React from "react";
 import { render } from "react-dom";
+import { CardHello } from "./hello";
+import "./index.css";
 
 
-render((
+render((<>
 
-	<h1>Hello!</h1>
+    <p>This app is app is saying hello to…</p>
 
-), document.body.firstElementChild);
+    <CardHello name="Akhil"/>
+    <CardHello name="Alessandro"/>
+
+</>), document.body.firstElementChild);

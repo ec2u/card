@@ -51,9 +51,6 @@
 		<!--suppress UnresolvedMavenProperty -->
 		<revision>${git.branch}-${git.build.time}-${git.commit.id.abbrev}</revision>
 
-		<!--suppress UnresolvedMavenProperty -->
-		<revision>${git.branch}-${git.build.time}-${git.commit.id.abbrev}</revision>
-
 		<java.version>11</java.version>
 		<maven.version>3.6</maven.version>
 
@@ -367,7 +364,7 @@
 
 				<configuration>
 					<projectId>${project.artifactId}</projectId>
-					<version>0</version>
+					<version>${revision}</version>
 					<promote>true</promote>
 					<stopPreviousVersion>true</stopPreviousVersion>
 				</configuration>

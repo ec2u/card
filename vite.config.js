@@ -10,7 +10,7 @@ import postcssNesting from "postcss-nesting";
 const src=resolve(process.env.src || "src/main/javascript/");
 const out=resolve(process.env.out || "target/static/");
 
-export default defineConfig(({ command, mode }) => ({ // https://vitejs.dev/config/
+export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 
 	root: src,
 

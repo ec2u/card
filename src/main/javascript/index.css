@@ -1,0 +1,14 @@
+/*
+ * Copyright © 2020-2022 EC2U Consortium. All rights reserved.
+ */
+
+html {
+
+    --card--color: green;
+
+}
+
+html {
+    font-family: Helvetica;
+    font-size: 18pt;
+}
