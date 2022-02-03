@@ -33,6 +33,28 @@
 		</developer>
 	</developers>
 
+	<properties>
+
+		<main>eu.ec2u.card.Card</main>
+
+		<!--suppress UnresolvedMavenProperty -->
+		<revision>${git.branch}-${git.build.time}-${git.commit.id.abbrev}</revision>
+		<project.instant>${maven.build.timestamp}</project.instant>
+
+		<java.version>11</java.version>
+		<maven.version>3.6</maven.version>
+
+		<node.version>14.15.4</node.version>
+		<npm.version>7.7.6</npm.version>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<maven.deploy.skip>true</maven.deploy.skip> <!-- no public artifact deployment -->
+		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss'Z'</maven.build.timestamp.format>
+
+
+	</properties>
+
 	<scm>
 		<connection>scm:git:git@github.com:ec2u/card.git</connection>
 		<developerConnection>scm:git:git@github.com:ec2u/card.git</developerConnection>
@@ -44,36 +66,85 @@
 		<url>https://github.com/ec2u/card/issues</url>
 	</issueManagement>
 
-	<properties>
+	<dependencyManagement>
+		<dependencies>
 
-		<main>eu.ec2u.card.Card</main>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>2.5.6</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
-		<!--suppress UnresolvedMavenProperty -->
-		<revision>${git.branch}-${git.build.time}-${git.commit.id.abbrev}</revision>
+			<dependency>  <!-- https://search.maven.org/artifact/org.junit.jupiter/junit-bom -->
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>5.7.2</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
-		<java.version>11</java.version>
-		<maven.version>3.6</maven.version>
+			<dependency> <!-- https://search.maven.org/artifact/org.assertj/assertj-core -->
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>3.20.2</version>
+				<scope>test</scope>
+			</dependency>
 
-		<node.version>14.15.4</node.version>
-		<npm.version>7.7.6</npm.version>
-
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-	</properties>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.8.2</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.22.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -82,6 +153,15 @@
 	<build>
 
 		<finalName>${revision}</finalName>
+
+		<resources>
+
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+
+		</resources>
 
 		<plugins>
 

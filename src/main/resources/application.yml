@@ -1,0 +1,4 @@
+card:
+
+  instant: ${project.instant}
+  version: ${revision}
