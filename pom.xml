@@ -364,7 +364,7 @@
 
 				<configuration>
 					<projectId>${project.artifactId}</projectId>
-					<version>0</version>
+					<version>${revision}</version>
 					<promote>true</promote>
 					<stopPreviousVersion>true</stopPreviousVersion>
 				</configuration>
