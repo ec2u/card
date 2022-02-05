@@ -62,7 +62,7 @@ public class CardJson {
     public static final class EnumSerializer extends JsonSerializer<Enum<?>> {
 
         @Override public void serialize(
-                final Enum value, final JsonGenerator generator, final SerializerProvider provider
+                final Enum<?> value, final JsonGenerator generator, final SerializerProvider provider
         ) throws IOException {
 
             generator.writeString(value.name().toLowerCase());

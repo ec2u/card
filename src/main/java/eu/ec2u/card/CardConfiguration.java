@@ -10,18 +10,11 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+@Data
 @Configuration
+@ConfigurationProperties(prefix="card")
 public class CardConfiguration {
 
-
-    @Data
-    @Configuration
-    @ConfigurationProperties(prefix="card")
-    public static class Build {
-
-        private String version;
-        private String instant;
-
-    }
+    private String revision;
 
 }

@@ -37,9 +37,7 @@
 
 		<main>eu.ec2u.card.Card</main>
 
-		<!--suppress UnresolvedMavenProperty -->
-		<revision>${git.branch}-${git.build.time}-${git.commit.id.abbrev}</revision>
-		<project.instant>${maven.build.timestamp}</project.instant>
+		<revision>${maven.build.timestamp}</revision>
 
 		<java.version>11</java.version>
 		<maven.version>3.6</maven.version>
@@ -47,11 +45,10 @@
 		<node.version>14.15.4</node.version>
 		<npm.version>7.7.6</npm.version>
 
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
+		<maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
 		<maven.deploy.skip>true</maven.deploy.skip> <!-- no public artifact deployment -->
-		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss'Z'</maven.build.timestamp.format>
 
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 	</properties>
 

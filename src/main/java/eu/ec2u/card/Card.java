@@ -22,8 +22,7 @@ public final class Card {
 
     private final String id;
 
-    private final String version;
-    private final Instant instant;
+    private final Instant revision;
 
     private final Profile profile;
 

@@ -10,16 +10,36 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Locale;
 import java.util.Optional;
 
-import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static java.time.temporal.ChronoField.*;
 
 @Service
 public class CardService {
 
-    @Autowired private CardConfiguration.Build build;
+    private static final DateTimeFormatter InstantFormat=new DateTimeFormatterBuilder()
 
+            .appendValue(YEAR, 4)
+            .appendValue(MONTH_OF_YEAR, 2)
+            .appendValue(DAY_OF_MONTH, 2)
+
+            .appendLiteral("T")
+
+            .appendValue(HOUR_OF_DAY, 2)
+            .appendValue(MINUTE_OF_HOUR, 2)
+            .appendValue(SECOND_OF_MINUTE, 2)
+
+            .parseStrict()
+            .toFormatter(Locale.ROOT);
+
+
+    @Autowired
+    private CardConfiguration configuration;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -28,14 +48,12 @@ public class CardService {
 
                 .id(Card.ID)
 
-                .version(build.getVersion())
-                .instant(Instant.from(ISO_DATE_TIME.parse(build.getInstant())))
+                .revision(LocalDateTime.from(InstantFormat.parse(configuration.getRevision())).toInstant(ZoneOffset.UTC))
 
                 .profile(profile)
 
                 .build();
     }
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,43 +61,41 @@ public class CardService {
 
         throw new UnsupportedOperationException(";(  be implemented"); // !!!
 
-        //return gate.resolve(credentials)
+        // return gate.resolve(credentials)
         //
-        //		.flatMap(users::findGraphById)
+        // .flatMap(users::findGraphById)
         //
-        //		.map(this::profile);
+        // .map(this::profile);
     }
-
 
     String login(@NonNull final Profile profile) {
 
         throw new UnsupportedOperationException(";(  be implemented"); // !!!
 
-        //return gate.login(update);
+        // return gate.login(update);
     }
 
     String logout() {
 
         throw new UnsupportedOperationException(";(  be implemented"); // !!!
 
-        //return gate.logout();
+        // return gate.logout();
     }
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //private Profile profile(final UserData user) {
-    //	return new Profile()
+    // private Profile profile(final UserData user) {
+    // return new Profile()
     //
-    //			.setAdmin(user.isAdmin())
+    // .setAdmin(user.isAdmin())
     //
-    //			.setId(user.getId())
-    //			.setCode(user.getCode())
-    //			.setLabel(user.getLabel())
+    // .setId(user.getId())
+    // .setCode(user.getCode())
+    // .setLabel(user.getLabel())
     //
-    //			.setForename(user.getForename())
-    //			.setSurname(user.getSurname())
-    //			.setEmail(user.getEmail());
-    //}
+    // .setForename(user.getForename())
+    // .setSurname(user.getSurname())
+    // .setEmail(user.getEmail());
+    // }
 
 }
