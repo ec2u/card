@@ -73,15 +73,6 @@ public final class CardController implements ErrorController {
     }
 
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Customizes error generation.
-     *
-     * @param response
-     *
-     * @return
-     */
     @RequestMapping("/error")
     public ResponseEntity<Void> error(final HttpServletResponse response) {
         return status(response.getStatus()).build();

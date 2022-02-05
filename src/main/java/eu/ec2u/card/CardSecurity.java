@@ -15,8 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Component
@@ -35,9 +33,10 @@ public class CardSecurity extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .authorizeRequests()
-                .antMatchers(GET, "/").permitAll()
-                .antMatchers(POST, "/").permitAll()
-                .anyRequest().authenticated();
+                //.antMatchers(GET, "/").permitAll()
+                //.antMatchers(POST, "/").permitAll()
+                //.antMatchers(GET, "/index.*").permitAll()
+                .anyRequest().permitAll();
 
     }
 

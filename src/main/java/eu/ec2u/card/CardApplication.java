@@ -7,12 +7,10 @@ package eu.ec2u.card;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonLocation;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
-import org.springframework.http.HttpStatus;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -20,72 +18,74 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Optional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
-import static org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
-import static org.springframework.http.ResponseEntity.*;
+import static org.springframework.http.ResponseEntity.status;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.*;
 
 @Slf4j
+@Configuration
 @ControllerAdvice
-@SpringBootApplication(exclude=ErrorMvcAutoConfiguration.class)
-public class CardApplication {
+@SpringBootApplication
+public class CardApplication implements WebMvcConfigurer {
 
     public static void main(final String... args) {
         SpringApplication.run(CardApplication.class, args);
     }
 
 
-    //// Exception Handlers ////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @ExceptionHandler(HttpException.class)
-    public ResponseEntity<Object> handle(final HttpException e) {
-
-        final HttpStatus status=e.getStatus();
-        final Serializable report=e.getReport();
-
-        if ( status.is5xxServerError() ) {
-
-            log.error("", e);
-
-        } else if ( e.getCause() != null ) {
-
-            log.warn("", e);
-
-        }
-
-        return report == null ? status(status).build()
-                : report instanceof String ? status(status).contentType(TEXT_PLAIN).body(report)
-                : status(status).contentType(APPLICATION_JSON).body(report);
-
+    @Override public void addInterceptors(final InterceptorRegistry registry) {
+        registry.addInterceptor(new CardLoader());
     }
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<String> handle(final ResponseStatusException e) {
 
-        final HttpStatus status=e.getStatus();
-        final String reason=e.getReason();
+    //// Exception Handlers ////////////////////////////////////////////////////////////////////////////////////////////
 
-        return reason == null ? status(status).headers(e.getResponseHeaders()).build()
-                : status(status).contentType(TEXT_PLAIN).headers(e.getResponseHeaders()).body(reason);
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> handle(final HttpMessageNotReadableException e) {
+
+        return status(BAD_REQUEST) // 400
+                .contentType(TEXT_PLAIN)
+                .body(Optional.ofNullable(e.getCause())
+
+                        .filter(JacksonException.class::isInstance)
+                        .map(JacksonException.class::cast)
+
+                        .map(p -> {
+
+
+                            final JsonLocation location=p.getLocation();
+                            final String message=p.getOriginalMessage();
+
+                            return format("(%d:%d) %s", location.getLineNr(), location.getColumnNr(), message);
+
+
+                        })
+
+                        .orElseGet(e::getMessage)
+                );
 
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handle(final MethodArgumentNotValidException e) {
 
-        return badRequest()
+        return status(BAD_REQUEST) // 400
                 .contentType(APPLICATION_JSON)
                 .body(e.getBindingResult().getAllErrors().stream().collect(toMap(
 
@@ -96,46 +96,24 @@ public class CardApplication {
 
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handle(final HttpMessageNotReadableException e) {
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<Collection<String>> handle(final NoHandlerFoundException e) {
 
-        if ( e.getCause() instanceof JacksonException ) {
-
-            return handle((JacksonException)e.getCause());
-
-        } else {
-
-            return badRequest()
-                    .contentType(TEXT_PLAIN)
-                    .body(e.getMessage());
-
-        }
+        return status(NOT_FOUND).build(); // 404
 
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Collection<String>> handle(final HttpRequestMethodNotSupportedException e) {
 
-        return status(METHOD_NOT_ALLOWED).build();
-
-    }
-
-    @ExceptionHandler(JacksonException.class)
-    public ResponseEntity<String> handle(final JacksonException e) {
-
-        final JsonLocation location=e.getLocation();
-        final String message=e.getOriginalMessage();
-
-        return badRequest()
-                .contentType(TEXT_PLAIN)
-                .body(format("(%d:%d) %s", location.getLineNr(), location.getColumnNr(), message));
+        return status(METHOD_NOT_ALLOWED).build(); // 405
 
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handle(final ConstraintViolationException e) {
 
-        return unprocessableEntity()
+        return status(UNPROCESSABLE_ENTITY) // 422
                 .contentType(APPLICATION_JSON)
                 .body(e.getConstraintViolations().stream().collect(groupingBy(
 
@@ -146,68 +124,13 @@ public class CardApplication {
 
     }
 
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Collection<String>> handle(final Exception e) {
 
         log.error("unhandled exception", e);
 
-        return internalServerError().build();
-
-    }
-
-
-    //// Exceptions ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Getter
-    public static final class HttpException extends RuntimeException {
-
-        private static final long serialVersionUID=3697769429806178835L;
-
-
-        private final HttpStatus status;
-        private final Serializable report;
-
-
-        public HttpException(final HttpStatus status) {
-
-            if ( status == null ) {
-                throw new NullPointerException("null status");
-            }
-
-            this.status=status;
-            this.report=null;
-        }
-
-        public HttpException(final HttpStatus status, final Serializable report) {
-
-            if ( status == null ) {
-                throw new NullPointerException("null status");
-            }
-
-            if ( report == null ) {
-                throw new NullPointerException("null report");
-            }
-
-            this.status=status;
-            this.report=report;
-        }
-
-        public HttpException(final HttpStatus status, final Throwable cause) {
-
-            if ( status == null ) {
-                throw new NullPointerException("null status");
-            }
-
-            if ( cause == null ) {
-                throw new NullPointerException("null cause");
-            }
-
-            this.status=status;
-            this.report=cause.getMessage();
-
-            initCause(cause);
-
-        }
+        return status(INTERNAL_SERVER_ERROR).build(); // 500
 
     }
 

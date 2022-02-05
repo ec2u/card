@@ -37,9 +37,8 @@ public class CardService {
             .parseStrict()
             .toFormatter(Locale.ROOT);
 
-
     @Autowired
-    private CardConfiguration configuration;
+    private CardProperties properties;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,7 +47,8 @@ public class CardService {
 
                 .id(Card.ID)
 
-                .revision(LocalDateTime.from(InstantFormat.parse(configuration.getRevision())).toInstant(ZoneOffset.UTC))
+                .revision(
+                        LocalDateTime.from(InstantFormat.parse(properties.getRevision())).toInstant(ZoneOffset.UTC))
 
                 .profile(profile)
 

@@ -5,7 +5,6 @@
 
 package eu.ec2u.card;
 
-
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 @ConfigurationProperties(prefix="card")
-public class CardConfiguration {
+public class CardProperties {
 
     private String revision;
 
