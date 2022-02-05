@@ -4,8 +4,7 @@
   Copyright © 2020-2022 EC2U Consortium. All rights reserved.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -35,7 +34,7 @@
 
 	<properties>
 
-		<main>eu.ec2u.card.Card</main>
+		<main>eu.ec2u.carc.CardApplication</main>
 
 		<revision>${maven.build.timestamp}</revision>
 
@@ -69,12 +68,13 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
-				<version>2.5.6</version>
+				<version>2.6.3</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 
-			<dependency>  <!-- https://search.maven.org/artifact/org.junit.jupiter/junit-bom -->
+			<dependency>
+				<!-- https://search.maven.org/artifact/org.junit.jupiter/junit-bom -->
 				<groupId>org.junit</groupId>
 				<artifactId>junit-bom</artifactId>
 				<version>5.7.2</version>
@@ -82,7 +82,8 @@
 				<scope>import</scope>
 			</dependency>
 
-			<dependency> <!-- https://search.maven.org/artifact/org.assertj/assertj-core -->
+			<dependency>
+				<!-- https://search.maven.org/artifact/org.assertj/assertj-core -->
 				<groupId>org.assertj</groupId>
 				<artifactId>assertj-core</artifactId>
 				<version>3.20.2</version>
@@ -149,7 +150,7 @@
 
 	<build>
 
-		<finalName>${revision}</finalName>
+		<finalName>${project.artifactId}</finalName>
 
 		<resources>
 
@@ -162,7 +163,9 @@
 
 		<plugins>
 
-			<plugin> <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
+			<plugin>
+
+				<!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
@@ -190,7 +193,9 @@
 
 			</plugin>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-clean-plugin/ -->
+			<plugin>
+
+				<!-- https://maven.apache.org/plugins/maven-clean-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
@@ -219,7 +224,9 @@
 
 			</plugin>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-compiler-plugin -->
+			<plugin>
+
+				<!-- https://maven.apache.org/plugins/maven-compiler-plugin -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -234,7 +241,9 @@
 
 			</plugin>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-jar-plugin/ -->
+			<plugin>
+
+				<!-- https://maven.apache.org/plugins/maven-jar-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -255,58 +264,8 @@
 
 			</plugin>
 
-			<plugin> <!-- http://maven.apache.org/plugins/maven-shade-plugin/ -->
-
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.4</version>
-
-				<configuration>
-
-					<createDependencyReducedPom>false</createDependencyReducedPom>
-
-					<transformers>
-
-						<transformer
-								implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"
-						>
-							<mainClass>${main}</mainClass>
-						</transformer>
-
-						<transformer
-								implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"
-						/>
-
-					</transformers>
-
-					<filters> <!-- ;( exclude JAR signatures (https://stackoverflow.com/a/55215382/) -->
-						<filter>
-							<artifact>*:*</artifact>
-							<excludes>
-								<exclude>META-INF/*.SF</exclude>
-								<exclude>META-INF/*.DSA</exclude>
-								<exclude>META-INF/*.RSA</exclude>
-							</excludes>
-						</filter>
-					</filters>
-
-				</configuration>
-
-				<executions>
-
-					<execution>
-
-						<goals>
-							<goal>shade</goal>
-						</goals>
-
-					</execution>
-
-				</executions>
-
-			</plugin>
-
-			<plugin> <!-- https://maven.apache.org/surefire/maven-surefire-plugin/ -->
+			<plugin>
+				<!-- https://maven.apache.org/surefire/maven-surefire-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -314,7 +273,9 @@
 
 			</plugin>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-site-plugin -->
+			<plugin>
+
+				<!-- https://maven.apache.org/plugins/maven-site-plugin -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
@@ -326,7 +287,9 @@
 
 			</plugin>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-deploy-plugin/ -->
+			<plugin>
+
+				<!-- https://maven.apache.org/plugins/maven-deploy-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
@@ -338,24 +301,20 @@
 
 			</plugin>
 
-			<plugin> <!-- https://github.com/git-commit-id/git-commit-id-maven-plugin -->
+			<plugin> 
 
-				<groupId>io.github.git-commit-id</groupId>
-				<artifactId>git-commit-id-maven-plugin</artifactId>
-				<version>5.0.0</version>
+				<!-- https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/  -->
 
-				<configuration>
-					<dateFormat>yyyyMMdd-HHmmss</dateFormat>
-				</configuration>
-
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.4.0</version>
+	
 				<executions>
 					<execution>
 
-						<id>retrieve-git-info</id>
-						<phase>initialize</phase>
-
+						<id>spring-package</id>
 						<goals>
-							<goal>revision</goal>
+							<goal>repackage</goal>
 						</goals>
 
 					</execution>
@@ -363,7 +322,9 @@
 
 			</plugin>
 
-			<plugin> <!-- https://github.com/eirslett/frontend-maven-plugin -->
+			<plugin>
+
+				<!-- https://github.com/eirslett/frontend-maven-plugin -->
 
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
@@ -445,7 +406,9 @@
 			<build>
 				<plugins>
 
-					<plugin> <!-- https://cloud.google.com/appengine/docs/standard/java/tools/maven-reference -->
+					<plugin>
+						
+						<!-- https://cloud.google.com/appengine/docs/standard/java/tools/maven-reference -->
 
 						<groupId>com.google.cloud.tools</groupId>
 						<artifactId>appengine-maven-plugin</artifactId>
