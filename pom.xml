@@ -34,7 +34,7 @@
 
 	<properties>
 
-		<main>eu.ec2u.carc.CardApplication</main>
+		<main>eu.ec2u.card.CardApplication</main>
 
 		<revision>${maven.build.timestamp}</revision>
 
