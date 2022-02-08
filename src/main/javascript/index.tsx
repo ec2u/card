@@ -13,7 +13,8 @@ render((<>
     <p>This app is saying…</p>
 
     <CardHello name="Akhil" />
-    <CardHello name="Andrea" />
-    <CardHello name="Alessandro" />
+    <CardHello name="Andrea"/>
+    <CardHello name="Luigi"/>
+    <CardHello name="Alessandro"/>
 
 </>), document.body.firstElementChild);
