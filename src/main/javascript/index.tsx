@@ -4,15 +4,16 @@
 
 import * as React from "react";
 import { render } from "react-dom";
+import { CardHello } from "./hello";
 
 
-render((
+render(<>
 
     <p>This app is saying…</p>
 
-    <CardHello name="Akhil" />
+    <CardHello name="Akhil"/>
     <CardHello name="Andrea"/>
     <CardHello name="Luigi"/>
     <CardHello name="Alessandro"/>
 
-</>), document.body.firstElementChild);
+</>, document.body.firstElementChild);
