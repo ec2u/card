@@ -1,9 +1,10 @@
 /@
-/target/
 
-node_modules/
+/.idea/
+/.vscode/
+
+/target/
+/node_modules/
 
 *~
 ~*
-
-*.iml

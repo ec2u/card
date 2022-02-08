@@ -1,6 +1,5 @@
 {
 	"private": true,
-	"version": "0",
 	"scripts": {
 		"start": "vite --open",
 		"build": "vite build",

@@ -1,0 +1,10 @@
+card:
+
+  revision: ${revision}
+
+server:
+
+  error:
+    whitelabel:
+      enabled: false
+

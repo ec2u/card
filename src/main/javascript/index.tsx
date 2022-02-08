@@ -8,6 +8,11 @@ import { render } from "react-dom";
 
 render((
 
-	<h1>Hello!</h1>
+    <p>This app is saying…</p>
 
-), document.body.firstElementChild);
+    <CardHello name="Akhil" />
+    <CardHello name="Andrea"/>
+    <CardHello name="Luigi"/>
+    <CardHello name="Alessandro"/>
+
+</>), document.body.firstElementChild);

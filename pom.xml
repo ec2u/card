@@ -4,8 +4,7 @@
   Copyright © 2020-2022 EC2U Consortium. All rights reserved.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -33,6 +32,25 @@
 		</developer>
 	</developers>
 
+	<properties>
+
+		<main>eu.ec2u.card.CardApplication</main>
+
+		<revision>${maven.build.timestamp}</revision>
+
+		<java.version>11</java.version>
+		<maven.version>3.6</maven.version>
+
+		<node.version>14.15.4</node.version>
+		<npm.version>7.7.6</npm.version>
+
+		<maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
+		<maven.deploy.skip>true</maven.deploy.skip> <!-- no public artifact deployment -->
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+	</properties>
+
 	<scm>
 		<connection>scm:git:git@github.com:ec2u/card.git</connection>
 		<developerConnection>scm:git:git@github.com:ec2u/card.git</developerConnection>
@@ -44,36 +62,87 @@
 		<url>https://github.com/ec2u/card/issues</url>
 	</issueManagement>
 
-	<properties>
+	<dependencyManagement>
+		<dependencies>
 
-		<main>eu.ec2u.card.Card</main>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>2.6.3</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
-		<!--suppress UnresolvedMavenProperty -->
-		<revision>${git.branch}-${git.build.time}-${git.commit.id.abbrev}</revision>
+			<dependency>
+				<!-- https://search.maven.org/artifact/org.junit.jupiter/junit-bom -->
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>5.7.2</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
-		<java.version>11</java.version>
-		<maven.version>3.6</maven.version>
+			<dependency>
+				<!-- https://search.maven.org/artifact/org.assertj/assertj-core -->
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>3.20.2</version>
+				<scope>test</scope>
+			</dependency>
 
-		<node.version>14.15.4</node.version>
-		<npm.version>7.7.6</npm.version>
-
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-	</properties>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.8.2</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.22.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -81,11 +150,22 @@
 
 	<build>
 
-		<finalName>${revision}</finalName>
+		<finalName>${project.artifactId}</finalName>
+
+		<resources>
+
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+
+		</resources>
 
 		<plugins>
 
-			<plugin> <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
+			<plugin>
+
+				<!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
@@ -113,7 +193,9 @@
 
 			</plugin>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-clean-plugin/ -->
+			<plugin>
+
+				<!-- https://maven.apache.org/plugins/maven-clean-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
@@ -142,7 +224,9 @@
 
 			</plugin>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-compiler-plugin -->
+			<plugin>
+
+				<!-- https://maven.apache.org/plugins/maven-compiler-plugin -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -157,7 +241,9 @@
 
 			</plugin>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-jar-plugin/ -->
+			<plugin>
+
+				<!-- https://maven.apache.org/plugins/maven-jar-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -178,58 +264,8 @@
 
 			</plugin>
 
-			<plugin> <!-- http://maven.apache.org/plugins/maven-shade-plugin/ -->
-
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.4</version>
-
-				<configuration>
-
-					<createDependencyReducedPom>false</createDependencyReducedPom>
-
-					<transformers>
-
-						<transformer
-								implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"
-						>
-							<mainClass>${main}</mainClass>
-						</transformer>
-
-						<transformer
-								implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"
-						/>
-
-					</transformers>
-
-					<filters> <!-- ;( exclude JAR signatures (https://stackoverflow.com/a/55215382/) -->
-						<filter>
-							<artifact>*:*</artifact>
-							<excludes>
-								<exclude>META-INF/*.SF</exclude>
-								<exclude>META-INF/*.DSA</exclude>
-								<exclude>META-INF/*.RSA</exclude>
-							</excludes>
-						</filter>
-					</filters>
-
-				</configuration>
-
-				<executions>
-
-					<execution>
-
-						<goals>
-							<goal>shade</goal>
-						</goals>
-
-					</execution>
-
-				</executions>
-
-			</plugin>
-
-			<plugin> <!-- https://maven.apache.org/surefire/maven-surefire-plugin/ -->
+			<plugin>
+				<!-- https://maven.apache.org/surefire/maven-surefire-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -237,7 +273,9 @@
 
 			</plugin>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-site-plugin -->
+			<plugin>
+
+				<!-- https://maven.apache.org/plugins/maven-site-plugin -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
@@ -249,7 +287,9 @@
 
 			</plugin>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-deploy-plugin/ -->
+			<plugin>
+
+				<!-- https://maven.apache.org/plugins/maven-deploy-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
@@ -261,24 +301,20 @@
 
 			</plugin>
 
-			<plugin> <!-- https://github.com/git-commit-id/git-commit-id-maven-plugin -->
+			<plugin> 
 
-				<groupId>io.github.git-commit-id</groupId>
-				<artifactId>git-commit-id-maven-plugin</artifactId>
-				<version>5.0.0</version>
+				<!-- https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/  -->
 
-				<configuration>
-					<dateFormat>yyyyMMdd-HHmmss</dateFormat>
-				</configuration>
-
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.4.0</version>
+	
 				<executions>
 					<execution>
 
-						<id>retrieve-git-info</id>
-						<phase>initialize</phase>
-
+						<id>spring-package</id>
 						<goals>
-							<goal>revision</goal>
+							<goal>repackage</goal>
 						</goals>
 
 					</execution>
@@ -286,8 +322,9 @@
 
 			</plugin>
 
+			<plugin>
 
-			<plugin> <!-- https://github.com/eirslett/frontend-maven-plugin -->
+				<!-- https://github.com/eirslett/frontend-maven-plugin -->
 
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
@@ -356,36 +393,53 @@
 
 			</plugin>
 
-			<plugin> <!-- https://cloud.google.com/appengine/docs/standard/java/tools/maven-reference -->
-
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>appengine-maven-plugin</artifactId>
-				<version>2.4.0</version>
-
-				<configuration>
-					<projectId>${project.artifactId}</projectId>
-					<version>${revision}</version>
-					<promote>true</promote>
-					<stopPreviousVersion>true</stopPreviousVersion>
-				</configuration>
-
-				<executions>
-					<execution>
-
-						<id>deploy-to-gae</id>
-						<phase>deploy</phase>
-
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-
-					</execution>
-				</executions>
-
-			</plugin>
-
 		</plugins>
 
 	</build>
+
+	<profiles>
+
+		<profile>
+
+			<id>deploy</id>
+
+			<build>
+				<plugins>
+
+					<plugin>
+						
+						<!-- https://cloud.google.com/appengine/docs/standard/java/tools/maven-reference -->
+
+						<groupId>com.google.cloud.tools</groupId>
+						<artifactId>appengine-maven-plugin</artifactId>
+						<version>2.4.0</version>
+
+						<configuration>
+							<projectId>${project.artifactId}</projectId>
+							<version>${revision}</version>
+							<promote>true</promote>
+							<stopPreviousVersion>true</stopPreviousVersion>
+						</configuration>
+
+						<executions>
+							<execution>
+
+								<id>deploy-to-gae</id>
+								<phase>deploy</phase>
+
+								<goals>
+									<goal>deploy</goal>
+								</goals>
+
+							</execution>
+						</executions>
+
+					</plugin>
+
+				</plugins>
+			</build>
+
+		</profile>
+	</profiles>
 
 </project>
