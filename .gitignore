@@ -6,5 +6,7 @@
 /target/
 /node_modules/
 
+*.iml
+
 *~
 ~*
