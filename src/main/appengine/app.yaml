@@ -1,0 +1,6 @@
+runtime: java11
+
+handlers:
+  - url: .*
+    script: auto
+    secure: always
