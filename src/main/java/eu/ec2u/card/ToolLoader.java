@@ -18,7 +18,7 @@ import static org.springframework.http.MediaType.*;
 /**
  * SPA fallback loader
  */
-final class CardLoader implements HandlerInterceptor {
+final class ToolLoader implements HandlerInterceptor {
 
     private static final Pattern ExtensionPattern=Pattern.compile("\\.(\\w+)$");
 

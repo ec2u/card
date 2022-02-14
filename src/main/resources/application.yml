@@ -1,7 +1,5 @@
 card:
-
   revision: ${revision}
-
 
 spring:
   cloud:
@@ -11,8 +9,6 @@ spring:
         namespace: next
 
 server:
-
   error:
     whitelabel:
       enabled: false
-

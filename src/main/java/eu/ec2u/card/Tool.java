@@ -6,9 +6,10 @@ package eu.ec2u.card;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.ec2u.card.CardSecurity.Profile;
+import eu.ec2u.card.ToolSecurity.Profile;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.Id;
 
 import java.time.Instant;
 import java.util.List;
@@ -17,13 +18,13 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
-import static eu.ec2u.card.CardConfiguration.*;
+import static eu.ec2u.card.ToolConfiguration.*;
 
 @Getter
 @Builder
-public final class Card {
+public final class Tool {
 
-    public static final String Path="/";
+    public static final String Id="/";
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +36,16 @@ public final class Card {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Getter
+    @SuperBuilder
+    public abstract static class Container<T extends Resource> extends Resource {
+
+        @NonNull
+        @Size(max=ContainerSizeLimit)
+        private final List<T> contains;
+
+    }
 
     @Getter
     @SuperBuilder
@@ -54,12 +65,10 @@ public final class Card {
     }
 
     @Getter
-    @SuperBuilder
-    public abstract static class Container<T extends Resource> extends Resource {
+    public abstract static class ResourceData {
 
-        @NonNull
-        @Size(max=ContainerSizeLimit)
-        private final List<T> contains;
+        @Id
+        protected Long id;
 
     }
 

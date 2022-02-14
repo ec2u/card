@@ -34,7 +34,7 @@
 
 	<properties>
 
-		<main>eu.ec2u.card.CardApplication</main>
+		<main>eu.ec2u.card.ToolApplication</main>
 
 		<revision>${maven.build.timestamp}</revision>
 
@@ -411,50 +411,5 @@
 		</plugins>
 
 	</build>
-
-	<profiles>
-
-		<profile>
-
-			<id>deploy</id>
-
-			<build>
-				<plugins>
-
-					<plugin>
-						
-						<!-- https://cloud.google.com/appengine/docs/standard/java/tools/maven-reference -->
-
-						<groupId>com.google.cloud.tools</groupId>
-						<artifactId>appengine-maven-plugin</artifactId>
-						<version>2.4.0</version>
-
-						<configuration>
-							<projectId>${project.artifactId}</projectId>
-							<version>${revision}</version>
-							<promote>true</promote>
-							<stopPreviousVersion>true</stopPreviousVersion>
-						</configuration>
-
-						<executions>
-							<execution>
-
-								<id>deploy-to-gae</id>
-								<phase>deploy</phase>
-
-								<goals>
-									<goal>deploy</goal>
-								</goals>
-
-							</execution>
-						</executions>
-
-					</plugin>
-
-				</plugins>
-			</build>
-
-		</profile>
-	</profiles>
 
 </project>

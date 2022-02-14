@@ -23,7 +23,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix="card")
-public class CardConfiguration {
+public class ToolConfiguration {
 
     public static final int IdSizeLimit=100;
     public static final int LabelSizeLimit=100;

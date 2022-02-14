@@ -23,7 +23,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Component
 @EnableWebSecurity
-public class CardSecurity extends WebSecurityConfigurerAdapter {
+public class ToolSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {

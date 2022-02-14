@@ -1,23 +1,43 @@
 package eu.ec2u.card.users;
 
+import eu.ec2u.card.ToolSecurity.Profile;
+import eu.ec2u.card.events.EventsRepository;
+import eu.ec2u.card.users.Users.User;
+import eu.ec2u.card.users.Users.UserData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import static eu.ec2u.card.events.Events.Action.Created;
 
 @Service
-public final class UsersService {
+public class UsersService {
+
+    @Autowired private UsersRepository users;
+    @Autowired private EventsRepository events;
+
 
     Users browse(final Pageable slice) {
         return Users.builder()
 
-                .id(Users.Path)
+                .id(Users.Id)
 
-                .contains(List.of())
-
-                //.users(users.findAll(slice).<User>map(data -> data.digest().build()).getContent())
+                .contains(users.findAll(slice)
+                        .map(UserData::transfer)
+                        .getContent()
+                )
 
                 .build();
+    }
+
+    @Transactional
+    String create(final Profile profile, final User user) {
+
+        return events.trace(profile, Created, Users.Id,
+                users.save(new UserData().transfer(user)).transfer()
+        );
+
     }
 
 }

@@ -6,9 +6,9 @@
 package eu.ec2u.card;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.ec2u.card.Card.Container;
-import eu.ec2u.card.CardSecurity.Credentials;
-import eu.ec2u.card.CardSecurity.Profile;
+import eu.ec2u.card.Tool.Container;
+import eu.ec2u.card.ToolSecurity.Credentials;
+import eu.ec2u.card.ToolSecurity.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +22,18 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
-@RequestMapping(Card.Path)
-public final class CardController implements ErrorController {
+@RequestMapping(Tool.Id)
+public final class ToolController implements ErrorController {
 
-    @Autowired private CardService session;
+    @Autowired private ToolService session;
 
 
     @GetMapping("")
     @JsonView(Container.class)
-    ResponseEntity<Card> get(
+    ResponseEntity<Object> get(
 
-            @AuthenticationPrincipal final Profile profile
+            @AuthenticationPrincipal
+            final Profile profile
 
     ) {
 

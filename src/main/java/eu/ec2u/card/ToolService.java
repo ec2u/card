@@ -4,8 +4,8 @@
 
 package eu.ec2u.card;
 
-import eu.ec2u.card.CardSecurity.Credentials;
-import eu.ec2u.card.CardSecurity.Profile;
+import eu.ec2u.card.ToolSecurity.Credentials;
+import eu.ec2u.card.ToolSecurity.Profile;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.Optional;
 import static java.time.temporal.ChronoField.*;
 
 @Service
-public class CardService {
+public class ToolService {
 
     private static final DateTimeFormatter InstantFormat=new DateTimeFormatterBuilder()
 
@@ -39,7 +39,7 @@ public class CardService {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Autowired private CardConfiguration properties;
+    @Autowired private ToolConfiguration properties;
 
 
     private Instant revision() {
@@ -49,11 +49,11 @@ public class CardService {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Card retrieve(final Profile profile) {
+    Tool retrieve(final Profile profile) {
 
-        return Card.builder()
+        return Tool.builder()
 
-                .id(Card.Path)
+                .id(Tool.Id)
 
                 .revision(revision())
                 .profile(profile)
