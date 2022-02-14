@@ -1,5 +1,4 @@
 
-
 /*
  * Copyright © 2020-2022 EC2U Consortium. All rights reserved.
  */
@@ -8,6 +7,9 @@ package eu.ec2u.card;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -17,11 +19,27 @@ import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
+@Getter
+@Setter
 @Configuration
-public class CardJson {
+@ConfigurationProperties(prefix="card")
+public class CardConfiguration {
+
+    public static final int IdSizeLimit=100;
+    public static final int LabelSizeLimit=100;
+    public static final int NotesSizeLimit=2000;
+    public static final int ContainerSizeLimit=100;
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private String revision;
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Bean
-    public ObjectMapper mapper() {
+    public ObjectMapper getObjectMapper() {
         return new Jackson2ObjectMapperBuilder()
 
                 .indentOutput(true)
@@ -46,20 +64,7 @@ public class CardJson {
     }
 
 
-    //// Views /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public static final class Catalog {
-        private Catalog() { }
-    }
-
-    public static final class Details {
-        private Details() { }
-    }
-
-
-    //// Codecs ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public static final class EnumSerializer extends JsonSerializer<Enum<?>> {
+    private static final class EnumSerializer extends JsonSerializer<Enum<?>> {
 
         @Override public void serialize(
                 final Enum<?> value, final JsonGenerator generator, final SerializerProvider provider

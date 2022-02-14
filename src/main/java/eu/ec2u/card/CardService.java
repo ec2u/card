@@ -10,8 +10,7 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Locale;
@@ -37,23 +36,32 @@ public class CardService {
             .parseStrict()
             .toFormatter(Locale.ROOT);
 
-    @Autowired
-    private CardProperties properties;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Autowired private CardConfiguration properties;
+
+
+    private Instant revision() {
+        return LocalDateTime.from(InstantFormat.parse(properties.getRevision())).toInstant(ZoneOffset.UTC);
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Card retrieve(final Profile profile) {
+
         return Card.builder()
 
-                .id(Card.ID)
+                .id(Card.Path)
 
-                .revision(
-                        LocalDateTime.from(InstantFormat.parse(properties.getRevision())).toInstant(ZoneOffset.UTC))
-
+                .revision(revision())
                 .profile(profile)
 
                 .build();
+
     }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

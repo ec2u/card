@@ -82,20 +82,6 @@ public class CardApplication implements WebMvcConfigurer {
 
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handle(final MethodArgumentNotValidException e) {
-
-        return status(BAD_REQUEST) // 400
-                .contentType(APPLICATION_JSON)
-                .body(e.getBindingResult().getAllErrors().stream().collect(toMap(
-
-                        error -> ((FieldError)error).getField(), // !!! cast
-                        error -> Optional.ofNullable(error.getDefaultMessage()).orElse("")
-
-                )));
-
-    }
-
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<Collection<String>> handle(final NoHandlerFoundException e) {
 
@@ -107,6 +93,20 @@ public class CardApplication implements WebMvcConfigurer {
     public ResponseEntity<Collection<String>> handle(final HttpRequestMethodNotSupportedException e) {
 
         return status(METHOD_NOT_ALLOWED).build(); // 405
+
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handle(final MethodArgumentNotValidException e) {
+
+        return status(UNPROCESSABLE_ENTITY) // 422
+                .contentType(APPLICATION_JSON)
+                .body(e.getBindingResult().getAllErrors().stream().collect(toMap(
+
+                        error -> ((FieldError)error).getField(), // !!! cast
+                        error -> Optional.ofNullable(error.getDefaultMessage()).orElse("")
+
+                )));
 
     }
 

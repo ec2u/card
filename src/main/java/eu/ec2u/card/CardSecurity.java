@@ -6,7 +6,9 @@
 
 package eu.ec2u.card;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Component
@@ -33,10 +37,10 @@ public class CardSecurity extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .authorizeRequests()
-                //.antMatchers(GET, "/").permitAll()
-                //.antMatchers(POST, "/").permitAll()
-                //.antMatchers(GET, "/index.*").permitAll()
-                .anyRequest().permitAll();
+                .antMatchers(GET, "/").permitAll()
+                .antMatchers(POST, "/").permitAll()
+                .anyRequest().permitAll(); // !!!
+        //.anyRequest().authenticated();
 
     }
 
@@ -44,19 +48,20 @@ public class CardSecurity extends WebSecurityConfigurerAdapter {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Getter
-    @Builder
     @Jacksonized
+    @SuperBuilder
     public static final class Credentials implements Serializable {
 
         private static final long serialVersionUID=-5184703157125247153L;
+
 
         @NonNull private final String code;
 
     }
 
     @Getter
-    @Builder
     @Jacksonized
+    @SuperBuilder
     public static final class Profile implements Serializable {
 
         private static final long serialVersionUID=-7793479050451108354L;

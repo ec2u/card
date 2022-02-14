@@ -2,6 +2,14 @@ card:
 
   revision: ${revision}
 
+
+spring:
+  cloud:
+    gcp:
+      project-id: ec2u-card
+      datastore:
+        namespace: next
+
 server:
 
   error:

@@ -6,7 +6,7 @@
 package eu.ec2u.card;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.ec2u.card.CardJson.Catalog;
+import eu.ec2u.card.Card.Container;
 import eu.ec2u.card.CardSecurity.Credentials;
 import eu.ec2u.card.CardSecurity.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +22,14 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
-@RequestMapping(Card.ID)
+@RequestMapping(Card.Path)
 public final class CardController implements ErrorController {
 
     @Autowired private CardService session;
 
 
     @GetMapping("")
-    @JsonView(Catalog.class)
+    @JsonView(Container.class)
     ResponseEntity<Card> get(
 
             @AuthenticationPrincipal final Profile profile
@@ -41,9 +41,10 @@ public final class CardController implements ErrorController {
     }
 
     @PostMapping("")
-    ResponseEntity<Void> post(
+    ResponseEntity<Object> post(
 
-            @Valid @RequestBody(required=false) final Credentials credentials
+            @Valid
+            @RequestBody(required=false) final Credentials credentials
 
     ) {
 
@@ -55,7 +56,7 @@ public final class CardController implements ErrorController {
 
                     .map(cookie -> noContent()
                             .header("Set-Cookie", cookie)
-                            .<Void>build()
+                            .build()
                     )
 
                     .orElseGet(() -> status(FORBIDDEN)
@@ -66,7 +67,7 @@ public final class CardController implements ErrorController {
 
             return noContent()
                     .header("Set-Cookie", session.logout())
-                    .<Void>build();
+                    .build();
 
         }
 
