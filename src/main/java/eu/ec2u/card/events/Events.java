@@ -12,12 +12,12 @@ import lombok.Setter;
 public class Events extends Container<Event> {
 
     public enum Action {
-        LoggedIn, LoggedOut,
-        Created, Updated, Deleted
+        login, logout,
+        create, update, delete
     }
 
 
-    public static final String Path="/events/";
+    public static final String Id="/events/";
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

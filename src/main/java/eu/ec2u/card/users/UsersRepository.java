@@ -5,6 +5,6 @@ import eu.ec2u.card.users.Users.UserData;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsersRepository extends DatastoreRepository<UserData, String> {
+public interface UsersRepository extends DatastoreRepository<UserData, Long> {
 
 }

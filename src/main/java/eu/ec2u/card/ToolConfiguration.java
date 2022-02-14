@@ -5,7 +5,6 @@
 
 package eu.ec2u.card;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +12,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-
-import java.io.IOException;
-import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -52,10 +48,6 @@ public class ToolConfiguration {
 
                 .serializationInclusion(NON_NULL)
 
-                .serializersByType(Map.of(
-                        Enum.class, new EnumSerializer()
-                ))
-
                 .featuresToEnable(
                         MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS
                 )
@@ -67,17 +59,5 @@ public class ToolConfiguration {
                 .build();
     }
 
-
-    private static final class EnumSerializer extends JsonSerializer<Enum<?>> {
-
-        @Override public void serialize(
-                final Enum<?> value, final JsonGenerator generator, final SerializerProvider provider
-        ) throws IOException {
-
-            generator.writeString(value.name().toLowerCase());
-
-        }
-
-    }
 
 }

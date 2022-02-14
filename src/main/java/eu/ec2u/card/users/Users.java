@@ -24,22 +24,22 @@ public class Users extends Container<User> {
     @Setter
     static final class User extends Resource {
 
-        @NotNull
+        @NotNull(groups=Resource.class)
         private Boolean admin;
 
-        @NotNull
         @Size(max=LabelSize)
         @Pattern(regexp=LabelPattern)
+        @NotNull(groups=Resource.class)
         private String forename;
 
-        @NotNull
         @Size(max=LabelSize)
         @Pattern(regexp=LabelPattern)
+        @NotNull(groups=Resource.class)
         private String surname;
 
-        @NotNull
         @Email
         @Size(max=LabelSize)
+        @NotNull(groups=Resource.class)
         private String email;
 
     }

@@ -1,6 +1,5 @@
 package eu.ec2u.card.users;
 
-import eu.ec2u.card.ToolSecurity.Profile;
 import eu.ec2u.card.events.EventsRepository;
 import eu.ec2u.card.users.Users.User;
 import eu.ec2u.card.users.Users.UserData;
@@ -9,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static eu.ec2u.card.events.Events.Action.Created;
+import java.util.Optional;
 
 @Service
 public class UsersService {
@@ -34,12 +33,34 @@ public class UsersService {
     }
 
     @Transactional
-    String create(final Profile profile, final User user) {
+    Optional<User> create(final User user) {
+        return Optional.of(new UserData())
+                .map(data -> data.transfer(user))
+                .map(data -> users.save(data))
+                .map(UserData::transfer);
+    }
 
-        return events.trace(profile, Created, Users.Id,
-                users.save(new UserData().transfer(user)).transfer()
-        );
+    Optional<User> relate(final long id) {
+        return users.findById(id).map(UserData::transfer);
+    }
 
+    Optional<User> update(final long id, final User user) {
+        return users.findById(id)
+                .map(data -> data.transfer(user))
+                .map(data -> users.save(data))
+                .map(UserData::transfer);
+    }
+
+    Optional<User> delete(final long id) {
+        return users.findById(id)
+                .map(data -> {
+
+                    users.delete(data);
+
+                    return data;
+
+                })
+                .map(UserData::transfer);
     }
 
 }
