@@ -19,16 +19,18 @@ public class UsersService {
 
 
     Users browse(final Pageable slice) {
-        return Users.builder()
 
-                .id(Users.Id)
+        final Users users=new Users();
 
-                .contains(users.findAll(slice)
-                        .map(UserData::transfer)
-                        .getContent()
-                )
+        users.setId(Users.Id);
 
-                .build();
+        users.setContains(this.users.findAll(slice)
+                .map(UserData::transfer)
+                .getContent()
+        );
+
+        return users;
+
     }
 
     @Transactional

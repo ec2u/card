@@ -7,15 +7,15 @@
 package eu.ec2u.card;
 
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
-import lombok.extern.jackson.Jacksonized;
+import lombok.Setter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+
+import javax.validation.constraints.NotNull;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -48,34 +48,32 @@ public class ToolSecurity extends WebSecurityConfigurerAdapter {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Getter
-    @Jacksonized
-    @SuperBuilder
+    @Setter
     public static final class Credentials implements Serializable {
 
         private static final long serialVersionUID=-5184703157125247153L;
 
 
-        @NonNull private final String code;
+        @NotNull private String code;
 
     }
 
     @Getter
-    @Jacksonized
-    @SuperBuilder
+    @Setter
     public static final class Profile implements Serializable {
 
         private static final long serialVersionUID=-7793479050451108354L;
 
 
-        private final boolean admin;
+        private boolean admin;
 
-        @NonNull private final String id;
-        @NonNull private final String code;
-        @NonNull private final String label;
+        @NotNull private String id;
+        @NotNull private String code;
+        @NotNull private String label;
 
-        @NonNull private final String forename;
-        @NonNull private final String surname;
-        @NonNull private final String email;
+        @NotNull private String forename;
+        @NotNull private String surname;
+        @NotNull private String email;
 
     }
 

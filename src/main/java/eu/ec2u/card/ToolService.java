@@ -6,7 +6,6 @@ package eu.ec2u.card;
 
 import eu.ec2u.card.ToolSecurity.Credentials;
 import eu.ec2u.card.ToolSecurity.Profile;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Locale;
 import java.util.Optional;
+
+import javax.validation.constraints.NotNull;
 
 import static java.time.temporal.ChronoField.*;
 
@@ -65,7 +66,7 @@ public class ToolService {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Optional<Profile> lookup(@NonNull final Credentials credentials) {
+    Optional<Profile> lookup(@NotNull final Credentials credentials) {
 
         throw new UnsupportedOperationException(";(  be implemented"); // !!!
 
@@ -76,7 +77,7 @@ public class ToolService {
         // .map(this::profile);
     }
 
-    String login(@NonNull final Profile profile) {
+    String login(@NotNull final Profile profile) {
 
         throw new UnsupportedOperationException(";(  be implemented"); // !!!
 

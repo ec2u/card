@@ -22,7 +22,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-import static eu.ec2u.card.ToolConfiguration.ContainerSizeLimit;
+import static eu.ec2u.card.ToolConfiguration.ContainerSize;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -47,7 +47,7 @@ public final class UsersController {
 
             @Valid
             @Min(1)
-            @Max(ContainerSizeLimit)
+            @Max(ContainerSize)
             @RequestParam(required=false, defaultValue="25")
             final int size
 

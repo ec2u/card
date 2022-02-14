@@ -25,10 +25,14 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @ConfigurationProperties(prefix="card")
 public class ToolConfiguration {
 
-    public static final int IdSizeLimit=100;
-    public static final int LabelSizeLimit=100;
-    public static final int NotesSizeLimit=2000;
-    public static final int ContainerSizeLimit=100;
+    public static final int IdSize=100;
+    public static final int ContainerSize=100;
+
+    public static final int LabelSize=100;
+    public static final String LabelPattern="\\S+( \\S+)*";
+
+    public static final int NotesSize=2000;
+    public static final String NotesPattern="\\S+(\\s+\\S+)*";
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

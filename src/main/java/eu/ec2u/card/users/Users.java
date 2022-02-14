@@ -4,11 +4,15 @@ import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import eu.ec2u.card.Tool.*;
 import eu.ec2u.card.users.Users.User;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
-import lombok.extern.jackson.Jacksonized;
+import lombok.Setter;
+
+import javax.validation.constraints.*;
+
+import static eu.ec2u.card.ToolConfiguration.LabelPattern;
+import static eu.ec2u.card.ToolConfiguration.LabelSize;
 
 @Getter
-@SuperBuilder
+@Setter
 public class Users extends Container<User> {
 
     static final String Id="/users/";
@@ -17,21 +21,30 @@ public class Users extends Container<User> {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Getter
-    @Jacksonized
-    @SuperBuilder
+    @Setter
     static final class User extends Resource {
 
-        private final boolean admin;
+        @NotNull
+        private Boolean admin;
 
-        private final String forename;
-        private final String surname;
+        @NotNull
+        @Size(max=LabelSize)
+        @Pattern(regexp=LabelPattern)
+        private String forename;
 
-        private final String email;
+        @NotNull
+        @Size(max=LabelSize)
+        @Pattern(regexp=LabelPattern)
+        private String surname;
+
+        @NotNull
+        @Email
+        @Size(max=LabelSize)
+        private String email;
 
     }
 
-    @Getter
-    @Entity(name=Id)
+    @Entity(name="User")
     static final class UserData extends ResourceData {
 
         private boolean admin;
@@ -43,23 +56,25 @@ public class Users extends Container<User> {
 
 
         User transfer() {
-            return User.builder()
 
-                    .id(Id+id)
+            final User user=new User();
 
-                    .admin(admin)
+            user.setId(Id+id);
 
-                    .forename(forename)
-                    .surname(surname)
+            user.setAdmin(admin);
 
-                    .email(email)
+            user.setForename(forename);
+            user.setSurname(surname);
 
-                    .build();
+            user.setEmail(email);
+
+            return user;
+
         }
 
         UserData transfer(final User user) {
 
-            admin=user.isAdmin();
+            admin=user.getAdmin();
 
             forename=user.getForename();
             surname=user.getSurname();

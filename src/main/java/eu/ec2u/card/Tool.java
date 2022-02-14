@@ -8,17 +8,16 @@ package eu.ec2u.card;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.ec2u.card.ToolSecurity.Profile;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 
 import java.time.Instant;
 import java.util.List;
 
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
-import static eu.ec2u.card.ToolConfiguration.*;
+import static eu.ec2u.card.ToolConfiguration.ContainerSize;
 
 @Getter
 @Builder
@@ -38,29 +37,24 @@ public final class Tool {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Getter
-    @SuperBuilder
+    @Setter
     public abstract static class Container<T extends Resource> extends Resource {
 
-        @NonNull
-        @Size(max=ContainerSizeLimit)
-        private final List<T> contains;
+        @NotNull
+        @Size(max=ContainerSize)
+        private List<T> contains;
 
     }
 
     @Getter
-    @SuperBuilder
+    @Setter
     public abstract static class Resource {
 
-        @NonNull
-        @Size(max=IdSizeLimit)
-        @Pattern(regexp="/(\\w+/)*\\w+/?")
         @JsonProperty(access=READ_ONLY)
-        private final String id;
+        private String id;
 
-        @Size(min=2, max=LabelSizeLimit)
-        @Pattern(regexp="\\S+( \\S+)*")
         @JsonProperty(access=READ_ONLY)
-        private final String label;
+        private String label;
 
     }
 

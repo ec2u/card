@@ -5,11 +5,10 @@ import eu.ec2u.card.Tool.Container;
 import eu.ec2u.card.Tool.Resource;
 import eu.ec2u.card.events.Events.Event;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
-import lombok.extern.jackson.Jacksonized;
+import lombok.Setter;
 
 @Getter
-@SuperBuilder
+@Setter
 public class Events extends Container<Event> {
 
     public enum Action {
@@ -24,13 +23,11 @@ public class Events extends Container<Event> {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Getter
-    @Jacksonized
-    @SuperBuilder
+    @Setter
     static final class Event extends Resource {
 
     }
 
-    @Getter
     @Entity(name="users")
     static final class EventData {
 
