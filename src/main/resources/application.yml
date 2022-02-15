@@ -1,10 +1,14 @@
 card:
-
   revision: ${revision}
 
-server:
+spring:
+  cloud:
+    gcp:
+      project-id: ec2u-card
+      datastore:
+        namespace: next
 
+server:
   error:
     whitelabel:
       enabled: false
-

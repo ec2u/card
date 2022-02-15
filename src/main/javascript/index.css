@@ -12,3 +12,17 @@ html {
     font-family: Helvetica;
     font-size: 18pt;
 }
+
+card-root {
+
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+
+    & > img {
+        display: block;
+        margin: auto;
+    }
+
+}

@@ -6,5 +6,8 @@
 /target/
 /node_modules/
 
+*.iml
+*.http
+
 *~
 ~*
