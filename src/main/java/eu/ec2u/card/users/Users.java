@@ -10,8 +10,8 @@ import java.util.Optional;
 
 import javax.validation.constraints.*;
 
-import static eu.ec2u.card.ToolConfiguration.LabelPattern;
-import static eu.ec2u.card.ToolConfiguration.LabelSize;
+import static eu.ec2u.card.ToolConfiguration.LinePattern;
+import static eu.ec2u.card.ToolConfiguration.LineSize;
 
 import static java.lang.String.format;
 
@@ -32,17 +32,17 @@ public class Users extends Container<User> {
         private Boolean admin;
 
         @NotNull
-        @Size(max=LabelSize)
-        @Pattern(regexp=LabelPattern)
+        @Size(max=LineSize)
+        @Pattern(regexp=LinePattern)
         private String forename;
 
         @NotNull
-        @Size(max=LabelSize)
-        @Pattern(regexp=LabelPattern)
+        @Size(max=LineSize)
+        @Pattern(regexp=LinePattern)
         private String surname;
 
         @NotNull
-        @Size(max=LabelSize)
+        @Size(max=LineSize)
         @Email
         private String email;
 
@@ -57,7 +57,7 @@ public class Users extends Container<User> {
                     .map(data -> Id+data.id);
         }
 
-        protected Optional<String> getTitle() {
+        protected Optional<String> getLabel() {
             return Optional.of(this)
                     .filter(data -> data.forename != null)
                     .filter(data -> data.surname != null)

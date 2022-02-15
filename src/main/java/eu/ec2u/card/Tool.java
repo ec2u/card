@@ -50,18 +50,22 @@ public final class Tool {
     @Setter
     public abstract static class Resource {
 
-        @Size(max=PathSize)
-        @Pattern(regexp=PathPattern)
+        @Size(max=URLSize)
+        @Pattern(regexp=RelativePattern)
         @JsonProperty("id")
         private String path;
 
-        @Size(max=LabelSize)
-        @Pattern(regexp=LabelPattern)
-        private String title;
+        @Size(max=LineSize)
+        @Pattern(regexp=LinePattern)
+        private String label;
 
-        @Size(max=NotesSize)
-        @Pattern(regexp=NotesPattern)
-        private String description;
+        @Size(max=LineSize)
+        @Pattern(regexp=AbsolutePattern)
+        private String image;
+
+        @Size(max=TextSize)
+        @Pattern(regexp=TextPattern)
+        private String brief;
 
     }
 
@@ -69,22 +73,26 @@ public final class Tool {
 
         protected abstract Optional<String> getPath();
 
-        protected abstract Optional<String> getTitle();
+        protected abstract Optional<String> getLabel();
 
 
         @Id
         protected Long id;
 
         @Unindexed
-        protected String description;
+        protected String image;
+
+        @Unindexed
+        protected String brief;
 
 
         protected void transfer(final Resource resource, final ResourceData data) {
 
             data.getPath().ifPresent(resource::setPath);
-            data.getTitle().ifPresent(resource::setTitle);
+            data.getLabel().ifPresent(resource::setLabel);
 
-            resource.setDescription(data.description);
+            resource.setImage(data.image);
+            resource.setBrief(data.brief);
 
         }
 
@@ -94,11 +102,12 @@ public final class Tool {
                 throw new IllegalStateException("mutated value for read-only field <id>");
             }
 
-            if ( !data.getTitle().equals(Optional.ofNullable(resource.getTitle())) ) {
-                throw new IllegalStateException("mutated value for read-only field <title>");
+            if ( !data.getLabel().equals(Optional.ofNullable(resource.getLabel())) ) {
+                throw new IllegalStateException("mutated value for read-only field <brief>");
             }
 
-            data.description=resource.getDescription();
+            data.image=resource.getImage();
+            data.brief=resource.getBrief();
 
         }
 

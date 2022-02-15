@@ -5,6 +5,7 @@
 
 package eu.ec2u.card;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+import java.io.IOException;
+import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -23,14 +27,15 @@ public class ToolConfiguration {
 
     public static final int ContainerSize=100;
 
-    public static final int PathSize=100;
-    public static final String PathPattern="/(\\w+/)*\\w+/?";
+    public static final int URLSize=100;
+    public static final String RelativePattern="/(\\w+/)*\\w+/?";
+    public static final String AbsolutePattern="\\w+:\\S+";
 
-    public static final int LabelSize=100;
-    public static final String LabelPattern="\\S+( \\S+)*";
+    public static final int LineSize=100;
+    public static final String LinePattern="\\S+( \\S+)*";
 
-    public static final int NotesSize=2000;
-    public static final String NotesPattern="\\S+(\\s+\\S+)*";
+    public static final int TextSize=2000;
+    public static final String TextPattern="\\S+(\\s+\\S+)*";
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +55,10 @@ public class ToolConfiguration {
 
                 .serializationInclusion(NON_NULL)
 
+                .serializersByType(Map.of(
+                        Enum.class, new EnumSerializer()
+                ))
+
                 .featuresToEnable(
                         MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS
                 )
@@ -59,6 +68,19 @@ public class ToolConfiguration {
                 )
 
                 .build();
+    }
+
+
+    private static final class EnumSerializer extends JsonSerializer<Enum<?>> {
+
+        @Override public void serialize(
+                final Enum<?> value, final JsonGenerator generator, final SerializerProvider provider
+        ) throws IOException {
+
+            generator.writeString(value.name().toLowerCase());
+
+        }
+
     }
 
 }
