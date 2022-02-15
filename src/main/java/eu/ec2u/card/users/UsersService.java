@@ -20,7 +20,7 @@ public class UsersService {
 
         final Users users=new Users();
 
-        users.setId(Users.Id);
+        users.setPath(Users.Id);
 
         users.setContains(this.users.findAll(slice)
                 .map(UserData::transfer)

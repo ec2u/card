@@ -5,6 +5,7 @@
 package eu.ec2u.card;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
 import eu.ec2u.card.ToolSecurity.Profile;
 import lombok.*;
@@ -12,6 +13,7 @@ import org.springframework.data.annotation.Id;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.constraints.*;
 
@@ -48,9 +50,10 @@ public final class Tool {
     @Setter
     public abstract static class Resource {
 
-        @Size(max=IdSize)
-        @Pattern(regexp=IdPattern)
-        private String id;
+        @Size(max=PathSize)
+        @Pattern(regexp=PathPattern)
+        @JsonProperty("id")
+        private String path;
 
         @Size(max=LabelSize)
         @Pattern(regexp=LabelPattern)
@@ -64,11 +67,40 @@ public final class Tool {
 
     public abstract static class ResourceData {
 
+        protected abstract Optional<String> getPath();
+
+        protected abstract Optional<String> getTitle();
+
+
         @Id
         protected Long id;
 
         @Unindexed
         protected String description;
+
+
+        protected void transfer(final Resource resource, final ResourceData data) {
+
+            data.getPath().ifPresent(resource::setPath);
+            data.getTitle().ifPresent(resource::setTitle);
+
+            resource.setDescription(data.description);
+
+        }
+
+        protected static void transfer(final ResourceData data, final Resource resource) {
+
+            if ( !data.getPath().equals(Optional.ofNullable(resource.getPath())) ) {
+                throw new IllegalStateException("mutated value for read-only field <id>");
+            }
+
+            if ( !data.getTitle().equals(Optional.ofNullable(resource.getTitle())) ) {
+                throw new IllegalStateException("mutated value for read-only field <title>");
+            }
+
+            data.description=resource.getDescription();
+
+        }
 
     }
 

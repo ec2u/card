@@ -51,13 +51,13 @@ public class Users extends Container<User> {
     @Entity(name="User")
     static final class UserData extends ResourceData {
 
-        private Optional<String> id() {
+        protected Optional<String> getPath() {
             return Optional.of(this)
                     .filter(data -> data.id != null)
                     .map(data -> Id+data.id);
         }
 
-        private Optional<String> title() {
+        protected Optional<String> getTitle() {
             return Optional.of(this)
                     .filter(data -> data.forename != null)
                     .filter(data -> data.surname != null)
@@ -77,10 +77,7 @@ public class Users extends Container<User> {
 
             final User user=new User();
 
-            id().ifPresent(user::setId);
-            title().ifPresent(user::setTitle);
-
-            user.setDescription(description);
+            transfer(user, this);
 
             user.setAdmin(admin);
 
@@ -95,15 +92,7 @@ public class Users extends Container<User> {
 
         UserData transfer(final User user) {
 
-            if ( !id().equals(Optional.ofNullable(user.getId())) ) {
-                throw new IllegalStateException("mutated value for read-only field <id>");
-            }
-
-            if ( !title().equals(Optional.ofNullable(user.getTitle())) ) {
-                throw new IllegalStateException("mutated value for read-only field <title>");
-            }
-
-            description=user.getDescription();
+            transfer(this, user);
 
             admin=user.getAdmin();
 

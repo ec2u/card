@@ -15,7 +15,7 @@ public class EventsService {
 
 
     public URI trace(final Profile actor, final Action action, final Resource resource) {
-        return URI.create(resource.getId()); // !!!
+        return URI.create(resource.getPath()); // !!!
     }
 
 }

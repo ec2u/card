@@ -23,8 +23,8 @@ public class ToolConfiguration {
 
     public static final int ContainerSize=100;
 
-    public static final int IdSize=100;
-    public static final String IdPattern="/(\\w+/)*\\w+/?";
+    public static final int PathSize=100;
+    public static final String PathPattern="/(\\w+/)*\\w+/?";
 
     public static final int LabelSize=100;
     public static final String LabelPattern="\\S+( \\S+)*";
