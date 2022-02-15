@@ -22,8 +22,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -89,10 +88,24 @@ public class ToolApplication implements WebMvcConfigurer {
 
     }
 
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Collection<String>> handle(final NoSuchElementException e) {
+
+        return status(NOT_FOUND).build(); // 404
+
+    }
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Collection<String>> handle(final HttpRequestMethodNotSupportedException e) {
 
         return status(METHOD_NOT_ALLOWED).build(); // 405
+
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handle(final IllegalStateException e) {
+
+        return status(CONFLICT).body(e.getMessage()); // 409
 
     }
 

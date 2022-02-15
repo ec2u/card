@@ -16,10 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -27,7 +24,6 @@ import javax.validation.constraints.Min;
 
 import static eu.ec2u.card.ToolConfiguration.ContainerSize;
 import static eu.ec2u.card.events.Events.Action.*;
-import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
@@ -40,7 +36,7 @@ public final class UsersController {
 
     @GetMapping("")
     @JsonView(Container.class)
-    ResponseEntity<Object> get(
+    ResponseEntity<Users> get(
 
             @AuthenticationPrincipal final Profile profile,
             @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
@@ -63,10 +59,10 @@ public final class UsersController {
 
 
     @PostMapping("")
-    ResponseEntity<Object> post(
+    ResponseEntity<Void> post(
 
             @AuthenticationPrincipal final Profile profile,
-            @Validated(Resource.class) @RequestBody final User state
+            @Valid @RequestBody final User user
 
     ) {
 
@@ -76,15 +72,10 @@ public final class UsersController {
         //    throw new HttpException(FORBIDDEN);
         //}
 
-        return users.create(state)
-                .map(user -> events.trace(profile, create, user))
-                .map(user -> created(URI.create(user.getId())).build())
-                .orElseGet(() -> status(CONFLICT).build());
+        return created(events.trace(profile, create, users.create(user))).build();
 
     }
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @GetMapping("{id}")
     @JsonView(Resource.class)
@@ -99,18 +90,16 @@ public final class UsersController {
         //    throw new HttpException(FORBIDDEN);
         //}
 
-        return users.relate(id)
-                .map(user -> ok().body(user))
-                .orElseGet(() -> status(events.gone(Users.Id+id) ? GONE : NOT_FOUND).build());
+        return ok().body(users.relate(id));
 
     }
 
-    @PatchMapping("{id}")
-    ResponseEntity<Object> patch(
+    @PutMapping("{id}")
+    ResponseEntity<Void> put(
 
             @AuthenticationPrincipal final Profile profile,
             @PathVariable final long id,
-            @Validated @RequestBody final User patch
+            @Valid @RequestBody final User user
 
     ) {
 
@@ -120,15 +109,12 @@ public final class UsersController {
         //    throw new HttpException(FORBIDDEN);
         //}
 
-        return users.update(id, patch)
-                .map(user -> events.trace(profile, update, user))
-                .map(user -> noContent().build())
-                .orElseGet(() -> status(events.gone(Users.Id+id) ? GONE : NOT_FOUND).build());
+        return noContent().location(events.trace(profile, update, users.update(id, user))).build();
 
     }
 
     @DeleteMapping("{id}")
-    ResponseEntity<Object> delete(
+    ResponseEntity<Void> delete(
 
             @AuthenticationPrincipal final Profile profile,
             @PathVariable final long id
@@ -139,11 +125,7 @@ public final class UsersController {
         //    throw new HttpException(FORBIDDEN);
         //}
 
-        return users.delete(id)
-                .map(user -> events.trace(profile, delete, user))
-                .map(user -> noContent().build())
-                .orElseGet(() -> status(events.gone(Users.Id+id) ? GONE : NOT_FOUND).build());
-
+        return noContent().location(events.trace(profile, delete, users.delete(id))).build();
     }
 
 }

@@ -6,18 +6,16 @@ import eu.ec2u.card.events.Events.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
+
 @Service
 public class EventsService {
 
     @Autowired private EventsRepository events;
 
 
-    public boolean gone(final String id) {
-        return false; // !!!
-    }
-
-    public <R extends Resource> R trace(final Profile actor, final Action action, final R resource) {
-        return resource; // !!!
+    public URI trace(final Profile actor, final Action action, final Resource resource) {
+        return URI.create(resource.getId()); // !!!
     }
 
 }
