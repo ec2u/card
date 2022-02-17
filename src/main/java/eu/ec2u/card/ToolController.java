@@ -37,7 +37,7 @@ public final class ToolController implements ErrorController {
     ) {
 
 
-        return ok().body("ciao"+principal.getName()+"!");
+        return ok().body(principal == null ? "ciao!" : "ciao"+principal.getName()+"!");
 
         //return ok(session.retrieve(profile));
 
