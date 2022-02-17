@@ -2,6 +2,19 @@ card:
   revision: ${revision}
 
 spring:
+
+  security:
+    saml2:
+      relyingparty:
+        registration:
+          saml-test:
+            identityprovider:
+              entity-id: https://samltest.id/saml/idp
+              verification.credentials:
+                - certificate-location: "classpath:saml/saml-test.crt"
+              singlesignon.url: https://samltest.id/idp/profile/SAML2/Redirect/SSO
+              singlesignon.sign-request: false
+
   cloud:
     gcp:
       project-id: ec2u-card
