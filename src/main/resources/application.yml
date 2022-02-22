@@ -24,6 +24,8 @@ spring:
 
 server:
 
+  forward-headers-strategy: NATIVE
+
   error:
     whitelabel:
       enabled: false
