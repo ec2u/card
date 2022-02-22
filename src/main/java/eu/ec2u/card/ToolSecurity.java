@@ -12,19 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.saml2.provider.service.metadata.OpenSamlMetadataResolver;
 import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
-import org.springframework.security.saml2.provider.service.servlet.filter.Saml2WebSsoAuthenticationFilter;
-import org.springframework.security.saml2.provider.service.web.*;
+import org.springframework.security.saml2.provider.service.web.DefaultRelyingPartyRegistrationResolver;
+import org.springframework.security.saml2.provider.service.web.RelyingPartyRegistrationResolver;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Component
@@ -51,20 +47,21 @@ public class ToolSecurity extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .authorizeRequests()
-                .antMatchers(GET, "/").permitAll()
-                .antMatchers(POST, "/").permitAll()
-                .anyRequest().authenticated()
+                //.antMatchers(GET, "/").permitAll()
+                //.antMatchers(POST, "/").permitAll()
+                .anyRequest().permitAll()
                 .and()
 
-                .saml2Login(withDefaults())
-                .saml2Logout(withDefaults())
+        //.saml2Login(withDefaults())
+        //.saml2Logout(withDefaults())
 
-                // publish SAML metadata endpoint at /saml2/service-provider-metadata/{registrationId}
+        // publish SAML metadata endpoint at /saml2/service-provider-metadata/{registrationId}
 
-                .addFilterBefore(
-                        new Saml2MetadataFilter(relyingPartyRegistrationResolver, new OpenSamlMetadataResolver()),
-                        Saml2WebSsoAuthenticationFilter.class
-                );
+        //.addFilterBefore(
+        //        new Saml2MetadataFilter(relyingPartyRegistrationResolver, new OpenSamlMetadataResolver()),
+        //        Saml2WebSsoAuthenticationFilter.class
+        //)
+        ;
     }
 
 
