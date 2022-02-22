@@ -14,8 +14,8 @@
 	<version>${revision}</version>
 	<packaging>jar</packaging>
 
-	<name>EC2U eCard</name>
-	<description>EC2U mobile-based virtual eCard.</description>
+	<name>EC2U Virtual Card</name>
+	<description>EC2U mobile-based virtual mobility card.</description>
 	<url>https://github.com/ec2u/card</url>
 	<inceptionYear>2021</inceptionYear>
 

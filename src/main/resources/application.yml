@@ -1,4 +1,5 @@
 card:
+
   revision: ${revision}
 
 spring:
@@ -7,12 +8,12 @@ spring:
     saml2:
       relyingparty:
         registration:
-          saml-test:
+          google:
             identityprovider:
-              entity-id: https://samltest.id/saml/idp
+              entity-id: https://accounts.google.com/o/saml2/idp?idpid=C010aus0d
               verification.credentials:
-                - certificate-location: "classpath:saml/saml-test.crt"
-              singlesignon.url: https://samltest.id/idp/profile/SAML2/Redirect/SSO
+                - certificate-location: "classpath:saml/google.crt"
+              singlesignon.url: https://accounts.google.com/o/saml2/idp?idpid=C010aus0d
               singlesignon.sign-request: false
 
   cloud:
@@ -22,6 +23,7 @@ spring:
         namespace: next
 
 server:
+
   error:
     whitelabel:
       enabled: false

@@ -1,5 +1,0 @@
-# AAAA
-
-- uno
-- due
-- tre
