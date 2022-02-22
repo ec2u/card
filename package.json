@@ -2,8 +2,7 @@
 	"private": true,
 	"scripts": {
 		"start": "vite --open",
-		"build": "vite build",
-		"clean": "rm -rf dist node_modules"
+		"build": "vite build"
 	},
 	"dependencies": {
 		"lucide-react": "^0.16.0",

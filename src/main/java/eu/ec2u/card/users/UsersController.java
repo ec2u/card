@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -38,7 +39,7 @@ public final class UsersController {
     @JsonView(Container.class)
     ResponseEntity<Users> get(
 
-            @AuthenticationPrincipal final Profile profile,
+            @AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
             @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
             @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
 

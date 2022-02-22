@@ -8,11 +8,11 @@ package eu.ec2u.card;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.ec2u.card.Tool.Container;
 import eu.ec2u.card.ToolSecurity.Credentials;
-import eu.ec2u.card.ToolSecurity.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,20 +32,21 @@ public final class ToolController implements ErrorController {
     @JsonView(Container.class)
     ResponseEntity<Object> get(
 
-            @AuthenticationPrincipal
-            final Profile profile
+            @AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal
 
     ) {
 
-        return ok(session.retrieve(profile));
+
+        return ok().body(principal == null ? "ciao!" : "ciao"+principal.getName()+"!");
+
+        //return ok(session.retrieve(profile));
 
     }
 
     @PostMapping("")
     ResponseEntity<Object> post(
 
-            @Valid
-            @RequestBody(required=false) final Credentials credentials
+            @Valid @RequestBody(required=false) final Credentials credentials
 
     ) {
 

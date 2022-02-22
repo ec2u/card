@@ -50,4 +50,4 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT }}
           deliverables: pom.xml
           version: next
-          promote: true
+          promote: false

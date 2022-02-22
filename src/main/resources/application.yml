@@ -1,7 +1,21 @@
 card:
+
   revision: ${revision}
 
 spring:
+
+  security:
+    saml2:
+      relyingparty:
+        registration:
+          google:
+            identityprovider:
+              entity-id: https://accounts.google.com/o/saml2?idpid=C010aus0d
+              verification.credentials:
+                - certificate-location: "classpath:saml/google.crt"
+              singlesignon.url: https://accounts.google.com/o/saml2/idp?idpid=C010aus0d
+              singlesignon.sign-request: false
+
   cloud:
     gcp:
       project-id: ec2u-card
@@ -9,6 +23,9 @@ spring:
         namespace: next
 
 server:
+
+  forward-headers-strategy: NATIVE
+
   error:
     whitelabel:
       enabled: false
