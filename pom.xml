@@ -48,6 +48,7 @@
 		<gae.project>${project.artifactId}</gae.project>
 		<gae.version>next</gae.version>
 		<gae.promote>false</gae.promote>
+		<gae.staging>${project.build.directory}/appengine-staging</gae.staging>
 
 		<maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
 		<maven.deploy.skip>true</maven.deploy.skip> <!-- no public artifact deployment -->
@@ -188,34 +189,6 @@
 
 		<plugins>
 
-			<plugin> <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
-
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.0.0</version>
-
-				<executions>
-					<execution>
-
-						<id>enforce-maven</id>
-
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-
-						<configuration>
-							<rules>
-								<requireMavenVersion>
-									<version>${maven.version}</version>
-								</requireMavenVersion>
-							</rules>
-						</configuration>
-
-					</execution>
-				</executions>
-
-			</plugin>
-
 			<plugin> <!-- https://maven.apache.org/plugins/maven-clean-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
@@ -238,6 +211,34 @@
 									<directory>${project.basedir}/node_modules</directory>
 								</fileset>
 							</filesets>
+						</configuration>
+
+					</execution>
+				</executions>
+
+			</plugin>
+
+			<plugin> <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
+
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0</version>
+
+				<executions>
+					<execution>
+
+						<id>enforce-maven</id>
+
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>${maven.version}</version>
+								</requireMavenVersion>
+							</rules>
 						</configuration>
 
 					</execution>
@@ -359,9 +360,44 @@
 					<execution>
 
 						<id>spring-package</id>
+
 						<goals>
 							<goal>repackage</goal>
 						</goals>
+
+					</execution>
+				</executions>
+
+			</plugin>
+
+			<plugin> <!-- https://maven.apache.org/plugins/maven-resources-plugin/ -->
+
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.2.0</version>
+
+				<executions>
+					<execution>
+
+						<id>stage-static-assets</id>
+						<phase>package</phase>
+
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+
+						<configuration>
+
+							<outputDirectory>${gae.staging}/static</outputDirectory>
+
+							<resources>
+								<resource>
+									<directory>${project.build.outputDirectory}/static</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+
+						</configuration>
 
 					</execution>
 				</executions>
@@ -400,7 +436,7 @@
 
 			</plugin>
 
-			<plugin> <!-- https://cloud.google.com/appengine/docs/standard/java/tools/maven-reference -->
+			<plugin> <!-- https://cloud.google.com/appengine/docs/standard/java-gen2/maven-reference -->
 
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>appengine-maven-plugin</artifactId>
@@ -410,6 +446,7 @@
 					<projectId>${gae.project}</projectId>
 					<version>${gae.version}</version>
 					<promote>${gae.promote}</promote>
+					<stagingDirectory>${gae.staging}</stagingDirectory>
 				</configuration>
 
 				<executions>
