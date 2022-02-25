@@ -68,6 +68,20 @@ public class ToolSecurity extends WebSecurityConfigurerAdapter {
     }
 
 
+    //@Bean
+    //public WebSSOProfileOptions webSSOProfileOptions() {
+    //    WebSSOProfileOptions webSSOProfileOptions = new WebSSOProfileOptions();
+    //    webSSOProfileOptions.setIncludeScoping(false);
+    //    webSSOProfileOptions.setBinding(SAMLConstants.SAML2_POST_BINDING_URI);    }
+    //
+    //@Bean
+    //public SAMLEntryPoint samlEntryPoint(WebSSOProfileOptions webSSOProfileOptions) {
+    //    SAMLEntryPoint samlEntryPoint = new SAMLEntryPoint();
+    //    samlEntryPoint.setDefaultProfileOptions(webSSOProfileOptions);
+    //    return samlEntryPoint;
+    //}
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Getter

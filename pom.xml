@@ -45,6 +45,10 @@
 		<node.version>14.15.4</node.version>
 		<npm.version>7.7.6</npm.version>
 
+		<gae.project>${project.artifactId}</gae.project>
+		<gae.version>next</gae.version>
+		<gae.promote>false</gae.promote>
+
 		<maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
 		<maven.deploy.skip>true</maven.deploy.skip> <!-- no public artifact deployment -->
 
@@ -184,9 +188,7 @@
 
 		<plugins>
 
-			<plugin>
-
-				<!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
+			<plugin> <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
@@ -214,9 +216,7 @@
 
 			</plugin>
 
-			<plugin>
-
-				<!-- https://maven.apache.org/plugins/maven-clean-plugin/ -->
+			<plugin> <!-- https://maven.apache.org/plugins/maven-clean-plugin/ -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
@@ -245,9 +245,7 @@
 
 			</plugin>
 
-			<plugin>
-
-				<!-- https://maven.apache.org/plugins/maven-compiler-plugin -->
+			<plugin> <!-- https://maven.apache.org/plugins/maven-compiler-plugin -->
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -262,90 +260,7 @@
 
 			</plugin>
 
-			<plugin>
-
-				<!-- https://maven.apache.org/plugins/maven-jar-plugin/ -->
-
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.2.2</version>
-
-				<configuration>
-
-					<archive>
-
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-						</manifest>
-
-					</archive>
-
-				</configuration>
-
-			</plugin>
-
-			<plugin>
-				<!-- https://maven.apache.org/surefire/maven-surefire-plugin/ -->
-
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
-
-			</plugin>
-
-			<plugin>
-
-				<!-- https://maven.apache.org/plugins/maven-site-plugin -->
-
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.10.0</version>
-
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-
-			</plugin>
-
-			<plugin>
-
-				<!-- https://maven.apache.org/plugins/maven-deploy-plugin/ -->
-
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.0.0-M1</version>
-
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-
-			</plugin>
-
-			<plugin> 
-
-				<!-- https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/  -->
-
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>2.4.0</version>
-	
-				<executions>
-					<execution>
-
-						<id>spring-package</id>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-
-					</execution>
-				</executions>
-
-			</plugin>
-
-			<plugin>
-
-				<!-- https://github.com/eirslett/frontend-maven-plugin -->
+			<plugin> <!-- https://github.com/eirslett/frontend-maven-plugin -->
 
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
@@ -398,7 +313,7 @@
 					<execution>
 
 						<id>npm-build</id>
-						<phase>generate-resources</phase>
+						<phase>compile</phase>
 
 						<goals>
 							<goal>npm</goal>
@@ -410,6 +325,104 @@
 
 					</execution>
 
+				</executions>
+
+			</plugin>
+
+			<plugin> <!-- https://maven.apache.org/plugins/maven-jar-plugin/ -->
+
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.2</version>
+
+				<configuration>
+
+					<archive>
+
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+
+					</archive>
+
+				</configuration>
+
+			</plugin>
+
+			<plugin> <!-- https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/  -->
+
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.4.0</version>
+
+				<executions>
+					<execution>
+
+						<id>spring-package</id>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+
+					</execution>
+				</executions>
+
+			</plugin>
+
+			<plugin> <!-- https://maven.apache.org/surefire/maven-surefire-plugin/ -->
+
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>
+
+			</plugin>
+
+			<plugin> <!-- https://maven.apache.org/plugins/maven-site-plugin -->
+
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.10.0</version>
+
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+
+			</plugin>
+
+			<plugin> <!-- https://maven.apache.org/plugins/maven-deploy-plugin/ -->
+
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.0.0-M1</version>
+
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+
+			</plugin>
+
+			<plugin> <!-- https://cloud.google.com/appengine/docs/standard/java/tools/maven-reference -->
+
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+				<version>2.4.1</version>
+
+				<configuration>
+					<projectId>${gae.project}</projectId>
+					<version>${gae.version}</version>
+					<promote>${gae.promote}</promote>
+				</configuration>
+
+				<executions>
+					<execution>
+
+						<id>deploy-to-gae</id>
+						<phase>deploy</phase>
+
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+
+					</execution>
 				</executions>
 
 			</plugin>
