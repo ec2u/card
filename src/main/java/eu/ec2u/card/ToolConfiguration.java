@@ -46,7 +46,7 @@ public class ToolConfiguration {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Bean
-    public ObjectMapper getObjectMapper() {
+    public ObjectMapper objectMapper() {
         return new Jackson2ObjectMapperBuilder()
 
                 .indentOutput(true)
