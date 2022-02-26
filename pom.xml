@@ -48,12 +48,12 @@
 		<gae.project>${project.artifactId}</gae.project>
 		<gae.version>next</gae.version>
 		<gae.promote>false</gae.promote>
-		<gae.staging>${project.build.directory}/appengine-staging</gae.staging>
-
-		<maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
-		<maven.deploy.skip>true</maven.deploy.skip> <!-- no public artifact deployment -->
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
+
+		<maven.site.skip>true</maven.site.skip>
+		<maven.deploy.skip>true</maven.deploy.skip>
 
 	</properties>
 
@@ -271,11 +271,6 @@
 
 					<installDirectory>target</installDirectory>
 
-					<environmentVariables>
-						<code>${project.build.scriptSourceDirectory}</code>
-						<dist>${project.build.outputDirectory}/static</dist>
-					</environmentVariables>
-
 				</configuration>
 
 				<executions>
@@ -327,6 +322,14 @@
 					</execution>
 
 				</executions>
+
+			</plugin>
+
+			<plugin> <!-- https://maven.apache.org/surefire/maven-surefire-plugin/ -->
+
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>
 
 			</plugin>
 
@@ -388,7 +391,7 @@
 
 						<configuration>
 
-							<outputDirectory>${gae.staging}/static</outputDirectory>
+							<outputDirectory>${project.build.directory}/appengine-staging/static</outputDirectory>
 
 							<resources>
 								<resource>
@@ -404,38 +407,6 @@
 
 			</plugin>
 
-			<plugin> <!-- https://maven.apache.org/surefire/maven-surefire-plugin/ -->
-
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
-
-			</plugin>
-
-			<plugin> <!-- https://maven.apache.org/plugins/maven-site-plugin -->
-
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.10.0</version>
-
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-
-			</plugin>
-
-			<plugin> <!-- https://maven.apache.org/plugins/maven-deploy-plugin/ -->
-
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.0.0-M1</version>
-
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-
-			</plugin>
-
 			<plugin> <!-- https://cloud.google.com/appengine/docs/standard/java-gen2/maven-reference -->
 
 				<groupId>com.google.cloud.tools</groupId>
@@ -446,7 +417,6 @@
 					<projectId>${gae.project}</projectId>
 					<version>${gae.version}</version>
 					<promote>${gae.promote}</promote>
-					<stagingDirectory>${gae.staging}</stagingDirectory>
 				</configuration>
 
 				<executions>
