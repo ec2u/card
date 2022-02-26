@@ -31,4 +31,4 @@ jobs:
 
       - run: >
           GOOGLE_APPLICATION_CREDENTIALS='${{ steps.auth.outputs.credentials_file_path }}'
-          mvn --batch-mode --file pom.xml deploy
+          mvn --file pom.xml --batch-mode --update-snapshots deploy
