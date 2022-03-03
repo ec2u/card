@@ -24,6 +24,8 @@ spring:
 
 server:
 
+  # see https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#howto.webserver.use-behind-a-proxy-server
+
   forward-headers-strategy: NATIVE
 
   error:
