@@ -4,6 +4,10 @@ card:
 
 spring:
 
+  web:
+    resources:
+      static-locations: classpath:/static/
+
   security:
     saml2:
       relyingparty:

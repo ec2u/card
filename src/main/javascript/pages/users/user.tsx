@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { createElement, useState } from "react";
 
 
 export const LinePattern="\\S+( \\S+)*";
@@ -14,13 +14,16 @@ export interface User {
 
 }
 
-export function ToolUser() {
+export function CardUser() {
 
     const [user, setUser]=useState();
 
-    return <form>
+    return createElement("card-user", {},
 
-        <input type={"text"} value={user[0]} pattern={LinePattern}/>
+        <form>
 
-    </form>;
+            <input type={"text"} value={user?.[0]} pattern={LinePattern}/>
+
+        </form>
+    );
 }

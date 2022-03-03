@@ -5,12 +5,13 @@
 import * as React from "react";
 import { render } from "react-dom";
 import "./index.css";
-import Main from "./main";
+import { CardMain } from "./main";
+
 
 /**
  * The absolute root URL with trailing slash.
  */
-export const root = resolve("/");
+export const root=resolve("/");
 
 /**
  * The absolute base URL with trailing slash.
@@ -38,7 +39,7 @@ export const copy =
 
 render(
   <>
-    <Main />
+      <CardMain/>
   </>,
   document.body.firstElementChild
 );
