@@ -10,7 +10,7 @@ import java.util.Optional;
 public final class ToolServer implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
 
     @Override public void customize(final ConfigurableWebServerFactory factory) {
-        factory.setPort(Optional.ofNullable(System.getenv("PORT")).map(Integer::parseInt).orElse(8443));
+        factory.setPort(Optional.ofNullable(System.getenv("PORT")).map(Integer::parseInt).orElse(8080));
     }
 
 }

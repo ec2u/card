@@ -8,32 +8,11 @@ spring:
     resources:
       static-locations: classpath:/static/
 
-  security:
-    saml2:
-      relyingparty:
-        registration:
-
-          google:
-            identityprovider:
-              entity-id: https://accounts.google.com/o/saml2?idpid=C010aus0d
-              verification.credentials:
-                - certificate-location: "classpath:saml/google.crt"
-              singlesignon.url: https://accounts.google.com/o/saml2/idp?idpid=C010aus0d
-              singlesignon.sign-request: false
-
-          google-local:
-            identityprovider:
-              entity-id: https://accounts.google.com/o/saml2?idpid=C010aus0d
-              verification.credentials:
-                - certificate-location: "classpath:saml/google-local.crt"
-              singlesignon.url: https://accounts.google.com/o/saml2/idp?idpid=C010aus0d
-              singlesignon.sign-request: false
-
   cloud:
     gcp:
       project-id: ec2u-card
       datastore:
-        namespace: next
+        namespace: next # !!! use GAE version id
 
 server:
 

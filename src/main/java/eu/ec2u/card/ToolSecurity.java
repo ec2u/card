@@ -22,8 +22,6 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Component
@@ -46,8 +44,7 @@ public class ToolSecurity extends WebSecurityConfigurerAdapter {
                 .disable()
 
                 .authorizeRequests()
-                .antMatchers(GET, "/").permitAll()
-                .antMatchers(PATCH, "/").permitAll()
+                .antMatchers("/").permitAll()
                 .antMatchers("/saml2/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

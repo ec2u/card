@@ -12,33 +12,44 @@ const out=resolve(process.env.out || "target/classes/static/");
 
 export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 
-	root: src,
+    root: src,
 
-	publicDir: "files",
+    publicDir: "files",
 
-	plugins: [reactRefresh()],
+    plugins: [reactRefresh()],
 
-	css: {
-		postcss: {
-			plugins: [postcssNesting()]
-		}
-	},
+    css: {
+        postcss: {
+            plugins: [postcssNesting()]
+        }
+    },
 
-	build: {
+    build: {
 
-		outDir: out,
-		assetsDir: ".",
-		emptyOutDir: true,
-		minify: mode !== "development",
+        outDir: out,
+        assetsDir: ".",
+        emptyOutDir: true,
+        minify: mode !== "development",
 
-		rollupOptions: {
-			output: { manualChunks: undefined } // no vendor chunks
-		}
+        rollupOptions: {
+            output: { manualChunks: undefined } // no vendor chunks
+        }
 
-	},
+    },
 
-	server: {
-		proxy: { "^(/[-a-zA-Z0-9]+)*/?(\\?.*)?$": { target: "http://localhost:8080/" } } // routes with optional query
-	}
+    server: {
+
+        https: true,
+        host: "127.0.0.1", // as required by GWS SAML configuration
+        open: "/index.html", // as asset
+
+        proxy: {
+            "^(/[-a-zA-Z0-9]+)*/?(\\?.*)?$": { // routes with optional query
+                target: "http://localhost:8080/",
+                xfwd: true // required to properly generate SAML URLs
+            }
+        }
+
+    }
 
 }));
