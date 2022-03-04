@@ -12,16 +12,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.saml2.provider.service.metadata.OpenSamlMetadataResolver;
 import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
-import org.springframework.security.saml2.provider.service.web.DefaultRelyingPartyRegistrationResolver;
-import org.springframework.security.saml2.provider.service.web.RelyingPartyRegistrationResolver;
+import org.springframework.security.saml2.provider.service.servlet.filter.Saml2WebSsoAuthenticationFilter;
+import org.springframework.security.saml2.provider.service.web.*;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PATCH;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Component
 @EnableWebSecurity
@@ -42,41 +45,22 @@ public class ToolSecurity extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
 
-                .sessionManagement()
-                .sessionCreationPolicy(STATELESS)
-                .and()
-
                 .authorizeRequests()
-                //.antMatchers(GET, "/").permitAll()
-                //.antMatchers(POST, "/").permitAll()
-                .anyRequest().permitAll()
+                .antMatchers(GET, "/").permitAll()
+                .antMatchers(PATCH, "/").permitAll()
+                .anyRequest().authenticated()
                 .and()
 
-        //.saml2Login(withDefaults())
-        //.saml2Logout(withDefaults())
+                .saml2Login(withDefaults())
+                .saml2Logout(withDefaults())
 
-        // publish SAML metadata endpoint at /saml2/service-provider-metadata/{registrationId}
+                // publish SAML metadata endpoint at /saml2/service-provider-metadata/{registrationId}
 
-        //.addFilterBefore(
-        //        new Saml2MetadataFilter(relyingPartyRegistrationResolver, new OpenSamlMetadataResolver()),
-        //        Saml2WebSsoAuthenticationFilter.class
-        //)
-        ;
+                .addFilterBefore(
+                        new Saml2MetadataFilter(relyingPartyRegistrationResolver, new OpenSamlMetadataResolver()),
+                        Saml2WebSsoAuthenticationFilter.class
+                );
     }
-
-
-    //@Bean
-    //public WebSSOProfileOptions webSSOProfileOptions() {
-    //    WebSSOProfileOptions webSSOProfileOptions = new WebSSOProfileOptions();
-    //    webSSOProfileOptions.setIncludeScoping(false);
-    //    webSSOProfileOptions.setBinding(SAMLConstants.SAML2_POST_BINDING_URI);    }
-    //
-    //@Bean
-    //public SAMLEntryPoint samlEntryPoint(WebSSOProfileOptions webSSOProfileOptions) {
-    //    SAMLEntryPoint samlEntryPoint = new SAMLEntryPoint();
-    //    samlEntryPoint.setDefaultProfileOptions(webSSOProfileOptions);
-    //    return samlEntryPoint;
-    //}
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

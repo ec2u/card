@@ -43,8 +43,8 @@ public final class ToolController implements ErrorController {
 
     }
 
-    @PostMapping("")
-    ResponseEntity<Object> post(
+    @PatchMapping("")
+    ResponseEntity<Object> patch(
 
             @Valid @RequestBody(required=false) final Credentials credentials
 
