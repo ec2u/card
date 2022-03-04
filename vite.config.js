@@ -24,6 +24,12 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
         }
     },
 
+    resolve: {
+        alias: {
+            "@ec2u/card": resolve(src)
+        }
+    },
+
     build: {
 
         outDir: out,
@@ -41,7 +47,7 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 
         https: true,
         host: "127.0.0.1", // as required by GWS SAML configuration
-        open: "/index.html", // as asset
+        open: "/index.html", // as asset to avoid proxying
 
         proxy: {
             "^(/[-a-zA-Z0-9]+)*/?(\\?.*)?$": { // routes with optional query
