@@ -19,7 +19,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.*;
@@ -48,9 +47,9 @@ public class ToolApplication implements WebMvcConfigurer {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(new ToolLoader());
-    }
+    //@Override public void addInterceptors(final InterceptorRegistry registry) {
+    //    registry.addInterceptor(new ToolLoader());
+    //}
 
 
     //// Exception Handlers ////////////////////////////////////////////////////////////////////////////////////////////
