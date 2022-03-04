@@ -178,15 +178,6 @@
 
 		<finalName>${project.artifactId}</finalName>
 
-		<resources>
-
-			<resource>
-				<directory>${project.basedir}/src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-
-		</resources>
-
 		<plugins>
 
 			<plugin> <!-- https://maven.apache.org/plugins/maven-clean-plugin/ -->

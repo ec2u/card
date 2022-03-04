@@ -48,6 +48,7 @@ public class ToolSecurity extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(GET, "/").permitAll()
                 .antMatchers(PATCH, "/").permitAll()
+                .antMatchers("/saml2/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
 
