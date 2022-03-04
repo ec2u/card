@@ -49,7 +49,7 @@ public class ToolApplication implements WebMvcConfigurer {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override public void addInterceptors(final InterceptorRegistry registry) {
-        //registry.addInterceptor(new ToolLoader());
+        registry.addInterceptor(new ToolLoader());
     }
 
 

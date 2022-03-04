@@ -9,6 +9,8 @@ package eu.ec2u.card;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -19,7 +21,10 @@ import org.springframework.security.saml2.provider.service.web.*;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 
+import javax.net.ssl.*;
 import javax.validation.constraints.NotNull;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -28,8 +33,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class ToolSecurity extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private RelyingPartyRegistrationRepository relyingPartyRegistrationRepository;
+    @Autowired private Environment environment;
+    @Autowired private RelyingPartyRegistrationRepository relyingPartyRegistrationRepository;
 
 
     @Override
@@ -58,6 +63,17 @@ public class ToolSecurity extends WebSecurityConfigurerAdapter {
                         new Saml2MetadataFilter(relyingPartyRegistrationResolver, new OpenSamlMetadataResolver()),
                         Saml2WebSsoAuthenticationFilter.class
                 );
+
+        if ( environment.acceptsProfiles(Profiles.of("local")) ) { // disable SSL checks while developing
+
+            final SSLContext context=SSLContext.getInstance("TLS");
+
+            context.init(null, new TrustManager[]{ new DummyTrustManager() }, new SecureRandom());
+
+            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+
+        }
+
     }
 
 
@@ -90,6 +106,23 @@ public class ToolSecurity extends WebSecurityConfigurerAdapter {
         @NotNull private String forename;
         @NotNull private String surname;
         @NotNull private String email;
+
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static final class DummyTrustManager implements X509TrustManager {
+
+        private static final X509Certificate[] certificates={};
+
+
+        public X509Certificate[] getAcceptedIssuers() { return certificates; }
+
+
+        @Override public void checkClientTrusted(final X509Certificate[] chain, final String authType) { }
+
+        @Override public void checkServerTrusted(final X509Certificate[] chain, final String authType) { }
 
     }
 
