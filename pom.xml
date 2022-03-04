@@ -46,7 +46,7 @@
 		<npm.version>7.7.6</npm.version>
 
 		<gae.project>${project.artifactId}</gae.project>
-		<gae.version>next</gae.version>
+		<gae.version>${revision}</gae.version>
 		<gae.promote>false</gae.promote>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
