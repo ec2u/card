@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
-import "./style.css";
-import logo from "../index.svg";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { AiOutlineIdcard, AiOutlineKey, AiOutlineUser } from "react-icons/ai";
 import { FiUsers } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import logo from "../index.svg";
+import "./style.css";
 
-const Sidebar = (props: any) => {
-  const [sidebar, setSidebar] = useState<boolean>(false);
+
+const Sidebar=(props: any) => {
+  const [sidebar, setSidebar]=useState<boolean>(false);
 
   useEffect(() => {
     props.onCollapse(sidebar);

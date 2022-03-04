@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Sidebar from "./components/sidebar";
 import "./index.css";
 import { CardUser } from "./pages/users/user";
 import { CardUsers } from "./pages/users/users";
+import Sidebar from "./views/sidebar";
 
 
 export function CardMain() {
