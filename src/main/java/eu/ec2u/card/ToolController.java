@@ -21,6 +21,8 @@ import javax.validation.Valid;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.ResponseEntity.*;
 
+import static java.lang.String.format;
+
 @RestController
 @RequestMapping(Tool.Id)
 public final class ToolController implements ErrorController {
@@ -37,7 +39,7 @@ public final class ToolController implements ErrorController {
     ) {
 
 
-        return ok().body(principal == null ? "ciao!" : "ciao"+principal.getName()+"!");
+        return ok().body(principal == null ? "ciao!" : format("ciao %s!", principal.getName()));
 
         //return ok(session.retrieve(profile));
 
