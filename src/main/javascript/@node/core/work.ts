@@ -33,14 +33,17 @@ export function isReport(value: unknown): value is Report {
     return isObject(value) && isNumber(value.status) && isString(value.reason);
 }
 
+
 /**
  * The internal status code used for reporting fetch aborts as synthetic responses.
  */
 export const FetchAborted=499;
+
 /**
  * The internal status code used for reporting fetch errors as synthetic responses.
  */
 export const FetchFailed=599;
+
 /**
  * The set of safe HTTP methods.
  *
@@ -48,6 +51,9 @@ export const FetchFailed=599;
  * @see {@link https://datatracker.ietf.org/doc/html/rfc7231#section-4.2.1| RFC 7231 - Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content - § 4.2.1. Safe Methods }
  */
 export const Safe: Set<String>=new Set<String>(["GET", "HEAD", "OPTIONS", "TRACE"]);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Resolves a URL.
