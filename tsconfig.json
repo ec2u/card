@@ -6,6 +6,9 @@
         "baseUrl": "src/main/javascript",
         "outDir": "target/classes/static/",
         "paths": {
+            "@metreeca/*": [
+                "@node/*"
+            ],
             "@ec2u/card/*": [
                 "*"
             ]

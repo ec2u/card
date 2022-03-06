@@ -1,6 +1,10 @@
-import { isDefined } from "@ec2u/card/hooks";
-import { useFetcher } from "@ec2u/card/hooks/fetcher";
-import { useKeeper } from "@ec2u/card/hooks/keeper";
+/*
+ * Copyright © 2022 EC2U Consortium. All rights reserved.
+ */
+
+import { isDefined } from "@metreeca/core";
+import { useFetcher } from "@metreeca/nest/fetcher";
+import { useKeeper } from "@metreeca/nest/keeper";
 import * as React from "react";
 import { createElement, ReactNode, useEffect } from "react";
 import "./gate.css";

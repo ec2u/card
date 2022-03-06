@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { isNumber, isObject, isString } from "@ec2u/card/hooks/index";
 import { createContext, createElement, ReactNode, useContext, useState } from "react";
+import { isNumber, isObject, isString } from "../core";
 
 
 /**

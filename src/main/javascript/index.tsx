@@ -1,11 +1,11 @@
 /*
- * Copyright © 2020-2022 EC2U Consortium. All rights reserved.
+ * Copyright © 2022 EC2U Consortium. All rights reserved.
  */
 
-import { NodeFetcher, resolve } from "@ec2u/card/hooks/fetcher";
-import { NodeKeeper } from "@ec2u/card/hooks/keeper";
 import { CardMain } from "@ec2u/card/main";
 import { CardGate } from "@ec2u/card/views/gate";
+import { NodeFetcher, resolve } from "@metreeca/nest/fetcher";
+import { NodeKeeper } from "@metreeca/nest/keeper";
 import * as React from "react";
 import { render } from "react-dom";
 import "./index.css";
