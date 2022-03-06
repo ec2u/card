@@ -4,7 +4,8 @@
 
 import { CardMain } from "@ec2u/card/main";
 import { CardGate } from "@ec2u/card/views/gate";
-import { NodeFetcher, resolve } from "@metreeca/nest/fetcher";
+import { resolve } from "@metreeca/core/work";
+import { NodeFetcher } from "@metreeca/nest/fetcher";
 import { NodeKeeper } from "@metreeca/nest/keeper";
 import * as React from "react";
 import { render } from "react-dom";

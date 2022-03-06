@@ -42,7 +42,6 @@ const Context=createContext<[Value, Updater]>([undefined, () => {}]);
  */
 export type Value<P=unknown>=Optional<P>;
 
-
 /**
  * The updater component of the keeper context state.
  *
@@ -61,17 +60,6 @@ export interface Updater<P=unknown> {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Creates a {@link NodeKeeper| keeper context} hook.
- *
- * @return a state tuple including a stateful {@link Value| value} and an {@link Updater| updater} function.
- *
- * @template P the type of the user profile
- */
-export function useKeeper<P>(): [Value<P>, Updater<P>] {
-    return useContext<[Value<P>, Updater<P>]>(Context as any);
-}
 
 /**
  * Creates a keeper context.
@@ -102,4 +90,15 @@ export function NodeKeeper<P>({
 
     });
 
+}
+
+/**
+ * Creates a {@link NodeKeeper| keeper context} hook.
+ *
+ * @return a state tuple including a stateful {@link Value| value} and an {@link Updater| updater} function.
+ *
+ * @template P the type of the user profile
+ */
+export function useKeeper<P>(): [Value<P>, Updater<P>] {
+    return useContext<[Value<P>, Updater<P>]>(Context as any);
 }
