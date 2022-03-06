@@ -2,10 +2,13 @@
  * Copyright © 2020-2022 EC2U Consortium. All rights reserved.
  */
 
+import { NodeFetcher, resolve } from "@ec2u/card/hooks/fetcher";
+import { NodeKeeper } from "@ec2u/card/hooks/keeper";
+import { CardMain } from "@ec2u/card/main";
+import { CardGate } from "@ec2u/card/views/gate";
 import * as React from "react";
 import { render } from "react-dom";
 import "./index.css";
-import { CardMain } from "./main";
 
 
 /**
@@ -16,36 +19,39 @@ export const root=resolve("/");
 /**
  * The absolute base URL with trailing slash.
  */
-export const base = resolve(
-  ".",
-  resolve(
-    import.meta.env.BASE_URL || document.querySelector("base")?.href || "",
-    root
-  )
+export const base=resolve(
+    ".",
+    resolve(import.meta.env.BASE_URL || document.querySelector("base")?.href || "", root)
 );
 
 /**
  * The app name.
  */
-export const name = document.title;
+export const name=document.title;
 
-export const icon =
-  (document.querySelector("link[rel=icon]") as HTMLLinkElement)?.href || "";
-export const copy =
-  (document.querySelector("meta[name=copyright]") as HTMLMetaElement)
-    ?.content || "";
+export const icon=(document.querySelector("link[rel=icon]") as HTMLLinkElement)?.href || "";
+export const copy=(document.querySelector("meta[name=copyright]") as HTMLMetaElement)?.content || "";
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-render(
-  <>
-      <CardMain/>
-  </>,
-  document.body.firstElementChild
-);
+render((
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    <React.StrictMode>
 
-function resolve(path: string, base: string = location.href): string {
-  return new URL(path, base).href;
-}
+        <NodeFetcher>
+            <NodeKeeper>
+
+                <CardGate>
+
+                    <CardMain/>
+
+                </CardGate>
+
+            </NodeKeeper>
+        </NodeFetcher>
+
+    </React.StrictMode>
+
+), document.body.firstElementChild);
+

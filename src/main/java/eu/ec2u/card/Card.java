@@ -7,7 +7,7 @@ package eu.ec2u.card;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
-import eu.ec2u.card.ToolSecurity.Profile;
+import eu.ec2u.card.CardSecurity.Profile;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
@@ -17,11 +17,11 @@ import java.util.Optional;
 
 import javax.validation.constraints.*;
 
-import static eu.ec2u.card.ToolConfiguration.*;
+import static eu.ec2u.card.CardConfiguration.*;
 
 @Getter
 @Builder
-public final class Tool {
+public final class Card {
 
     public static final String Id="/";
 

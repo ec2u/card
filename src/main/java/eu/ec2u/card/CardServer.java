@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public final class ToolServer implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
+public final class CardServer implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
 
     @Override public void customize(final ConfigurableWebServerFactory factory) {
         factory.setPort(Optional.ofNullable(System.getenv("PORT")).map(Integer::parseInt).orElse(8080));

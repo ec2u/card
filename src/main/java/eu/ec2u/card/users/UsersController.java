@@ -6,9 +6,9 @@
 package eu.ec2u.card.users;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.ec2u.card.Tool.Container;
-import eu.ec2u.card.Tool.Resource;
-import eu.ec2u.card.ToolSecurity.Profile;
+import eu.ec2u.card.Card.Container;
+import eu.ec2u.card.Card.Resource;
+import eu.ec2u.card.CardSecurity.Profile;
 import eu.ec2u.card.events.EventsService;
 import eu.ec2u.card.users.Users.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-import static eu.ec2u.card.ToolConfiguration.ContainerSize;
+import static eu.ec2u.card.CardConfiguration.ContainerSize;
 import static eu.ec2u.card.events.Events.Action.*;
 import static org.springframework.http.ResponseEntity.*;
 

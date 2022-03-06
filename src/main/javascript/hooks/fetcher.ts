@@ -14,8 +14,20 @@
  * limitations under the License.
  */
 
+import { isNumber, isObject, isString } from "@ec2u/card/hooks/index";
 import { createContext, createElement, ReactNode, useContext, useState } from "react";
 
+
+/**
+ * Fetcher context.
+ *
+ * Provides nested components with a {@link useFetcher| hook}-based shared state containing:
+ *
+ * - a shared fetch service
+ * - a network activity status flag
+ *
+ * @module
+ */
 
 const Context=createContext<[Value, Updater]>([false, wrap(fetch)]);
 
@@ -25,7 +37,7 @@ const Context=createContext<[Value, Updater]>([false, wrap(fetch)]);
 /**
  * The value component of the fetcher context state.
  *
- * `true`, if at least a fetch request is awaiting response; `false`, otherwise
+ * Holds `true`, if at least a fetch request is awaiting response; `false`, otherwise
  */
 export type Value=boolean;
 
@@ -46,9 +58,9 @@ export type Updater=typeof fetch;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Creates a {@link NodeFetcher| fetcher context} hook.
+ * Creates a fetcher context hook.
  *
- * @return a state tuple including a stateful {@link Value| value} and an {@link Updater| updater} function.
+ * @return a state tuple including a current {@link Value| value} and an {@link Updater| updater} function.
  */
 export function useFetcher(): [Value, Updater] {
     return useContext(Context);
@@ -57,12 +69,7 @@ export function useFetcher(): [Value, Updater] {
 /**
  * Creates a fetcher context.
  *
- * Fetcher contexts are responsible for:
- *
- * - exposing a shared fetch service to nested {@link useFetcher| fetcher hooks}
- * - monitoring network activity status
- *
- * @param fetcher the fetch function to be handled by the new context; defaults to the global {@link fetch} function
+ * @param fetcher the fetch function to be exposed by the new context; defaults to the global {@link fetch} function
  * @param children the children components to be nested inside the new context component
  *
  * @return a new fetcher context component
@@ -126,6 +133,25 @@ export function NodeFetcher({
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+/**
+ * Fetch error report.
+ *
+ */
+export interface Report<D=any> {
+
+    readonly status: number;
+    readonly reason: string;
+    readonly detail?: D;
+
+}
+
+
+export function isReport(value: unknown): value is Report {
+    return isObject(value) && isNumber(value.status) && isString(value.reason);
+}
+
+
 /**
  * The internal status code used for reporting fetch aborts as synthetic responses.
  */
@@ -177,7 +203,7 @@ function wrap(fetcher: typeof fetch): typeof fetch {
     return (input, init={}) => {
 
         const method=(init.method || "GET").toUpperCase();
-        const origin=new URL(typeof input === "string" ? input : input.url, location.href).origin;
+        const origin=new URL(isString(input) ? input : input.url, location.href).origin;
         const headers=new Headers(init.headers || {});
 
         // angular-compatible XSRF protection header

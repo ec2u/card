@@ -15,15 +15,21 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.io.IOException;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
+import static java.time.temporal.ChronoField.*;
 
 @Getter
 @Setter
 @Configuration
 @ConfigurationProperties(prefix="card")
-public class ToolConfiguration {
+public class CardConfiguration {
 
     public static final int ContainerSize=100;
 
@@ -38,12 +44,32 @@ public class ToolConfiguration {
     public static final String TextPattern="\\S+(\\s+\\S+)*";
 
 
+    private static final DateTimeFormatter InstantFormat=new DateTimeFormatterBuilder()
+
+            .appendValue(YEAR, 4)
+            .appendValue(MONTH_OF_YEAR, 2)
+            .appendValue(DAY_OF_MONTH, 2)
+
+            .appendLiteral("T")
+
+            .appendValue(HOUR_OF_DAY, 2)
+            .appendValue(MINUTE_OF_HOUR, 2)
+            .appendValue(SECOND_OF_MINUTE, 2)
+
+            .parseStrict()
+            .toFormatter(Locale.ROOT);
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private String revision;
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Instant revision() {
+        return LocalDateTime.from(InstantFormat.parse(revision)).toInstant(ZoneOffset.UTC);
+    }
 
     @Bean
     public ObjectMapper objectMapper() {

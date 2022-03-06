@@ -6,8 +6,8 @@
 
 package eu.ec2u.card;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
@@ -27,11 +27,12 @@ import java.security.cert.X509Certificate;
 import javax.net.ssl.*;
 import javax.validation.constraints.NotNull;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Component
 @EnableWebSecurity
-public class ToolSecurity extends WebSecurityConfigurerAdapter {
+public class CardSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired private Environment environment;
     @Autowired private RelyingPartyRegistrationRepository relyingPartyRegistrationRepository;
@@ -49,13 +50,12 @@ public class ToolSecurity extends WebSecurityConfigurerAdapter {
                 .disable()
 
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/saml2/**").permitAll()
+                .antMatchers(GET, "/").permitAll()
                 .anyRequest().authenticated()
                 .and()
 
                 .saml2Login(withDefaults())
-                .saml2Logout(withDefaults())
+                //.saml2Logout(withDefaults()) // !!! supported by eduGAIN?
 
                 // publish SAML metadata endpoint at /saml2/service-provider-metadata/{registrationId}
 
@@ -80,18 +80,7 @@ public class ToolSecurity extends WebSecurityConfigurerAdapter {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Getter
-    @Setter
-    public static final class Credentials implements Serializable {
-
-        private static final long serialVersionUID=-5184703157125247153L;
-
-
-        @NotNull private String code;
-
-    }
-
-    @Getter
-    @Setter
+    @Builder
     public static final class Profile implements Serializable {
 
         private static final long serialVersionUID=-7793479050451108354L;

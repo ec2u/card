@@ -26,7 +26,7 @@ import static java.util.Collections.list;
 /**
  * SPA fallback loader
  */
-final class ToolLoader implements HandlerInterceptor {
+final class CardLoader implements HandlerInterceptor {
 
     private static final Pattern ExtensionPattern=Pattern.compile("\\.(\\w+)$");
 

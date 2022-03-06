@@ -39,17 +39,17 @@ import static java.util.stream.Collectors.*;
 @Configuration
 @ControllerAdvice
 @SpringBootApplication
-public class ToolApplication implements WebMvcConfigurer {
+public class CardApplication implements WebMvcConfigurer {
 
     public static void main(final String... args) {
-        SpringApplication.run(ToolApplication.class, args);
+        SpringApplication.run(CardApplication.class, args);
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(new ToolLoader());
+        registry.addInterceptor(new CardLoader());
     }
 
 

@@ -35,7 +35,7 @@
 
 	<properties>
 
-		<main>eu.ec2u.card.ToolApplication</main>
+		<main>eu.ec2u.card.CardApplication</main>
 
 		<revision>${maven.build.timestamp}</revision>
 
@@ -177,6 +177,15 @@
 	<build>
 
 		<finalName>${project.artifactId}</finalName>
+
+		<resources>
+
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+
+		</resources>
 
 		<plugins>
 
@@ -369,6 +378,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.2.0</version>
+
+
+				<configuration>
+					<nonFilteredFileExtensions>
+						<nonFilteredFileExtension>key</nonFilteredFileExtension>
+						<nonFilteredFileExtension>crt</nonFilteredFileExtension>
+					</nonFilteredFileExtensions>
+				</configuration>
 
 				<executions>
 					<execution>

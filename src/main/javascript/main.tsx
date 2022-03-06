@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./index.css";
 import { CardUser } from "./pages/users/user";
 import { CardUsers } from "./pages/users/users";
-import Sidebar from "./views/sidebar";
+import Side from "./views/side";
 
 
 export function CardMain() {
@@ -15,7 +15,7 @@ export function CardMain() {
 
             <BrowserRouter>
 
-                <Sidebar
+                <Side
                     onCollapse={(sidebar: boolean) => {
                         setSidebar(sidebar);
                     }}

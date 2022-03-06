@@ -1,7 +1,7 @@
 package eu.ec2u.card.users;
 
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-import eu.ec2u.card.Tool.*;
+import eu.ec2u.card.Card.*;
 import eu.ec2u.card.users.Users.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +10,8 @@ import java.util.Optional;
 
 import javax.validation.constraints.*;
 
-import static eu.ec2u.card.ToolConfiguration.LinePattern;
-import static eu.ec2u.card.ToolConfiguration.LineSize;
+import static eu.ec2u.card.CardConfiguration.LinePattern;
+import static eu.ec2u.card.CardConfiguration.LineSize;
 
 import static java.lang.String.format;
 

@@ -1,7 +1,7 @@
 package eu.ec2u.card.events;
 
-import eu.ec2u.card.Tool.Resource;
-import eu.ec2u.card.ToolSecurity.Profile;
+import eu.ec2u.card.Card.Resource;
+import eu.ec2u.card.CardSecurity.Profile;
 import eu.ec2u.card.events.Events.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
