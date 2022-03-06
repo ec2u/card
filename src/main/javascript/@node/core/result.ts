@@ -77,24 +77,18 @@ export function Result<V, E>({ fetch, value, error }: {
 
         if ( isDefined(fetch) ) {
 
-            return isFunction(probe.fetch) ? probe.fetch(fetch)
-                : isDefined(probe.fetch) ? probe.fetch
-                    : isFunction(probe.other) ? probe.other(fetch)
-                        : probe.other;
+            return isFunction(probe.fetch) ? probe.fetch(fetch) : isDefined(probe.fetch) ? probe.fetch
+                : isFunction(probe.other) ? probe.other(fetch) : probe.other;
 
         } else if ( isDefined(value) ) {
 
-            return isFunction(probe.value) ? probe.value(value)
-                : isDefined(probe.value) ? probe.value
-                    : isFunction(probe.other) ? probe.other(value)
-                        : probe.other;
+            return isFunction(probe.value) ? probe.value(value) : isDefined(probe.value) ? probe.value
+                : isFunction(probe.other) ? probe.other(value) : probe.other;
 
         } else if ( isDefined(error) ) {
 
-            return isFunction(probe.error) ? probe.error(error)
-                : isDefined(probe.error) ? probe.error
-                    : isFunction(probe.other) ? probe.other(error)
-                        : probe.other;
+            return isFunction(probe.error) ? probe.error(error) : isDefined(probe.error) ? probe.error
+                : isFunction(probe.other) ? probe.other(error) : probe.other;
 
         } else {
 

@@ -1,0 +1,6 @@
+{
+    "name": "@metreeca/core",
+    "version": "0.0.0",
+    "description": "Common TypeScript definitions and utilities",
+    "main": "index.ts"
+}
