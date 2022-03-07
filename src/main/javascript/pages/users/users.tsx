@@ -1,81 +1,121 @@
+import { ChevronRight, Plus, Search } from "lucide-react";
 import React, { createElement, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./users.css";
 
-
 interface Users {
-
-    contains: User[];
+  contains: User[];
 }
 
 interface User {
+  admin: boolean;
 
-    admin: boolean;
-
-    forename: string;
-    surname: string;
-    email: string;
-
+  forename: string;
+  surname: string;
+  email: string;
+  id: any;
 }
 
 export function CardUsers() {
+  const [users, setUsers] = useState<User[]>([]);
 
-    const [users, setUsers]=useState<Users>();
+  useEffect(() => {
+    fetch("/users/", {
+      // !!! factor useContext hook
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setUsers(data.contains));
+  }, []);
 
-    useEffect(() => { // !!! factor useContext hook
+  return createElement(
+    "card-users",
+    {},
+    <div className={"users"}>
+      <div className={"topnav"}>
+        <span> Users</span>
+        <span>
+          <Link to="/users/add">
+            <Plus size={38} className={"button-plus"} />
+          </Link>
+        </span>
+      </div>
 
-        fetch("/users/", {
+      <div className="grid-container">
+        <table>
+          <thead>
+            <tr>
+              <th>forename</th>
+              <th>surname</th>
+              <th>email</th>
 
-            headers: {
-                Accept: "application/json"
-            }
+              <th>
+                <Search size={28} className={"button"} />
+              </th>
+            </tr>
+          </thead>
 
-        })
+          <hr className={"solid"} />
 
-            // !!! error control
+          <tbody>
+            {users.map((data) => {
+              return (
+                <tr key={data.id}>
+                  <td>{data.forename}</td>
+                  <td>{data.surname}</td>
+                  <td>{data.email}</td>
 
-            .then(response => response.json())
-            .then(setUsers);
-
-    }, []);
-
-    return createElement("card-users", {}, <>{JSON.stringify(users)}!</>
-        // <div>
-        //     <div className={"topbar"}>
-        //         <span>Users </span>
-        //         <Link to="/users/add/" className="butons-add">
-        //             <AiOutlinePlus/>
-        //         </Link>
-        //     </div>
-        //
-        //     <div className={"header"}>
-        //         <div className="header-section">
-        //             <span>forename</span>
-        //             <span>surname</span>
-        //             <span>email</span>
-        //         </div>
-        //         <div className="header-search">
-        //             <Link to="/users/search" className="butons">
-        //                 <FiSearch/>
-        //             </Link>
-        //         </div>
-        //     </div>
-        //     <div className={"divider"}></div>
-        //     {response.map((data, i) => {
-        //         return (
-        //             <div className="data" key={i}>
-        //                 <div className="data-section">
-        //                     <span>{data.forename} </span>
-        //                     <span>{data.surname}</span>
-        //                     <span>{data.email}</span>
-        //                 </div>
-        //                 <div className="data-inspect">
-        //                     <Link to="/users/inspect" className="butons-inspect">
-        //                         <FaGreaterThan/>
-        //                     </Link>
-        //                 </div>
-        //             </div>
-        //         );
-        //     })}
-        // </div>
-    );
+                  <td>
+                    <Link to={`${data.id}`}>
+                      <ChevronRight size={40} className={"button"} />
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
+
+//   useEffect(() => {
+
+//     fetch("/users/", {
+//       method: "POST",
+//       headers: {
+//         Accept: "application/json",
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(userdata),
+//     })
+//
+
+//       .then((response) => response.json())
+//       .then((data) => console.log(data));
+//   }, []);
+
+//   const userdata = {
+//     label: "tony stark",
+//     admin: false,
+//     forename: "Tony",
+//     surname: "Stark",
+//     email: "Tony@argv.com",
+//     id: "users/123",
+//   };
+
+//   fetch("/users/5679095853613056/", {
+//     method: "PUT",
+//     headers: {
+//       Accept: "application/json",
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(userdata),
+//   })
+//     // !!! error control
+
+//     .then((response) => response.json())
+//     .then((data) => console.log(data));

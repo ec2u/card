@@ -3,11 +3,10 @@ import { AiOutlineIdcard, AiOutlineKey, AiOutlineUser } from "react-icons/ai";
 import { FiUsers } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import logo from "../index.svg";
-import "./style.css";
+import "./sidebar.css";
 
-
-const Sidebar=(props: any) => {
-  const [sidebar, setSidebar]=useState<boolean>(false);
+const Sidebar = (props: any) => {
+  const [sidebar, setSidebar] = useState<boolean>(false);
 
   useEffect(() => {
     props.onCollapse(sidebar);
