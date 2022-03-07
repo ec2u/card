@@ -105,6 +105,7 @@ public class ToolApplication implements WebMvcConfigurer {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String> handle(final IllegalStateException e) {
 
+        log.warn("conflict", e);
         return status(CONFLICT).body(e.getMessage()); // 409
 
     }

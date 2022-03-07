@@ -1,0 +1,7 @@
+.tr-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 20% 20% 58% 20%;
+  padding: 6px;
+  align-items: center;
+}
