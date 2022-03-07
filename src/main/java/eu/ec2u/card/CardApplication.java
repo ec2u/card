@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020-2022 EC2U Consortium. All rights reserved.
+ * Copyright © 2022 EC2U Consortium. All rights reserved.
  */
 
 package eu.ec2u.card;
@@ -104,6 +104,8 @@ public class CardApplication implements WebMvcConfigurer {
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String> handle(final IllegalStateException e) {
+
+        log.warn("conflict", e);
 
         return status(CONFLICT).body(e.getMessage()); // 409
 
