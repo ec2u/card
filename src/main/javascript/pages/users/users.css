@@ -1,0 +1,55 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.users {
+  width: 97%;
+  margin-top: 40px;
+
+  & .topnav {
+    display: grid;
+    grid-template-columns: 97.3% 20%;
+    font-size: 30px;
+    width: 100%;
+  }
+  & .grid-container {
+    margin-top: 40px;
+    display: grid;
+    text-align: left;
+  }
+  & tr {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 20% 20% 58% 20%;
+    padding: 6px;
+    align-items: center;
+  }
+
+  & tr:nth-child(even) {
+    background-color: rgb(197, 194, 194);
+  }
+  & th {
+    color: rgb(177, 171, 171);
+  }
+  & td {
+    font-size: 21px;
+  }
+
+  & .solid {
+    width: 102%;
+    background-color: lightgray;
+    border: 1px solid rgb(189, 185, 185);
+  }
+  & .button {
+    cursor: pointer;
+    color: black;
+  }
+  & .button-plus {
+    cursor: pointer;
+    color: black;
+  }
+}

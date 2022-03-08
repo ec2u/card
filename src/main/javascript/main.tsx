@@ -4,36 +4,33 @@ import "./index.css";
 import { CardUser } from "./pages/users/user";
 import { CardUsers } from "./pages/users/users";
 import Side from "./views/side";
-
+import { Inspect } from "./pages/users/inspect";
+import { Adduser } from "./pages/users/adduser";
 
 export function CardMain() {
+  const [sidebar, setSidebar] = useState<boolean>(false);
 
-    const [sidebar, setSidebar]=useState<boolean>(false);
+  return (
+    <div>
+      <BrowserRouter>
+        <Side
+          onCollapse={(sidebar: boolean) => {
+            setSidebar(sidebar);
+          }}
+        />
 
-    return (
-        <div>
-
-            <BrowserRouter>
-
-                <Side
-                    onCollapse={(sidebar: boolean) => {
-                        setSidebar(sidebar);
-                    }}
-                />
-
-                <div className={`container ${sidebar ? "inactive" : ""}`}>
-                    <Routes>
-                        {/*<Route path="/" element={<Login/>}/>*/}
-                        <Route path="/user/" element={<CardUser/>}/>
-                        <Route path="/users/" element={<CardUsers/>}/>
-                        {/*<Route path="/users//" element={<Inspect />} /> */}
-                        {/*<Route path="/cards/" element={<Cards/>}/>*/}
-                        {/*<Route path="/tokens/" element={<Tokens/>}/>*/}
-                    </Routes>
-                </div>
-
-            </BrowserRouter>
-
+        <div className={`container ${sidebar ? "inactive" : ""}`}>
+          <Routes>
+            {/*<Route path="/" element={<Login/>}/>*/}
+            <Route path="/user/" element={<CardUser />} />
+            <Route path="/users/" element={<CardUsers />} />
+            <Route path="/users/:id/" element={<Inspect />} />
+            <Route path="/users/add" element={<Adduser />} />
+            {/*<Route path="/cards/" element={<Cards/>}/>*/}
+            {/*<Route path="/tokens/" element={<Tokens/>}/>*/}
+          </Routes>
         </div>
-    );
+      </BrowserRouter>
+    </div>
+  );
 }
