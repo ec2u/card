@@ -1,6 +1,0 @@
-<?php
-	return ['homePage' 	=> '',
-		'homeDir'	=> '',
-		'routerUrl' 	=> '',
-		'apiKey'	=> '',
-	];

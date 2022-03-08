@@ -1,4 +1,8 @@
-import { icon } from "@ec2u/card/index";
+/*
+ * Copyright © 2022 EC2U Consortium. All rights reserved.
+ */
+
+import { icon } from "@metreeca/tile";
 import React, { useEffect, useState } from "react";
 import { AiOutlineIdcard, AiOutlineKey, AiOutlineUser } from "react-icons/ai";
 import { FiUsers } from "react-icons/fi";

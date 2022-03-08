@@ -14,6 +14,23 @@
  * limitations under the License.
  */
 
+import { resolve } from "@metreeca/core/work";
+
+
+/**
+ * The absolute root URL with trailing slash.
+ */
+export const root=resolve("/");
+
+/**
+ * The absolute base URL with trailing slash.
+ */
+export const base=resolve(
+    ".",
+    resolve(import.meta.env.BASE_URL || document.querySelector("base")?.href || "", root)
+);
+
+
 /**
  * The app name as read from the `<title>` HTM head tag.
  */
@@ -26,7 +43,7 @@ export const icon=(document.querySelector("link[rel=icon]") as HTMLLinkElement)?
 
 
 /**
- * The copyright of the app as read from the `<meta name="copyright">` HTML head tag.
+ * The app copyright as read from the `<meta name="copyright">` HTML head tag.
  */
 export const copy=(document.querySelector("meta[name=copyright]") as HTMLMetaElement)?.content || "";
 

@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+/**
+ * Env variables and modes.
+ *
+ * @see for instance, {@link https://vitejs.dev/guide/env-and-mode.html}
+ * @module
+ */
+
 interface ImportMeta {
     readonly env: ImportMetaEnv;
 }
