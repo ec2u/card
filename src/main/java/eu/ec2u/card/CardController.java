@@ -1,6 +1,6 @@
 
 /*
- * Copyright © 2020-2022 EC2U Consortium. All rights reserved.
+ * Copyright © 2022 EC2U Consortium. All rights reserved.
  */
 
 package eu.ec2u.card;
@@ -41,6 +41,7 @@ public final class CardController implements ErrorController {
     ) {
 
         return ok(session.retrieve(principal == null ? null : Profile.builder()
+                .code(principal.getFirstAttribute("schacPersonalUniqueCode"))
                 .email(principal.getName())
                 .build()
         ));

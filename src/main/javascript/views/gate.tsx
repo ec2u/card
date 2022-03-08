@@ -12,6 +12,7 @@ import "./gate.css";
 
 interface Profile {
 
+    readonly code: string;
     readonly email: string;
 
 }
@@ -66,7 +67,7 @@ export function CardGate({
     return createElement("card-gate", {}, isDefined(profile)
 
         ? <>
-            <span>ciao {profile.email}!</span>
+            <span>ciao {profile.code}!</span>
             <button onClick={doLogOut}>Log Out</button>
         </>
 
