@@ -1,13 +1,31 @@
-* {
-    margin: 0;
-    padding: 0;
-}
+/*
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
+ */
+
 
 body {
     width: 100%;
     height: 100%;
     text-decoration: none;
 }
+
+
+card-root {
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+
+    & .container {
+        margin-left: 270px;
+        transition: margin-left 0.2s ease-in;
+    }
+
+    & .container.inactive {
+        margin-left: 120px;
+    }
+}
+
 
 .side-menu {
     position: fixed;

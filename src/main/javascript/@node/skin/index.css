@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;1,300&family=Roboto+Mono&family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap");
-
 :root {
 
     --tool--font-size: 16pt;
@@ -65,19 +63,6 @@
     display: none;
 }
 
-
-/**** Fonts ***********************************************************************************************************/
-
-body {
-    font-family: Roboto, Helvetica, Arial, sans-serif;
-    font-weight: 300;
-    line-height: 1.2;
-}
-
-
-code {
-    font-family: "Roboto Mono", Courier, monospace;
-}
 
 
 /**** Layout **********************************************************************************************************/
