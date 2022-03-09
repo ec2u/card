@@ -6,7 +6,7 @@ import { CardUsers } from "./pages/users/users";
 import Sidebar from "./views/sidebar";
 import { Inspect } from "./pages/users/inspect";
 import { Adduser } from "./pages/users/adduser";
-ETimport { Edituser } from "./pages/users/edituser";
+import { Edituser } from "./pages/users/edituser";
 
 export function CardMain() {
   const [sidebar, setSidebar] = useState<boolean>(false);
