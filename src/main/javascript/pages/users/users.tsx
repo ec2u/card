@@ -30,9 +30,7 @@ export function CardUsers() {
       .then((data) => setUsers(data.contains));
   }, []);
 
-  return createElement(
-    "card-users",
-    {},
+  return (
     <div className={"users"}>
       <div className={"topnav"}>
         <span> Users</span>
@@ -62,7 +60,7 @@ export function CardUsers() {
           <tbody>
             {users.map((data) => {
               return (
-                <tr key={data.id}>
+                <tr>
                   <td>{data.forename}</td>
                   <td>{data.surname}</td>
                   <td>{data.email}</td>
