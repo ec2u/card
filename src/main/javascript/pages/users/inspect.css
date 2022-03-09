@@ -1,7 +1,58 @@
-.tr-grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 20% 20% 58% 20%;
-  padding: 6px;
-  align-items: center;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.users {
+  width: 95%;
+  margin-top: 40px;
+
+  & .topnav-inspect {
+    display: grid;
+    grid-template-columns: 5% 3% 88% 0%;
+    font-size: 30px;
+    width: 100%;
+  }
+  & .grid-container-inspect {
+    margin-top: 80px;
+    display: grid;
+    text-align: left;
+  }
+  & .tr-inspect {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 20% 20% 54% 20%;
+    padding: 6px;
+  }
+
+  & tr:nth-child(even) {
+    background-color: rgb(197, 194, 194);
+  }
+  & th {
+    color: rgb(177, 171, 171);
+  }
+  & td {
+    font-size: 22px;
+  }
+
+  & .solid {
+    width: 102%;
+    background-color: lightgray;
+    border: 1px solid rgb(189, 185, 185);
+  }
+  & .button {
+    cursor: pointer;
+    color: black;
+  }
+  & .button-plus {
+    cursor: pointer;
+    color: black;
+  }
+  & .checkbox {
+    width: 28px;
+    height: 28px;
+  }
 }
