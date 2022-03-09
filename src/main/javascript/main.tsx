@@ -6,6 +6,7 @@ import { CardUsers } from "./pages/users/users";
 import Sidebar from "./views/sidebar";
 import { Inspect } from "./pages/users/inspect";
 import { Adduser } from "./pages/users/adduser";
+ETimport { Edituser } from "./pages/users/edituser";
 
 export function CardMain() {
   const [sidebar, setSidebar] = useState<boolean>(false);
@@ -25,6 +26,7 @@ export function CardMain() {
             <Route path="/user/" element={<CardUser />} />
             <Route path="/users/" element={<CardUsers />} />
             <Route path="/users/:id/" element={<Inspect />} />
+            <Route path="/edit/users/:id/" element={<Edituser />} />
             <Route path="/users/add" element={<Adduser />} />
             {/*<Route path="/cards/" element={<Cards/>}/>*/}
             {/*<Route path="/tokens/" element={<Tokens/>}/>*/}
