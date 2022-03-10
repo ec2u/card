@@ -1,0 +1,57 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.cards {
+  width: 95%;
+  margin-top: 40px;
+
+  & .topnav-cards {
+    display: grid;
+    grid-template-columns: 97.3% 20%;
+    font-size: 30px;
+    width: 100%;
+  }
+  & .grid-container-cards {
+    margin-top: 40px;
+    display: grid;
+    text-align: left;
+  }
+  & .tr-cards {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 15% 13% 25% 45% 10%;
+    padding: 6px;
+    align-items: center;
+  }
+  & tr:nth-child(even) {
+    background-color: rgb(197, 194, 194);
+  }
+  & th {
+    color: rgb(177, 171, 171);
+  }
+  & td {
+    font-size: 20px;
+  }
+  & .solid-cards {
+    width: 101%;
+    background-color: lightgray;
+    border: 1px solid rgb(189, 185, 185);
+  }
+  & .button-search {
+    cursor: pointer;
+    color: black;
+  }
+  & .button-plus {
+    cursor: pointer;
+    color: black;
+  }
+  & .button-arrow {
+    cursor: pointer;
+    color: black;
+  }
+}
