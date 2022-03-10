@@ -6,7 +6,7 @@ import "./edituser.css";
 
 interface User {
   admin: boolean;
-
+  label: string;
   forename: string;
   surname: string;
   email: string;
@@ -41,6 +41,8 @@ export function Edituser() {
     forename: updateuser.forename,
     surname: updateuser.surname,
     email: updateuser.email,
+    id: updateuser.id,
+    label: updateuser.label
   };
 
   const handleEdit = () => {
@@ -95,6 +97,8 @@ export function Edituser() {
                 <th>forename</th>
                 <th>surname</th>
                 <th>email</th>
+                <th>label</th>
+                <th>id</th>
 
                 <th className="th-admin"> admin</th>
               </tr>
@@ -106,6 +110,7 @@ export function Edituser() {
               <tr className="tr-edit">
                 <td>
                   <input
+                    type='text'
                     name="forename"
                     value={updateuser.forename}
                     onChange={handleChange}
@@ -113,6 +118,7 @@ export function Edituser() {
                 </td>
                 <td>
                   <input
+                    type='text'
                     name="surname"
                     value={updateuser.surname}
                     onChange={handleChange}
@@ -120,6 +126,7 @@ export function Edituser() {
                 </td>
                 <td>
                   <input
+                    type='email'
                     className="email"
                     name="email"
                     value={updateuser.email}
@@ -128,6 +135,26 @@ export function Edituser() {
                 </td>
                 <td>
                   <input
+                    type='text'
+                    disabled
+                    className="label"
+                    name="label"
+                    value={updateuser.label}
+                    onChange={handleChange}
+                  />
+                </td>
+                <td>
+                  <input
+                    className="id"
+                    disabled
+                    name="id"
+                    value={updateuser.id}
+                    onChange={handleChange}
+                  />
+                </td>
+                <td>
+                  <input
+                    type='text'
                     className="admin"
                     name="admin"
                     value={updateuser.admin}

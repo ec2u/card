@@ -1,6 +1,5 @@
+import { Contact, Key, User, Users } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { AiOutlineIdcard, AiOutlineKey, AiOutlineUser } from "react-icons/ai";
-import { FiUsers } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import logo from "../index.svg";
 import "./sidebar.css";
@@ -25,25 +24,25 @@ const Sidebar = (props: any) => {
         </div>
         <div className="items">
           <Link to="/cards/" className="items-logo">
-            <AiOutlineIdcard />
+            <Contact size={60}/>
             <span> Cards</span>
           </Link>
         </div>
         <div className="items">
           <Link to="/users/" className="items-logo">
-            <FiUsers />
+            <Users size = {60}/>
             <span> Users </span>
           </Link>
         </div>
         <div className="items">
           <Link to="/tokens/" className="items-logo">
-            <AiOutlineKey />
-            <span> Tokens </span>
+            <Key size={60}/>
+            <span> Tokens  </span>
           </Link>
         </div>
         <div className=" items name">
           <Link to="/user/" className="items-logo">
-            <AiOutlineUser />
+            <User size={60}/>
             <span>Name</span>
           </Link>
         </div>

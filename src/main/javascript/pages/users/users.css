@@ -27,7 +27,6 @@
     grid-template-columns: 20% 20% 58% 20%;
     padding: 6px;
     align-items: center;
-    
   }
 
   & tr:nth-child(even) {
@@ -41,7 +40,7 @@
   }
 
   & .solid {
-    width: 102%;
+    width: 101%;
     background-color: lightgray;
     border: 1px solid rgb(189, 185, 185);
   }

@@ -58,15 +58,15 @@ export function CardUsers() {
           <hr className={"solid"} />
 
           <tbody>
-            {users.map((data) => {
+            {users.map((user) => {
               return (
-                <tr>
-                  <td>{data.forename}</td>
-                  <td>{data.surname}</td>
-                  <td>{data.email}</td>
+                <tr key={user.id}>
+                  <td>{user.forename}</td>
+                  <td>{user.surname}</td>
+                  <td>{user.email}</td>
 
                   <td>
-                    <Link to={`${data.id}`}>
+                    <Link to={`${user.id}`}>
                       <ChevronRight size={40} className={"button"} />
                     </Link>
                   </td>
@@ -80,40 +80,3 @@ export function CardUsers() {
   );
 }
 
-//   useEffect(() => {
-
-//     fetch("/users/", {
-//       method: "POST",
-//       headers: {
-//         Accept: "application/json",
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(userdata),
-//     })
-//
-
-//       .then((response) => response.json())
-//       .then((data) => console.log(data));
-//   }, []);
-
-//   const userdata = {
-//     label: "tony stark",
-//     admin: false,
-//     forename: "Tony",
-//     surname: "Stark",
-//     email: "Tony@argv.com",
-//     id: "users/123",
-//   };
-
-//   fetch("/users/5679095853613056/", {
-//     method: "PUT",
-//     headers: {
-//       Accept: "application/json",
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(userdata),
-//   })
-//     // !!! error control
-
-//     .then((response) => response.json())
-//     .then((data) => console.log(data));
