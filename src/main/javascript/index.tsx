@@ -5,6 +5,7 @@
 import { NodeFetcher } from "@metreeca/nest/fetcher";
 import { NodeKeeper } from "@metreeca/nest/keeper";
 import "@metreeca/skin/quicksand.css";
+import { NodePage } from "@metreeca/tile/page";
 import * as React from "react";
 import { render } from "react-dom";
 import "./index.css";
@@ -17,7 +18,9 @@ render((
         <NodeFetcher>
             <NodeKeeper>
 
-                ciao babbo!
+                <NodePage>
+                    ciao!
+                </NodePage>
 
                 {/*<CardGate>
 
