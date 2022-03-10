@@ -74,7 +74,7 @@ export function Adduser() {
 
           <thead>
 
-            <tr className="tr-inspect">
+            <tr className="tr-add">
               <th>forename</th>
               <th>surname</th>
               <th>email</th>
