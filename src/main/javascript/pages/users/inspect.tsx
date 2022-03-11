@@ -40,7 +40,8 @@ export function Inspect() {
   return (
     <div className="users">
       <div className="topnav-inspect">
-        <span> Users</span>
+        <span>
+          <Link className="users-link" to='/users/'>Users</Link></span>
         <span>
           <ChevronRight size={35} />
         </span>

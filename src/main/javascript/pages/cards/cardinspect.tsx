@@ -18,7 +18,6 @@ export function CardInspect() {
     const [card, setCard] = useState<Card>({} as Card);
     const { id } = useParams();
 
-
     useEffect(() => {
         fetch(`/cards/${id}`, {
             headers: {
@@ -26,14 +25,19 @@ export function CardInspect() {
             },
         })
             .then((response) => response.json())
-            .then((data) => setCard(data));
-    }, []);
+            .then((data) => setCard(data))
+            .catch(error => console.warn('error:', error))
+
+
+    }, [])
+
+    
 
 
     return (
         <div className="cards">
             <div className="topnav-cardinspect">
-                <span> Cards</span>
+                <span> <Link to='/cards/' className="cards-link"> Cards</Link></span>
                 <span>
                     <ChevronRight size={35} />
                 </span>

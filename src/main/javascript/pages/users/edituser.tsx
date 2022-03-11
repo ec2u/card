@@ -16,8 +16,12 @@ interface User {
 export function Edituser() {
   const [updateuser, setUpdateuser] = useState<User>({} as User);
   const [dialog, setDialog] = useState<Boolean>(false);
+  const [checked, setChecked] = useState<Boolean>(true);
   const { id } = useParams();
   const navigate = useNavigate();
+
+
+
 
   useEffect(() => {
     fetch(`/users/${id}`, {
@@ -71,14 +75,17 @@ export function Edituser() {
     <div>
       <div className={"users"}>
         <div className={"topnav-edit"}>
-          <div> Users</div>
+          <div> <Link className={'users-link'} to='/users/'>Users</Link></div>
           <div>
             <ChevronRight size={35} />
           </div>
 
           <div>{updateuser.surname}</div>
           <div>
-            < Check size={40} onClick={handleEdit} />
+            <Link to={`${updateuser.id}`}>
+              < Check size={40} onClick={handleEdit} />
+            </Link>
+
           </div>
           <div>
             <Trash size={38} className={"button-trash"} onClick={Showpopup} />
@@ -110,6 +117,7 @@ export function Edituser() {
               <tr className="tr-edit">
                 <td>
                   <input
+                    required
                     type='text'
                     name="forename"
                     value={updateuser.forename}
@@ -118,6 +126,7 @@ export function Edituser() {
                 </td>
                 <td>
                   <input
+                    required
                     type='text'
                     name="surname"
                     value={updateuser.surname}
@@ -126,6 +135,7 @@ export function Edituser() {
                 </td>
                 <td>
                   <input
+                    required
                     type='email'
                     className="email"
                     name="email"
@@ -154,12 +164,15 @@ export function Edituser() {
                 </td>
                 <td>
                   <input
-                    type='text'
+                    required
+                    type='checkbox'
                     className="admin"
                     name="admin"
                     value={updateuser.admin}
                     onChange={handleChange}
+
                   />
+
                 </td>
 
               </tr>

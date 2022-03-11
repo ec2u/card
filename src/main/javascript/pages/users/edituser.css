@@ -9,6 +9,11 @@
 .users {
   width: 95%;
   margin-top: 40px;
+  & .users-link {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+  }
 
   & .topnav-edit {
     display: grid;
@@ -48,7 +53,8 @@
       width: 280px;
     }
     & .admin {
-      width: 70px;
+      width: 30px;
+      height: 30px;
     }
   }
 

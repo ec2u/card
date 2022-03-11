@@ -9,6 +9,11 @@
 .cards {
   width: 95%;
   margin-top: 40px;
+  & .cards-link {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+  }
 
   & .topnav-cardinspect {
     display: grid;

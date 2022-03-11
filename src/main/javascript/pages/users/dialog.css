@@ -15,11 +15,25 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: lightgray;
+  background: rgb(153, 152, 152);
   border-radius: 25px;
   width: 22%;
   height: 25vh;
+  /* transition: 0.007s; */
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+.header:visible {
+  transform: translateX(60%) scale(1);
+}
+.delete {
+  position: fixed;
+}
+/* .close {
+  margin-bottom: 55%;
+  font-size: 20px;
+  margin-left: ;
+} */
+
 .data {
   display: flex;
   align-items: center;
@@ -46,6 +60,7 @@ body {
   border: 1px solid black;
   cursor: pointer;
   transition: 0.7s;
+  background: lightgray;
 }
 .yes:hover {
   background: green;
@@ -58,6 +73,7 @@ body {
   border: 1px solid black;
   cursor: pointer;
   transition: 0.7s;
+  background: lightgray;
 }
 
 .no:hover {

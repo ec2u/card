@@ -46,6 +46,8 @@ export function Editcard() {
         label: updatecard.label
     };
 
+
+
     const handleEdit = () => {
         fetch(`/cards/${id}`, {
             method: "PUT",
@@ -72,14 +74,17 @@ export function Editcard() {
         <div>
             <div className={"cards"}>
                 <div className={"topnav-cardedit"}>
-                    <div> Cards</div>
+                    <div> <Link to='/cards/' className="cards-link"> Cards</Link></div>
                     <div>
                         <ChevronRight size={35} />
                     </div>
 
                     <div>{updatecard.holderSurName}</div>
                     <div>
-                        < Check size={40} onClick={handleEdit} />
+                        <Link to={`${updatecard.id}`}>
+                            < Check size={40} onClick={handleEdit} className='button-check' />
+                        </Link>
+
                     </div>
                     <div>
                         <Trash size={38} className={"button-trash"} onClick={Showpopup} />
@@ -125,7 +130,7 @@ export function Editcard() {
                                 </td>
                                 <td>
                                     <input
-                                        type='Date'
+                                        type='text'
                                         className="expiringDate"
                                         name="expiringDate"
                                         value={updatecard.expiringDate}
@@ -153,7 +158,7 @@ export function Editcard() {
                                 <td>
                                     <input
                                         className="virtualCardNumber"
-                                        name="cardnumber"
+                                        name="virtualCardNumber"
                                         value={updatecard.virtualCardNumber}
                                         onChange={handleChange}
                                     />

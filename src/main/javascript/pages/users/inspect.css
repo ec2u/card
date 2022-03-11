@@ -9,6 +9,11 @@
 .users {
   width: 95%;
   margin-top: 40px;
+  & .users-link {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+  }
 
   & .topnav-inspect {
     display: grid;
