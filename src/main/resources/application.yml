@@ -8,18 +8,18 @@ spring:
     resources:
       static-locations: classpath:/static/
 
-  security:
-    saml2:
-      relyingparty:
-        registration:
-
-          google:
-            identityprovider:
-              entity-id: https://accounts.google.com/o/saml2?idpid=C010aus0d
-              verification.credentials:
-                - certificate-location: "classpath:saml/google.crt"
-              singlesignon.url: https://accounts.google.com/o/saml2/idp?idpid=C010aus0d
-              singlesignon.sign-request: false
+  #  security:
+  #    saml2:
+  #      relyingparty:
+  #        registration:
+  #
+  #          google:
+  #            identityprovider:
+  #              entity-id: https://accounts.google.com/o/saml2?idpid=C010aus0d
+  #              verification.credentials:
+  #                - certificate-location: "classpath:saml/google.crt"
+  #              singlesignon.url: https://accounts.google.com/o/saml2/idp?idpid=C010aus0d
+  #              singlesignon.sign-request: false
 
   cloud:
     gcp:

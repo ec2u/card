@@ -1,8 +1,8 @@
 /*
- * Copyright © 2022 EC2U Consortium. All rights reserved.
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-import { icon } from "@metreeca/tile";
+import { icon } from "@metreeca/../../../../../../../Products/Node/code/tile";
 import React, { useEffect, useState } from "react";
 import { AiOutlineIdcard, AiOutlineKey, AiOutlineUser } from "react-icons/ai";
 import { FiUsers } from "react-icons/fi";

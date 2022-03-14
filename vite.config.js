@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 EC2U Consortium. All rights reserved.
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
 import {defineConfig} from "vite";
@@ -26,7 +26,6 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 
     resolve: {
         alias: {
-            "@metreeca": resolve(src, "@node"),
             "@ec2u/card": resolve(src)
         }
     },

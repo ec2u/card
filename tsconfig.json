@@ -7,7 +7,7 @@
         "outDir": "target/classes/static/",
         "paths": {
             "@metreeca/*": [
-                "@node/*"
+                "../../../node_modules/@metreeca/*"
             ],
             "@ec2u/card/*": [
                 "*"

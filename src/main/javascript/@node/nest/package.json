@@ -1,9 +1,0 @@
-{
-    "name": "@metreeca/nest",
-    "version": "0.0.0",
-    "description": "State-managing React contexts",
-    "main": "index.ts",
-    "dependencies": {
-        "@metreeca/hook": "^0.0.0"
-    }
-}

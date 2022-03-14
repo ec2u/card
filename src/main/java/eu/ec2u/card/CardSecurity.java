@@ -1,7 +1,7 @@
 
 
 /*
- * Copyright © 2020-2022 EC2U Consortium. All rights reserved.
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
 package eu.ec2u.card;
@@ -35,14 +35,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class CardSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired private Environment environment;
-    @Autowired private RelyingPartyRegistrationRepository relyingPartyRegistrationRepository;
+    @Autowired private RelyingPartyRegistrationRepository parties;
 
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-
-        final RelyingPartyRegistrationResolver relyingPartyRegistrationResolver=
-                new DefaultRelyingPartyRegistrationResolver(relyingPartyRegistrationRepository);
 
         http
 
@@ -60,11 +57,16 @@ public class CardSecurity extends WebSecurityConfigurerAdapter {
                 // publish SAML metadata endpoint at /saml2/service-provider-metadata/{registrationId}
 
                 .addFilterBefore(
-                        new Saml2MetadataFilter(relyingPartyRegistrationResolver, new OpenSamlMetadataResolver()),
+                        new Saml2MetadataFilter(
+                                (RelyingPartyRegistrationResolver)new DefaultRelyingPartyRegistrationResolver(parties),
+                                new OpenSamlMetadataResolver()
+                        ),
                         Saml2WebSsoAuthenticationFilter.class
                 );
 
-        if ( environment.acceptsProfiles(Profiles.of("local")) ) { // disable SSL checks while developing
+        // disable SSL checks when running on local development workstation
+
+        if ( environment.acceptsProfiles(Profiles.of("local")) ) {
 
             final SSLContext context=SSLContext.getInstance("TLS");
 
