@@ -1,9 +1,0 @@
-{
-    "name": "@metreeca/tile",
-    "version": "0.0.0",
-    "description": "Basic UI widgets",
-    "main": "index.ts",
-    "dependencies": {
-        "@metreeca/nest": "^0.0.0"
-    }
-}
