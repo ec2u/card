@@ -15,22 +15,23 @@
     cursor: pointer;
   }
 
-  & .topnav-inspect {
+  & .topnav-edit {
     display: grid;
-    grid-template-columns: 5% 3% 88% 0%;
+    grid-template-columns: 5% 3% 80% 4% 4% 4%;
     font-size: 30px;
-    width: 100%;
   }
-  & .grid-container-inspect {
-    margin-top: 80px;
+
+  & .grid-container-edit {
+    margin-top: 70px;
     display: grid;
     text-align: left;
   }
-  & .tr-inspect {
+  & .tr-edit {
     width: 100%;
     display: grid;
-    grid-template-columns: 20% 20% 54% 20%;
+    grid-template-columns: 15% 15% 20% 15% 29% 18%;
     padding: 6px;
+    align-items: center;
   }
 
   & tr:nth-child(even) {
@@ -40,7 +41,21 @@
     color: rgb(177, 171, 171);
   }
   & td {
-    font-size: 22px;
+    font-size: 21px;
+    & input {
+      padding: 5px;
+      width: 170px;
+      border-radius: 5px;
+      border: 1px solid black;
+      font-size: 21px;
+    }
+    & .email {
+      width: 280px;
+    }
+    & .admin {
+      width: 30px;
+      height: 30px;
+    }
   }
 
   & .solid {
@@ -51,13 +66,13 @@
   & .button {
     cursor: pointer;
     color: black;
+    margin-top: 5px;
   }
-  & .button-plus {
+  & .button-trash {
     cursor: pointer;
     color: black;
   }
-  & .checkbox {
-    width: 28px;
-    height: 28px;
+  & .button-trash:hover {
+    color: red;
   }
 }

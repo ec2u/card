@@ -7,26 +7,25 @@
 }
 
 .users {
-  width: 97%;
+  width: 95%;
   margin-top: 40px;
 
-  & .topnav {
+  & .topnav-add {
     display: grid;
-    grid-template-columns: 97.3% 20%;
+    grid-template-columns: 90% 5% 20%;
     font-size: 30px;
     width: 100%;
   }
-  & .grid-container {
-    margin-top: 40px;
+  & .grid-container-add {
+    margin-top: 80px;
     display: grid;
     text-align: left;
   }
-  & tr {
+  & .tr-add {
     width: 100%;
     display: grid;
-    grid-template-columns: 20% 20% 58% 20%;
+    grid-template-columns: 20% 20% 54% 20%;
     padding: 6px;
-    align-items: center;
   }
 
   & tr:nth-child(even) {
@@ -36,20 +35,31 @@
     color: rgb(177, 171, 171);
   }
   & td {
-    font-size: 21px;
+    font-size: 22px;
   }
 
   & .solid {
-    width: 101%;
+    width: 102%;
     background-color: lightgray;
     border: 1px solid rgb(189, 185, 185);
   }
-  & .button {
+
+  & .button-check {
     cursor: pointer;
     color: black;
+    transition: 0.7s;
   }
-  & .button-plus {
+  & .button-check:hover {
+    color: green;
+  }
+  & .button-close {
     cursor: pointer;
     color: black;
+    transition: 0.6s;
+  }
+  & .button-close:hover {
+    color: red;
+  }
+  & .email {
   }
 }

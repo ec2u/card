@@ -1,4 +1,4 @@
-import { Edit } from "lucide-react";
+import { ChevronRight, Edit, Trash } from "lucide-react";
 import React, { createElement, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import "./inspect.css";
@@ -22,8 +22,9 @@ const user: User = {
 };
 
 export function Inspect() {
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User>({} as User);
   const { id } = useParams();
+
 
   useEffect(() => {
     fetch(`/users/${id}`, {
@@ -35,23 +36,28 @@ export function Inspect() {
       .then((data) => setUser(data));
   }, []);
 
-  return createElement(
-    "card-user",
-    {},
-    <div className={"users"}>
-      <div className={"topnav"}>
-        <span> Users</span>
-        <span className={"button"}>
-          <Link to={`/edit123`}>
-            <Edit size={38} className={"button-plus"} />
+
+  return (
+    <div className="users">
+      <div className="topnav-inspect">
+        <span>
+          <Link className="users-link" to='/users/'>Users</Link></span>
+        <span>
+          <ChevronRight size={35} />
+        </span>
+
+        <span>{user.surname}</span>
+        <span>
+          <Link to={`/edit${user.id}`}>
+            <Edit size={38} className="button-plus" />
           </Link>
         </span>
       </div>
 
-      <div className="grid-container">
+      <div className="grid-container-inspect">
         <table>
           <thead>
-            <tr className="tr-grid">
+            <tr className="tr-inspect">
               <th>forename</th>
               <th>surname</th>
               <th>email</th>
@@ -60,19 +66,20 @@ export function Inspect() {
             </tr>
           </thead>
 
-          <hr className={"solid"} />
+          <hr className="solid" />
 
-          {/* <tbody>
-            {user.map((data) => {
-              return (
-                <tr key={data.id}>
-                  <td>{data.forename}</td>
-                  <td>{data.surname}</td>
-                  <td>{data.email}</td>
-                </tr>
-              );
-            })}
-          </tbody> */}
+          <tbody>
+            <tr className="tr-inspect" key={user.id}>
+              <td>{user.forename}</td>
+              <td>{user.surname}</td>
+              <td>{user.email}</td>
+              <td >
+
+                <input className="checkbox" type="checkbox" checked={user.admin} disabled />
+
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>

@@ -6,29 +6,28 @@
   padding: 0;
 }
 
-.users {
-  width: 97%;
+.cards {
+  width: 95%;
   margin-top: 40px;
 
-  & .topnav {
+  & .topnav-cards {
     display: grid;
     grid-template-columns: 97.3% 20%;
     font-size: 30px;
     width: 100%;
   }
-  & .grid-container {
+  & .grid-container-cards {
     margin-top: 40px;
     display: grid;
     text-align: left;
   }
-  & tr {
+  & .tr-cards {
     width: 100%;
     display: grid;
-    grid-template-columns: 20% 20% 58% 20%;
+    grid-template-columns: 15% 13% 25% 45% 10%;
     padding: 6px;
     align-items: center;
   }
-
   & tr:nth-child(even) {
     background-color: rgb(197, 194, 194);
   }
@@ -36,19 +35,22 @@
     color: rgb(177, 171, 171);
   }
   & td {
-    font-size: 21px;
+    font-size: 20px;
   }
-
-  & .solid {
+  & .solid-cards {
     width: 101%;
     background-color: lightgray;
     border: 1px solid rgb(189, 185, 185);
   }
-  & .button {
+  & .button-search {
     cursor: pointer;
     color: black;
   }
   & .button-plus {
+    cursor: pointer;
+    color: black;
+  }
+  & .button-arrow {
     cursor: pointer;
     color: black;
   }
