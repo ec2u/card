@@ -2,7 +2,6 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-
 body {
     width: 100%;
     height: 100%;
@@ -11,6 +10,7 @@ body {
 
 
 card-root {
+
     width: 100%;
     height: 100%;
 

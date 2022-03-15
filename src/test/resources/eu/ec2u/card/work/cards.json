@@ -1,0 +1,30 @@
+[
+    {
+        "europeanStudentCardNumber": "5c73911f-919f-1035-b4c2-001932465465",
+        "cardType": 1,
+        "cardUid": "8",
+        "student": {
+            "europeanStudentIdentifier": "IT-999893752-554433",
+            "picInstitutionCode": 999893752,
+            "emailAddress": "luigi.santangelo@unipv.it",
+            "expiryDate": "2021-01-10T09:45:11.000Z",
+            "name": "Luigi Santangelo",
+            "phoneNumber": "393289499818",
+            "academicLevel": 8
+        }
+    },
+    {
+        "europeanStudentCardNumber": "aec54890-72b1-1039-8e5f-001999893752",
+        "cardType": 1,
+        "cardUid": "8",
+        "student": {
+            "europeanStudentIdentifier": "urn:schac:personalUniqueCode:int:esi:unipv.it:444111",
+            "picInstitutionCode": 999893752,
+            "emailAddress": "luigi.santangelo@unipv.it",
+            "expiryDate": "2022-01-10T09:45:11.000Z",
+            "name": "Luigi Santangelo",
+            "phoneNumber": "393289499818",
+            "academicLevel": 8
+        }
+    }
+]

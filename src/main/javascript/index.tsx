@@ -2,33 +2,33 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-import { isDefined } from "@metreeca/core";
+import { CardCard } from "@ec2u/card/views/card";
 import * as React from "react";
 import { render } from "react-dom";
 import "./index.css";
-import { NodeKeeper } from "@metreeca/nest/keeper;
 
 
-isDefined(null);
 render((
 
     <React.StrictMode>
 
-        <NodeFetcher>
-            <NodeKeeper>
+        <CardCard/>
 
-                <NodePage>
-                    ciao!
-                </NodePage>
+        {/*<NodeFetcher>
+         <NodeKeeper>
 
-                {/*<CardGate>
+         <NodePage>
+         ciao!
+         </NodePage>
 
-                 <CardMain/>
+         <CardGate>
 
-                 </CardGate>*/}
+         <CardMain/>
 
-            </NodeKeeper>
-        </NodeFetcher>
+         </CardGate>
+
+         </NodeKeeper>
+         </NodeFetcher>*/}
 
     </React.StrictMode>
 
