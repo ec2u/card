@@ -22,6 +22,16 @@ export function CardPage({
 
     const [profile, setProfile]=useKeeper();
 
+
+    function doLogIn() {
+        setProfile(true);
+    }
+
+    function doLogOut() {
+        setProfile(false);
+    }
+
+
     return createElement("card-page", {}, <>
 
         <aside>
@@ -37,8 +47,8 @@ export function CardPage({
 
             <footer>{isDefined(profile)
 
-                ? <button onClick={() => setProfile(null)}><LogOut/></button>
-                : <button onClick={() => setProfile({})}><LogIn/></button>
+                ? <button title={"Log Out"} onClick={doLogOut}><LogOut/></button>
+                : <button title={"Log In"} onClick={doLogIn}><LogIn/></button>
 
             }</footer>
 

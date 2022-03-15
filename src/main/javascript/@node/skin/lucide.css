@@ -20,7 +20,10 @@
     display: inline-block;
 
     width: 1em;
-    aspect-ratio: 1;
+    height: 1em;
+
+    text-align: center;
+    vertical-align: middle;
 
     transform: translateY(-5%);
 

@@ -3,6 +3,8 @@
  */
 
 import { Profile } from "@ec2u/card/nests/keeper";
+import { useKeeper } from "@metreeca/nest/keeper";
+import { LogOut } from "@metreeca/skin/lucide";
 import React, { createElement } from "react";
 import "./virtual.css";
 
@@ -17,13 +19,26 @@ export function CardVirtual({
 
 }) {
 
+    const [, setProfile]=useKeeper();
+
+
+    function doHome() {
+        setProfile(false);
+    }
+
+    function doLogOut() {
+        setProfile(false);
+    }
+
+
     return createElement("card-virtual", {}, <>
 
-        <button style={{ backgroundImage: "url('/assets/identity.svg')" }}/>
+        <button id={"home"} title={"Home"} onClick={doHome} style={{ backgroundImage: "url('/assets/identity.svg')" }}/>
+        <button id={"logout"} title={"Close"} onClick={doLogOut}><LogOut/></button>
 
-        <div title={"Photo ID"} style={{ backgroundImage: "url('/assets/mock/photo.png')" }}/>
-        <div title={"QR Code"} style={{ backgroundImage: "url('/assets/mock/qr.png')" }}/>
-        <div title={"ESC Hologram"} style={{ backgroundImage: "url('/assets/hologram.png')" }}/>
+        <div id={"id"} title={"Photo ID"} style={{ backgroundImage: "url('/assets/mock/photo.png')" }}/>
+        <div id={"qr"} title={"QR Code"} style={{ backgroundImage: "url('/assets/mock/qr.png')" }}/>
+        <div id={"esc"} title={"ESC Hologram"} style={{ backgroundImage: "url('/assets/hologram.png')" }}/>
 
         <dl>
 

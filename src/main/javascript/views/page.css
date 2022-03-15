@@ -67,7 +67,9 @@ card-page {
         align-items: center;
 
         border-right-style: solid;
-        font-size: 2rem;
+        font-size: 3rem;
+
+        color: var(--node--color-light);
 
         & > * {
             padding-left: 1rem;

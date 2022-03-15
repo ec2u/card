@@ -52,6 +52,9 @@ export function CardKeeper({
     }
 
     function logout() {
+
+        console.log("out!");
+
         return fetch("/logout", { method: "POST" }).then(response => {
 
             if ( !response.ok ) {
