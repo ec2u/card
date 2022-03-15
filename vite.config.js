@@ -25,9 +25,10 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
     },
 
     resolve: {
-        alias: {
-            "@ec2u/card": resolve(src)
-        }
+        alias: [
+            { find: /^@ec2u\/card\/(.*)$/, replacement: resolve(src, "$1") },
+            { find: /^@metreeca\/nests\/(.*)$/, replacement: resolve(src, "nests/$1") }
+        ]
     },
 
     build: {

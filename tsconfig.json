@@ -6,8 +6,8 @@
         "baseUrl": "src/main/javascript",
         "outDir": "target/classes/static/",
         "paths": {
-            "@metreeca/*": [
-                "../../../node_modules/@metreeca/*"
+            "@metreeca/nests/*": [
+                "nests/*"
             ],
             "@ec2u/card/*": [
                 "*"

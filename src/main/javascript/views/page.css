@@ -1,0 +1,79 @@
+/*
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
+ */
+
+card-page {
+
+    display: grid;
+
+    grid-template-rows: 1fr;
+    grid-template-columns: min-content 1fr;
+
+    & > * {
+
+        grid-row: 1;
+
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+
+        & > * {
+            flex-shrink: 0;
+        }
+
+        & > header {
+
+            display: flex;
+
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+
+            white-space: nowrap;
+
+            font-size: 200%;
+
+            & > button {
+
+                & > i {
+
+                    display: inline-block;
+                    width: 1em;
+                    aspect-ratio: 1;
+
+                    background-position: center;
+                    background-size: contain;
+                    background-repeat: no-repeat;
+
+                }
+
+            }
+
+        }
+
+        & > section {
+            flex-grow: 1;
+        }
+
+    }
+
+    & > aside {
+
+        border-right-style: solid;
+
+        & > * {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+    }
+
+    & > main {
+
+        & > * {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+    }
+
+}
