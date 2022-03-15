@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { wrap } from "@metreeca/nests/network";
+import { wrap } from "@metreeca/head/network";
 import { createContext, createElement, ReactNode, useContext, useState } from "react";
 
 

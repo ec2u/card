@@ -2,9 +2,9 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-import { isDefined } from "@metreeca/../../../../../../../Products/Node/code/core";
-import { useFetcher } from "@metreeca/../../../../../../../Products/Node/code/nest/fetcher";
-import { useKeeper } from "@metreeca/../../../../../../../Products/Node/code/nest/keeper";
+import { isDefined } from "@metreeca/core";
+import { useFetcher } from "@metreeca/nest/fetcher";
+import { useKeeper } from "@metreeca/nest/keeper";
 import * as React from "react";
 import { createElement, ReactNode, useEffect } from "react";
 import "./gate.css";
@@ -38,7 +38,13 @@ export function CardGate({
 
                 if ( response.ok ) {
 
-                    response.json().then(({ profile }) => setProfile(profile));
+
+                    response.json().then(({ profile }) => {
+
+                        console.log(profile);
+
+                        return setProfile(profile);
+                    });
 
                 } else {
 
@@ -63,6 +69,9 @@ export function CardGate({
 
         });
     }
+
+
+    console.log(profile);
 
     return createElement("card-gate", {}, isDefined(profile)
 

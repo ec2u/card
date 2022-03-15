@@ -2,7 +2,7 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-import { icon, name } from "@ec2u/card/index";
+import { icon, name } from "@metreeca/head";
 import React, { createElement, ReactNode } from "react";
 import "./page.css";
 
