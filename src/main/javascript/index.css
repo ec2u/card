@@ -2,78 +2,12 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Inconsolata&family=Quicksand:wght@400;600&display=swap');
-
 :root {
-
-    --card--font-size: 16pt;
-
-    --card--color: #000;
 
     --card--color-accent-lite: #F7D638;
     --card--color-accent-dark: #162372;
 
-    --card--color-light: #BBB;
-    --card--color-placeholder: #BBB;
-    --card--color-enabled: #567;
-    --card--color-disabled: #CCC;
-    --card--color-invalid: #D60;
-
-    --card--color-hover: #B50;
-    --card--color-focus: #789;
-
-    --card--background-color: #FFF;
-    --card--background-color-edit: #F1F2F4;
-    --card--background-color-stripe: #F4F4F4;
-
-    --card--border-style: solid;
-    --card--border-color: #CCC;
-    --card--border-width: 1px;
-
-    --card--box-shadow-focus: 0 0 2px 1px var(--card--color-focus);
-
 }
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    outline: none var(--card--border-width) var(--card--border-color);
-    border: none var(--card--border-width) var(--card--border-color);
-    overflow: visible;
-    font-family: inherit;
-    font-style: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    color: inherit;
-    background-color: inherit;
-}
-
-[hidden] {
-    display: none;
-}
-
-
-/**** Fonts ***********************************************************************************************************/
-
-body {
-    font-family: Quicksand, Arial, sans-serif;
-    font-weight: 400;
-}
-
-a {
-    font-weight: 600;
-}
-
-strong {
-    font-weight: 600;
-}
-
-code {
-    font-family: Inconsolata, Courier, monospace;
-    font-weight: 400;
-}
-
 
 /**** Layout **********************************************************************************************************/
 

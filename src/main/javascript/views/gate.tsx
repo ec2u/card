@@ -2,20 +2,13 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
+import { Profile } from "@ec2u/card/nests/keeper";
+import { CardHome } from "@ec2u/card/pages/home";
+import { CardVirtual } from "@ec2u/card/pages/virtual";
 import { isDefined } from "@metreeca/core";
-import { useFetcher } from "@metreeca/nest/fetcher";
 import { useKeeper } from "@metreeca/nest/keeper";
 import * as React from "react";
-import { createElement, ReactNode, useEffect } from "react";
-import "./gate.css";
-
-
-interface Profile {
-
-    readonly code: string;
-    readonly email: string;
-
-}
+import { ReactNode } from "react";
 
 
 export function CardGate({
@@ -28,54 +21,10 @@ export function CardGate({
 
 }) {
 
-    const [fetching, fetch]=useFetcher();
-    const [profile, setProfile]=useKeeper<Profile>();
+    const [profile]=useKeeper<Profile>();
 
-    useEffect(() => {
-
-        if ( !isDefined(profile) ) {
-            fetch("/").then(response => {
-
-                if ( response.ok ) {
-
-                    response.json().then(({ profile }) => setProfile(profile));
-
-                } else {
-
-                    // !!! notify
-
-                }
-
-            });
-        }
-
-    }, [profile]);
-
-
-    function doLogIn() {
-        location.assign("/login");
-    }
-
-    function doLogOut() {
-        fetch("/logout", { method: "POST" }).finally(() => {
-
-            setProfile(undefined);
-
-        });
-    }
-
-
-    return createElement("card-gate", {}, isDefined(profile)
-
-        ? <>
-            <span>ciao {profile.code}!</span>
-            <button onClick={doLogOut}>Log Out</button>
-        </>
-
-        : <>
-            <span>ciao!</span>
-            <button onClick={doLogIn}>Log In</button>
-        </>
-    );
+    return isDefined(profile)
+        ? <CardVirtual profile={profile}/>
+        : <CardHome/>;
 
 }

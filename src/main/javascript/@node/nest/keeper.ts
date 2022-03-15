@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Optional } from "@metreeca/core";
-import { createContext, createElement, ReactNode, useContext, useState } from "react";
+import { isDefined, Optional } from "@metreeca/core";
+import { createContext, createElement, ReactNode, useContext, useEffect, useState } from "react";
 
 
 /**
@@ -52,9 +52,9 @@ export interface Updater<P=unknown> {
     /**
      * Updates the user profile.
      *
-     * @param profile the updated user profile; `undefined` if logging out
+     * @param active initiates a login sequence if `true` or a `logout` sequence if `false`
      */
-    (profile: Optional<P>): void;
+    (active: boolean): void;
 
 }
 
@@ -71,9 +71,17 @@ export interface Updater<P=unknown> {
  */
 export function NodeKeeper<P>({
 
+    actions: { test, login, logout },
+
     children
 
 }: {
+
+    actions: {
+        test: () => Promise<Optional<P>>,
+        login: () => Promise<Optional<P>>,
+        logout: () => Promise<Optional<P>>
+    }
 
     children: ReactNode
 
@@ -82,9 +90,22 @@ export function NodeKeeper<P>({
     const [profile, setProfile]=useState<P>();
 
 
+    useEffect(() => {
+
+        if ( !isDefined(profile) ) {test().then(setProfile); }
+
+    }, [profile]);
+
+
     return createElement(Context.Provider, {
 
-        value: [profile as unknown, (profile: Optional<unknown>) => setProfile(profile as Optional<P>)],
+        value: [
+
+            profile as unknown,
+
+            (active: boolean) => (active ? login : logout)().then(setProfile)
+
+        ],
 
         children
 

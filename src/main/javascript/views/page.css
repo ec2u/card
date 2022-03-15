@@ -30,7 +30,7 @@ card-page {
 
             white-space: nowrap;
 
-            font-size: 200%;
+            font-size: 3rem;
 
             & > button {
 
@@ -54,11 +54,20 @@ card-page {
             flex-grow: 1;
         }
 
+        & > footer {
+
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+
     }
 
     & > aside {
 
+        align-items: center;
+
         border-right-style: solid;
+        font-size: 2rem;
 
         & > * {
             padding-left: 1rem;

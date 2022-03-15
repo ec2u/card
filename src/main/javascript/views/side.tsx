@@ -7,7 +7,6 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineIdcard, AiOutlineKey, AiOutlineUser } from "react-icons/ai";
 import { FiUsers } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import "../style.css";
 
 
 const Side=(props: any) => {

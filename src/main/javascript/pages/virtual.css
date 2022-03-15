@@ -19,6 +19,8 @@ card-virtual {
     padding: 5vmin;
     grid-gap: 1em;
 
+    font-size: 12pt;
+
     & > button {
 
         grid-area: 1 / 1 / span 2 / span 1;

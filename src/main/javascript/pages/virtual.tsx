@@ -2,11 +2,20 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
+import { Profile } from "@ec2u/card/nests/keeper";
 import React, { createElement } from "react";
 import "./virtual.css";
 
 
-export function CardVirtual() {
+export function CardVirtual({
+
+    profile
+
+}: {
+
+    profile: Profile
+
+}) {
 
     return createElement("card-virtual", {}, <>
 
