@@ -2,7 +2,7 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-card-card {
+card-virtual {
 
     --qr-size: calc(min(25vh, 7.5em));
 
@@ -34,10 +34,12 @@ card-card {
         text-align: right;
 
         &:not(:first-of-type) {
-            margin-top: -0.2em;
+            margin-top: -0.25em;
         }
 
         & > dt {
+
+            margin-bottom: 0.1em;
 
             color: #999;
 

@@ -38,13 +38,7 @@ export function CardGate({
 
                 if ( response.ok ) {
 
-
-                    response.json().then(({ profile }) => {
-
-                        console.log(profile);
-
-                        return setProfile(profile);
-                    });
+                    response.json().then(({ profile }) => setProfile(profile));
 
                 } else {
 
@@ -70,8 +64,6 @@ export function CardGate({
         });
     }
 
-
-    console.log(profile);
 
     return createElement("card-gate", {}, isDefined(profile)
 

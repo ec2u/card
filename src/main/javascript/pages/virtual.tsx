@@ -3,12 +3,12 @@
  */
 
 import React, { createElement } from "react";
-import "./card.css";
+import "./virtual.css";
 
 
-export function CardCard() {
+export function CardVirtual() {
 
-    return createElement("card-card", {}, <>
+    return createElement("card-virtual", {}, <>
 
         <button style={{ backgroundImage: "url('/assets/identity.svg')" }}/>
 
