@@ -56,8 +56,8 @@ card-page {
         }
 
         & > section {
-            padding-top: 1em;
-            padding-bottom: 1em;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
             flex-grow: 1;
         }
 
@@ -78,8 +78,20 @@ card-page {
         color: var(--node--color-light);
 
         & > * {
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        & > section {
+
+            & > * {
+
+                &:not(:first-child) {
+                    margin-top: 0.5em;
+                }
+
+            }
+
         }
 
     }
@@ -88,8 +100,8 @@ card-page {
 
         & > * {
             max-width: 50em;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
         }
 
         & > footer {

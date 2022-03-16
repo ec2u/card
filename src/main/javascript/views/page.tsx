@@ -3,9 +3,9 @@
  */
 
 import { isDefined } from "@metreeca/core";
-import { copy, name } from "@metreeca/head";
+import { copy } from "@metreeca/head";
 import { useKeeper } from "@metreeca/nest/keeper";
-import { LogIn, LogOut } from "@metreeca/skin/lucide";
+import { CreditCard, Key, LogIn, LogOut, Users } from "@metreeca/skin/lucide";
 import { NodeIcon } from "@metreeca/tile/icon";
 import React, { createElement, ReactNode } from "react";
 import "./page.css";
@@ -13,9 +13,13 @@ import "./page.css";
 
 export function CardPage({
 
+    name,
+
     children
 
 }: {
+
+    name: ReactNode
 
     children: ReactNode
 
@@ -41,7 +45,11 @@ export function CardPage({
                 <a href={"/"}><NodeIcon/></a>
             </header>
 
-            <section></section>
+            <section>
+                <a href={"/cards/"}><CreditCard/></a>
+                <a href={"/users/"}><Users/></a>
+                <a href={"/users/"}><Key/></a>
+            </section>
 
             <footer>{isDefined(profile)
 

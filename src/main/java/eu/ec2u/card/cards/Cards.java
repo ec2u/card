@@ -1,29 +1,35 @@
+/*
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
+ */
+
 package eu.ec2u.card.cards;
 
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-import eu.ec2u.card.Tool.*;
-import eu.ec2u.card.cards.Cards.*;
+import eu.ec2u.card.Card.ResourceData;
+import eu.ec2u.card.cards.Cards.Card;
 import lombok.Getter;
 import lombok.Setter;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+
 import java.util.Date;
 import java.util.Optional;
-import static eu.ec2u.card.ToolConfiguration.LinePattern;
-import static eu.ec2u.card.ToolConfiguration.LineSize;
+
+import javax.validation.constraints.*;
+
+import static eu.ec2u.card.CardConfiguration.LinePattern;
+import static eu.ec2u.card.CardConfiguration.LineSize;
+
 import static java.lang.String.format;
 
 
 @Getter
 @Setter
-public class Cards extends Container<Card> {
+public class Cards extends eu.ec2u.card.Card.Container<Card> {
 
 	static final String Id="/cards/";
 
 	@Getter
 	@Setter
-	static final class Card extends Resource {
+	static final class Card extends eu.ec2u.card.Card.Resource {
 
 		@NotNull
 		@Size(max=LineSize)

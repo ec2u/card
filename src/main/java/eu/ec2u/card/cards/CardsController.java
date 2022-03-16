@@ -1,10 +1,13 @@
+/*
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
+ */
+
 package eu.ec2u.card.cards;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import eu.ec2u.card.Tool.Container;
-import eu.ec2u.card.Tool.Resource;
-import eu.ec2u.card.ToolSecurity;
-import eu.ec2u.card.ToolSecurity.Profile;
+import eu.ec2u.card.Card.Container;
+import eu.ec2u.card.Card.Resource;
+import eu.ec2u.card.CardSecurity.Profile;
 import eu.ec2u.card.cards.Cards.Card;
 import eu.ec2u.card.events.EventsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-import static eu.ec2u.card.ToolConfiguration.ContainerSize;
+import static eu.ec2u.card.CardConfiguration.ContainerSize;
 import static eu.ec2u.card.events.Events.Action.*;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
@@ -50,7 +53,7 @@ public final class CardsController {
 	@PostMapping("")
 	ResponseEntity<Void> post(
 
-			@AuthenticationPrincipal final ToolSecurity.Profile profile,
+			@AuthenticationPrincipal final Profile profile,
 			@Valid @RequestBody final Card card
 
 	) {
@@ -61,7 +64,7 @@ public final class CardsController {
 	@JsonView(Resource.class)
 	ResponseEntity<Card> get(
 
-			@AuthenticationPrincipal final ToolSecurity.Profile profile,
+			@AuthenticationPrincipal final Profile profile,
 			@PathVariable final long id
 
 	) {
@@ -71,7 +74,7 @@ public final class CardsController {
 	@PutMapping("{id}")
 	ResponseEntity<Void> put(
 
-			@AuthenticationPrincipal final ToolSecurity.Profile profile,
+			@AuthenticationPrincipal final Profile profile,
 			@PathVariable final long id,
 			@Valid @RequestBody final Card card
 

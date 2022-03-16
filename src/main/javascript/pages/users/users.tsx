@@ -1,82 +1,91 @@
-import { ChevronRight, Plus, Search } from "lucide-react";
-import React, { createElement, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+/*
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
+ */
+
+import { CardPage } from "@ec2u/card/views/page";
+import React, { useState } from "react";
 import "./users.css";
 
+
 interface Users {
-  contains: User[];
+
+    contains: User[];
 }
 
 interface User {
-  admin: boolean;
+    admin: boolean;
 
-  forename: string;
-  surname: string;
-  email: string;
-  id: any;
+    forename: string;
+    surname: string;
+    email: string;
+    id: any;
+
 }
 
 export function CardUsers() {
-  const [users, setUsers] = useState<User[]>([]);
 
-  useEffect(() => {
-    fetch("/users/", {
-      // !!! factor useContext hook
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setUsers(data.contains));
-  }, []);
+    const [users, setUsers]=useState<User[]>([]);
 
-  return (
-    <div className={"users"}>
-      <div className={"topnav"}>
-        <span> Users</span>
-        <span>
-          <Link to="/users/add">
-            <Plus size={38} className={"button-plus"} />
-          </Link>
-        </span>
-      </div>
+    // useEffect(() => {
+    //   fetch("/users/", {
+    //     // !!! factor useContext hook
+    //     headers: {
+    //       Accept: "application/json",
+    //     },
+    //   })
+    //     .then((response) => response.json())
+    //     .then((data) => setUsers(data.contains));
+    // }, []);
 
-      <div className="grid-container">
-        <table>
-          <thead>
-            <tr>
-              <th>forename</th>
-              <th>surname</th>
-              <th>email</th>
+    return <CardPage name={"Users"}> </CardPage>;
 
-              <th>
-                <Search size={28} className={"button"} />
-              </th>
-            </tr>
-          </thead>
 
-          <hr className={"solid"} />
+    /*<div className={"users"}>
+     <div className={"topnav"}>
+     <span> Users</span>
+     <span>
+     <Link to="/users/add">
+     <Plus size={38} className={"button-plus"} />
+     </Link>
+     </span>
+     </div>
 
-          <tbody>
-            {users.map((user) => {
-              return (
-                <tr key={user.id}>
-                  <td>{user.forename}</td>
-                  <td>{user.surname}</td>
-                  <td>{user.email}</td>
+     <div className={"grid-container"}>
+     <table>
+     <thead>
+     <tr>
+     <th>forename</th>
+     <th>surname</th>
+     <th>email</th>
 
-                  <td>
-                    <Link to={`${user.id}`}>
-                      <ChevronRight size={40} className={"button"} />
-                    </Link>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+     <th>
+     <Search size={28} className={"button"} />
+     </th>
+     </tr>
+     </thead>
+
+     <hr className={"solid"} />
+
+     <tbody>
+     {users.map((user) => {
+     return (
+     <tr key={user.id}>
+     <td>{user.forename}</td>
+     <td>{user.surname}</td>
+     <td>{user.email}</td>
+
+     <td>
+     <Link to={`${user.id}`}>
+     <ChevronRight size={40} className={"button"} />
+     </Link>
+     </td>
+     </tr>
+     );
+     })}
+     </tbody>
+     </table>
+     </div>
+     </div>*/
+
 }
 

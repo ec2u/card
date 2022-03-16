@@ -3,11 +3,12 @@
  */
 
 import { CardPage } from "@ec2u/card/views/page";
+import { name } from "@metreeca/head";
 import React from "react";
 
 
 export function CardHome() {
-    return <CardPage>
+    return <CardPage name={name}>
         <a href={"/me"}>Card</a>
     </CardPage>;
 }
