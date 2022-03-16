@@ -7,5 +7,7 @@ import React from "react";
 
 
 export function CardHome() {
-    return <CardPage>Home</CardPage>;
+    return <CardPage>
+        <a href={"/me"}>Card</a>
+    </CardPage>;
 }

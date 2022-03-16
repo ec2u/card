@@ -9,6 +9,8 @@ card-page {
     grid-template-rows: 1fr;
     grid-template-columns: min-content 1fr;
 
+    overflow: hidden;
+
     & > * {
 
         grid-row: 1;
@@ -17,13 +19,24 @@ card-page {
         flex-direction: column;
         align-items: stretch;
 
+        overflow: hidden auto;
+
         & > * {
             flex-shrink: 0;
         }
 
         & > header {
 
+            z-index: 1;
+            position: sticky;
+            top: 0;
+            box-shadow: 0 0 0.75rem 0.75rem #FFF;
+
+            height: 2em;
+
             display: flex;
+            flex-direction: row;
+            align-items: center;
 
             padding-top: 0.75rem;
             padding-bottom: 0.75rem;
@@ -32,32 +45,25 @@ card-page {
 
             font-size: 3rem;
 
-            & > button {
+            & > a {
 
-                & > i {
-
-                    display: inline-block;
-                    width: 1em;
-                    aspect-ratio: 1;
-
-                    background-position: center;
-                    background-size: contain;
-                    background-repeat: no-repeat;
-
-                }
+                display: flex;
+                flex-direction: row;
+                align-items: center;
 
             }
 
         }
 
         & > section {
+            padding-top: 1em;
+            padding-bottom: 1em;
             flex-grow: 1;
         }
 
         & > footer {
-
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
         }
 
     }
@@ -67,7 +73,7 @@ card-page {
         align-items: center;
 
         border-right-style: solid;
-        font-size: 3rem;
+        font-size: 2.5rem;
 
         color: var(--node--color-light);
 
@@ -81,8 +87,30 @@ card-page {
     & > main {
 
         & > * {
+            max-width: 50em;
             padding-left: 1rem;
             padding-right: 1rem;
+        }
+
+        & > footer {
+
+            white-space: nowrap;
+            font-size: 0.9em;
+            color: #CCC;
+
+            & > a, & > a:visited {
+
+                font: inherit;
+                color: inherit;
+
+                &::before {
+                    content: '';
+                    margin-left: 0.5em;
+                    padding-left: 0.5em;
+                    border-left-style: solid;
+                }
+            }
+
         }
 
     }

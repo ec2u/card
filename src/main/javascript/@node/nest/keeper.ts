@@ -103,7 +103,7 @@ export function NodeKeeper<P>({
 
             profile as unknown,
 
-            (active: boolean) => (active ? login : logout)().then(setProfile)
+            (active: boolean) => setTimeout(() => (active ? login : logout)().then(setProfile), 0)
 
         ],
 

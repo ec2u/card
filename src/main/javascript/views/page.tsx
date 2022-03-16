@@ -3,9 +3,10 @@
  */
 
 import { isDefined } from "@metreeca/core";
-import { copy, icon, name } from "@metreeca/head";
+import { copy, name } from "@metreeca/head";
 import { useKeeper } from "@metreeca/nest/keeper";
 import { LogIn, LogOut } from "@metreeca/skin/lucide";
+import { NodeIcon } from "@metreeca/tile/icon";
 import React, { createElement, ReactNode } from "react";
 import "./page.css";
 
@@ -37,17 +38,14 @@ export function CardPage({
         <aside>
 
             <header>
-                <button>
-                    <i style={{ backgroundImage: `url('${icon}')` }}/>
-                    {/*<span>{name}</span>*/}
-                </button>
+                <a href={"/"}><NodeIcon/></a>
             </header>
 
             <section></section>
 
             <footer>{isDefined(profile)
 
-                ? <button title={"Log Out"} onClick={doLogOut}><LogOut/></button>
+                ? <button title={"Log Out"} onClick={doLogOut}><LogOut style={{ transform: "scaleX(-1)" }}/></button>
                 : <button title={"Log In"} onClick={doLogIn}><LogIn/></button>
 
             }</footer>
@@ -56,7 +54,10 @@ export function CardPage({
 
         <main>
 
-            <header>{name}</header>
+            <header>
+                <span>{name}</span>
+            </header>
+
             <section>{children}</section>
 
             <footer>

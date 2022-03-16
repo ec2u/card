@@ -24,7 +24,7 @@ export function CardGate({
     const [profile]=useKeeper<Profile>();
 
     return isDefined(profile)
-        ? <CardVirtual profile={profile}/>
+        ? <CardVirtual/>
         : <CardHome/>;
 
 }

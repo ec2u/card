@@ -2,9 +2,8 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-import { CardMain } from "@ec2u/card/main";
 import { CardKeeper } from "@ec2u/card/nests/keeper";
-import { CardGate } from "@ec2u/card/views/gate";
+import { CardRouter } from "@ec2u/card/nests/router";
 import { NodeFetcher } from "@metreeca/nest/fetcher";
 import "@metreeca/skin/quicksand.css";
 import * as React from "react";
@@ -19,11 +18,9 @@ render((
         <NodeFetcher>
             <CardKeeper>
 
-                <CardGate>
-
-                    <CardMain/>
-
-                </CardGate>
+                {/*<CardGate>*/}
+                <CardRouter/>
+                {/*</CardGate>*/}
 
             </CardKeeper>
         </NodeFetcher>

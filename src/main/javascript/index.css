@@ -8,12 +8,3 @@
     --card--color-accent-dark: #162372;
 
 }
-
-/**** Layout **********************************************************************************************************/
-
-body, body > * {
-    display: grid;
-    grid-template:100vh / 100vw;
-    align-items: stretch;
-    justify-items: stretch;
-}

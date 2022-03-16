@@ -2,43 +2,42 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-import { Profile } from "@ec2u/card/nests/keeper";
+import { isDefined } from "@metreeca/core";
 import { useKeeper } from "@metreeca/nest/keeper";
+import { useRouter } from "@metreeca/nest/router";
 import { LogOut } from "@metreeca/skin/lucide";
-import React, { createElement } from "react";
+import React, { createElement, useEffect } from "react";
 import "./virtual.css";
 
 
-export function CardVirtual({
+export function CardVirtual() {
 
-    profile
+    const [profile, setProfile]=useKeeper();
+    const [, setRoute]=useRouter();
 
-}: {
+    console.log(profile);
 
-    profile: Profile
+    useEffect(() => {
 
-}) {
+        if ( !isDefined(profile) ) { setProfile(true); }
 
-    const [, setProfile]=useKeeper();
+    }, [profile]);
 
-
-    function doHome() {
-        setProfile(false);
-    }
 
     function doLogOut() {
-        setProfile(false);
+        // setProfile(false);
+        setRoute("/");
     }
 
 
     return createElement("card-virtual", {}, <>
 
-        <button id={"home"} title={"Home"} onClick={doHome} style={{ backgroundImage: "url('/assets/identity.svg')" }}/>
-        <button id={"logout"} title={"Close"} onClick={doLogOut}><LogOut/></button>
+        <a title={"Home"} href={"/"} style={{ backgroundImage: "url('/assets/identity.svg')" }}/>
+        <button title={"Close"} onClick={doLogOut}><LogOut/></button>
 
-        <div id={"id"} title={"Photo ID"} style={{ backgroundImage: "url('/assets/mock/photo.png')" }}/>
-        <div id={"qr"} title={"QR Code"} style={{ backgroundImage: "url('/assets/mock/qr.png')" }}/>
-        <div id={"esc"} title={"ESC Hologram"} style={{ backgroundImage: "url('/assets/hologram.png')" }}/>
+        <div title={"Photo ID"} style={{ backgroundImage: "url('/assets/mock/photo.png')" }}/>
+        <div title={"QR Code"} style={{ backgroundImage: "url('/assets/mock/qr.png')" }}/>
+        <div title={"ESC Hologram"} style={{ backgroundImage: "url('/assets/hologram.png')" }}/>
 
         <dl>
 
