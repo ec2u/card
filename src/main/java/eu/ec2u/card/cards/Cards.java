@@ -1,19 +1,22 @@
 package eu.ec2u.card.cards;
 
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-import eu.ec2u.card.Tool.*;
-import eu.ec2u.card.cards.Cards.*;
+import eu.ec2u.card.Tool.Container;
+import eu.ec2u.card.Tool.Resource;
+import eu.ec2u.card.Tool.ResourceData;
+import eu.ec2u.card.cards.Cards.Card;
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Optional;
+
 import static eu.ec2u.card.ToolConfiguration.LinePattern;
 import static eu.ec2u.card.ToolConfiguration.LineSize;
 import static java.lang.String.format;
-
 
 @Getter
 @Setter
@@ -31,9 +34,9 @@ public class Cards extends Container<Card> {
 		private String holderForename;
 
 		@NotNull
-		@Size(max=LineSize)
-		@Pattern(regexp=LinePattern)
-		private String holderSurName;
+		@Size(max = LineSize)
+		@Pattern(regexp = LinePattern)
+		private String holderSurname;
 
 		@NotNull
 		// @DateTimeFormat
@@ -47,12 +50,14 @@ public class Cards extends Container<Card> {
 	@Entity(name = "Card")
 	static final class CardData extends ResourceData {
 
+		@Override
 		protected Optional<String> getPath() {
 			return Optional.of(this)
 					.filter(data -> data.id != null)
 					.map(data -> Id+data.id);
 		}
 
+		@Override
 		protected Optional<String> getLabel() {
 			return Optional.of(this)
 					.filter(data -> data.holderForename != null)
@@ -72,7 +77,7 @@ public class Cards extends Container<Card> {
 			transfer(card, this);
 
 			card.setHolderForename(holderForename);
-			card.setHolderSurName(holderSurname);
+			card.setHolderSurname(holderSurname);
 			card.setExpiringDate(expiringDate);
 			card.setVirtualCardNumber(virtualCardNumber);
 
@@ -84,7 +89,7 @@ public class Cards extends Container<Card> {
 			transfer(this, card);
 
 			holderForename = card.getHolderForename();
-			holderSurname = card.getHolderSurName();
+			holderSurname = card.getHolderSurname();
 			expiringDate = card.getExpiringDate();
 			virtualCardNumber = card.getVirtualCardNumber();
 
@@ -92,8 +97,6 @@ public class Cards extends Container<Card> {
 		}
 
 	}
-
-
 
 }
 
