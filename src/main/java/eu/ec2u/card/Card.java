@@ -8,6 +8,7 @@ package eu.ec2u.card;
 import com.metreeca.gcp.GCPServer;
 import com.metreeca.gcp.services.GCPVault;
 
+import eu.ec2u.card.work.Session;
 import lombok.*;
 
 import java.time.Instant;
@@ -18,8 +19,6 @@ import java.util.*;
 import javax.validation.constraints.*;
 
 import static com.metreeca.rest.Handler.asset;
-import static com.metreeca.rest.MessageException.status;
-import static com.metreeca.rest.Response.OK;
 import static com.metreeca.rest.Wrapper.preprocessor;
 import static com.metreeca.rest.formats.JSONLDFormat.keywords;
 import static com.metreeca.rest.handlers.Publisher.publisher;
@@ -91,6 +90,7 @@ public final class Card {
 
                         .wrap(router()
 
+                                .path("/saml/*", new Session())
 
                                 .path("/*", asset(
 
@@ -100,9 +100,10 @@ public final class Card {
 
                                         router()
 
-                                                .path("/", request -> request.reply(status(OK)))
+                                                .path("/saml/*", new Session())
 
                                 ))
+
 
                         )
                 )
