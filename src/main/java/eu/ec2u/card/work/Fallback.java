@@ -6,12 +6,14 @@ package eu.ec2u.card.work;
 
 import com.metreeca.rest.*;
 import com.metreeca.rest.services.Fetcher;
+import com.metreeca.rest.services.Fetcher.URLFetcher;
 
 import static com.metreeca.rest.formats.DataFormat.data;
 
 public final class Fallback implements Handler {
 
-    private final Fetcher.URLFetcher fetcher=new Fetcher.URLFetcher();
+    private final Fetcher fetcher=new URLFetcher();
+
 
     @Override public Response handle(final Request request) {
         return request

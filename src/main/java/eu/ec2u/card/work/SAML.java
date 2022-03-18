@@ -7,6 +7,8 @@ package eu.ec2u.card.work;
 import com.metreeca.rest.Request;
 import com.metreeca.rest.Response;
 import com.metreeca.rest.handlers.Delegator;
+import com.metreeca.rest.services.Fetcher;
+import com.metreeca.rest.services.Fetcher.URLFetcher;
 import com.metreeca.xml.formats.XMLFormat;
 
 import com.onelogin.saml2.authn.AuthnRequest;
@@ -22,7 +24,9 @@ import java.io.UncheckedIOException;
 import java.security.cert.CertificateEncodingException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
 
+import static com.metreeca.core.Identifiers.AbsoluteIRIPattern;
 import static com.metreeca.core.Identifiers.encode;
 import static com.metreeca.core.Lambdas.checked;
 import static com.metreeca.rest.MessageException.status;
@@ -261,8 +265,36 @@ public final class SAML extends Delegator {
 
         } else {
 
-            return request.reply(status(OK))
-                    .body(text(), request.parameter("entityID").orElseThrow());
+
+            final Fetcher fetcher=new URLFetcher();
+
+            final String provider=request.parameter("entityID").orElseThrow();
+
+            return fetcher
+
+                    .apply(Optional.of(AbsoluteIRIPattern.matcher(provider)) // !!! factor
+
+                            .filter(Matcher::matches)
+
+                            .map(matcher -> new Request()
+                                    .base(matcher.group("schemeall")+matcher.group("hostall")+"/")
+                                    .path(matcher.group("path"))
+                            )
+
+                            .orElseThrow()
+
+                            // disable conditional requests
+
+                            .header("If-None-Match", "")
+                            .header("If-Modified-Since", "")
+
+                    )
+
+                    .map(metadata -> request.reply(response -> response.status(OK)
+
+                            .body(text(), metadata.body(text()).fold(e -> "!!!"))
+
+                    ));
 
         }
 
