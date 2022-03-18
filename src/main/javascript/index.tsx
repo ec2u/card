@@ -12,7 +12,11 @@ render((
 
     <React.StrictMode>
 
-        <a href={"/saml/login"}>login</a>
+        <ul>
+            <li><a href={"/saml/login"}>login</a></li>
+            <li><a href={"/saml/discover"}>discover</a></li>
+        </ul>
+
 
         {/*
          <NodeFetcher>

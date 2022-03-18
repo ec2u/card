@@ -7,28 +7,21 @@ package eu.ec2u.card;
 
 import com.metreeca.gcp.GCPServer;
 import com.metreeca.gcp.services.GCPVault;
-import com.metreeca.rest.*;
-import com.metreeca.rest.services.Fetcher;
 
-import eu.ec2u.card.work.SAML;
+import eu.ec2u.card.work.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.security.*;
-import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
 
-import javax.net.ssl.*;
 import javax.validation.constraints.*;
 
 import static com.metreeca.rest.Handler.asset;
 import static com.metreeca.rest.MessageException.status;
 import static com.metreeca.rest.Response.OK;
-import static com.metreeca.rest.Wrapper.preprocessor;
-import static com.metreeca.rest.formats.DataFormat.data;
 import static com.metreeca.rest.formats.JSONLDFormat.keywords;
 import static com.metreeca.rest.handlers.Router.router;
 import static com.metreeca.rest.services.Logger.Level.debug;
@@ -79,34 +72,9 @@ public final class Card {
 
         if ( GCPServer.development() ) { // disable SSL checks while developing
 
-            try {
-                final SSLContext context=SSLContext.getInstance("TLS");
-
-                context.init(null, new TrustManager[]{ new DummyTrustManager() }, new SecureRandom());
-
-                HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-
-            } catch ( final NoSuchAlgorithmException|KeyManagementException e ) {
-
-                throw new RuntimeException(e);
-
-            }
+            Unsafe.unsafe();
 
         }
-
-    }
-
-    private static final class DummyTrustManager implements X509TrustManager {
-
-        private static final X509Certificate[] certificates={};
-
-
-        public X509Certificate[] getAcceptedIssuers() { return certificates; }
-
-
-        @Override public void checkClientTrusted(final X509Certificate[] chain, final String authType) { }
-
-        @Override public void checkServerTrusted(final X509Certificate[] chain, final String authType) { }
 
     }
 
@@ -126,48 +94,13 @@ public final class Card {
                         .with(cors())
                         //.with(bearer(token(), RootRole))
 
-                        .with(preprocessor(request -> // disable language negotiation
-                                request.header("Accept-Language", "")
-                        ))
-
                         .wrap(router()
 
                                 .path("/saml/*", new SAML())
 
-                                .path("/*", asset(
+                                .path("/*", asset(new Fallback(), router()
 
-                                        new Handler() {
-
-                                            private final Fetcher.URLFetcher fetcher=new Fetcher.URLFetcher();
-
-                                            @Override public Response handle(final Request request) {
-                                                return request
-
-                                                        .reply(response -> fetcher.apply(new Request()
-
-                                                                .method(request.method())
-                                                                .base(request.base())
-                                                                .path("/index.html")
-
-                                                                .headers(request.headers())
-
-                                                                // disable conditional requests
-
-                                                                .header("If-None-Match", "")
-                                                                .header("If-Modified-Since", "")
-
-                                                        ))
-
-                                                        .map(response -> response.body(data()).fold(
-                                                                error -> { throw error; },
-                                                                value -> response.body(data(), value)
-                                                        ));
-                                            }
-                                        },
-
-                                        router()
-
-                                                .path("/", request -> request.reply(status(OK)))
+                                        .path("/", request -> request.reply(status(OK)))
 
                                 ))
 

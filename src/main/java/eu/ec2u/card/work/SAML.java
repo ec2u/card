@@ -45,8 +45,8 @@ public final class SAML extends Delegator {
                 .collect(joining("&"));
     }
 
-    private String query(final String prefix, final String query) {
-        return prefix+(prefix.contains("?") ? "&" : "?")+query;
+    private String query(final String prefix, final Map<String, String> parameters) {
+        return prefix+(prefix.contains("?") ? "&" : "?")+query(parameters);
     }
 
 
@@ -89,7 +89,7 @@ public final class SAML extends Delegator {
                 .path("/", router().get(this::metadata))
                 .path("/acs", router().post(this::acs))
                 .path("/login", router().get(this::login))
-                .path("/discovery", router().get(this::discovery))
+                .path("/discover", router().get(this::discover))
 
         );
     }
@@ -243,17 +243,29 @@ public final class SAML extends Delegator {
             //    LOGGER.debug("AuthNRequest sent to "+ssoUrl+" --> "+samlRequest);
             //}
 
-            final String query=query(parameters);
-
-            return request.reply(status(Found, query(ssoUrl, query)));
+            return request.reply(status(Found, query(ssoUrl, parameters)));
 
         } catch ( final IOException e ) {
             throw new UncheckedIOException(e);
         }
     }
 
-    private Response discovery(final Request request) {
-        return null;
+    private Response discover(final Request request) {
+
+        if ( request.query().isEmpty() ) {
+
+            return request.reply(status(Found, query("https://service.seamlessaccess.org/ds", Map.ofEntries(
+                    entry("entityID", "https://127.0.0.1:3000/saml/"),
+                    entry("return", request.item())
+            ))));
+
+        } else {
+
+            return request.reply(status(OK))
+                    .body(text(), request.parameter("entityID").orElseThrow());
+
+        }
+
     }
 
 }
