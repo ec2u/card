@@ -7,10 +7,13 @@ package eu.ec2u.card;
 
 import com.metreeca.gcp.GCPServer;
 import com.metreeca.gcp.services.GCPVault;
+import com.metreeca.rest.*;
+import com.metreeca.rest.services.Fetcher;
 
 import eu.ec2u.card.work.SAML;
 import lombok.*;
 
+import java.io.Serializable;
 import java.security.*;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
@@ -21,9 +24,11 @@ import java.util.*;
 import javax.net.ssl.*;
 import javax.validation.constraints.*;
 
+import static com.metreeca.rest.Handler.asset;
 import static com.metreeca.rest.MessageException.status;
 import static com.metreeca.rest.Response.OK;
 import static com.metreeca.rest.Wrapper.preprocessor;
+import static com.metreeca.rest.formats.DataFormat.data;
 import static com.metreeca.rest.formats.JSONLDFormat.keywords;
 import static com.metreeca.rest.handlers.Router.router;
 import static com.metreeca.rest.services.Logger.Level.debug;
@@ -127,8 +132,45 @@ public final class Card {
 
                         .wrap(router()
 
-                                .path("/", request -> request.reply(status(OK)))
                                 .path("/saml/*", new SAML())
+
+                                .path("/*", asset(
+
+                                        new Handler() {
+
+                                            private final Fetcher.URLFetcher fetcher=new Fetcher.URLFetcher();
+
+                                            @Override public Response handle(final Request request) {
+                                                return request
+
+                                                        .reply(response -> fetcher.apply(new Request()
+
+                                                                .method(request.method())
+                                                                .base(request.base())
+                                                                .path("/index.html")
+
+                                                                .headers(request.headers())
+
+                                                                // disable conditional requests
+
+                                                                .header("If-None-Match", "")
+                                                                .header("If-Modified-Since", "")
+
+                                                        ))
+
+                                                        .map(response -> response.body(data()).fold(
+                                                                error -> { throw error; },
+                                                                value -> response.body(data(), value)
+                                                        ));
+                                            }
+                                        },
+
+                                        router()
+
+                                                .path("/", request -> request.reply(status(OK)))
+
+                                ))
+
 
                         )
                 )
@@ -156,6 +198,26 @@ public final class Card {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Getter
+    @Builder
+    public static final class Profile implements Serializable {
+
+        private static final long serialVersionUID=-7793479050451108354L;
+
+
+        private boolean admin;
+
+        @NotNull private String id;
+        @NotNull private String code;
+        @NotNull private String label;
+
+        @NotNull private String forename;
+        @NotNull private String surname;
+        @NotNull private String email;
+
+    }
+
 
     @Getter
     @Setter
