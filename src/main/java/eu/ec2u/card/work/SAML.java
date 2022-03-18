@@ -16,22 +16,38 @@ import com.onelogin.saml2.factory.SamlMessageFactory;
 import com.onelogin.saml2.http.HttpRequest;
 import com.onelogin.saml2.settings.Saml2Settings;
 import com.onelogin.saml2.settings.SettingsBuilder;
-import com.onelogin.saml2.util.Util;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.security.cert.CertificateEncodingException;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 
+import static com.metreeca.core.Identifiers.encode;
 import static com.metreeca.core.Lambdas.checked;
 import static com.metreeca.rest.MessageException.status;
 import static com.metreeca.rest.Response.*;
 import static com.metreeca.rest.formats.TextFormat.text;
 import static com.metreeca.rest.handlers.Router.router;
 
+import static java.lang.String.format;
+import static java.util.Map.entry;
+import static java.util.stream.Collectors.joining;
+
 public final class SAML extends Delegator {
 
     private static final SamlMessageFactory samlMessageFactory=new SamlMessageFactory() { };
+
+
+    private static String query(final Map<String, String> parameters) { // !!! factor
+        return parameters.entrySet().stream()
+                .map(p -> format("%s=%s", encode(p.getKey()), encode(p.getValue())))
+                .collect(joining("&"));
+    }
+
+    private String query(final String prefix, final String query) {
+        return prefix+(prefix.contains("?") ? "&" : "?")+query;
+    }
 
 
     private final Saml2Settings settings=settings();
@@ -73,6 +89,7 @@ public final class SAML extends Delegator {
                 .path("/", router().get(this::metadata))
                 .path("/acs", router().post(this::acs))
                 .path("/login", router().get(this::login))
+                .path("/discovery", router().get(this::discovery))
 
         );
     }
@@ -190,8 +207,8 @@ public final class SAML extends Delegator {
                     //LOGGER.error("processResponse error." + errorMsg);
                     //throw new Error(errorMsg, Error.SAML_RESPONSE_NOT_FOUND);
 
-
                     return request.reply(status(BadRequest));
+
                 });
 
     }
@@ -202,14 +219,10 @@ public final class SAML extends Delegator {
             final AuthnRequestParams authnRequestParams=new AuthnRequestParams(false, false, true);
             final AuthnRequest authnRequest=samlMessageFactory.createAuthnRequest(settings, authnRequestParams);
 
-            final Map<String, String> parameters=new HashMap<>();
-
-            parameters.put("SAMLRequest", authnRequest.getEncodedAuthnRequest());
-
-            // !!! integrated into request.item()
-            // !!! https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded
-
-            parameters.put("RelayState", "/private");
+            final Map<String, String> parameters=Map.ofEntries(
+                    entry("SAMLRequest", authnRequest.getEncodedAuthnRequest()),
+                    entry("RelayState", "/private")
+            );
 
 
             //if ( settings.getAuthnRequestsSigned() ) {
@@ -230,31 +243,17 @@ public final class SAML extends Delegator {
             //    LOGGER.debug("AuthNRequest sent to "+ssoUrl+" --> "+samlRequest);
             //}
 
-            // !!! factor
+            final String query=query(parameters);
 
-            String target=ssoUrl;
-
-            if ( !parameters.isEmpty() ) {
-                boolean first=!ssoUrl.contains("?");
-                for (final Map.Entry<String, String> parameter : parameters.entrySet()) {
-                    if ( first ) {
-                        target+="?";
-                        first=false;
-                    } else {
-                        target+="&";
-                    }
-                    target+=parameter.getKey();
-                    if ( !parameter.getValue().isEmpty() ) {
-                        target+="="+Util.urlEncoder(parameter.getValue());
-                    }
-                }
-            }
-
-            return request.reply(status(Found, target));
+            return request.reply(status(Found, query(ssoUrl, query)));
 
         } catch ( final IOException e ) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private Response discovery(final Request request) {
+        return null;
     }
 
 }
