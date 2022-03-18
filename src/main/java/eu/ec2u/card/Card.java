@@ -5,6 +5,9 @@
 package eu.ec2u.card;
 
 
+import com.metreeca.gcp.GCPServer;
+import com.metreeca.gcp.services.GCPVault;
+
 import lombok.*;
 
 import java.time.Instant;
@@ -14,7 +17,20 @@ import java.util.*;
 
 import javax.validation.constraints.*;
 
+import static com.metreeca.rest.Handler.asset;
+import static com.metreeca.rest.MessageException.status;
+import static com.metreeca.rest.Response.OK;
+import static com.metreeca.rest.Wrapper.preprocessor;
+import static com.metreeca.rest.formats.JSONLDFormat.keywords;
+import static com.metreeca.rest.handlers.Publisher.publisher;
+import static com.metreeca.rest.handlers.Router.router;
+import static com.metreeca.rest.services.Logger.Level.debug;
+import static com.metreeca.rest.services.Vault.vault;
+import static com.metreeca.rest.wrappers.CORS.cors;
+import static com.metreeca.rest.wrappers.Server.server;
+
 import static java.time.temporal.ChronoField.*;
+import static java.util.Map.entry;
 
 @Getter
 @Builder
@@ -48,6 +64,51 @@ public final class Card {
 
             .parseStrict()
             .toFormatter(Locale.ROOT);
+
+    static {
+        debug.log("com.metreeca");
+    }
+
+
+    public static void main(final String... args) {
+        new GCPServer().delegate(toolbox -> toolbox
+
+                .set(vault(), GCPVault::new)
+
+                .set(keywords(), () -> Map.ofEntries(
+                        entry("@id", "id"),
+                        entry("@type", "type")
+                ))
+
+                .get(() -> server()
+
+                        .with(cors())
+                        //.with(bearer(token(), RootRole))
+
+                        .with(preprocessor(request -> // disable language negotiation
+                                request.header("Accept-Language", "")
+                        ))
+
+                        .wrap(router()
+
+
+                                .path("/*", asset(
+
+                                        publisher("/static")
+
+                                                .fallback("/index.html"),
+
+                                        router()
+
+                                                .path("/", request -> request.reply(status(OK)))
+
+                                ))
+
+                        )
+                )
+
+        ).start();
+    }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

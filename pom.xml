@@ -72,26 +72,22 @@
 		<dependencies>
 
 			<dependency>
-				<!-- https://search.maven.org/artifact/org.junit.jupiter/junit-bom -->
-				<groupId>org.junit</groupId>
-				<artifactId>junit-bom</artifactId>
-				<version>5.7.2</version>
+				<groupId>com.metreeca</groupId>
+				<artifactId>metreeca-java</artifactId>
+				<version>0.0.0-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-
-			<dependency>
-				<!-- https://search.maven.org/artifact/org.assertj/assertj-core -->
-				<groupId>org.assertj</groupId>
-				<artifactId>assertj-core</artifactId>
-				<version>3.20.2</version>
-				<scope>test</scope>
 			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>com.metreeca</groupId>
+			<artifactId>metreeca-gcp</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>javax.validation</groupId>
