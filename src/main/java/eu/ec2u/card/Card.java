@@ -8,20 +8,23 @@ package eu.ec2u.card;
 import com.metreeca.gcp.GCPServer;
 import com.metreeca.gcp.services.GCPVault;
 
-import eu.ec2u.card.work.Session;
+import eu.ec2u.card.work.SAML;
 import lombok.*;
 
+import java.security.*;
+import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
 
+import javax.net.ssl.*;
 import javax.validation.constraints.*;
 
-import static com.metreeca.rest.Handler.asset;
+import static com.metreeca.rest.MessageException.status;
+import static com.metreeca.rest.Response.OK;
 import static com.metreeca.rest.Wrapper.preprocessor;
 import static com.metreeca.rest.formats.JSONLDFormat.keywords;
-import static com.metreeca.rest.handlers.Publisher.publisher;
 import static com.metreeca.rest.handlers.Router.router;
 import static com.metreeca.rest.services.Logger.Level.debug;
 import static com.metreeca.rest.services.Vault.vault;
@@ -65,7 +68,41 @@ public final class Card {
             .toFormatter(Locale.ROOT);
 
     static {
+
         debug.log("com.metreeca");
+
+
+        if ( GCPServer.development() ) { // disable SSL checks while developing
+
+            try {
+                final SSLContext context=SSLContext.getInstance("TLS");
+
+                context.init(null, new TrustManager[]{ new DummyTrustManager() }, new SecureRandom());
+
+                HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+
+            } catch ( final NoSuchAlgorithmException|KeyManagementException e ) {
+
+                throw new RuntimeException(e);
+
+            }
+
+        }
+
+    }
+
+    private static final class DummyTrustManager implements X509TrustManager {
+
+        private static final X509Certificate[] certificates={};
+
+
+        public X509Certificate[] getAcceptedIssuers() { return certificates; }
+
+
+        @Override public void checkClientTrusted(final X509Certificate[] chain, final String authType) { }
+
+        @Override public void checkServerTrusted(final X509Certificate[] chain, final String authType) { }
+
     }
 
 
@@ -90,20 +127,8 @@ public final class Card {
 
                         .wrap(router()
 
-                                .path("/saml/*", new Session())
-
-                                .path("/*", asset(
-
-                                        publisher("/static")
-
-                                                .fallback("/index.html"),
-
-                                        router()
-
-                                                .path("/saml/*", new Session())
-
-                                ))
-
+                                .path("/", request -> request.reply(status(OK)))
+                                .path("/saml/*", new SAML())
 
                         )
                 )

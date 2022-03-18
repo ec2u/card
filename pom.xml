@@ -90,9 +90,20 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.metreeca</groupId>
+			<artifactId>metreeca-xml</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>com.onelogin</groupId>
 			<artifactId>java-saml</artifactId>
 			<version>2.9.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europeanstudentcard</groupId>
+			<artifactId>escn-generator</artifactId>
+			<version>1.1.0</version>
 		</dependency>
 
 		<dependency>
@@ -336,7 +347,8 @@
 
 			</plugin>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-resources-plugin/ -->
+<!--
+			<plugin> &lt;!&ndash; https://maven.apache.org/plugins/maven-resources-plugin/ &ndash;&gt;
 
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -377,6 +389,7 @@
 				</executions>
 
 			</plugin>
+-->
 
 			<plugin> <!-- https://cloud.google.com/appengine/docs/standard/java-gen2/maven-reference -->
 

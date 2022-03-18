@@ -24,10 +24,7 @@ export function CardRouter() {
         "/contacts": CardContacts,
 
         "/users/": CardUsers,
-        "/cards/": CardCards,
-
-
-        "*": "/"
+        "/cards/": CardCards
 
     }}/>;
 }
