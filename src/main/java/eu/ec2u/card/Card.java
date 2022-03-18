@@ -1,23 +1,20 @@
 /*
- * Copyright © 2020-2022 EC2U Consortium. All rights reserved.
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
 package eu.ec2u.card;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
-import eu.ec2u.card.CardSecurity.Profile;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.*;
 
 import javax.validation.constraints.*;
 
-import static eu.ec2u.card.CardConfiguration.*;
+import static java.time.temporal.ChronoField.*;
 
 @Getter
 @Builder
@@ -25,13 +22,50 @@ public final class Card {
 
     public static final String Id="/";
 
+    public static final int ContainerSize=100;
+
+    public static final int URLSize=100;
+    public static final String RelativePattern="/(\\w+/)*\\w+/?";
+    public static final String AbsolutePattern="\\w+:\\S+";
+
+    public static final int LineSize=100;
+    public static final String LinePattern="\\S+( \\S+)*";
+
+    public static final int TextSize=2000;
+    public static final String TextPattern="\\S+(\\s+\\S+)*";
+
+    static final DateTimeFormatter InstantFormat=new DateTimeFormatterBuilder()
+
+            .appendValue(YEAR, 4)
+            .appendValue(MONTH_OF_YEAR, 2)
+            .appendValue(DAY_OF_MONTH, 2)
+
+            .appendLiteral("T")
+
+            .appendValue(HOUR_OF_DAY, 2)
+            .appendValue(MINUTE_OF_HOUR, 2)
+            .appendValue(SECOND_OF_MINUTE, 2)
+
+            .parseStrict()
+            .toFormatter(Locale.ROOT);
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    Instant revision() {
+
+        throw new UnsupportedOperationException(";(  be implemented"); // !!!
+
+        //return LocalDateTime.from(Card.InstantFormat.parse(revision)).toInstant(ZoneOffset.UTC);
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private final String id;
 
     private final Instant revision;
-    private final Profile profile;
+    //private final Profile profile;
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +86,7 @@ public final class Card {
 
         @Size(max=URLSize)
         @Pattern(regexp=RelativePattern)
-        @JsonProperty("id")
+        //@JsonProperty("id")
         private String path;
 
         @Size(max=LineSize)
@@ -76,13 +110,10 @@ public final class Card {
         protected abstract Optional<String> getLabel();
 
 
-        @Id
         protected Long id;
 
-        @Unindexed
         protected String image;
 
-        @Unindexed
         protected String brief;
 
 

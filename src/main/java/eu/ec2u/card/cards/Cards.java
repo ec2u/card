@@ -4,7 +4,6 @@
 
 package eu.ec2u.card.cards;
 
-import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import eu.ec2u.card.Card.ResourceData;
 import eu.ec2u.card.cards.Cards.Card;
 import lombok.Getter;
@@ -15,8 +14,8 @@ import java.util.Optional;
 
 import javax.validation.constraints.*;
 
-import static eu.ec2u.card.CardConfiguration.LinePattern;
-import static eu.ec2u.card.CardConfiguration.LineSize;
+import static eu.ec2u.card.Card.LinePattern;
+import static eu.ec2u.card.Card.LineSize;
 
 import static java.lang.String.format;
 
@@ -50,7 +49,6 @@ public class Cards extends eu.ec2u.card.Card.Container<Card> {
 
 	}
 
-	@Entity(name = "Card")
 	static final class CardData extends ResourceData {
 
 		protected Optional<String> getPath() {
@@ -98,8 +96,6 @@ public class Cards extends eu.ec2u.card.Card.Container<Card> {
 		}
 
 	}
-
-
 
 }
 
