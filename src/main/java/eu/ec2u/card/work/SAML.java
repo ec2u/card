@@ -65,6 +65,8 @@ public final class SAML extends Delegator {
     }
 
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public SAML() {
         delegate(router()
 
@@ -76,13 +78,41 @@ public final class SAML extends Delegator {
     }
 
 
-    private Response acs(final Request request) {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private Response metadata(final Request request) {
+
+        settings.setSPValidationOnly(true);
+
+        //List<String> errors = settings.checkSettings();
+        //
+        //if (errors.isEmpty()) {
+        //    String metadata = settings.getSPMetadata();
+        //    out.println(metadata);
+        //} else {
+        //    response.setContentType("text/html; charset=UTF-8");
+        //
+        //    for (String error : errors) {
+        //        out.println("<p>"+error+"</p>");
+        //    }
+        //}
+
+        try {
+
+            return request.reply(status(OK))
+                    .header("Content-Type", XMLFormat.MIME)
+                    .body(text(), settings.getSPMetadata());
+
+        } catch ( final CertificateEncodingException e ) {
+            throw new RuntimeException(e); // !!!
+        }
+    }
+
+    private Response acs(final Request request) {
 
         final HttpRequest http=new HttpRequest(request.item(), request.parameters(), request.query());
 
         return Optional.ofNullable(http.getParameter("SAMLResponse"))
-
 
                 .map(checked(samlResponse -> { return samlMessageFactory.createSamlResponse(settings, http); }))
 
@@ -127,7 +157,7 @@ public final class SAML extends Delegator {
                         //}
                     }
 
-                    return request.reply(status(Found, "/in"));
+                    return request.reply(status(Found, request.parameter("RelayState").orElse("/")));
 
 
                     //final String relayState = http.getParameter("RelayState");
@@ -164,38 +194,7 @@ public final class SAML extends Delegator {
                     return request.reply(status(BadRequest));
                 });
 
-
     }
-
-
-    private Response metadata(final Request request) {
-
-        settings.setSPValidationOnly(true);
-
-        //List<String> errors = settings.checkSettings();
-        //
-        //if (errors.isEmpty()) {
-        //    String metadata = settings.getSPMetadata();
-        //    out.println(metadata);
-        //} else {
-        //    response.setContentType("text/html; charset=UTF-8");
-        //
-        //    for (String error : errors) {
-        //        out.println("<p>"+error+"</p>");
-        //    }
-        //}
-
-        try {
-
-            return request.reply(status(OK))
-                    .header("Content-Type", XMLFormat.MIME)
-                    .body(text(), settings.getSPMetadata());
-
-        } catch ( final CertificateEncodingException e ) {
-            throw new RuntimeException(e); // !!!
-        }
-    }
-
 
     private Response login(final Request request) {
         try {
@@ -210,11 +209,7 @@ public final class SAML extends Delegator {
             // !!! integrated into request.item()
             // !!! https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded
 
-            parameters.put("RelayState", String.format("%s://%s%s",
-                    request.header("X-Forwarded-Proto").orElseThrow(),
-                    request.header("X-Forwarded-Host").orElseThrow(),
-                    request.path()
-            ));
+            parameters.put("RelayState", "/private");
 
 
             //if ( settings.getAuthnRequestsSigned() ) {
