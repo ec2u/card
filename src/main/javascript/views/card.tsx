@@ -15,10 +15,12 @@ export function CardVirtual() {
     const [profile, setProfile]=useProfile<Profile>();
 
 
+    console.log(profile?.card?.test);
+
+
     function doLogOut() {
         setProfile(null);
     }
-
 
     return createElement("card-virtual", {}, profile?.card
 
@@ -28,8 +30,8 @@ export function CardVirtual() {
             <button title={"Close"} onClick={doLogOut}><LogOut/></button>
 
             {CardPhoto(profile.card)}
-            <div title={"QR Code"} style={{ backgroundImage: "url('/assets/mock/qr.png')" }}/>
-            <div title={"ESC Hologram"} style={{ backgroundImage: "url('/assets/hologram.png')" }}/>
+            <div className={"qr"} title={"QR Code"} style={profile.card ? { backgroundImage: `url('${profile.card.test}')` } : {}}/>
+            <div className={"hologram"} title={"ESC Hologram"} style={{ backgroundImage: "url('/assets/hologram.png')" }}/>
 
             {profile?.card && CardData(profile.card)}
 
@@ -82,7 +84,7 @@ export function CardVirtual() {
     }
 
     function CardPhoto({ photo }: Card) {
-        return <div title={"Photo ID"} style={photo ? { backgroundImage: `url('${photo}')` } : {}}>{
+        return <div className={"photo"} title={"Photo ID"} style={photo ? { backgroundImage: `url('${photo}')` } : {}}>{
             photo ? <></> : <User/>
         }</div>;
     }

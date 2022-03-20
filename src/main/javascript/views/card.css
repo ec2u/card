@@ -44,7 +44,7 @@ card-virtual {
         background-repeat: no-repeat;
     }
 
-    & > div:nth-of-type(1) {
+    & > div.photo {
 
         display: grid;
 
@@ -61,12 +61,12 @@ card-virtual {
 
     }
 
-    & > div:nth-of-type(2) {
+    & > div.qr {
         grid-area: 2 / 3;
         background-size: contain;
     }
 
-    & > div:nth-of-type(3) {
+    & > div.hologram {
         grid-area: 2 / 4;
         background-size: contain;
     }

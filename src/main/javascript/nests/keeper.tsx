@@ -7,6 +7,7 @@ import { User } from "@ec2u/card/pages/users/user";
 import { Optional } from "@metreeca/core";
 import { useSessionStorage } from "@metreeca/hook/storage";
 import { JWTPattern, NodeKeeper } from "@metreeca/nest/keeper";
+import QRCode from "qrcode";
 import React, { ReactNode, useEffect, useState } from "react";
 
 
@@ -40,8 +41,26 @@ export function CardKeeper({
 
                 response.json().then(({ profile }) => {
 
-                    setGateway(response.headers.get("Location") ?? undefined);
-                    setProfile(profile);
+                    if ( profile?.card ) { // encode card.test URL into a QR data url
+
+                        QRCode.toDataURL(profile.card.test, {
+
+                            errorCorrectionLevel: "M",
+                            margin: 0
+
+                        }).then(test => {
+
+                            setGateway(response.headers.get("Location") ?? undefined);
+                            setProfile({ ...profile, card: { ...profile.card, test } });
+
+                        });
+
+                    } else {
+
+                        setGateway(response.headers.get("Location") ?? undefined);
+                        setProfile(profile);
+
+                    }
 
                 });
 

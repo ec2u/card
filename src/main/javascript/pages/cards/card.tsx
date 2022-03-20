@@ -8,6 +8,7 @@ import { immutable } from "@metreeca/core";
 export interface Card {
 
     readonly code: string;
+    readonly test: string;
     readonly expiry: string;
 
     readonly esi: string;
