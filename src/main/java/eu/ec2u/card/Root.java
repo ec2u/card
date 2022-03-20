@@ -9,6 +9,8 @@ import com.metreeca.gcp.GCPServer;
 import com.metreeca.gcp.services.GCPVault;
 import com.metreeca.rest.handlers.Router;
 
+import eu.ec2u.card.cards.Cards;
+import eu.ec2u.card.cards.Cards.Card;
 import eu.ec2u.card.saml.SAML;
 import eu.ec2u.card.users.Users;
 import eu.ec2u.card.users.Users.User;
@@ -34,13 +36,15 @@ import static com.metreeca.rest.wrappers.Bearer.bearer;
 import static com.metreeca.rest.wrappers.CORS.cors;
 import static com.metreeca.rest.wrappers.Server.server;
 
+import static eu.ec2u.card.cards.Cards.esc;
+
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Map.entry;
 
 @Getter
 @Setter
-public final class Card {
+public final class Root {
 
     public static final String Id="/";
 
@@ -49,6 +53,7 @@ public final class Card {
     public static final int URLSize=100;
     public static final String RelativePattern="/(\\w+/)*\\w+/?";
     public static final String AbsolutePattern="\\w+:\\S+";
+    public static final String ESIPattern="urn:schac:personalUniqueCode:int:esi:[-:.\\w]+";
 
     public static final int LineSize=100;
     public static final String LinePattern="\\S+( \\S+)*";
@@ -126,8 +131,9 @@ public final class Card {
 
                         .map(user -> request.reply(OK)
 
-                                .body(json(), encode(new Card()
+                                .body(json(), encode(new Root()
                                         .setUser(user)
+                                        .setCard(esc(user.getEsi()).findFirst().orElse(null)) // !!! multiple
                                 ))
 
                         )
@@ -137,7 +143,7 @@ public final class Card {
                                 .header("WWW-Authenticate", format("Bearer realm=\"%s\"", request.base()))
                                 .header("Location", SAML.Session)
 
-                                .body(json(), encode(new Card()))
+                                .body(json(), encode(new Root()))
 
                         ));
     }
@@ -146,12 +152,14 @@ public final class Card {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private User user;
+    private Card card;
 
 
-    private static JsonObject encode(final Card card) {
+    private static JsonObject encode(final Root root) {
         return Json.createObjectBuilder()
 
-                .add("user", Users.encode(card.user))
+                .add("user", Users.encode(root.user))
+                .add("card", Cards.encode(root.card))
 
                 .build();
     }

@@ -16,7 +16,7 @@ import com.onelogin.saml2.factory.SamlMessageFactory;
 import com.onelogin.saml2.http.HttpRequest;
 import com.onelogin.saml2.settings.Saml2Settings;
 import com.onelogin.saml2.settings.SettingsBuilder;
-import eu.ec2u.card.Card;
+import eu.ec2u.card.Root;
 import eu.ec2u.card.users.Users.User;
 import eu.ec2u.card.work.Notary;
 
@@ -46,7 +46,7 @@ public final class SAML extends Delegator {
     private static final Saml2Settings settings=settings();
     private static final SamlMessageFactory samlMessageFactory=new SamlMessageFactory() { };
 
-    private static final Notary notary=new Notary(Card.JWTKey);
+    private static final Notary notary=new Notary(Root.JWTKey);
 
 
     private static Saml2Settings settings() {

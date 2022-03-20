@@ -13,7 +13,7 @@ import java.util.Optional;
 import javax.json.*;
 import javax.validation.constraints.*;
 
-import static eu.ec2u.card.Card.*;
+import static eu.ec2u.card.Root.*;
 
 import static java.lang.String.format;
 
@@ -46,7 +46,7 @@ public class Users extends Container<User> {
 
         @NotNull
         @Size(max=URLSize)
-        @Pattern(regexp=RelativePattern) // !!! ESI Pattern
+        @Pattern(regexp=ESIPattern)
         private String esi;
 
         @NotNull

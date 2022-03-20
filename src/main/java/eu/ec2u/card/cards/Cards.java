@@ -4,98 +4,152 @@
 
 package eu.ec2u.card.cards;
 
-import eu.ec2u.card.Card.ResourceData;
+import com.metreeca.rest.Xtream;
+import com.metreeca.rest.actions.*;
+
 import eu.ec2u.card.cards.Cards.Card;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import javax.json.Json;
+import javax.json.JsonValue;
 import javax.validation.constraints.*;
 
-import static eu.ec2u.card.Card.LinePattern;
-import static eu.ec2u.card.Card.LineSize;
+import static com.metreeca.rest.Toolbox.service;
+import static com.metreeca.rest.formats.JSONFormat.json;
+import static com.metreeca.rest.services.Vault.vault;
 
-import static java.lang.String.format;
+import static eu.ec2u.card.Root.*;
+
+import static javax.json.JsonValue.NULL;
 
 
 @Getter
 @Setter
-public class Cards extends eu.ec2u.card.Card.Container<Card> {
+public class Cards extends Container<Card> {
 
-	static final String Id="/cards/";
+    static final String Id="/cards/";
 
-	@Getter
-	@Setter
-	static final class Card extends eu.ec2u.card.Card.Resource {
+    private static final String API="api-sandbox";
+    private static final String KEY="key-esc-router-sandbox";
 
-		@NotNull
-		@Size(max=LineSize)
-		@Pattern(regexp=LinePattern)
-		private String holderForename;
 
-		@NotNull
-		@Size(max=LineSize)
-		@Pattern(regexp=LinePattern)
-		private String holderSurName;
+    public static Stream<Card> esc(final String esi) {
 
-		@NotNull
-		// @DateTimeFormat
-		private Date expiringDate;
+        if ( esi == null ) {
+            throw new NullPointerException("null esi");
+        }
 
-		@NotNull
-		private Long virtualCardNumber;
+        return Xtream.of(esi)
 
-	}
+                .flatMap(new Fill<>()
 
-	static final class CardData extends ResourceData {
+                        .model("https://{api}.europeanstudentcard.eu/v1/students/{esi}")
 
-		protected Optional<String> getPath() {
-			return Optional.of(this)
-					.filter(data -> data.id != null)
-					.map(data -> Id+data.id);
-		}
+                        .value("api", API)
+                        .value("esi")
 
-		protected Optional<String> getLabel() {
-			return Optional.of(this)
-					.filter(data -> data.holderForename != null)
-					.filter(data -> data.holderSurname != null)
-					.map(data -> format("%s %s", data.holderForename, data.holderSurname));
-		}
+                )
 
-		private String holderForename;
-		private String holderSurname;
-		private Date expiringDate;
-		private Long virtualCardNumber;
+                .optMap(new GET<>(json(), request -> request.header("Key", service(vault())
+                        .get(KEY)
+                        .orElseThrow() // !!!
+                )))
 
-		Card transfer() {
+                .flatMap(new JSONPath<>(json -> json.strings("cards.*.europeanStudentCardNumber").map(code -> new Card() // !!! error handling
 
-			final Card card = new Card();
+                        .setCode(code)
+                        .setExpiry(json.string("expiryDate")
+                                .map(ZonedDateTime::parse)
+                                .map(ZonedDateTime::toLocalDate)
+                                .orElseThrow()
+                        )
 
-			transfer(card, this);
+                        .setEsi(json.string("europeanStudentIdentifier").orElseThrow())
+                        .setPic(json.integer("picInstitutionCode").map(BigInteger::intValue).orElseThrow())
+                        .setLevel(json.integer("academicLevel").map(BigInteger::intValue).orElseThrow())
 
-			card.setHolderForename(holderForename);
-			card.setHolderSurName(holderSurname);
-			card.setExpiringDate(expiringDate);
-			card.setVirtualCardNumber(virtualCardNumber);
+                        .setName(json.string("name").orElseThrow())
+                        .setPhoto(json.string("photoID").orElse(null)) // !!!
+                        .setEmail(json.string("emailAddress").orElse(null)))
+                ));
+    }
 
-			return card;
-		}
 
-		CardData transfer(final Card card) {
+    public static JsonValue encode(final Card card) {
+        return card == null ? NULL : Json.createObjectBuilder()
 
-			transfer(this, card);
+                .add("code", Json.createValue(card.code))
+                .add("expiry", Json.createValue(card.expiry.toString()))
 
-			holderForename = card.getHolderForename();
-			holderSurname = card.getHolderSurName();
-			expiringDate = card.getExpiringDate();
-			virtualCardNumber = card.getVirtualCardNumber();
+                .add("esi", Json.createValue(card.esi))
+                .add("pic", Json.createValue(card.pic))
+                .add("level", Json.createValue(card.level))
 
-			return this;
-		}
+                .add("name", Json.createValue(card.name))
 
-	}
+                .add("photo", Optional.ofNullable(card.photo)
+                        .map(Json::createValue)
+                        .map(JsonValue.class::cast)
+                        .orElse(NULL))
+
+                .add("email", Optional.ofNullable(card.email)
+                        .map(Json::createValue)
+                        .map(JsonValue.class::cast)
+                        .orElse(NULL))
+
+                .build();
+    }
+
+    @Getter
+    @Setter
+    public static final class Card extends Resource {
+
+        @NotNull
+        @Size(max=URLSize)
+        //@Pattern(regexp=ESIPattern) !!! UUID
+        private String code;
+
+        @NotNull
+        private LocalDate expiry;
+
+
+        @NotNull
+        @Size(max=URLSize)
+        @Pattern(regexp=ESIPattern)
+        private String esi;
+
+        @NotNull
+        @Size(max=URLSize)
+        @Min(0) @Max(999999999)
+        private int pic;
+
+        @NotNull
+        @Size(max=URLSize)
+        @Min(0) @Max(99)
+        private int level;
+
+
+        @NotNull
+        @Size(max=LineSize)
+        @Pattern(regexp=LinePattern)
+        private String name;
+
+        @Size(max=URLSize)
+        @Pattern(regexp=AbsolutePattern)
+        private String photo;
+
+        @Size(max=LineSize)
+        @Email
+        private String email;
+
+    }
 
 }
 
