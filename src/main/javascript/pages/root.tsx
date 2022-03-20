@@ -2,22 +2,15 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
+import { CardHome } from "@ec2u/card/pages/home";
 import { User } from "@ec2u/card/pages/users/user";
+import { CardVirtual } from "@ec2u/card/views/card";
 import { isPresent } from "@metreeca/core";
 import { useProfile } from "@metreeca/nest/keeper";
-import * as React from "react";
-import { ReactNode } from "react";
+import React from "react";
 
 
-export function CardGate({
-
-    children
-
-}: {
-
-    children: ReactNode
-
-}) {
+export function CardRoot() {
 
     const [profile, setProfile]=useProfile<User>();
 
@@ -27,11 +20,7 @@ export function CardGate({
     function doLogout() { setProfile(null); }
 
     return isPresent(profile)
-        ? <p>ciao {profile.esi}! <button onClick={doLogout}>logout</button></p>
-        : <p>ciao! <button onClick={doLogin}>login</button></p>;
-
-    // return isDefined(profile)
-    //     ? <CardVirtual/>
-    //     : <CardHome/>;
+        ? <CardVirtual/>
+        : <CardHome/>;
 
 }

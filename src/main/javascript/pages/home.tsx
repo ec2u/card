@@ -4,15 +4,13 @@
 
 import { CardPage } from "@ec2u/card/views/page";
 import { name } from "@metreeca/head";
-import { native } from "@metreeca/nest/router";
 import React from "react";
 
 
 export function CardHome() {
     return <CardPage name={name}>
 
-        <a href={"/me"}>Card</a>
-        <div><a {...native("/saml/login")}>Login</a></div>
+        !!!
 
     </CardPage>;
 }

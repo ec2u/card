@@ -5,7 +5,6 @@
 import { CardFetcher } from "@ec2u/card/nests/fetcher";
 import { CardKeeper } from "@ec2u/card/nests/keeper";
 import { CardRouter } from "@ec2u/card/nests/router";
-import { CardGate } from "@ec2u/card/views/gate";
 import "@metreeca/skin/quicksand.css";
 import * as React from "react";
 import { render } from "react-dom";
@@ -19,9 +18,7 @@ render((
         <CardFetcher>
             <CardKeeper>
 
-                <CardGate>
-                    <CardRouter/>
-                </CardGate>
+                <CardRouter/>
 
             </CardKeeper>
         </CardFetcher>

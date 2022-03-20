@@ -2,30 +2,19 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-import { isPresent } from "@metreeca/core";
 import { useProfile } from "@metreeca/nest/keeper";
-import { useRoute } from "@metreeca/nest/router";
 import { LogOut } from "@metreeca/skin/lucide";
-import React, { createElement, useEffect } from "react";
+import React, { createElement } from "react";
 import "./card.css";
 
 
 export function CardVirtual() {
 
     const [profile, setProfile]=useProfile();
-    const [, setRoute]=useRoute();
-
-    console.log(profile);
-
-    useEffect(() => {
-
-        if ( !isPresent(profile) ) { setProfile(); }
-
-    }, [profile]);
 
 
     function doLogOut() {
-        // setProfile(null);
+        setProfile(null);
     }
 
 

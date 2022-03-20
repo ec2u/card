@@ -29,11 +29,11 @@ export function CardPage({
 
 
     function doLogIn() {
-        setProfile(true);
+        setProfile();
     }
 
     function doLogOut() {
-        setProfile(false);
+        setProfile(null);
     }
 
 
