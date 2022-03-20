@@ -7,7 +7,7 @@ import { useProfile } from "@metreeca/nest/keeper";
 import { useRoute } from "@metreeca/nest/router";
 import { LogOut } from "@metreeca/skin/lucide";
 import React, { createElement, useEffect } from "react";
-import "./virtual.css";
+import "./card.css";
 
 
 export function CardVirtual() {
@@ -19,14 +19,13 @@ export function CardVirtual() {
 
     useEffect(() => {
 
-        if ( !isPresent(profile) ) { setProfile(true); }
+        if ( !isPresent(profile) ) { setProfile(); }
 
     }, [profile]);
 
 
     function doLogOut() {
-        // setProfile(false);
-        setRoute("/");
+        // setProfile(null);
     }
 
 
