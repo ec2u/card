@@ -45,10 +45,20 @@ card-virtual {
     }
 
     & > div:nth-of-type(1) {
+
+        display: grid;
+
         grid-area: 1 / 3 / span 1 / span 2;
         border-style: solid;
         border-radius: 0.75em;
         background-size: cover;
+
+        & > svg {
+            margin: auto;
+            color: var(--node--color-light);
+            transform: scale(5);
+        }
+
     }
 
     & > div:nth-of-type(2) {
@@ -63,6 +73,9 @@ card-virtual {
 
 
     & > dl {
+
+        grid-area: 1 / 2 / span 2 / span 1;
+
 
         margin-left: 1em;
         margin-right: 1em;
@@ -92,15 +105,6 @@ card-virtual {
         }
 
     }
-
-    & > dl:nth-of-type(1) {
-        grid-area: 1 / 2;
-    }
-
-    & > dl:nth-of-type(2) {
-        grid-area: 2 / 2;
-    }
-
 
     @media screen and (orientation: portrait) {
     }

@@ -2,15 +2,17 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
+import { Profile } from "@ec2u/card/nests/keeper";
+import { Card, CardLevels } from "@ec2u/card/pages/cards/card";
 import { useProfile } from "@metreeca/nest/keeper";
-import { LogOut } from "@metreeca/skin/lucide";
+import { LogOut, User } from "@metreeca/skin/lucide";
 import React, { createElement } from "react";
 import "./card.css";
 
 
 export function CardVirtual() {
 
-    const [profile, setProfile]=useProfile();
+    const [profile, setProfile]=useProfile<Profile>();
 
 
     function doLogOut() {
@@ -18,38 +20,71 @@ export function CardVirtual() {
     }
 
 
-    return createElement("card-virtual", {}, <>
+    return createElement("card-virtual", {}, profile?.card
 
-        <a title={"Home"} href={"/"} style={{ backgroundImage: "url('/assets/identity.svg')" }}/>
-        <button title={"Close"} onClick={doLogOut}><LogOut/></button>
+        ? <>
 
-        <div title={"Photo ID"} style={{ backgroundImage: "url('/assets/mock/photo.png')" }}/>
-        <div title={"QR Code"} style={{ backgroundImage: "url('/assets/mock/qr.png')" }}/>
-        <div title={"ESC Hologram"} style={{ backgroundImage: "url('/assets/hologram.png')" }}/>
+            <a title={"Home"} href={"/"} style={{ backgroundImage: "url('/assets/identity.svg')" }}/>
+            <button title={"Close"} onClick={doLogOut}><LogOut/></button>
 
-        <dl>
+            {CardPhoto(profile.card)}
+            <div title={"QR Code"} style={{ backgroundImage: "url('/assets/mock/qr.png')" }}/>
+            <div title={"ESC Hologram"} style={{ backgroundImage: "url('/assets/hologram.png')" }}/>
+
+            {profile?.card && CardData(profile.card)}
+
+        </>
+
+        : <>
+
+        </>
+    );
+
+
+    function CardData({
+
+        code,
+        expiry,
+
+        esi,
+        pic,
+        level,
+
+        name,
+        photo,
+        email
+
+
+    }: Card) {
+
+        const institution="University of Pavia"; // !!!
+        const countryName="Italy"; // !!!
+        const countryCode="IT"; // !!!
+
+        return <dl>
 
             <dt>Name</dt>
-            <dd>Hermione Granger<br/>123-4567-890</dd>
+            <dd>{name}<br/>{esi.replace("urn:schac:personalUniqueCode:int:esi:", "")}</dd>
 
             <dt>Institution</dt>
-            <dd>University of Pavia<br/>999893752</dd>
+            <dd>{institution}<br/>{pic}</dd>
 
             <dt>Country</dt>
-            <dd>Italy<br/>IT</dd>
-
-        </dl>
-
-        <dl>
+            <dd>{countryName}<br/>{countryCode}</dd>
 
             <dt>Level</dt>
-            <dd>Master</dd>
+            <dd>{CardLevels[level]}</dd>
 
             <dt>Validity</dt>
-            <dd>2023-03-15</dd>
+            <dd>{expiry}</dd>
 
-        </dl>
+        </dl>;
+    }
 
-    </>);
+    function CardPhoto({ photo }: Card) {
+        return <div title={"Photo ID"} style={photo ? { backgroundImage: `url('${photo}')` } : {}}>{
+            photo ? <></> : <User/>
+        }</div>;
+    }
 
 }

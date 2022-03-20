@@ -6,18 +6,22 @@ package eu.ec2u.card;
 
 
 import com.metreeca.gcp.GCPServer;
+import com.metreeca.gcp.services.GCPStore;
 import com.metreeca.gcp.services.GCPVault;
 import com.metreeca.rest.handlers.Router;
+import com.metreeca.rest.services.Cache.FileCache;
+import com.metreeca.rest.services.Fetcher.CacheFetcher;
 
 import eu.ec2u.card.cards.Cards;
 import eu.ec2u.card.cards.Cards.Card;
-import eu.ec2u.card.saml.SAML;
+import eu.ec2u.card.tools.SAML;
 import eu.ec2u.card.users.Users;
 import eu.ec2u.card.users.Users.User;
 import eu.ec2u.card.work.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.*;
 
@@ -27,20 +31,27 @@ import javax.validation.constraints.*;
 import static com.metreeca.gcp.GCPServer.development;
 import static com.metreeca.rest.Handler.asset;
 import static com.metreeca.rest.Response.OK;
+import static com.metreeca.rest.Toolbox.storage;
 import static com.metreeca.rest.formats.JSONFormat.json;
 import static com.metreeca.rest.formats.JSONLDFormat.keywords;
 import static com.metreeca.rest.handlers.Router.router;
+import static com.metreeca.rest.services.Cache.cache;
+import static com.metreeca.rest.services.Fetcher.fetcher;
 import static com.metreeca.rest.services.Logger.Level.debug;
+import static com.metreeca.rest.services.Store.store;
 import static com.metreeca.rest.services.Vault.vault;
 import static com.metreeca.rest.wrappers.Bearer.bearer;
 import static com.metreeca.rest.wrappers.CORS.cors;
 import static com.metreeca.rest.wrappers.Server.server;
 
-import static eu.ec2u.card.cards.Cards.esc;
+import static eu.ec2u.card.users.ESC.cards;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.time.Duration.ofHours;
 import static java.util.Map.entry;
+
+import static javax.json.JsonValue.NULL;
 
 @Getter
 @Setter
@@ -62,7 +73,7 @@ public final class Root {
     public static final String TextPattern="\\S+(\\s+\\S+)*";
 
 
-    public static final byte[] JWTKey="BB9BD1C95FBCD778BDB66ACD5158D".getBytes(UTF_8);
+    public static final byte[] JWTKey="BB9BD1C95FBCD778BDB66ACD5158D".getBytes(UTF_8); // !!! to vault
 
 
     static {
@@ -86,6 +97,11 @@ public final class Root {
         new GCPServer().delegate(toolbox -> toolbox
 
                 .set(vault(), GCPVault::new)
+                .set(store(), GCPStore::new)
+
+                .set(storage(), () -> Paths.get("data"))
+                .set(fetcher(), CacheFetcher::new)
+                .set(cache(), () -> new FileCache().ttl(ofHours(1)))
 
                 .set(keywords(), () -> Map.ofEntries(
                         entry("@id", "id"),
@@ -132,8 +148,12 @@ public final class Root {
                         .map(user -> request.reply(OK)
 
                                 .body(json(), encode(new Root()
-                                        .setUser(user)
-                                        .setCard(esc(user.getEsi()).findFirst().orElse(null)) // !!! multiple
+
+                                        .setProfile(new Profile()
+                                                .setUser(user)
+                                                .setCard(cards(user.getEsi()).findFirst().orElse(null)) // !!! multiple
+                                        )
+
                                 ))
 
                         )
@@ -151,21 +171,38 @@ public final class Root {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private User user;
-    private Card card;
+
+    private Profile profile;
 
 
     private static JsonObject encode(final Root root) {
         return Json.createObjectBuilder()
 
-                .add("user", Users.encode(root.user))
-                .add("card", Cards.encode(root.card))
+                .add("profile", encode(root.profile))
+
+                .build();
+    }
+
+    private static JsonValue encode(final Profile profile) {
+        return profile == null ? NULL : Json.createObjectBuilder()
+
+                .add("user", Users.encode(profile.user))
+                .add("card", Cards.encode(profile.card))
 
                 .build();
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Getter
+    @Setter
+    public static final class Profile {
+
+        private User user;
+        private Card card;
+
+    }
 
     @Getter
     @Setter

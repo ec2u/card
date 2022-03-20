@@ -2,7 +2,7 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-package eu.ec2u.card.saml;
+package eu.ec2u.card.tools;
 
 import com.metreeca.rest.Request;
 import com.metreeca.rest.Response;

@@ -2,12 +2,20 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
+import { Card } from "@ec2u/card/pages/cards/card";
 import { User } from "@ec2u/card/pages/users/user";
+import { Optional } from "@metreeca/core";
+import { useSessionStorage } from "@metreeca/hook/storage";
 import { JWTPattern, NodeKeeper } from "@metreeca/nest/keeper";
 import React, { ReactNode, useEffect, useState } from "react";
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+export interface Profile {
+
+    readonly user: Optional<User>;
+    readonly card: Optional<Card>;
+
+}
 
 export function CardKeeper({
 
@@ -19,10 +27,10 @@ export function CardKeeper({
 
 }) {
 
-    const [gate, setGate]=useState<string>();
-    const [user, setUser]=useState<User>();
+    const [gateway, setGateway]=useState<string>();
+    const [profile, setProfile]=useState<User>();
 
-    const [token, setToken]=useState<string>(); // !!! migrate to fetcher
+    const [token, setToken]=useSessionStorage("token"); // !!! migrate to NodeFetcher
 
     useEffect(() => {
 
@@ -30,10 +38,10 @@ export function CardKeeper({
 
             if ( response.ok ) {
 
-                response.json().then(({ user }) => {
+                response.json().then(({ profile }) => {
 
-                    setGate(response.headers.get("Location") ?? undefined);
-                    setUser(user ?? undefined);
+                    setGateway(response.headers.get("Location") ?? undefined);
+                    setProfile(profile);
 
                 });
 
@@ -67,7 +75,7 @@ export function CardKeeper({
 
 
     function login() {
-        if ( gate ) { window.open(`${gate}?target=${encodeURIComponent(location.href)}`, "_self"); }
+        if ( gateway ) { window.open(`${gateway}?target=${encodeURIComponent(location.href)}`, "_self"); }
     }
 
     function logout() {
@@ -75,7 +83,7 @@ export function CardKeeper({
     }
 
 
-    return <NodeKeeper state={[user, (profile?: null | User) => {
+    return <NodeKeeper state={[profile, (profile?: null | User) => {
 
         if ( profile === undefined ) {
 
@@ -84,10 +92,6 @@ export function CardKeeper({
         } else if ( profile === null ) {
 
             logout();
-
-        } else {
-
-            setUser(profile);
 
         }
 
