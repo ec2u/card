@@ -1,8 +1,6 @@
 package eu.ec2u.card.cards.escr;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -16,49 +14,41 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
-@Getter
-@Setter
 public class EscRetriever {
 
-	HttpClient client;
-	HttpRequest request;
-	
-	final String basePath = "https://api-sandbox.europeanstudentcard.eu/v1/students";
+	private final String basePath = "https://api-sandbox.europeanstudentcard.eu/v1";
 
-	public String retrieveCard(final String esi, final String escNumber) {
+	/**
+	 * Lists students or retrieves single student's details.
+	 */
+	public String retrieveStudents(final String... pathBlocks) throws IOException, InterruptedException {
 
-		String cardString = "";
-
-		try {
-			cardString = httpGetter(basePath +
-					"/" + esi + "/cards/" + escNumber);
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-
-		return cardString;
+		return httpGetter(basePath + "/students/" + String.join("", pathBlocks));
 
 	}
 
-	public String retrieveAllStudents() {
+	/**
+	 * Lists cards or retrieves single card's details.
+	 */
+	public String retrieveCards(final String... pathBlocks) throws IOException, InterruptedException {
 
-		String studentsString = "";
+		String completePath = basePath;
 
-		try {
-			studentsString = httpGetter(basePath);
-		} catch (final Exception e) {
-			e.printStackTrace();
+		if (pathBlocks.length == 0) {
+			completePath += "/cards/";
+		} else {
+			completePath = basePath + "/students/" + pathBlocks[0] + "/cards/" + pathBlocks[1];
 		}
 
-		return studentsString;
+		return httpGetter(completePath);
 
 	}
 
 	public String httpGetter(final String uri) throws IOException, InterruptedException {
 
-		client = HttpClient.newHttpClient();
+		final HttpClient client = HttpClient.newHttpClient();
 
-		request = HttpRequest.newBuilder()
+		final HttpRequest request = HttpRequest.newBuilder()
 				.GET()
 				.header("Key", System.getenv("API_SANDBOX_KEY"))
 				.header("Accept", "application/json")
