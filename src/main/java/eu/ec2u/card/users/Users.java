@@ -10,11 +10,14 @@ import lombok.Setter;
 
 import java.util.Optional;
 
+import javax.json.*;
 import javax.validation.constraints.*;
 
 import static eu.ec2u.card.Card.*;
 
 import static java.lang.String.format;
+
+import static javax.json.JsonValue.NULL;
 
 @Getter
 @Setter
@@ -23,14 +26,32 @@ public class Users extends Container<User> {
     static final String Id="/users/";
 
 
+    public static JsonValue encode(final User user) {
+        return user == null ? NULL : Json.createObjectBuilder()
+                .add("esi", user.esi)
+                .build();
+    }
+
+    public static User decode(final JsonObject json) {
+        return new User()
+                .setEsi(json.getString("esi"));
+    }
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Getter
     @Setter
-    static final class User extends Resource {
+    public static final class User extends Resource {
+
+        @NotNull
+        @Size(max=URLSize)
+        @Pattern(regexp=RelativePattern) // !!! ESI Pattern
+        private String esi;
 
         @NotNull
         private Boolean admin;
+
 
         @NotNull
         @Size(max=LineSize)
@@ -41,6 +62,7 @@ public class Users extends Container<User> {
         @Size(max=LineSize)
         @Pattern(regexp=LinePattern)
         private String surname;
+
 
         @NotNull
         @Size(max=LineSize)

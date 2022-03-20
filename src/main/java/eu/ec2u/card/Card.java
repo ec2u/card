@@ -7,33 +7,39 @@ package eu.ec2u.card;
 
 import com.metreeca.gcp.GCPServer;
 import com.metreeca.gcp.services.GCPVault;
+import com.metreeca.rest.handlers.Router;
 
+import eu.ec2u.card.saml.SAML;
+import eu.ec2u.card.users.Users;
+import eu.ec2u.card.users.Users.User;
 import eu.ec2u.card.work.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.io.Serializable;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
 
+import javax.json.*;
 import javax.validation.constraints.*;
 
+import static com.metreeca.gcp.GCPServer.development;
 import static com.metreeca.rest.Handler.asset;
-import static com.metreeca.rest.MessageException.status;
 import static com.metreeca.rest.Response.OK;
+import static com.metreeca.rest.formats.JSONFormat.json;
 import static com.metreeca.rest.formats.JSONLDFormat.keywords;
 import static com.metreeca.rest.handlers.Router.router;
 import static com.metreeca.rest.services.Logger.Level.debug;
 import static com.metreeca.rest.services.Vault.vault;
+import static com.metreeca.rest.wrappers.Bearer.bearer;
 import static com.metreeca.rest.wrappers.CORS.cors;
 import static com.metreeca.rest.wrappers.Server.server;
 
-import static java.time.temporal.ChronoField.*;
+import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Map.entry;
 
 @Getter
-@Builder
+@Setter
 public final class Card {
 
     public static final String Id="/";
@@ -50,32 +56,24 @@ public final class Card {
     public static final int TextSize=2000;
     public static final String TextPattern="\\S+(\\s+\\S+)*";
 
-    static final DateTimeFormatter InstantFormat=new DateTimeFormatterBuilder()
 
-            .appendValue(YEAR, 4)
-            .appendValue(MONTH_OF_YEAR, 2)
-            .appendValue(DAY_OF_MONTH, 2)
+    public static final byte[] JWTKey="BB9BD1C95FBCD778BDB66ACD5158D".getBytes(UTF_8);
 
-            .appendLiteral("T")
-
-            .appendValue(HOUR_OF_DAY, 2)
-            .appendValue(MINUTE_OF_HOUR, 2)
-            .appendValue(SECOND_OF_MINUTE, 2)
-
-            .parseStrict()
-            .toFormatter(Locale.ROOT);
 
     static {
 
         debug.log("com.metreeca");
 
+        if ( development() ) { SSL.untrusted(); } // disable SSL checks while developing
 
-        if ( GCPServer.development() ) { // disable SSL checks while developing
+    }
 
-            Unsafe.unsafe();
 
-        }
+    static Instant revision() {
 
+        throw new UnsupportedOperationException(";(  be implemented"); // !!!
+
+        //return LocalDateTime.from(Card.InstantFormat.parse(revision)).toInstant(ZoneOffset.UTC);
     }
 
 
@@ -92,15 +90,23 @@ public final class Card {
                 .get(() -> server()
 
                         .with(cors())
-                        //.with(bearer(token(), RootRole))
+
+                        // !!! error handling
+
+                        .with(bearer((token, request) -> new Notary(JWTKey).verify(token)
+                                .map(Notary::decode)
+                                .map(JsonValue::asJsonObject)
+                                .map(Users::decode)
+                                .map(request::user)
+                        ))
 
                         .wrap(router()
 
-                                .path("/saml/*", new SAML())
+                                .path(SAML.Pattern, new SAML())
 
                                 .path("/*", asset(new Fallback(), router()
 
-                                        .path("/", request -> request.reply(status(OK)))
+                                        .path("/", card())
 
                                 ))
 
@@ -114,43 +120,44 @@ public final class Card {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private static Router card() {
+        return router()
+                .get(request -> request.user(User.class)
 
-    Instant revision() {
+                        .map(user -> request.reply(OK)
 
-        throw new UnsupportedOperationException(";(  be implemented"); // !!!
+                                .body(json(), encode(new Card()
+                                        .setUser(user)
+                                ))
 
-        //return LocalDateTime.from(Card.InstantFormat.parse(revision)).toInstant(ZoneOffset.UTC);
+                        )
+
+                        .orElseGet(() -> request.reply(OK)
+
+                                .header("WWW-Authenticate", format("Bearer realm=\"%s\"", request.base()))
+                                .header("Location", SAML.Session)
+
+                                .body(json(), encode(new Card()))
+
+                        ));
     }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final String id;
+    private User user;
 
-    private final Instant revision;
-    //private final Profile profile;
+
+    private static JsonObject encode(final Card card) {
+        return Json.createObjectBuilder()
+
+                .add("user", Users.encode(card.user))
+
+                .build();
+    }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Getter
-    @Builder
-    public static final class Profile implements Serializable {
-
-        private static final long serialVersionUID=-7793479050451108354L;
-
-
-        private boolean admin;
-
-        @NotNull private String id;
-        @NotNull private String code;
-        @NotNull private String label;
-
-        @NotNull private String forename;
-        @NotNull private String surname;
-        @NotNull private String email;
-
-    }
-
 
     @Getter
     @Setter
@@ -168,20 +175,19 @@ public final class Card {
 
         @Size(max=URLSize)
         @Pattern(regexp=RelativePattern)
-        //@JsonProperty("id")
-        private String path;
+        private String id;
 
         @Size(max=LineSize)
         @Pattern(regexp=LinePattern)
         private String label;
 
-        @Size(max=LineSize)
-        @Pattern(regexp=AbsolutePattern)
-        private String image;
-
         @Size(max=TextSize)
         @Pattern(regexp=TextPattern)
         private String brief;
+
+        @Size(max=4096)
+        @Pattern(regexp=AbsolutePattern)
+        private String image;
 
     }
 
@@ -201,7 +207,7 @@ public final class Card {
 
         protected void transfer(final Resource resource, final ResourceData data) {
 
-            data.getPath().ifPresent(resource::setPath);
+            data.getPath().ifPresent(resource::setId);
             data.getLabel().ifPresent(resource::setLabel);
 
             resource.setImage(data.image);
@@ -211,7 +217,7 @@ public final class Card {
 
         protected static void transfer(final ResourceData data, final Resource resource) {
 
-            if ( !data.getPath().equals(Optional.ofNullable(resource.getPath())) ) {
+            if ( !data.getPath().equals(Optional.ofNullable(resource.getId())) ) {
                 throw new IllegalStateException("mutated value for read-only field <id>");
             }
 

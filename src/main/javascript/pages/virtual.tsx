@@ -2,9 +2,9 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-import { isDefined } from "@metreeca/core";
-import { useKeeper } from "@metreeca/nest/keeper";
-import { useRouter } from "@metreeca/nest/router";
+import { isPresent } from "@metreeca/core";
+import { useProfile } from "@metreeca/nest/keeper";
+import { useRoute } from "@metreeca/nest/router";
 import { LogOut } from "@metreeca/skin/lucide";
 import React, { createElement, useEffect } from "react";
 import "./virtual.css";
@@ -12,14 +12,14 @@ import "./virtual.css";
 
 export function CardVirtual() {
 
-    const [profile, setProfile]=useKeeper();
-    const [, setRoute]=useRouter();
+    const [profile, setProfile]=useProfile();
+    const [, setRoute]=useRoute();
 
     console.log(profile);
 
     useEffect(() => {
 
-        if ( !isDefined(profile) ) { setProfile(true); }
+        if ( !isPresent(profile) ) { setProfile(true); }
 
     }, [profile]);
 

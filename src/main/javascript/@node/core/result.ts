@@ -20,7 +20,7 @@
  * @module
  */
 
-import { isDefined, isFunction, Optional } from "@metreeca/core";
+import { isFunction, isPresent, Optional } from "@metreeca/core";
 
 
 /**
@@ -112,19 +112,19 @@ export function Result<V, E>({ fetch, value, error }: {
 
     return <R>(probe: any) => {
 
-        if ( isDefined(fetch) ) {
+        if ( isPresent(fetch) ) {
 
-            return isFunction(probe.fetch) ? probe.fetch(fetch) : isDefined(probe.fetch) ? probe.fetch
+            return isFunction(probe.fetch) ? probe.fetch(fetch) : isPresent(probe.fetch) ? probe.fetch
                 : isFunction(probe.other) ? probe.other(fetch) : probe.other;
 
-        } else if ( isDefined(value) ) {
+        } else if ( isPresent(value) ) {
 
-            return isFunction(probe.value) ? probe.value(value) : isDefined(probe.value) ? probe.value
+            return isFunction(probe.value) ? probe.value(value) : isPresent(probe.value) ? probe.value
                 : isFunction(probe.other) ? probe.other(value) : probe.other;
 
-        } else if ( isDefined(error) ) {
+        } else if ( isPresent(error) ) {
 
-            return isFunction(probe.error) ? probe.error(error) : isDefined(probe.error) ? probe.error
+            return isFunction(probe.error) ? probe.error(error) : isPresent(probe.error) ? probe.error
                 : isFunction(probe.other) ? probe.other(error) : probe.other;
 
         } else {

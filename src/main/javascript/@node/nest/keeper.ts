@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { isDefined, Optional } from "@metreeca/core";
-import { createContext, createElement, ReactNode, useContext, useEffect, useState } from "react";
+import { Optional } from "@metreeca/core";
+import { Context, createContext, createElement, ReactNode, useContext } from "react";
 
 
 /**
@@ -49,17 +49,19 @@ export type Value<P=unknown>=Optional<P>;
  */
 export interface Updater<P=unknown> {
 
-    /**
-     * Updates the user profile.
-     *
-     * @param active initiates a login sequence if `true` or a `logout` sequence if `false`
-     */
-    (active: boolean): void;
+    (): void;
+
+    (anonymous: null): void;
+
+    (authenticated: P): void;
 
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const JWTPattern=/^(?:[-\w]+\.){2}[-\w]+$/;
+
 
 /**
  * Creates a keeper context.
@@ -71,41 +73,21 @@ export interface Updater<P=unknown> {
  */
 export function NodeKeeper<P>({
 
-    actions: { test, login, logout },
+    state,
 
     children
 
 }: {
 
-    actions: {
-        test: () => Promise<Optional<P>>,
-        login: () => Promise<Optional<P>>,
-        logout: () => Promise<Optional<P>>
-    }
+    state: [Value<P>, Updater<P>]
 
     children: ReactNode
 
 }) {
 
-    const [profile, setProfile]=useState<P>();
+    return createElement((Context as Context<[Value<P>, Updater<P>]>).Provider, {
 
-
-    useEffect(() => {
-
-        if ( !isDefined(profile) ) {test().then(setProfile); }
-
-    }, [profile]);
-
-
-    return createElement(Context.Provider, {
-
-        value: [
-
-            profile as unknown,
-
-            (active: boolean) => setTimeout(() => (active ? login : logout)().then(setProfile), 0)
-
-        ],
+        value: state,
 
         children
 
@@ -120,6 +102,7 @@ export function NodeKeeper<P>({
  *
  * @template P the type of the user profile
  */
-export function useKeeper<P>(): [Value<P>, Updater<P>] {
+export function useProfile<P>(): [Value<P>, Updater<P>] {
     return useContext<[Value<P>, Updater<P>]>(Context as any);
 }
+

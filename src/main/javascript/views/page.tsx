@@ -2,9 +2,9 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-import { isDefined } from "@metreeca/core";
+import { isPresent } from "@metreeca/core";
 import { copy } from "@metreeca/head";
-import { useKeeper } from "@metreeca/nest/keeper";
+import { useProfile } from "@metreeca/nest/keeper";
 import { CreditCard, Key, LogIn, LogOut, Users } from "@metreeca/skin/lucide";
 import { NodeIcon } from "@metreeca/tile/icon";
 import React, { createElement, ReactNode } from "react";
@@ -25,7 +25,7 @@ export function CardPage({
 
 }) {
 
-    const [profile, setProfile]=useKeeper();
+    const [profile, setProfile]=useProfile();
 
 
     function doLogIn() {
@@ -51,7 +51,7 @@ export function CardPage({
                 <a href={"/users/"}><Key/></a>
             </section>
 
-            <footer>{isDefined(profile)
+            <footer>{isPresent(profile)
 
                 ? <button title={"Log Out"} onClick={doLogOut}><LogOut style={{ transform: "scaleX(-1)" }}/></button>
                 : <button title={"Log In"} onClick={doLogIn}><LogIn/></button>

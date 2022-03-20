@@ -2,17 +2,12 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-import { NodeKeeper } from "@metreeca/nest/keeper";
-import React, { ReactNode } from "react";
+import { User } from "@ec2u/card/pages/users/user";
+import { JWTPattern, NodeKeeper } from "@metreeca/nest/keeper";
+import React, { ReactNode, useEffect, useState } from "react";
 
 
-export interface Profile {
-
-    readonly code: string;
-    readonly email: string;
-
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export function CardKeeper({
 
@@ -24,52 +19,79 @@ export function CardKeeper({
 
 }) {
 
-    function test() {
-        return fetch("/").then(response => {
+    const [gate, setGate]=useState<string>();
+    const [user, setUser]=useState<User>();
+
+    const [token, setToken]=useState<string>(); // !!! migrate to fetcher
+
+    useEffect(() => {
+
+        fetch("/", token ? { headers: { Authorization: `Bearer ${token}` } } : {}).then(response => {
 
             if ( response.ok ) {
 
-                return response.json().then(({ profile }) => profile);
+                response.json().then(({ user }) => {
+
+                    setGate(response.headers.get("Location") ?? undefined);
+                    setUser(user ?? undefined);
+
+                });
 
             } else {
 
                 // !!! notify
 
-                return undefined;
+            }
+
+        });
+
+    }, [token]);
+
+    useEffect(() => {
+
+        [location.search.substring(1)].filter(query => query.match(JWTPattern)).forEach(token => {
+
+            try {
+
+                setToken(token ?? undefined);
+
+            } finally {
+
+                history.replaceState(history.state, "", location.href.replace(/\?[^#]*/, ""));
 
             }
 
         });
-    }
+
+    }, [token]);
 
 
     function login() {
-        return Promise.resolve(undefined).then(() => {
-
-            location.assign("/login");
-
-        });
+        if ( gate ) { window.open(`${gate}?target=${encodeURIComponent(location.href)}`, "_self"); }
     }
 
     function logout() {
-
-        console.log("out!");
-
-        return fetch("/logout", { method: "POST" }).then(response => {
-
-            if ( !response.ok ) {
-
-                // !!! notify
-
-            }
-
-            return undefined;
-
-        });
+        setToken(undefined);
     }
 
 
-    return <NodeKeeper actions={{ test, login, logout }}>{
+    return <NodeKeeper state={[user, (profile?: null | User) => {
+
+        if ( profile === undefined ) {
+
+            login();
+
+        } else if ( profile === null ) {
+
+            logout();
+
+        } else {
+
+            setUser(profile);
+
+        }
+
+    }]}>{
 
         children
 

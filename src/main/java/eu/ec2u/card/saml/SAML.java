@@ -2,13 +2,11 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-package eu.ec2u.card.work;
+package eu.ec2u.card.saml;
 
 import com.metreeca.rest.Request;
 import com.metreeca.rest.Response;
 import com.metreeca.rest.handlers.Delegator;
-import com.metreeca.rest.services.Fetcher;
-import com.metreeca.rest.services.Fetcher.URLFetcher;
 import com.metreeca.xml.formats.XMLFormat;
 
 import com.onelogin.saml2.authn.AuthnRequest;
@@ -18,47 +16,43 @@ import com.onelogin.saml2.factory.SamlMessageFactory;
 import com.onelogin.saml2.http.HttpRequest;
 import com.onelogin.saml2.settings.Saml2Settings;
 import com.onelogin.saml2.settings.SettingsBuilder;
+import eu.ec2u.card.Card;
+import eu.ec2u.card.users.Users.User;
+import eu.ec2u.card.work.Notary;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.security.cert.CertificateEncodingException;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Matcher;
+import java.util.*;
 
-import static com.metreeca.core.Identifiers.AbsoluteIRIPattern;
-import static com.metreeca.core.Identifiers.encode;
 import static com.metreeca.core.Lambdas.checked;
 import static com.metreeca.rest.MessageException.status;
 import static com.metreeca.rest.Response.*;
 import static com.metreeca.rest.formats.TextFormat.text;
 import static com.metreeca.rest.handlers.Router.router;
 
+import static eu.ec2u.card.users.Users.encode;
+import static eu.ec2u.card.work.Query.query;
+
 import static java.lang.String.format;
 import static java.util.Map.entry;
-import static java.util.stream.Collectors.joining;
 
 public final class SAML extends Delegator {
 
+    public static final String Pattern="/saml/*";
+    public static final String Session="/saml/session";
+
+
+    private static final Saml2Settings settings=settings();
     private static final SamlMessageFactory samlMessageFactory=new SamlMessageFactory() { };
 
-
-    private static String query(final Map<String, String> parameters) { // !!! factor
-        return parameters.entrySet().stream()
-                .map(p -> format("%s=%s", encode(p.getKey()), encode(p.getValue())))
-                .collect(joining("&"));
-    }
-
-    private String query(final String prefix, final Map<String, String> parameters) {
-        return prefix+(prefix.contains("?") ? "&" : "?")+query(parameters);
-    }
+    private static final Notary notary=new Notary(Card.JWTKey);
 
 
-    private final Saml2Settings settings=settings();
-
-    private Saml2Settings settings() {
+    private static Saml2Settings settings() {
 
         try {
+
             final Saml2Settings settings=new SettingsBuilder().fromFile("saml.properties").build();
 
             //final List<String> settingsErrors = settings.checkSettings();
@@ -80,7 +74,6 @@ public final class SAML extends Delegator {
 
             throw new UncheckedIOException(e);
 
-
         }
     }
 
@@ -92,8 +85,7 @@ public final class SAML extends Delegator {
 
                 .path("/", router().get(this::metadata))
                 .path("/acs", router().post(this::acs))
-                .path("/login", router().get(this::login))
-                .path("/discover", router().get(this::discover))
+                .path("/session", router().get(this::session))
 
         );
     }
@@ -139,6 +131,8 @@ public final class SAML extends Delegator {
 
                 .map(checked(samlResponse -> {
 
+                    // !!! replay attack?
+
                     //lastResponse = samlResponse.getSAMLResponseXml();
 
                     if ( samlResponse.isValid(null) ) {
@@ -151,6 +145,9 @@ public final class SAML extends Delegator {
                         //attributes = samlResponse.getAttributes();
                         //sessionIndex = samlResponse.getSessionIndex();
                         //sessionExpiration = samlResponse.getSessionNotOnOrAfter();
+
+                        // !!! replay attack?
+
                         //lastMessageId = samlResponse.getId();
                         //lastMessageIssueInstant = samlResponse.getResponseIssueInstant();
                         //lastAssertionId = samlResponse.getAssertionId();
@@ -158,7 +155,23 @@ public final class SAML extends Delegator {
 
                         //LOGGER.debug("processResponse success --> " + samlResponseParameter);
 
+                        final String esi=samlResponse.getAttributes()
+                                .getOrDefault("schacPersonalUniqueCode", List.of())
+                                .stream()
+                                .findFirst()
+                                .orElseThrow();
+
+                        final String token=notary.create(Notary.encode(encode(new User()
+                                .setEsi(esi)
+                        )));
+
+                        return request.reply(Found, format("%s?%s",
+                                request.parameter("RelayState").orElse("/"),
+                                token
+                        ));
+
                     } else {
+
                         //errorReason = samlResponse.getError();
                         //validationException = samlResponse.getValidationException();
                         //final SamlResponseStatus samlResponseStatus = samlResponse.getResponseStatus();
@@ -176,30 +189,9 @@ public final class SAML extends Delegator {
                         //    LOGGER.error("processResponse error. invalid_response");
                         //    LOGGER.debug(" --> " + samlResponseParameter);
                         //}
+
+                        return null;
                     }
-
-                    return request.reply(status(Found, request.parameter("RelayState").orElse("/")));
-
-
-                    //final String relayState = http.getParameter("RelayState");
-                    //
-                    //if (relayState != null && relayState != ServletUtils.getSelfRoutedURLNoQuery(request)) {
-                    //    response.sendRedirect(request.getParameter("RelayState"));
-                    //} else {
-                    //    if (attributes.isEmpty()) {
-                    //        out.println("You don't have any attributes");
-                    //    }
-                    //    else {
-                    //        final Collection<String> keys = attributes.keySet();
-                    //        for(final String name :keys){
-                    //            out.println(name);
-                    //            final List<String> values = attributes.get(name);
-                    //            for(final String value :values) {
-                    //                out.println(" - " + value);
-                    //            }
-                    //        }
-                    //    }
-                    //}
 
 
                 }))
@@ -211,23 +203,27 @@ public final class SAML extends Delegator {
                     //LOGGER.error("processResponse error." + errorMsg);
                     //throw new Error(errorMsg, Error.SAML_RESPONSE_NOT_FOUND);
 
-                    return request.reply(status(BadRequest));
+                    return request.reply(BadRequest);
 
                 });
 
     }
 
-    private Response login(final Request request) {
+    private Response session(final Request request) {
         try {
 
-            final AuthnRequestParams authnRequestParams=new AuthnRequestParams(false, false, true);
-            final AuthnRequest authnRequest=samlMessageFactory.createAuthnRequest(settings, authnRequestParams);
+            final String sso=settings.getIdpSingleSignOnServiceUrl().toString();
+            final String target=request.parameter("target").orElse("/");
+
+            final AuthnRequest authnRequest=samlMessageFactory.createAuthnRequest(settings,
+                    new AuthnRequestParams(false, false, true)
+            );
+
 
             final Map<String, String> parameters=Map.ofEntries(
                     entry("SAMLRequest", authnRequest.getEncodedAuthnRequest()),
-                    entry("RelayState", "/private")
+                    entry("RelayState", target)
             );
-
 
             //if ( settings.getAuthnRequestsSigned() ) {
             //    final String sigAlg=settings.getSignatureAlgorithm();
@@ -237,67 +233,17 @@ public final class SAML extends Delegator {
             //    parameters.put("Signature", signature);
             //}
 
-            final String ssoUrl=settings.getIdpSingleSignOnServiceUrl().toString();
+            // !!! replay attack?
 
             //lastRequestId=authnRequest.getId();
             //lastRequestIssueInstant=authnRequest.getIssueInstant();
             //lastRequest=authnRequest.getAuthnRequestXml();
 
-            //if ( !stay ) {
-            //    LOGGER.debug("AuthNRequest sent to "+ssoUrl+" --> "+samlRequest);
-            //}
-
-            return request.reply(status(Found, query(ssoUrl, parameters)));
+            return request.reply(Found, query(sso, parameters));
 
         } catch ( final IOException e ) {
             throw new UncheckedIOException(e);
         }
-    }
-
-    private Response discover(final Request request) {
-
-        if ( request.query().isEmpty() ) {
-
-            return request.reply(status(Found, query("https://service.seamlessaccess.org/ds", Map.ofEntries(
-                    entry("entityID", "https://127.0.0.1:3000/saml/"),
-                    entry("return", request.item())
-            ))));
-
-        } else {
-
-
-            final Fetcher fetcher=new URLFetcher();
-
-            final String provider=request.parameter("entityID").orElseThrow();
-
-            return fetcher
-
-                    .apply(Optional.of(AbsoluteIRIPattern.matcher(provider)) // !!! factor
-
-                            .filter(Matcher::matches)
-
-                            .map(matcher -> new Request()
-                                    .base(matcher.group("schemeall")+matcher.group("hostall")+"/")
-                                    .path(matcher.group("path"))
-                            )
-
-                            .orElseThrow()
-
-                            // disable conditional requests
-
-                            .header("If-None-Match", "")
-                            .header("If-Modified-Since", "")
-
-                    )
-
-                    .map(metadata -> request.reply(response -> response.status(OK)
-
-                            .body(text(), metadata.body(text()).fold(e -> "!!!"))
-
-                    ));
-
-        }
-
     }
 
 }

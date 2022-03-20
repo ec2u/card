@@ -2,13 +2,13 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-package eu.ec2u.card;
+package eu.ec2u.card.work;
 
 import eu.europeanstudentcard.esc.EscnFactory;
 import eu.europeanstudentcard.esc.EscnFactoryException;
 
 
-class Work {
+class ESC {
 
     public static void main(final String[] args) {
 

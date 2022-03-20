@@ -9,9 +9,9 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.*;
 
-public final class Unsafe {
+public final class SSL {
 
-    public static void unsafe() {
+    public static void untrusted() {
         try {
             final SSLContext context=SSLContext.getInstance("TLS");
 

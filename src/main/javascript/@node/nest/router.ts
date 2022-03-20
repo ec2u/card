@@ -43,6 +43,8 @@ export type Value=string
  */
 export interface Updater {
 
+    (): string;
+
     (route: string | { route?: string, state?: any, label?: string }, replace?: boolean): void;
 
 }
@@ -319,38 +321,46 @@ export function NodeRouter({
 
 }
 
-export function useRouter(): [Value, Updater] {
+export function useRoute(): [Value, Updater] {
 
     const { store, update }=useContext(Context);
 
     return [store(), (entry, replace) => {
 
-        const { route, state, label }=(typeof entry === "string")
-            ? { route: entry, state: undefined, label: undefined }
-            : entry;
+        if ( entry === undefined ) {
 
-        const _route=(route === undefined) ? location.href : (route === null) ? location.origin : /*absolute*/(store(route));
-        const _state=(state === undefined) ? history.state : (state === null) ? undefined : state;
-        const _label=(label === undefined) ? document.title : label && name ? `${label} | ${name}` : label || name;
+            return store();
 
-        const modified=_route !== location.href || _state !== history.state /*|| _label !== document.title*/;
+        } else {
+
+            const { route, state, label }=(typeof entry === "string")
+                ? { route: entry, state: undefined, label: undefined }
+                : entry;
+
+            const _route=(route === undefined) ? location.href : (route === null) ? location.origin : /*absolute*/(store(route));
+            const _state=(state === undefined) ? history.state : (state === null) ? undefined : state;
+            const _label=(label === undefined) ? document.title : label && name ? `${label} | ${name}` : label || name;
+
+            const modified=_route !== location.href || _state !== history.state /*|| _label !== document.title*/;
 
 
-        try {
+            try {
 
-            if ( replace || _route === location.href ) {
+                if ( replace || _route === location.href ) {
 
-                history.replaceState(_state, document.title=_label, _route);
+                    history.replaceState(_state, document.title=_label, _route);
 
-            } else {
+                } else {
 
-                history.pushState(state, document.title=_label, _route);
+                    history.pushState(state, document.title=_label, _route);
+
+                }
+
+            } finally {
+
+                if ( modified ) { update; }
 
             }
-
-        } finally {
-
-            if ( modified ) { update; }
 
         }
 

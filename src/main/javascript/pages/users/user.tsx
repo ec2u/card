@@ -1,3 +1,7 @@
+/*
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
+ */
+
 import React, { createElement, useState } from "react";
 
 
@@ -5,6 +9,7 @@ export const LinePattern="\\S+( \\S+)*";
 
 export interface User {
 
+    readonly esi: string;
     readonly admin: boolean;
 
     readonly forename: string;
