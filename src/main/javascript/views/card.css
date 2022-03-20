@@ -4,38 +4,22 @@
 
 card-virtual {
 
-    --qr-size: calc(min(max(5em, 25vh), 10em));
-
-    max-height: 30em;
-    overflow: auto;
+    --qr-size: clamp(5em, 25vmin, 7.5em);
 
     display: grid;
-
-    grid-template-rows: 1fr var(--qr-size);
-    grid-template-columns: minmax(2.5em, 10vw) 1fr var(--qr-size) calc(4 / 3 * var(--qr-size));
 
     align-items: stretch;
     justify-items: stretch;
 
     padding: 5vmin;
-    grid-gap: 1em;
+    grid-gap: 1rem;
 
-    font-size: 12pt;
+    overflow: hidden;
 
-    & > a {
-
-        grid-area: 1 / 1;
-
+    & > button {
         background-position: 0 0;
         background-size: contain;
         background-repeat: no-repeat;
-    }
-
-    & > button {
-        grid-area: 2 / 1;
-        font-size: 2em;
-        color: #CCC;
-        transform: scaleX(-1);
     }
 
 
@@ -44,72 +28,119 @@ card-virtual {
         background-repeat: no-repeat;
     }
 
-    & > div.photo {
+    & > .photo {
 
         display: grid;
 
-        grid-area: 1 / 3 / span 1 / span 2;
         border-style: solid;
         border-radius: 0.75em;
         background-size: cover;
 
         & > svg {
             margin: auto;
-            color: var(--node--color-light);
+            color: var(--node--border-color);
             transform: scale(5);
+            stroke-width: 0.5;
         }
 
     }
 
-    & > div.qr {
-        grid-area: 2 / 3;
+    & > .qr {
         background-size: contain;
     }
 
-    & > div.hologram {
-        grid-area: 2 / 4;
+    & > .hologram {
         background-size: contain;
     }
 
 
-    & > dl {
+    & > .data {
 
-        grid-area: 1 / 2 / span 2 / span 1;
+        margin-right: 0.33rem;
 
-
-        margin-left: 1em;
-        margin-right: 1em;
-
-        white-space: nowrap;
         text-align: right;
+        white-space: nowrap;
 
-        &:not(:first-of-type) {
-            margin-top: -0.25em;
-        }
+        & > dl {
 
-        & > dt {
+            display: inline-block;
 
-            margin-bottom: 0.1em;
+            transform-origin: top right;
 
-            color: #999;
+            & > dt {
 
-            &:not(:first-child) {
-                margin-top: 0.5em;
+                margin-bottom: 0.25rem;
+
+                font-size: 0.75em;
+                color: #999;
+
+                &:not(:first-child) {
+                    margin-top: 0.5rem;
+                }
+
+            }
+
+            & > dd {
+                font-weight: 700;
             }
 
         }
+    }
 
-        & > dd {
-            font-size: 130%;
-            font-weight: 700;
+
+    @media only screen and (orientation: landscape) {
+
+        grid-template-rows: 1fr var(--qr-size);
+        grid-template-columns: minmax(2.5em, 10vmax) 1fr var(--qr-size) calc(4 / 3 * var(--qr-size));
+
+
+        & > button {
+            grid-area: 1 / 1;
+        }
+
+        & > .photo {
+            grid-area: 1 / 3 / span 1 / span 2;
+        }
+
+        & > .qr {
+            grid-area: 2 / 3;
+        }
+
+        & > .hologram {
+            grid-area: 2 / 4;
+        }
+
+        & > .data {
+            grid-area: 1 / 2 / span 2 / span 1;
         }
 
     }
 
-    @media screen and (orientation: portrait) {
-    }
+    @media only screen and (orientation: portrait) {
 
-    @media screen and (orientation: landscape) {
+        grid-template-rows: minmax(2.5em, 12.5vmax) 1fr var(--qr-size) calc(3 / 4 * var(--qr-size));
+        grid-template-columns: var(--qr-size) 1fr;
+
+        & > button {
+            grid-area: 1 / 1;
+        }
+
+        & > .photo {
+            grid-area: 3 / 2 / span 2 / span 1
+        }
+
+        & > .qr {
+            grid-area: 3 / 1;
+        }
+
+        & > .hologram {
+            grid-area: 4 / 1;
+        }
+
+        & > .data {
+            grid-area: 1 / 2 / span 2 / span 1;
+        }
+
     }
 
 }

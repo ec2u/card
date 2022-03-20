@@ -4,30 +4,49 @@
 
 import { Profile } from "@ec2u/card/nests/keeper";
 import { Card, CardLevels } from "@ec2u/card/pages/cards/card";
+import { useUpdate } from "@metreeca/hook/update";
 import { useProfile } from "@metreeca/nest/keeper";
-import { LogOut, User } from "@metreeca/skin/lucide";
-import React, { createElement } from "react";
+import { User } from "@metreeca/skin/lucide";
+import React, { createElement, useLayoutEffect, useRef } from "react";
 import "./card.css";
 
 
 export function CardVirtual() {
 
+    const data=useRef<HTMLDListElement>(null);
+
+    const update=useUpdate();
     const [profile, setProfile]=useProfile<Profile>();
 
 
-    console.log(profile?.card?.test);
+    useLayoutEffect(() => {
+
+        const element=data.current;
+
+        if ( element && element.parentElement ) {
+
+            const inner=element.getBoundingClientRect();
+            const outer=element.parentElement.getBoundingClientRect();
+
+            const fw=outer.width/inner.width;
+            const fh=outer.height/inner.height;
+
+            element.style.transform=`scale(${Math.min(fw, fh)})`;
+
+        }
+
+    });
 
 
-    function doLogOut() {
-        setProfile(null);
+    function doFlip() {
+        // !!!
     }
 
     return createElement("card-virtual", {}, profile?.card
 
         ? <>
 
-            <a title={"Home"} href={"/"} style={{ backgroundImage: "url('/assets/identity.svg')" }}/>
-            <button title={"Close"} onClick={doLogOut}><LogOut/></button>
+            <button title={"Home"} onClick={doFlip} style={{ backgroundImage: "url('/assets/identity.svg')" }}/>
 
             {CardPhoto(profile.card)}
             <div className={"qr"} title={"QR Code"} style={profile.card ? { backgroundImage: `url('${profile.card.test}')` } : {}}/>
@@ -63,24 +82,31 @@ export function CardVirtual() {
         const countryName="Italy"; // !!!
         const countryCode="IT"; // !!!
 
-        return <dl>
+        return <div className={"data"}>
 
-            <dt>Name</dt>
-            <dd>{name}<br/>{esi.replace("urn:schac:personalUniqueCode:int:esi:", "")}</dd>
+            <dl ref={data}>
 
-            <dt>Institution</dt>
-            <dd>{institution}<br/>{pic}</dd>
+                <dt>Name</dt>
+                <dd>{name}<br/>{esi
+                    .replace("urn:schac:personalUniqueCode:int:esi:", "")
+                    .replace(":", " · ")
+                }</dd>
 
-            <dt>Country</dt>
-            <dd>{countryName}<br/>{countryCode}</dd>
+                <dt>Institution</dt>
+                <dd>{institution}<br/>{pic}</dd>
 
-            <dt>Level</dt>
-            <dd>{CardLevels[level]}</dd>
+                <dt>Country</dt>
+                <dd>{countryName} · {countryCode}</dd>
 
-            <dt>Validity</dt>
-            <dd>{expiry}</dd>
+                <dt>Level</dt>
+                <dd>{CardLevels[level]}</dd>
 
-        </dl>;
+                <dt>Validity</dt>
+                <dd>{expiry}</dd>
+
+            </dl>
+
+        </div>;
     }
 
     function CardPhoto({ photo }: Card) {
