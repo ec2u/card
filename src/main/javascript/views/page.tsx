@@ -45,11 +45,13 @@ export function CardPage({
                 <a href={"/"}><NodeIcon/></a>
             </header>
 
-            <section>
+            <section>{profile ? <>
+
                 <a href={"/cards/"}><CreditCard/></a>
                 <a href={"/users/"}><Users/></a>
                 <a href={"/keys/"}><Key/></a>
-            </section>
+
+            </> : null}</section>
 
             <footer>{isPresent(profile)
 

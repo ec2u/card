@@ -143,6 +143,7 @@ public final class Root {
 
     private static Router card() {
         return router()
+
                 .get(request -> request.user(User.class)
 
                         .map(user -> request.reply(OK)
@@ -158,7 +159,7 @@ public final class Root {
 
                         )
 
-                        .orElseGet(() -> request.reply(OK)
+                        .orElseGet(() -> request.reply(OK) // !!! 401
 
                                 .header("WWW-Authenticate", format("Bearer realm=\"%s\"", request.base()))
                                 .header("Location", SAML.Session)
