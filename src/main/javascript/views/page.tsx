@@ -48,7 +48,7 @@ export function CardPage({
             <section>
                 <a href={"/cards/"}><CreditCard/></a>
                 <a href={"/users/"}><Users/></a>
-                <a href={"/users/"}><Key/></a>
+                <a href={"/keys/"}><Key/></a>
             </section>
 
             <footer>{isPresent(profile)

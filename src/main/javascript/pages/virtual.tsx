@@ -3,19 +3,19 @@
  */
 
 import { Profile } from "@ec2u/card/nests/keeper";
+import { useOptions } from "@ec2u/card/nests/register";
 import { Card, CardLevels } from "@ec2u/card/pages/cards/card";
-import { useUpdate } from "@metreeca/hook/update";
 import { useProfile } from "@metreeca/nest/keeper";
 import { User } from "@metreeca/skin/lucide";
 import React, { createElement, useLayoutEffect, useRef } from "react";
-import "./card.css";
+import "./virtual.css";
 
 
 export function CardVirtual() {
 
     const data=useRef<HTMLDListElement>(null);
 
-    const update=useUpdate();
+    const [{ card }, setOptions]=useOptions();
     const [profile, setProfile]=useProfile<Profile>();
 
 
@@ -39,7 +39,7 @@ export function CardVirtual() {
 
 
     function doFlip() {
-        // !!!
+        setOptions({ card: false });
     }
 
     return createElement("card-virtual", {}, profile?.card
@@ -57,6 +57,9 @@ export function CardVirtual() {
         </>
 
         : <>
+
+            <button title={"Home"} onClick={doFlip} style={{ backgroundImage: "url('/assets/identity.svg')" }}/>
+
 
         </>
     );

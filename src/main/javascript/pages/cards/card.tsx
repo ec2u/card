@@ -2,7 +2,9 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
+import { CardPage } from "@ec2u/card/views/page";
 import { immutable } from "@metreeca/core";
+import React from "react";
 
 
 export interface Card {
@@ -28,3 +30,12 @@ export const CardLevels: Record<number, string>=immutable({ // !!! localize
     8: "Doctorate"
 
 });
+
+
+export function CardCard() {
+
+    return <CardPage name={"Cards › Card"}>
+
+    </CardPage>;
+
+}

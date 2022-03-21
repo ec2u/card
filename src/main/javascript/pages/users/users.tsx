@@ -18,9 +18,9 @@ export interface User {
 
 }
 
-export function CardUser() {
+export function CardUsers() {
 
-    return <CardPage name={"Users › User"}>
+    return <CardPage name={"Users"}>
 
     </CardPage>;
 

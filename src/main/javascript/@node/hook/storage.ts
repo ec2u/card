@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-import { Optional } from "@metreeca/core";
 import { Initial, Updater } from "@metreeca/hook/index";
 import { useCallback, useEffect, useState } from "react";
 
 
-export function useSessionStorage<T=any>(key: string, initial?: Initial<T>): [Optional<T>, Updater<Optional<T>>] {
+export function useSessionStorage<T=any>(key: string, initial: Initial<T>): [T, Updater<T>] {
     return useStorage(sessionStorage, key, initial);
 }
 
-export function useLocalStorage<T=any>(key: string, initial?: Initial<T>): [Optional<T>, Updater<Optional<T>>] {
+export function useLocalStorage<T=any>(key: string, initial: Initial<T>): [T, Updater<T>] {
     return useStorage(localStorage, key, initial);
 }
 
-export function useSharedStorage<T=any>(key: string, initial?: Initial<T>): [Optional<T>, Updater<Optional<T>>] {
+export function useSharedStorage<T=any>(key: string, initial?: Initial<T>): [T, Updater<T>] {
 
     const [value, setValue]=useStorage(localStorage, key, initial);
 
@@ -51,9 +50,9 @@ export function useSharedStorage<T=any>(key: string, initial?: Initial<T>): [Opt
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function useStorage<T=any>(storage: Storage, key: string, initial?: Initial<T>): [Optional<T>, Updater<Optional<T>>] {
+function useStorage<T=any>(storage: Storage, key: string, initial: Initial<T>): [T, Updater<T>] {
 
-    const [value, setValue]=useState<Optional<T>>(() => {
+    const [value, setValue]=useState<T>(() => {
 
         const item=storage.getItem(key);
 

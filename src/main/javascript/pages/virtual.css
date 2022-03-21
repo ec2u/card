@@ -4,7 +4,7 @@
 
 card-virtual {
 
-    --qr-size: clamp(5em, 25vmin, 7.5em);
+    --qr-size: clamp(4em, 25vmin, 6em);
 
     display: grid;
 
