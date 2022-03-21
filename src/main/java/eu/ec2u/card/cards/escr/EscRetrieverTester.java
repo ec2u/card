@@ -1,11 +1,14 @@
 package eu.ec2u.card.cards.escr;
 
+import org.junit.Test;
+
 import javax.json.JsonObject;
 import java.io.IOException;
 
 public class EscRetrieverTester {
 
-	public static void main(final String[] args) {
+	@Test
+	public void execute() {
 
 		final EscRetriever escRetriever = new EscRetriever();
 		final String retrievedCard = "";
