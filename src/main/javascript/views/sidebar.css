@@ -6,19 +6,21 @@
 body {
   width: 100%;
   height: 100%;
-  text-decoration: none;
 }
 
 .side-menu {
   position: fixed;
   background: lightgray;
-  width: 245px;
+  width: 4em;
   height: 100vh;
   padding: 20px 10px;
   display: flex;
   flex-direction: column;
   transition: margin-left 0.2s ease-in;
 
+  & .top-section {
+    height: 95vh;
+  }
   & .logo {
     overflow: hidden;
     display: flex;
@@ -27,8 +29,8 @@ body {
     margin-bottom: 10px;
 
     & span {
-      font-size: 22px;
-      margin-left: 39px;
+      font-size: 0.9em;
+      margin-left: 1.7em;
       font-weight: bold;
     }
   }
@@ -46,32 +48,46 @@ body {
     }
 
     & a {
-      font-size: 63px;
-      margin-right: 10px;
+      font-size: 2.5em;
+
       color: black;
 
       & span {
-        font-size: 25px;
-        margin-left: 30px;
+        font-size: 0.4em;
+        margin-left: 1.2em;
       }
     }
   }
-
-  & .name {
+  & .items-name {
     padding: 10px;
-    dsiplay: flex;
+    overflow: hidden;
+    display: flex;
     align-items: center;
-    text-decoration: none;
-    margin-top: 500px;
+
+    & .items-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    & a {
+      font-size: 2.5em;
+      color: black;
+
+      & span {
+        font-size: 0.4em;
+        margin-left: 1.2em;
+      }
+    }
   }
 }
 
 .side-menu.inactive {
-  width: 95px;
+  width: 10em;
 }
 
 .side-menu:hover {
-  width: 245px;
+  width: 10em;
 }
 
 @media only screen and (max-height: 800px) {

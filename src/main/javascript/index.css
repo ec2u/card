@@ -17,10 +17,11 @@ card-root {
 
   display: grid;
   & .container {
-    margin-left: 270px;
+    margin-left: 120px;
+
     transition: margin-left 0.2s ease-in;
   }
   & .container.inactive {
-    margin-left: 120px;
+    margin-left: 270px;
   }
 }
