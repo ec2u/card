@@ -1,5 +1,6 @@
 package eu.ec2u.card.cards.escr;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import javax.json.JsonObject;
@@ -56,6 +57,17 @@ public class EscRetrieverTester {
 
 		System.out.println(escRetriever.parseCardJson(jsonObject).toString());
 
+	}
+
+	@Test
+	public void listStudents() {
+		final EscRetriever escRetriever = new EscRetriever();
+		try {
+			String responseRetrieveStudents = escRetriever.retrieveStudents();
+			Assert.assertTrue("la response does not contains ", responseRetrieveStudents.contains("europeanStudentIdentifier") );
+		} catch (final IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
