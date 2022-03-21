@@ -1,0 +1,15 @@
+{
+    "europeanStudentIdentifier": "urn:schac:personalUniqueCode:int:esi:unipv.it:296679",
+    "picInstitutionCode": 999893752,
+    "emailAddress": "luigi.santangelo@unipv.it",
+    "expiryDate": "2022-07-08T00:00:00.000Z",
+    "name": "LUIGI SANTANGELO",
+    "academicLevel": 8,
+    "cards": [
+        {
+            "europeanStudentCardNumber": "22d30120-cd32-1039-bbec-001999893752",
+            "cardType": 1,
+            "cardUid": ""
+        }
+    ]
+}

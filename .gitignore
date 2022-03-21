@@ -3,6 +3,7 @@
 /.idea/
 /.vscode/
 
+/data/
 /target/
 /node_modules/
 

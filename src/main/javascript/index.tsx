@@ -1,51 +1,42 @@
 /*
- * Copyright © 2020-2022 EC2U Consortium. All rights reserved.
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
+import { CardFetcher } from "@ec2u/card/nests/fetcher";
+import { CardKeeper } from "@ec2u/card/nests/keeper";
+import { CardRegister } from "@ec2u/card/nests/register";
+import { CardRouter } from "@ec2u/card/nests/router";
+import "@metreeca/skin/quicksand.css";
 import * as React from "react";
 import { render } from "react-dom";
 import "./index.css";
-import { CardMain } from "./main";
 
 
-/**
- * The absolute root URL with trailing slash.
- */
-export const root=resolve("/");
+export const CardOptions={
 
-/**
- * The absolute base URL with trailing slash.
- */
-export const base = resolve(
-  ".",
-  resolve(
-    import.meta.env.BASE_URL || document.querySelector("base")?.href || "",
-    root
-  )
-);
+    card: false,
+    language: "en"
 
-/**
- * The app name.
- */
-export const name = document.title;
+};
 
-export const icon =
-  (document.querySelector("link[rel=icon]") as HTMLLinkElement)?.href || "";
-export const copy =
-  (document.querySelector("meta[name=copyright]") as HTMLMetaElement)
-    ?.content || "";
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+render((
 
-render(
-  <>
-      <CardMain/>
-  </>,
-  document.body.firstElementChild
-);
+    <React.StrictMode>
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        <CardRegister state={CardOptions}>
 
-function resolve(path: string, base: string = location.href): string {
-  return new URL(path, base).href;
-}
+            <CardFetcher>
+                <CardKeeper>
+
+                    <CardRouter/>
+
+                </CardKeeper>
+            </CardFetcher>
+
+        </CardRegister>
+
+    </React.StrictMode>
+
+), document.body.firstElementChild);
+

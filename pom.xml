@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  Copyright © 2020-2022 EC2U Consortium. All rights reserved.
+  Copyright © 2022 EC2U Alliance. All rights reserved.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -35,7 +35,7 @@
 
 	<properties>
 
-		<main>eu.ec2u.card.ToolApplication</main>
+		<main>eu.ec2u.card.Root</main>
 
 		<revision>${maven.build.timestamp}</revision>
 
@@ -71,37 +71,12 @@
 	<dependencyManagement>
 		<dependencies>
 
-			<dependency> <!-- https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>2.6.3</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-			<dependency> <!-- https://search.maven.org/artifact/com.google.cloud/spring-cloud-gcp-dependencies -->
-				<groupId>com.google.cloud</groupId>
-				<artifactId>spring-cloud-gcp-dependencies</artifactId>
-				<version>3.1.0</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
 			<dependency>
-				<!-- https://search.maven.org/artifact/org.junit.jupiter/junit-bom -->
-				<groupId>org.junit</groupId>
-				<artifactId>junit-bom</artifactId>
-				<version>5.7.2</version>
+				<groupId>com.metreeca</groupId>
+				<artifactId>metreeca-java</artifactId>
+				<version>0.0.0-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-
-			<dependency>
-				<!-- https://search.maven.org/artifact/org.assertj/assertj-core -->
-				<groupId>org.assertj</groupId>
-				<artifactId>assertj-core</artifactId>
-				<version>3.20.2</version>
-				<scope>test</scope>
 			</dependency>
 
 		</dependencies>
@@ -110,54 +85,56 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<groupId>com.metreeca</groupId>
+			<artifactId>metreeca-gcp</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
+			<groupId>com.metreeca</groupId>
+            <artifactId>metreeca-xml</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europeanstudentcard</groupId>
+            <artifactId>escn-generator</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.19.0</version>
+        </dependency>
+
+        <dependency> <!-- local testing -->
+            <groupId>com.onelogin</groupId>
+            <artifactId>java-saml</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+        <dependency> <!-- !!! remove -->
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+        </dependency>
+
+        <dependency> <!-- !!! remove -->
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>7.0.3.Final</version>
+        </dependency>
 
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<scope>runtime</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-saml2-service-provider</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>spring-cloud-gcp-starter-data-datastore</artifactId>
-		</dependency>
-
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>1.18.22</version>
 			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -177,6 +154,15 @@
 	<build>
 
 		<finalName>${project.artifactId}</finalName>
+
+		<resources>
+
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+
+		</resources>
 
 		<plugins>
 
@@ -248,6 +234,14 @@
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>1.18.22</version>
+						</path>
+					</annotationProcessorPaths>
+
 				</configuration>
 
 			</plugin>
@@ -312,6 +306,21 @@
 
 					</execution>
 
+					<!--<execution>
+
+						<id>npm-check</id>
+						<phase>test</phase>
+
+						<goals>
+							<goal>npm</goal>
+						</goals>
+
+						<configuration>
+							<arguments>run check</arguments>
+						</configuration>
+
+					</execution>-->
+
 				</executions>
 
 			</plugin>
@@ -344,59 +353,49 @@
 
 			</plugin>
 
-			<plugin> <!-- https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/  -->
+            <!-- !!! review
+                        <plugin> &lt;!&ndash; https://maven.apache.org/plugins/maven-resources-plugin/ &ndash;&gt;
 
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>2.4.0</version>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-resources-plugin</artifactId>
+                            <version>3.2.0</version>
 
-				<executions>
-					<execution>
 
-						<id>spring-package</id>
+                            <configuration>
+                                <nonFilteredFileExtensions>
+                                    <nonFilteredFileExtension>key</nonFilteredFileExtension>
+                                    <nonFilteredFileExtension>crt</nonFilteredFileExtension>
+                                </nonFilteredFileExtensions>
+                            </configuration>
 
-						<goals>
-							<goal>repackage</goal>
-						</goals>
+                            <executions>
+                                <execution>
 
-					</execution>
-				</executions>
+                                    <id>stage-static-assets</id>
+                                    <phase>package</phase>
 
-			</plugin>
+                                    <goals>
+                                        <goal>copy-resources</goal>
+                                    </goals>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-resources-plugin/ -->
+                                    <configuration>
 
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.2.0</version>
+                                        <outputDirectory>${project.build.directory}/appengine-staging/static</outputDirectory>
 
-				<executions>
-					<execution>
+                                        <resources>
+                                            <resource>
+                                                <directory>${project.build.outputDirectory}/static</directory>
+                                                <filtering>true</filtering>
+                                            </resource>
+                                        </resources>
 
-						<id>stage-static-assets</id>
-						<phase>package</phase>
+                                    </configuration>
 
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
+                                </execution>
+                            </executions>
 
-						<configuration>
-
-							<outputDirectory>${project.build.directory}/appengine-staging/static</outputDirectory>
-
-							<resources>
-								<resource>
-									<directory>${project.build.outputDirectory}/static</directory>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-
-						</configuration>
-
-					</execution>
-				</executions>
-
-			</plugin>
+                        </plugin>
+            -->
 
 			<plugin> <!-- https://cloud.google.com/appengine/docs/standard/java-gen2/maven-reference -->
 

@@ -8,6 +8,9 @@
         "paths": {
             "@ec2u/card/*": [
                 "*"
+            ],
+            "@metreeca/*": [
+                "@node/*"
             ]
         },
         "strict": true,

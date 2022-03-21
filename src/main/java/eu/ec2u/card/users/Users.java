@@ -1,19 +1,23 @@
+/*
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
+ */
+
 package eu.ec2u.card.users;
 
-import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-import eu.ec2u.card.Tool.*;
 import eu.ec2u.card.users.Users.User;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Optional;
 
+import javax.json.*;
 import javax.validation.constraints.*;
 
-import static eu.ec2u.card.ToolConfiguration.LinePattern;
-import static eu.ec2u.card.ToolConfiguration.LineSize;
+import static eu.ec2u.card.Root.*;
 
 import static java.lang.String.format;
+
+import static javax.json.JsonValue.NULL;
 
 @Getter
 @Setter
@@ -22,14 +26,32 @@ public class Users extends Container<User> {
     static final String Id="/users/";
 
 
+    public static JsonValue encode(final User user) {
+        return user == null ? NULL : Json.createObjectBuilder()
+                .add("esi", user.esi)
+                .build();
+    }
+
+    public static User decode(final JsonObject json) {
+        return new User()
+                .setEsi(json.getString("esi"));
+    }
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Getter
     @Setter
-    static final class User extends Resource {
+    public static final class User extends Resource {
+
+        @NotNull
+        @Size(max=URLSize)
+        @Pattern(regexp=ESIPattern)
+        private String esi;
 
         @NotNull
         private Boolean admin;
+
 
         @NotNull
         @Size(max=LineSize)
@@ -41,6 +63,7 @@ public class Users extends Container<User> {
         @Pattern(regexp=LinePattern)
         private String surname;
 
+
         @NotNull
         @Size(max=LineSize)
         @Email
@@ -48,7 +71,6 @@ public class Users extends Container<User> {
 
     }
 
-    @Entity(name="User")
     static final class UserData extends ResourceData {
 
         protected Optional<String> getPath() {

@@ -1,0 +1,13 @@
+{
+    "europeanStudentIdentifier": "urn:schac:personalUniqueCode:int:esi:unipv.it:999001",
+    "picInstitutionCode": 999893752,
+    "emailAddress": "alessandro.bollini@ec2u.cc",
+    "expiryDate": "2023-03-18T00:00:00.000Z",
+    "name": "Alessandro Bollini",
+    "academicLevel": 8,
+    "cards": [
+        {
+            "europeanStudentCardNumber": "fc3a1f80-93fb-103a-9b31-000999893752"
+        }
+    ]
+}

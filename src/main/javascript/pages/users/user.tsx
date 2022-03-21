@@ -1,10 +1,14 @@
-import React, { createElement, useState } from "react";
+/*
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
+ */
 
+import { CardPage } from "@ec2u/card/views/page";
+import React from "react";
 
-export const LinePattern="\\S+( \\S+)*";
 
 export interface User {
 
+    readonly esi: string;
     readonly admin: boolean;
 
     readonly forename: string;
@@ -16,14 +20,8 @@ export interface User {
 
 export function CardUser() {
 
-    const [user, setUser]=useState();
+    return <CardPage name={"Users › User"}>
 
-    return createElement("card-user", {},
+    </CardPage>;
 
-        <form>
-
-            <input type={"text"} value={user?.[0]} pattern={LinePattern}/>
-
-        </form>
-    );
 }
