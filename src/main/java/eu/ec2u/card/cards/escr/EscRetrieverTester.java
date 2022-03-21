@@ -17,11 +17,9 @@ public class EscRetrieverTester extends TestCase{
 		escRetriever = new EscRetriever();
 	}
 
-
 	@Test
 	public void testExecute() {
 
-		//final EscRetriever escRetriever = new EscRetriever();
 		final String retrievedCard = "";
 
 		/* List students */
@@ -71,13 +69,14 @@ public class EscRetrieverTester extends TestCase{
 
 	@Test
 	public void testListStudents() {
-		//final EscRetriever escRetriever = new EscRetriever();
+
 		try {
 			String responseRetrieveStudents = escRetriever.retrieveStudents();
 			Assert.assertTrue("la response does not contains ", responseRetrieveStudents.contains("europeanStudentIdentifier") );
 		} catch (final IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 }
