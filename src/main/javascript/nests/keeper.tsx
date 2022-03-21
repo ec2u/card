@@ -31,7 +31,25 @@ export function CardKeeper({
     const [gateway, setGateway]=useState<string>();
     const [profile, setProfile]=useState<User>();
 
-    const [token, setToken]=useSessionStorage("token"); // !!! migrate to NodeFetcher
+    const [token, setToken]=useSessionStorage("token", undefined); // !!! migrate to NodeFetcher
+
+    useEffect(() => {
+
+        [location.search.substring(1)].filter(query => query.match(JWTPattern)).forEach(token => {
+
+            try {
+
+                setToken(token ?? undefined);
+
+            } finally {
+
+                history.replaceState(history.state, "", location.href.replace(/\?[^#]*/, ""));
+
+            }
+
+        });
+
+    }, [token]);
 
     useEffect(() => {
 
@@ -55,7 +73,7 @@ export function CardKeeper({
 
                         });
 
-                    } else {
+                    } else { // !!! on 401
 
                         setGateway(response.headers.get("Location") ?? undefined);
                         setProfile(profile);
@@ -67,24 +85,6 @@ export function CardKeeper({
             } else {
 
                 // !!! notify
-
-            }
-
-        });
-
-    }, [token]);
-
-    useEffect(() => {
-
-        [location.search.substring(1)].filter(query => query.match(JWTPattern)).forEach(token => {
-
-            try {
-
-                setToken(token ?? undefined);
-
-            } finally {
-
-                history.replaceState(history.state, "", location.href.replace(/\?[^#]*/, ""));
 
             }
 
