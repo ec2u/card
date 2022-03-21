@@ -2,16 +2,26 @@ package eu.ec2u.card.cards.escr;
 
 import org.junit.Assert;
 import org.junit.Test;
+import junit.framework.TestCase;
 
 import javax.json.JsonObject;
 import java.io.IOException;
 
-public class EscRetrieverTester {
+public class EscRetrieverTester extends TestCase{
+
+	private EscRetriever escRetriever;
+
+	@Override
+	protected void setUp() throws Exception {
+		System.out.println("Setting it up!");
+		escRetriever = new EscRetriever();
+	}
+
 
 	@Test
-	public void execute() {
+	public void testExecute() {
 
-		final EscRetriever escRetriever = new EscRetriever();
+		//final EscRetriever escRetriever = new EscRetriever();
 		final String retrievedCard = "";
 
 		/* List students */
@@ -60,8 +70,8 @@ public class EscRetrieverTester {
 	}
 
 	@Test
-	public void listStudents() {
-		final EscRetriever escRetriever = new EscRetriever();
+	public void testListStudents() {
+		//final EscRetriever escRetriever = new EscRetriever();
 		try {
 			String responseRetrieveStudents = escRetriever.retrieveStudents();
 			Assert.assertTrue("la response does not contains ", responseRetrieveStudents.contains("europeanStudentIdentifier") );
