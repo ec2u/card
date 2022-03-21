@@ -71,7 +71,14 @@ public class EscRetrieverTester extends TestCase{
 
 		try {
 			String responseRetrieveStudents = escRetriever.retrieveStudents();
-			Assert.assertTrue("la response does not contains ", responseRetrieveStudents.contains("europeanStudentIdentifier") );
+			Assert.assertTrue("la response does not contains europeanStudentIdentifier", responseRetrieveStudents.contains("europeanStudentIdentifier") );
+			Assert.assertTrue("la response does not contains picInstitutionCode", responseRetrieveStudents.contains("picInstitutionCode") );
+			Assert.assertTrue("la response does not contains emailAddress", responseRetrieveStudents.contains("emailAddress") );
+			Assert.assertTrue("la response does not contains expiryDate", responseRetrieveStudents.contains("expiryDate") );
+			Assert.assertTrue("la response does not contains name", responseRetrieveStudents.contains("name") );
+			Assert.assertTrue("la response does not contains phoneNumber", responseRetrieveStudents.contains("phoneNumber") );
+			Assert.assertTrue("la response does not contains academicLevel", responseRetrieveStudents.contains("academicLevel") );
+			Assert.assertTrue("la response does not contains cards", responseRetrieveStudents.contains("cards") );
 		} catch (final IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
