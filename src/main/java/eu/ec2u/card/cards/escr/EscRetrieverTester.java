@@ -13,7 +13,6 @@ public class EscRetrieverTester extends TestCase{
 
 	@Override
 	protected void setUp() throws Exception {
-		System.out.println("Setting it up!");
 		escRetriever = new EscRetriever();
 	}
 
