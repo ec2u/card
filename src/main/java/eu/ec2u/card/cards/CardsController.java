@@ -30,6 +30,7 @@ public final class CardsController {
 
 	@Autowired
 	private CardsService cards;
+
 	@Autowired
 	private EventsService events;
 
@@ -44,8 +45,6 @@ public final class CardsController {
 	) {
 		return ok().body(cards.browse(PageRequest.of(page, size, Sort.by("holderSurname"))));
 	}
-
-	;
 
 	@PostMapping("")
 	ResponseEntity<Void> post(
@@ -89,4 +88,5 @@ public final class CardsController {
 
 		return noContent().location(events.trace(profile, delete, cards.delete(id))).build();
 	}
+
 }
