@@ -37,7 +37,7 @@
 
 		<main>eu.ec2u.card.Root</main>
 
-		<revision>${maven.build.timestamp}</revision>
+		<revision>work</revision>
 
 		<java.version>11</java.version>
 		<maven.version>3.6</maven.version>
