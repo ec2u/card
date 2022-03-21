@@ -8,56 +8,105 @@
 
 .users {
   width: 95%;
-  margin-top: 40px;
-  & .users-link {
-    text-decoration: none;
-    color: black;
-    cursor: pointer;
-  }
+  display: grid;
+  align-items: stretch;
 
   & .topnav-inspect {
-    display: grid;
-    grid-template-columns: 5% 3% 88% 0%;
-    font-size: 30px;
     width: 100%;
-  }
-  & .grid-container-inspect {
-    margin-top: 80px;
-    display: grid;
-    text-align: left;
-  }
-  & .tr-inspect {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 20% 20% 54% 20%;
-    padding: 6px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 2em;
+
+    & .topnav-start {
+      gap: 0.4em;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+
+      & a {
+        text-decoration: none;
+        color: black;
+        cursor: pointer;
+        font-size: 1.4em;
+      }
+      & span {
+        font-size: 1.4em;
+      }
+    }
   }
 
-  & tr:nth-child(even) {
-    background-color: rgb(197, 194, 194);
+  & .data-inspect {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100vh;
   }
-  & th {
-    color: rgb(177, 171, 171);
+  & .data-start {
+    display: flex;
+    align-items: flex-start;
+    gap: 5em;
+    flex-wrap: wrap;
+    height: 30vh;
   }
-  & td {
-    font-size: 22px;
+  & .data-end {
+    display: flex;
+    flex-wrap: wrap;
   }
-
-  & .solid {
-    width: 102%;
-    background-color: lightgray;
-    border: 1px solid rgb(189, 185, 185);
-  }
-  & .button {
-    cursor: pointer;
-    color: black;
-  }
-  & .button-plus {
-    cursor: pointer;
-    color: black;
+  & label {
+    margin: 1em 0em;
+    color: rgb(175, 170, 170);
   }
   & .checkbox {
-    width: 28px;
-    height: 28px;
+    height: 30px;
+    width: 30px;
+  }
+  & .data-section {
+    display: flex;
+    flex-direction: column;
+  }
+  & .end {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* @media (max-width: 800px) {
+  .users {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topnav-inspect {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+
+    & .topnav-start {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+} */
+
+@media (max-width: 780px) {
+  .users {
+    width: 95%;
+  }
+  .data-inspect {
+    display: flex;
+    height: 1vh;
+    width: 100%;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .data-section {
+    height: 0.5vh;
+  }
+  .end {
+    margin-bottom: 15em;
   }
 }

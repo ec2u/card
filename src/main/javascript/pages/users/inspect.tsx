@@ -10,16 +10,10 @@ interface User {
   surname: string;
   email: string;
   id: any;
+  label: string;
 }
 
-const user: User = {
-  admin: false,
 
-  forename: "",
-  surname: "",
-  email: "",
-  id: "",
-};
 
 export function Inspect() {
   const [user, setUser] = useState<User>({} as User);
@@ -40,48 +34,78 @@ export function Inspect() {
   return (
     <div className="users">
       <div className="topnav-inspect">
-        <span>
-          <Link className="users-link" to='/users/'>Users</Link></span>
-        <span>
-          <ChevronRight size={35} />
-        </span>
 
-        <span>{user.surname}</span>
-        <span>
-          <Link to={`/edit${user.id}`}>
-            <Edit size={38} className="button-plus" />
-          </Link>
-        </span>
+        <div className={"topnav-start"}>
+          <div>
+            <a href='/users/'>Users &gt;</a>
+          </div>
+          <div>
+            <a>{user.label}</a>
+          </div>
+
+        </div>
+
+        <div>
+          <a>
+            <Link to={`/edit${user.id}`}>
+              <Edit size={38} className="button-plus" />
+            </Link>
+          </a>
+        </div>
       </div>
 
-      <div className="grid-container-inspect">
-        <table>
-          <thead>
-            <tr className="tr-inspect">
-              <th>forename</th>
-              <th>surname</th>
-              <th>email</th>
 
-              <th className="th-admin"> admin</th>
-            </tr>
-          </thead>
+      <form >
+        <div className="data-inspect">
+          <div className="data-start">
 
-          <hr className="solid" />
+            <div className="data-section">
+              <label>
+                forename
+              </label>
 
-          <tbody>
-            <tr className="tr-inspect" key={user.id}>
-              <td>{user.forename}</td>
-              <td>{user.surname}</td>
-              <td>{user.email}</td>
-              <td >
+              <span>
+                {user.forename}
+              </span>
 
-                <input className="checkbox" type="checkbox" checked={user.admin} disabled />
+            </div>
 
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+            <div className="data-section">
+              <label>
+                surname
+              </label>
+
+              <span>
+                {user.surname}
+              </span>
+
+            </div>
+            
+            <div className="data-section">
+              <label>
+                email
+              </label>
+
+              <span>
+                {user.email}
+              </span>
+
+            </div>
+
+          </div>
+          <div className="data-end">
+            <div className="end">
+              <label>
+                admin
+              </label>
+
+              <input className="checkbox" type="checkbox" checked={user.admin} disabled />
+
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div >
   );
 }
