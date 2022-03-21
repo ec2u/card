@@ -11,6 +11,15 @@ import React, { createElement, useLayoutEffect, useRef } from "react";
 import "./virtual.css";
 
 
+/**
+ *
+ * @see https://router.europeanstudentcard.eu/docs/qrcode-specs / ESC QR specs
+ * @see https://github.com/soldair/node-qrcode / npm QR generator
+ *
+ * @module
+ */
+
+
 export function CardVirtual() {
 
     const data=useRef<HTMLDListElement>(null);

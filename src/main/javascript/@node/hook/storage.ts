@@ -26,7 +26,7 @@ export function useLocalStorage<T=any>(key: string, initial: Initial<T>): [T, Up
     return useStorage(localStorage, key, initial);
 }
 
-export function useSharedStorage<T=any>(key: string, initial?: Initial<T>): [T, Updater<T>] {
+export function useSharedStorage<T=any>(key: string, initial: Initial<T>): [T, Updater<T>] {
 
     const [value, setValue]=useStorage(localStorage, key, initial);
 

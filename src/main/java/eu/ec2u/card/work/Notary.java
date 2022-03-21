@@ -21,6 +21,8 @@ import javax.json.stream.JsonParsingException;
 
 /**
  * JWT token manager.
+ *
+ * @see <a href="https://github.com/auth0/java-jwt">auth0/java-jwt</a>
  */
 public final class Notary {
 
