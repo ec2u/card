@@ -166,6 +166,34 @@
 
         <plugins>
 
+            <plugin> <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0</version>
+
+                <executions>
+                    <execution>
+
+                        <id>enforce-maven</id>
+
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${maven.version}</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+
+                    </execution>
+                </executions>
+
+            </plugin>
+
             <plugin> <!-- https://maven.apache.org/plugins/maven-clean-plugin/ -->
 
                 <groupId>org.apache.maven.plugins</groupId>
@@ -188,34 +216,6 @@
                                     <directory>${project.basedir}/node_modules</directory>
                                 </fileset>
                             </filesets>
-                        </configuration>
-
-                    </execution>
-                </executions>
-
-            </plugin>
-
-            <plugin> <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
-
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0</version>
-
-                <executions>
-                    <execution>
-
-                        <id>enforce-maven</id>
-
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>${maven.version}</version>
-                                </requireMavenVersion>
-                            </rules>
                         </configuration>
 
                     </execution>
@@ -333,7 +333,7 @@
 
             </plugin>
 
-            <plugin> <!-- https://maven.apache.org/plugins/maven-jar-plugin/ -->
+            <plugin>  <!-- https://maven.apache.org/plugins/maven-jar-plugin/ -->
 
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -344,6 +344,10 @@
                     <archive>
 
                         <manifest>
+                            <mainClass>${main}</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>libs</classpathPrefix>
+                            <useUniqueVersions>false</useUniqueVersions> <!-- SNAPSHOT as maven-dependency-plugin -->
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
 
@@ -353,42 +357,25 @@
 
             </plugin>
 
-            <plugin> <!-- https://maven.apache.org/plugins/maven-resources-plugin/ -->
+            <plugin> <!-- https://maven.apache.org/plugins/maven-dependency-plugin/ -->
 
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
+                <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.2.0</version>
 
-
                 <configuration>
-                    <nonFilteredFileExtensions>
-                        <nonFilteredFileExtension>key</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>crt</nonFilteredFileExtension>
-                    </nonFilteredFileExtensions>
+                    <outputDirectory>${project.build.directory}/libs</outputDirectory>
                 </configuration>
 
                 <executions>
                     <execution>
 
-                        <id>stage-static-assets</id>
+                        <id>copy-dependencies</id>
                         <phase>package</phase>
 
                         <goals>
-                            <goal>copy-resources</goal>
+                            <goal>copy-dependencies</goal>
                         </goals>
-
-                        <configuration>
-
-                            <outputDirectory>${project.build.directory}/appengine-staging/static</outputDirectory>
-
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.outputDirectory}/static</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-
-                        </configuration>
 
                     </execution>
                 </executions>

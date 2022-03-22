@@ -2,7 +2,7 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-package eu.ec2u.card.tools;
+package eu.ec2u.card.works;
 
 import com.metreeca.rest.Request;
 import com.metreeca.rest.Response;
@@ -16,9 +16,8 @@ import com.onelogin.saml2.factory.SamlMessageFactory;
 import com.onelogin.saml2.http.HttpRequest;
 import com.onelogin.saml2.settings.Saml2Settings;
 import com.onelogin.saml2.settings.SettingsBuilder;
-import eu.ec2u.card.Root;
-import eu.ec2u.card.users.Users.User;
-import eu.ec2u.card.work.Notary;
+import eu.ec2u.card.Root.Profile;
+import work.Notary;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -26,13 +25,13 @@ import java.security.cert.CertificateEncodingException;
 import java.util.*;
 
 import static com.metreeca.core.Lambdas.checked;
-import static com.metreeca.rest.MessageException.status;
 import static com.metreeca.rest.Response.*;
+import static com.metreeca.rest.Toolbox.service;
 import static com.metreeca.rest.formats.TextFormat.text;
 import static com.metreeca.rest.handlers.Router.router;
 
-import static eu.ec2u.card.users.Users.encode;
-import static eu.ec2u.card.work.Query.query;
+import static work.Notary.notary;
+import static work.Query.query;
 
 import static java.lang.String.format;
 import static java.util.Map.entry;
@@ -40,20 +39,20 @@ import static java.util.Map.entry;
 public final class SAML extends Delegator {
 
     public static final String Pattern="/saml/*";
-    public static final String Session="/saml/session";
+    public static final String Gateway="/saml/gateway";
 
 
     private static final Saml2Settings settings=settings();
     private static final SamlMessageFactory samlMessageFactory=new SamlMessageFactory() { };
 
-    private static final Notary notary=new Notary(Root.JWTKey);
+    private static final Notary notary=service(notary());
 
 
     private static Saml2Settings settings() {
 
         try {
 
-            final Saml2Settings settings=new SettingsBuilder().fromFile("saml.properties").build();
+            final Saml2Settings settings=new SettingsBuilder().fromFile("eu/ec2u/card/works/SAML.properties").build();
 
             //final List<String> settingsErrors = settings.checkSettings();
             //if (!settingsErrors.isEmpty()) {
@@ -85,7 +84,7 @@ public final class SAML extends Delegator {
 
                 .path("/", router().get(this::metadata))
                 .path("/acs", router().post(this::acs))
-                .path("/session", router().get(this::session))
+                .path("/gateway", router().get(this::gateway))
 
         );
     }
@@ -112,7 +111,7 @@ public final class SAML extends Delegator {
 
         try {
 
-            return request.reply(status(OK))
+            return request.reply(OK)
                     .header("Content-Type", XMLFormat.MIME)
                     .body(text(), settings.getSPMetadata());
 
@@ -161,7 +160,7 @@ public final class SAML extends Delegator {
                                 .findFirst()
                                 .orElseThrow();
 
-                        final String token=notary.create(Notary.encode(encode(new User()
+                        final String token=notary.create(Notary.encode(Profile.encode(new Profile()
                                 .setEsi(esi)
                         )));
 
@@ -209,7 +208,7 @@ public final class SAML extends Delegator {
 
     }
 
-    private Response session(final Request request) {
+    private Response gateway(final Request request) {
         try {
 
             final String sso=settings.getIdpSingleSignOnServiceUrl().toString();

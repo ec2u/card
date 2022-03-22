@@ -2,7 +2,7 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-package eu.ec2u.card.work;
+package work;
 
 import java.util.Map;
 

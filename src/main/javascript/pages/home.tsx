@@ -6,18 +6,26 @@ import { CardOptions } from "@ec2u/card/index";
 import { useOptions } from "@ec2u/card/nests/register";
 import { CardPage } from "@ec2u/card/views/page";
 import { name } from "@metreeca/head";
+import { useProfile } from "@metreeca/nest/keeper";
+import { Contact } from "@metreeca/skin/lucide";
 import React from "react";
 
 
 export function CardHome() {
 
-    const [{ card }, setX]=useOptions<typeof CardOptions>();
+    const [profile, setProfile]=useProfile();
+    const [{ card }, setOptions]=useOptions<typeof CardOptions>();
 
 
     return <CardPage name={name}>
 
-        {""+card}
-        <button onClick={() => setX({ card: !card })}>flip</button>
+        {profile ? <button onClick={() => setOptions({ card: !card })} style={{
+
+            display: "block",
+            margin: "10% auto",
+            transform: "scale(5)"
+
+        }}><Contact/></button> : null}
 
     </CardPage>;
 }

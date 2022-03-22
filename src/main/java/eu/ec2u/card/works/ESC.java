@@ -2,7 +2,7 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-package eu.ec2u.card.users;
+package eu.ec2u.card.works;
 
 import com.metreeca.rest.Xtream;
 import com.metreeca.rest.actions.*;
@@ -13,6 +13,8 @@ import eu.europeanstudentcard.esc.EscnFactoryException;
 
 import java.math.BigInteger;
 import java.time.ZonedDateTime;
+import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static com.metreeca.rest.Toolbox.service;
@@ -26,10 +28,22 @@ public final class ESC {
 
     private static final String API="https://api-sandbox.europeanstudentcard.eu";
     private static final String TST="http://pp.esc.gg";
-    private static final String KEY="key-esc-router-sandbox";
+    private static final String KEY="key-esc-sandbox";
 
 
-    private static String code(final String pic) {
+    public static Supplier<ESC> esc() {
+        return ESC::new;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private final String key=service(vault()).get(KEY).orElseThrow(() ->
+            new NoSuchElementException(format("undefined <%s> key", KEY))
+    );
+
+
+    private String code(final String pic) {
         try {
 
             return EscnFactory.getEscn(0, pic); // !!! prefix?
@@ -39,7 +53,7 @@ public final class ESC {
         }
     }
 
-    public static Stream<Card> cards(final String esi) {
+    public Stream<Card> cards(final String esi) {
 
         if ( esi == null ) {
             throw new NullPointerException("null esi");
@@ -56,10 +70,7 @@ public final class ESC {
 
                 )
 
-                .optMap(new GET<>(json(), request -> request.header("Key", service(vault())
-                        .get(KEY)
-                        .orElseThrow() // !!!
-                )))
+                .optMap(new GET<>(json(), request -> request.header("Key", key)))
 
                 .flatMap(new JSONPath<>(json -> json.strings("cards.*.europeanStudentCardNumber").map(code -> new Card() // !!! error handling
 
@@ -79,6 +90,7 @@ public final class ESC {
                         .setName(json.string("name").orElseThrow())
                         .setPhoto(json.string("photoID").orElse(null)) // !!!
                         .setEmail(json.string("emailAddress").orElse(null)))
+
                 ));
     }
 
