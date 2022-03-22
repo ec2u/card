@@ -2,7 +2,7 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-package eu.ec2u.card.tools;
+package eu.ec2u.card.works;
 
 import com.metreeca.rest.Request;
 import com.metreeca.rest.Response;
@@ -18,7 +18,7 @@ import com.onelogin.saml2.settings.Saml2Settings;
 import com.onelogin.saml2.settings.SettingsBuilder;
 import eu.ec2u.card.Root;
 import eu.ec2u.card.users.Users.User;
-import eu.ec2u.card.work.Notary;
+import eu.ec2u.work.Notary;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -32,7 +32,7 @@ import static com.metreeca.rest.formats.TextFormat.text;
 import static com.metreeca.rest.handlers.Router.router;
 
 import static eu.ec2u.card.users.Users.encode;
-import static eu.ec2u.card.work.Query.query;
+import static eu.ec2u.work.Query.query;
 
 import static java.lang.String.format;
 import static java.util.Map.entry;
@@ -53,7 +53,7 @@ public final class SAML extends Delegator {
 
         try {
 
-            final Saml2Settings settings=new SettingsBuilder().fromFile("saml.properties").build();
+            final Saml2Settings settings=new SettingsBuilder().fromFile("eu/ec2u/card/works/SAML.properties").build();
 
             //final List<String> settingsErrors = settings.checkSettings();
             //if (!settingsErrors.isEmpty()) {

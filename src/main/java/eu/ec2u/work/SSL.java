@@ -2,7 +2,7 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-package eu.ec2u.card.work;
+package eu.ec2u.work;
 
 import java.security.*;
 import java.security.cert.X509Certificate;

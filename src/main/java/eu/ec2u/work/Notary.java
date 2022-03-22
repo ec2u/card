@@ -2,7 +2,7 @@
  *   Copyright © 2021 Luxottica. All rights reserved.
  */
 
-package eu.ec2u.card.work;
+package eu.ec2u.work;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

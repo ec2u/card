@@ -14,10 +14,9 @@ import com.metreeca.rest.services.Fetcher.CacheFetcher;
 
 import eu.ec2u.card.cards.Cards;
 import eu.ec2u.card.cards.Cards.Card;
-import eu.ec2u.card.tools.SAML;
 import eu.ec2u.card.users.Users;
 import eu.ec2u.card.users.Users.User;
-import eu.ec2u.card.work.*;
+import eu.ec2u.card.works.SAML;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,7 +43,7 @@ import static com.metreeca.rest.wrappers.Bearer.bearer;
 import static com.metreeca.rest.wrappers.CORS.cors;
 import static com.metreeca.rest.wrappers.Server.server;
 
-import static eu.ec2u.card.users.ESC.cards;
+import static eu.ec2u.card.works.ESC.cards;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;

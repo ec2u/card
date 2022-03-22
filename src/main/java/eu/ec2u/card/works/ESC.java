@@ -2,7 +2,7 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-package eu.ec2u.card.users;
+package eu.ec2u.card.works;
 
 import com.metreeca.rest.Xtream;
 import com.metreeca.rest.actions.*;
