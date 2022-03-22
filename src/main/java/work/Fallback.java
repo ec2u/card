@@ -2,7 +2,7 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-package eu.ec2u.work;
+package work;
 
 import com.metreeca.rest.*;
 import com.metreeca.rest.services.Fetcher;
@@ -20,7 +20,19 @@ import static java.util.stream.Collectors.toMap;
 
 public final class Fallback implements Handler {
 
+    private final String path;
+
     private final Fetcher fetcher=new URLFetcher(); // !!! factor to static method
+
+
+    public Fallback(final String path) { // !!! well-formedness
+
+        if ( path == null ) {
+            throw new NullPointerException("null path");
+        }
+
+        this.path=path;
+    }
 
 
     @Override public Response handle(final Request request) { // !!! caching (disabled on localhost)
@@ -28,7 +40,7 @@ public final class Fallback implements Handler {
 
                 .method(request.method())
                 .base(request.base())
-                .path("/index.html")
+                .path(path)
 
                 .headers(request.headers())
 
@@ -51,7 +63,7 @@ public final class Fallback implements Handler {
 
                                 .headers(response.headers().entrySet().stream()
                                         .filter(entry -> Set.of("cache-control", "etag", "expires", "date", "content"
-                                                + "-type").contains(entry.getKey().toLowerCase(Locale.ROOT)))
+                                                +"-type").contains(entry.getKey().toLowerCase(Locale.ROOT)))
                                         .collect(toMap(Entry::getKey, Entry::getValue))
                                 )
 

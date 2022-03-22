@@ -13,6 +13,7 @@ import eu.europeanstudentcard.esc.EscnFactoryException;
 
 import java.math.BigInteger;
 import java.time.ZonedDateTime;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static com.metreeca.rest.Toolbox.service;
@@ -29,7 +30,16 @@ public final class ESC {
     private static final String KEY="key-esc-router-sandbox";
 
 
-    private static String code(final String pic) {
+    public static Supplier<ESC> esc() {
+        return () -> new ESC();
+    }
+
+
+    public ESC() {
+    }
+
+
+    private String code(final String pic) {
         try {
 
             return EscnFactory.getEscn(0, pic); // !!! prefix?
@@ -39,7 +49,7 @@ public final class ESC {
         }
     }
 
-    public static Stream<Card> cards(final String esi) {
+    public Stream<Card> cards(final String esi) {
 
         if ( esi == null ) {
             throw new NullPointerException("null esi");
@@ -58,7 +68,7 @@ public final class ESC {
 
                 .optMap(new GET<>(json(), request -> request.header("Key", service(vault())
                         .get(KEY)
-                        .orElseThrow() // !!!
+                        .orElseThrow(() -> new IllegalStateException(format("missing <%s> key", KEY)))
                 )))
 
                 .flatMap(new JSONPath<>(json -> json.strings("cards.*.europeanStudentCardNumber").map(code -> new Card() // !!! error handling
@@ -79,6 +89,7 @@ public final class ESC {
                         .setName(json.string("name").orElseThrow())
                         .setPhoto(json.string("photoID").orElse(null)) // !!!
                         .setEmail(json.string("emailAddress").orElse(null)))
+
                 ));
     }
 

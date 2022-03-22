@@ -16,9 +16,9 @@ import com.onelogin.saml2.factory.SamlMessageFactory;
 import com.onelogin.saml2.http.HttpRequest;
 import com.onelogin.saml2.settings.Saml2Settings;
 import com.onelogin.saml2.settings.SettingsBuilder;
-import eu.ec2u.card.Root;
+import eu.ec2u.card.RootServer;
 import eu.ec2u.card.users.Users.User;
-import eu.ec2u.work.Notary;
+import work.Notary;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -26,13 +26,11 @@ import java.security.cert.CertificateEncodingException;
 import java.util.*;
 
 import static com.metreeca.core.Lambdas.checked;
-import static com.metreeca.rest.MessageException.status;
 import static com.metreeca.rest.Response.*;
 import static com.metreeca.rest.formats.TextFormat.text;
 import static com.metreeca.rest.handlers.Router.router;
 
-import static eu.ec2u.card.users.Users.encode;
-import static eu.ec2u.work.Query.query;
+import static work.Query.query;
 
 import static java.lang.String.format;
 import static java.util.Map.entry;
@@ -46,7 +44,7 @@ public final class SAML extends Delegator {
     private static final Saml2Settings settings=settings();
     private static final SamlMessageFactory samlMessageFactory=new SamlMessageFactory() { };
 
-    private static final Notary notary=new Notary(Root.JWTKey);
+    private static final Notary notary=new Notary(RootServer.JWTKey);
 
 
     private static Saml2Settings settings() {
@@ -112,7 +110,7 @@ public final class SAML extends Delegator {
 
         try {
 
-            return request.reply(status(OK))
+            return request.reply(OK)
                     .header("Content-Type", XMLFormat.MIME)
                     .body(text(), settings.getSPMetadata());
 
@@ -161,7 +159,7 @@ public final class SAML extends Delegator {
                                 .findFirst()
                                 .orElseThrow();
 
-                        final String token=notary.create(Notary.encode(encode(new User()
+                        final String token=notary.create(Notary.encode(User.encode(new User()
                                 .setEsi(esi)
                         )));
 
