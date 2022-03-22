@@ -13,11 +13,17 @@ import com.auth0.jwt.interfaces.Payload;
 import java.io.*;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Supplier;
 
 import javax.json.*;
 import javax.json.stream.JsonParsingException;
+
+import static com.metreeca.rest.Toolbox.service;
+import static com.metreeca.rest.services.Vault.vault;
+
+import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * JWT token manager.
@@ -25,6 +31,17 @@ import javax.json.stream.JsonParsingException;
  * @see <a href="https://github.com/auth0/java-jwt">auth0/java-jwt</a>
  */
 public final class Notary {
+
+    private static final String KEY="key-jwt";
+
+
+    public static Supplier<Notary> notary() {
+        return () -> new Notary(service(vault()).get(KEY)
+                .map(key -> key.getBytes(UTF_8))
+                .orElseThrow(() -> new NoSuchElementException(format("undefined <%s> key", KEY)))
+        );
+    }
+
 
     public static String encode(final JsonValue value) {
 

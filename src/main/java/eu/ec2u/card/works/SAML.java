@@ -16,8 +16,7 @@ import com.onelogin.saml2.factory.SamlMessageFactory;
 import com.onelogin.saml2.http.HttpRequest;
 import com.onelogin.saml2.settings.Saml2Settings;
 import com.onelogin.saml2.settings.SettingsBuilder;
-import eu.ec2u.card.RootServer;
-import eu.ec2u.card.users.Users.User;
+import eu.ec2u.card.Root.Profile;
 import work.Notary;
 
 import java.io.IOException;
@@ -27,9 +26,11 @@ import java.util.*;
 
 import static com.metreeca.core.Lambdas.checked;
 import static com.metreeca.rest.Response.*;
+import static com.metreeca.rest.Toolbox.service;
 import static com.metreeca.rest.formats.TextFormat.text;
 import static com.metreeca.rest.handlers.Router.router;
 
+import static work.Notary.notary;
 import static work.Query.query;
 
 import static java.lang.String.format;
@@ -38,13 +39,13 @@ import static java.util.Map.entry;
 public final class SAML extends Delegator {
 
     public static final String Pattern="/saml/*";
-    public static final String Session="/saml/session";
+    public static final String Gateway="/saml/gateway";
 
 
     private static final Saml2Settings settings=settings();
     private static final SamlMessageFactory samlMessageFactory=new SamlMessageFactory() { };
 
-    private static final Notary notary=new Notary(RootServer.JWTKey);
+    private static final Notary notary=service(notary());
 
 
     private static Saml2Settings settings() {
@@ -83,7 +84,7 @@ public final class SAML extends Delegator {
 
                 .path("/", router().get(this::metadata))
                 .path("/acs", router().post(this::acs))
-                .path("/session", router().get(this::session))
+                .path("/gateway", router().get(this::gateway))
 
         );
     }
@@ -159,7 +160,7 @@ public final class SAML extends Delegator {
                                 .findFirst()
                                 .orElseThrow();
 
-                        final String token=notary.create(Notary.encode(User.encode(new User()
+                        final String token=notary.create(Notary.encode(Profile.encode(new Profile()
                                 .setEsi(esi)
                         )));
 
@@ -207,7 +208,7 @@ public final class SAML extends Delegator {
 
     }
 
-    private Response session(final Request request) {
+    private Response gateway(final Request request) {
         try {
 
             final String sso=settings.getIdpSingleSignOnServiceUrl().toString();

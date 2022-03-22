@@ -34,7 +34,6 @@ import static com.metreeca.rest.wrappers.Server.server;
 
 import static eu.ec2u.card.works.ESC.esc;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.ofHours;
 
 public final class RootServer implements Runnable {
@@ -51,8 +50,6 @@ public final class RootServer implements Runnable {
 
     public static final int TextSize=2000;
     public static final String TextPattern="\\S+(\\s+\\S+)*";
-
-    public static final byte[] JWTKey="BB9BD1C95FBCD778BDB66ACD5158D".getBytes(UTF_8); // !!! to vault
 
 
     static {

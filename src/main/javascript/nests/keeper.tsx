@@ -53,6 +53,8 @@ export function CardKeeper({
 
     useEffect(() => {
 
+        // !!! move token management to interceptor
+
         fetch("/", token ? { headers: { Authorization: `Bearer ${token}` } } : {}).then(response => {
 
             if ( response.ok ) {

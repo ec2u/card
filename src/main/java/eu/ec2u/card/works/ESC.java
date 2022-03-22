@@ -13,6 +13,7 @@ import eu.europeanstudentcard.esc.EscnFactoryException;
 
 import java.math.BigInteger;
 import java.time.ZonedDateTime;
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -27,16 +28,19 @@ public final class ESC {
 
     private static final String API="https://api-sandbox.europeanstudentcard.eu";
     private static final String TST="http://pp.esc.gg";
-    private static final String KEY="key-esc-router-sandbox";
+    private static final String KEY="key-esc-sandbox";
 
 
     public static Supplier<ESC> esc() {
-        return () -> new ESC();
+        return ESC::new;
     }
 
 
-    public ESC() {
-    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private final String key=service(vault()).get(KEY).orElseThrow(() ->
+            new NoSuchElementException(format("undefined <%s> key", KEY))
+    );
 
 
     private String code(final String pic) {
@@ -66,10 +70,7 @@ public final class ESC {
 
                 )
 
-                .optMap(new GET<>(json(), request -> request.header("Key", service(vault())
-                        .get(KEY)
-                        .orElseThrow(() -> new IllegalStateException(format("missing <%s> key", KEY)))
-                )))
+                .optMap(new GET<>(json(), request -> request.header("Key", key)))
 
                 .flatMap(new JSONPath<>(json -> json.strings("cards.*.europeanStudentCardNumber").map(code -> new Card() // !!! error handling
 

@@ -105,7 +105,7 @@ card-page {
         & > footer {
 
             white-space: nowrap;
-            font-size: 0.9em;
+            font-size: 0.8em;
             color: #CCC;
 
             & > a, & > a:visited {

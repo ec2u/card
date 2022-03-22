@@ -12,15 +12,19 @@ import work.Notary;
 
 import javax.json.JsonValue;
 
+import static com.metreeca.rest.Toolbox.service;
 import static com.metreeca.rest.wrappers.Bearer.bearer;
 
-import static eu.ec2u.card.RootServer.JWTKey;
+import static work.Notary.notary;
 
 public final class RootKeeper implements Wrapper {
 
+
+    private final Notary notary=service(notary());
+
     // !!! error handling
 
-    private final Wrapper delegate=bearer((token, request) -> new Notary(JWTKey).verify(token)
+    private final Wrapper delegate=bearer((token, request) -> notary.verify(token)
             .map(Notary::decode)
             .map(JsonValue::asJsonObject)
             .map(Profile::decode)

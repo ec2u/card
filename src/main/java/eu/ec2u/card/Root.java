@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.json.*;
 import javax.validation.constraints.*;
@@ -49,6 +50,7 @@ public final class Root {
         public static JsonValue encode(final Profile profile) {
             return profile == null ? NULL : Json.createObjectBuilder()
 
+                    .add("esi", profile.esi)
                     .add("user", User.encode(profile.user))
                     .add("card", Card.encode(profile.card))
 
@@ -59,8 +61,18 @@ public final class Root {
             return json == NULL ? null : new Profile()
 
                     .setEsi(json.getString("esi"))
-                    .setUser(User.decode(json.getJsonObject("user")))
-                    .setCard(Card.decode(json.getJsonObject("card")));
+
+                    .setUser(User.decode(Optional.ofNullable(json.get("user"))
+                            .filter(JsonObject.class::isInstance)
+                            .map(JsonValue::asJsonObject)
+                            .orElse(null)
+                    ))
+
+                    .setCard(Card.decode(Optional.ofNullable(json.get("card"))
+                            .filter(JsonObject.class::isInstance)
+                            .map(JsonValue::asJsonObject)
+                            .orElse(null)
+                    ));
         }
 
     }

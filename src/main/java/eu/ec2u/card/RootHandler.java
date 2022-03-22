@@ -24,6 +24,12 @@ import static java.lang.String.format;
 
 final class RootHandler extends Delegator {
 
+    private static final String Gateway=SAML.Gateway;
+    //private static final String Gateway="https://card.ec2u.eu/eCard/sso.php";
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private final ESC esc=service(esc());
 
 
@@ -62,7 +68,7 @@ final class RootHandler extends Delegator {
                 .orElseGet(() -> request.reply(OK)
 
                         .header("WWW-Authenticate", format("Bearer realm=\"%s\"", request.base()))
-                        .header("Location", SAML.Session)
+                        .header("Location", Gateway)
 
                         .body(json(), encode(new Root()))
 
