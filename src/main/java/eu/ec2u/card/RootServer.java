@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.time.Instant;
 
 import static com.metreeca.gcp.GCPServer.development;
+import static com.metreeca.gcp.GCPServer.production;
 import static com.metreeca.rest.Handler.asset;
 import static com.metreeca.rest.Toolbox.storage;
 import static com.metreeca.rest.handlers.Router.router;
@@ -83,7 +84,7 @@ public final class RootServer implements Runnable {
                 .set(vault(), GCPVault::new)
                 .set(store(), GCPStore::new)
 
-                .set(storage(), () -> Paths.get("/tmp"))
+                .set(storage(), () -> Paths.get(production() ? "/tmp" : "data"))
                 .set(fetcher(), CacheFetcher::new)
                 .set(cache(), () -> new FileCache().ttl(ofHours(1)))
 
