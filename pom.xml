@@ -35,7 +35,7 @@
 
     <properties>
 
-        <main>eu.ec2u.card.Root</main>
+        <main>eu.ec2u.card.RootServer</main>
 
 		<revision>work</revision>
 
