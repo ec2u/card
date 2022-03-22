@@ -16,6 +16,8 @@ import java.util.Optional;
 import javax.json.*;
 import javax.validation.constraints.*;
 
+import static eu.ec2u.card.RootServer.*;
+
 import static javax.json.JsonValue.NULL;
 
 @Getter
@@ -82,7 +84,7 @@ public final class Root {
     public abstract static class Container<T extends Resource> extends Resource {
 
         @NotNull
-        @Size(max=RootServer.ContainerSize)
+        @Size(max=ContainerSize)
         private List<T> contains;
 
     }
@@ -91,20 +93,20 @@ public final class Root {
     @Setter
     public abstract static class Resource {
 
-        @Size(max=RootServer.URLSize)
-        @Pattern(regexp=RootServer.RelativePattern)
+        @Size(max=URLSize)
+        @Pattern(regexp=RelativePattern)
         private String id;
 
-        @Size(max=RootServer.LineSize)
-        @Pattern(regexp=RootServer.LinePattern)
+        @Size(max=LineSize)
+        @Pattern(regexp=LinePattern)
         private String label;
 
-        @Size(max=RootServer.TextSize)
-        @Pattern(regexp=RootServer.TextPattern)
+        @Size(max=TextSize)
+        @Pattern(regexp=TextPattern)
         private String brief;
 
         @Size(max=4096)
-        @Pattern(regexp=RootServer.AbsolutePattern)
+        @Pattern(regexp=AbsolutePattern)
         private String image;
 
     }

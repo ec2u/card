@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.joining;
 
 public final class Query {
 
-    public static String query(final Map<String, String> parameters) { // !!! factor
+    public static String query(final Map<String, String> parameters) {
         return parameters.entrySet().stream()
                 .map(p -> format("%s=%s", encode(p.getKey()), encode(p.getValue())))
                 .collect(joining("&"));
