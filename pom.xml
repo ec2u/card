@@ -382,6 +382,47 @@
 
             </plugin>
 
+            <plugin> <!-- https://maven.apache.org/plugins/maven-resources-plugin/ -->
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+
+                <configuration>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>key</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>crt</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+
+                <executions>
+                    <execution>
+
+                        <id>stage-static-assets</id>
+                        <phase>package</phase>
+
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+
+                        <configuration>
+
+                            <outputDirectory>${project.build.directory}/appengine-staging/static</outputDirectory>
+
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/static</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+
+                        </configuration>
+
+                    </execution>
+                </executions>
+
+            </plugin>
+
             <plugin> <!-- https://cloud.google.com/appengine/docs/standard/java-gen2/maven-reference -->
 
                 <groupId>com.google.cloud.tools</groupId>

@@ -8,15 +8,9 @@ import com.metreeca.rest.*;
 import com.metreeca.rest.services.Fetcher;
 import com.metreeca.rest.services.Fetcher.URLFetcher;
 
-import java.util.Locale;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import static com.metreeca.rest.Response.BadGateway;
 import static com.metreeca.rest.formats.DataFormat.data;
 import static com.metreeca.rest.formats.TextFormat.text;
-
-import static java.util.stream.Collectors.toMap;
 
 public final class Fallback implements Handler {
 
@@ -61,11 +55,8 @@ public final class Fallback implements Handler {
 
                         value -> request.reply(response.status())
 
-                                .headers(response.headers().entrySet().stream()
-                                        .filter(entry -> Set.of("cache-control", "etag", "expires", "date", "content"
-                                                +"-type").contains(entry.getKey().toLowerCase(Locale.ROOT)))
-                                        .collect(toMap(Entry::getKey, Entry::getValue))
-                                )
+                                .header("Content-Type", response.header("Content-Type").orElse(""))
+                                .header("Cache-Control", "no-store") // don't shadow future API responses
 
                                 .body(data(), response.body(data()).fold(error -> { throw error; }))
 
