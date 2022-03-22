@@ -83,7 +83,7 @@ public final class RootServer implements Runnable {
                 .set(vault(), GCPVault::new)
                 .set(store(), GCPStore::new)
 
-                .set(storage(), () -> Paths.get("data"))
+                .set(storage(), () -> Paths.get("/tmp"))
                 .set(fetcher(), CacheFetcher::new)
                 .set(cache(), () -> new FileCache().ttl(ofHours(1)))
 

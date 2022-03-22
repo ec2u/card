@@ -31,7 +31,7 @@ export function CardKeeper({
     const [gateway, setGateway]=useState<string>();
     const [profile, setProfile]=useState<User>();
 
-    const [token, setToken]=useSessionStorage("token", undefined); // !!! migrate to NodeFetcher
+    const [token, setToken]=useSessionStorage<Optional<string>>("token", undefined); // !!! migrate to NodeFetcher
 
     useEffect(() => {
 
@@ -55,7 +55,15 @@ export function CardKeeper({
 
         // !!! move token management to interceptor
 
-        fetch("/", token ? { headers: { Authorization: `Bearer ${token}` } } : {}).then(response => {
+        fetch("/", token ? {
+
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "applications/json",
+                "Cache-Control": "no-cache, max-age=0, must-revalidate"
+            }
+
+        } : {}).then(response => {
 
             if ( response.ok ) {
 
