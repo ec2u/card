@@ -71,7 +71,7 @@ public final class EscRetrieverTester {
 	}
 
 	@Test
-	public void testListStudents() {
+	public void listStudents() {
 
 		try {
 			String responseRetrieveStudents = escRetriever.retrieveStudents();
