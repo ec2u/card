@@ -1,16 +1,20 @@
 package eu.ec2u.card.cards.escr;
 
-import org.junit.Test;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.json.JsonObject;
 import java.io.IOException;
 
-public class EscRetrieverTester extends TestCase{
+import static org.springframework.test.util.AssertionErrors.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+
+@SpringBootTest
+public final class EscRetrieverTester {
 
 	private EscRetriever escRetriever;
 
-	@Override
+	@BeforeEach
 	protected void setUp() throws Exception {
 		escRetriever = new EscRetriever();
 	}
@@ -70,6 +74,7 @@ public class EscRetrieverTester extends TestCase{
 
 		try {
 			String responseRetrieveStudents = escRetriever.retrieveStudents();
+
 			assertTrue("la response does not contains europeanStudentIdentifier", responseRetrieveStudents.contains("europeanStudentIdentifier") );
 			assertTrue("la response does not contains picInstitutionCode", responseRetrieveStudents.contains("picInstitutionCode") );
 			assertTrue("la response does not contains emailAddress", responseRetrieveStudents.contains("emailAddress") );
