@@ -7,7 +7,6 @@ import javax.json.JsonObject;
 import java.io.IOException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 
 @SpringBootTest
@@ -74,7 +73,6 @@ public final class EscRetrieverTester {
 	public void listStudents() {
 
 		try {
-			String responseRetrieveStudents = escRetriever.retrieveStudents();
 			assertThat(escRetriever.retrieveStudents())
 					.contains("europeanStudentIdentifier")
 					.contains("picInstitutionCode")
