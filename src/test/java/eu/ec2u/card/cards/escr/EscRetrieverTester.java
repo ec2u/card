@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.json.JsonObject;
 import java.io.IOException;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -74,15 +75,16 @@ public final class EscRetrieverTester {
 
 		try {
 			String responseRetrieveStudents = escRetriever.retrieveStudents();
-
-			assertTrue("la response does not contains europeanStudentIdentifier", responseRetrieveStudents.contains("europeanStudentIdentifier") );
-			assertTrue("la response does not contains picInstitutionCode", responseRetrieveStudents.contains("picInstitutionCode") );
-			assertTrue("la response does not contains emailAddress", responseRetrieveStudents.contains("emailAddress") );
-			assertTrue("la response does not contains expiryDate", responseRetrieveStudents.contains("expiryDate") );
-			assertTrue("la response does not contains name", responseRetrieveStudents.contains("name") );
-			assertTrue("la response does not contains phoneNumber", responseRetrieveStudents.contains("phoneNumber") );
-			assertTrue("la response does not contains academicLevel", responseRetrieveStudents.contains("academicLevel") );
-			assertTrue("la response does not contains cards", responseRetrieveStudents.contains("cards") );
+			assertThat(escRetriever.retrieveStudents())
+					.contains("europeanStudentIdentifier")
+					.contains("picInstitutionCode")
+					.contains("emailAddress")
+					.contains("expiryDate")
+					.contains("name")
+					.contains("phoneNumber")
+					.contains("academicLevel")
+					.contains("cards")
+			;
 		} catch (final IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
