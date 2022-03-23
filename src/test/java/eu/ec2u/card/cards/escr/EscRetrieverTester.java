@@ -91,4 +91,20 @@ public final class EscRetrieverTester {
 
 	}
 
+	@Test
+	public void retrieveCards() {
+
+		try {
+			assertThat(escRetriever.retrieveCards())
+					.contains("europeanStudentCardNumber")
+					.contains("cardType")
+					.contains("cardUid")
+					.contains("student")
+			;
+		} catch (final IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 }
