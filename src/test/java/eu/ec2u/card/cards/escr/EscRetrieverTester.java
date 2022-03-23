@@ -20,7 +20,7 @@ public final class EscRetrieverTester {
 	}
 
 	@Test
-	public void testExecute() {
+	public void noTestsHere() {
 
 		final String retrievedCard = "";
 
