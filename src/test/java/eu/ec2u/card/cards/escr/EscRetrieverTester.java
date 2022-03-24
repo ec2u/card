@@ -105,4 +105,24 @@ public final class EscRetrieverTester {
 
 	}
 
+	@Test
+	public void retrieveStudent() {
+
+		String europeanStudentIdentifier = "urn:schac:personalUniqueCode:int:esi:unipv.it:999001";
+		try {
+			assertThat(escRetriever.retrieveStudents(europeanStudentIdentifier))
+					.contains("europeanStudentIdentifier")
+					.contains("picInstitutionCode")
+					.contains("emailAddress")
+					.contains("expiryDate")
+					.contains("name")
+					.contains("academicLevel")
+					.contains("cards")
+			;
+
+		} catch (final IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
