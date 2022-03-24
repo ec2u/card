@@ -123,6 +123,31 @@ public final class EscRetrieverTester {
 		} catch (final IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	@Test
+	public void retrieveCard() {
+
+		String europeanStudentIdentifier = "urn:schac:personalUniqueCode:int:esi:unipv.it:999001";
+		String europeanStudentCardNumber = "fc3a1f80-93fb-103a-9b31-000999893752";
+
+		try {
+			assertThat(escRetriever.retrieveCards(europeanStudentIdentifier, europeanStudentCardNumber))
+					.contains("europeanStudentCardNumber")
+					.contains("student")
+					.contains("europeanStudentIdentifier")
+					.contains("picInstitutionCode")
+					.contains("emailAddress")
+					.contains("expiryDate")
+					.contains("name")
+					.contains("academicLevel")
+			;
+
+		} catch (final IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }
