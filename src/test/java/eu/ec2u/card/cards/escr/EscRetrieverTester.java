@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 public final class EscRetrieverTester {
 
 	private EscRetriever escRetriever;
+	private String europeanStudentIdentifier = "urn:schac:personalUniqueCode:int:esi:unipv.it:999001";
 
 	@BeforeEach
 	protected void setUp() throws Exception {
@@ -108,7 +109,6 @@ public final class EscRetrieverTester {
 	@Test
 	public void retrieveStudent() {
 
-		String europeanStudentIdentifier = "urn:schac:personalUniqueCode:int:esi:unipv.it:999001";
 		try {
 			assertThat(escRetriever.retrieveStudents(europeanStudentIdentifier))
 					.contains("europeanStudentIdentifier")
@@ -129,7 +129,7 @@ public final class EscRetrieverTester {
 	@Test
 	public void retrieveCard() {
 
-		String europeanStudentIdentifier = "urn:schac:personalUniqueCode:int:esi:unipv.it:999001";
+
 		String europeanStudentCardNumber = "fc3a1f80-93fb-103a-9b31-000999893752";
 
 		try {
