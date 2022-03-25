@@ -216,8 +216,8 @@ export function CardPrivacy() {
 
         <h2 id={"automation"}>Automated Decision Making and Profiling</h2>
 
-        <small>Is data concerning me used to profile me and are decisions made automatically on the basis of the
-            profiling?</small>
+        <small>Is data concerning me used to profile me? Are decisions made automatically on the basis of the
+            profile?</small>
 
         <table>
             <thead>

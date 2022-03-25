@@ -3,24 +3,26 @@
  */
 
 import { root } from "@ec2u/card/pages/root";
-import { isPresent } from "@metreeca/core";
+import { Immutable, isArray, isDefined } from "@metreeca/core";
+import { Value } from "@metreeca/core/value";
 import { copy } from "@metreeca/head";
 import { useProfile } from "@metreeca/nest/keeper";
 import { CreditCard, Key, LogIn, LogOut, Users } from "@metreeca/skin/lucide";
-import { NodeIcon } from "@metreeca/tile/icon";
+import { NodeIcon } from "@metreeca/tile/widgets/icon";
+import { NodePath } from "@metreeca/tile/widgets/path";
 import React, { createElement, ReactNode } from "react";
 import "./page.css";
 
 
 export function CardPage({
 
-    name,
+    name=[],
 
     children
 
 }: {
 
-    name: ReactNode
+    name?: Value | ReactNode | Immutable<Array<Value | ReactNode>>
 
     children: ReactNode
 
@@ -54,7 +56,7 @@ export function CardPage({
 
             </> : null}</section>
 
-            <footer>{isPresent(profile)
+            <footer>{isDefined(profile)
 
                 ? <button title={"Log Out"} onClick={doLogOut}><LogOut style={{ transform: "scaleX(-1)" }}/></button>
                 : <button title={"Log In"} onClick={doLogIn}><LogIn/></button>
@@ -66,8 +68,7 @@ export function CardPage({
         <main>
 
             <header>
-                <a href={root.id}>{root.label}</a>
-                <span>{name}</span>
+                <NodePath>{isArray(name) ? [root, ...name] : [root, name]}</NodePath>
             </header>
 
             <section>{children}</section>

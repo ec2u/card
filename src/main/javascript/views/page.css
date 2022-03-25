@@ -45,7 +45,8 @@ card-page {
 
             white-space: nowrap;
 
-            font-size: 3rem;
+            font-size: 2.5rem;
+            font-weight: 600;
 
             & > a {
 

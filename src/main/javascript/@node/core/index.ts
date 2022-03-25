@@ -52,10 +52,10 @@ export type Immutable<T>=
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Checks if a value is not `undefined` or `null`.
+ * Checks if a value is not `undefined`.
  */
-export function isPresent<T>(value: undefined | null | T): value is T {
-    return value !== undefined && value !== null;
+export function isDefined<T>(value: undefined | T): value is T {
+    return value !== undefined;
 }
 
 /**

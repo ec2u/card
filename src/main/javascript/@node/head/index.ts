@@ -15,7 +15,6 @@
  */
 
 import { Optional } from "@metreeca/core";
-import { resolve } from "@metreeca/head/network";
 
 
 /**
@@ -46,6 +45,21 @@ export const icon: string=(document.querySelector("link[rel=icon]") as HTMLLinkE
  * The app copyright as read from the `<meta name="copyright">` HTML head tag.
  */
 export const copy=(document.querySelector("meta[name=copyright]") as HTMLMetaElement)?.content || "";
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Resolves a URL.
+ *
+ * @param path the possibly relative URL to be resolved
+ * @param base the base URL `path` is to be resolved against; defaults to {@link location.href}
+ *
+ * @returns a URL obtained by resolving `path` against `base`
+ */
+export function resolve(path: string, base: string=location.href): string {
+    return new URL(path, base).href;
+}
 
 
 /**
