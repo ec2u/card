@@ -1,0 +1,30 @@
+/*
+ * Copyright © 2022 EC2U Alliance. All rights reserved.
+ */
+
+card-about {
+
+    & > dl {
+
+        display: grid;
+
+        grid-template-rows: repeat(auto-fit, min-content);
+        grid-template-columns: min-content 1fr;
+
+        grid-row-gap: 0.5em;
+        grid-column-gap: 1em;
+
+        & > * {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        & > dt {
+            white-space: nowrap;
+            text-align: right;
+            font-weight: 700;
+        }
+
+    }
+
+}

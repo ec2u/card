@@ -2,10 +2,10 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-import { CardAbout } from "@ec2u/card/pages/about";
+import { about, CardAbout } from "@ec2u/card/pages/about";
 import { CardCard } from "@ec2u/card/pages/cards/card";
 import { CardCards } from "@ec2u/card/pages/cards/cards";
-import { CardContacts } from "@ec2u/card/pages/contacts";
+import { CardContacts, contacts } from "@ec2u/card/pages/contacts";
 import { CardKey } from "@ec2u/card/pages/keys/token";
 import { CardKeys } from "@ec2u/card/pages/keys/tokens";
 import { CardPrivacy, privacy } from "@ec2u/card/pages/privacy";
@@ -21,9 +21,9 @@ export function CardRouter() {
 
         [root.id]: CardRoot,
 
-        "/about": CardAbout,
+        [about.id]: CardAbout,
         [privacy.id]: CardPrivacy,
-        "/contacts": CardContacts,
+        [contacts.id]: CardContacts,
 
         "/cards/": CardCards,
         "/cards/*": CardCard,
