@@ -10,7 +10,6 @@ import com.metreeca.rest.handlers.Delegator;
 
 import eu.ec2u.card.Root.Profile;
 import eu.ec2u.card.works.ESC;
-import eu.ec2u.card.works.SAML;
 
 import static com.metreeca.rest.Response.OK;
 import static com.metreeca.rest.Toolbox.service;
@@ -24,8 +23,8 @@ import static java.lang.String.format;
 
 final class RootHandler extends Delegator {
 
-    private static final String Gateway=SAML.Gateway;
-    //private static final String Gateway="https://card.ec2u.eu/eCard/sso.php";
+    //private static final String Gateway=SAML.Gateway;
+    private static final String Gateway="https://card.ec2u.eu/eCard/sso.php";
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
