@@ -6,7 +6,17 @@ import { CardOptions } from "@ec2u/card/index";
 import { useOptions } from "@ec2u/card/nests/register";
 import { CardHome } from "@ec2u/card/pages/home";
 import { CardVirtual } from "@ec2u/card/pages/virtual";
+import { immutable } from "@metreeca/core";
 import React from "react";
+
+
+export const root=immutable({
+
+    id: "/",
+
+    label: "Virtual Card"
+
+});
 
 
 export function CardRoot() {

@@ -2,6 +2,7 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
+import { root } from "@ec2u/card/pages/root";
 import { isPresent } from "@metreeca/core";
 import { copy } from "@metreeca/head";
 import { useProfile } from "@metreeca/nest/keeper";
@@ -65,6 +66,7 @@ export function CardPage({
         <main>
 
             <header>
+                <a href={root.id}>{root.label}</a>
                 <span>{name}</span>
             </header>
 

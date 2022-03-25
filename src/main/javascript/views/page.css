@@ -21,6 +21,8 @@ card-page {
 
         overflow: hidden auto;
 
+        scroll-padding-top: 5em;
+
         & > * {
             flex-shrink: 0;
         }

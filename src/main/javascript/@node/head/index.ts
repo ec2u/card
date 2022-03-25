@@ -34,7 +34,7 @@ export const base: string=resolve((
 /**
  * The app name as read from the `<title>` HTM head tag.
  */
-export const name: string=document.title;
+export const name: string=document.title; // !!! remove
 
 /**
  * The URL of the app icon as read from the `<link rel="icon">` HTML head tag.

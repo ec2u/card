@@ -234,7 +234,7 @@ export function NodeRouter({
             const native=anchor?.getAttribute(NativeAttribute);
             const target=anchor?.getAttribute(TargetAttribute);
 
-            if ( anchor
+            if ( anchor && !anchor.getAttribute("href")?.startsWith("#")
                 && native === null // only non-native anchors
                 && (target === null || target === "_self") // only local anchors
             ) {
@@ -242,9 +242,9 @@ export function NodeRouter({
                 const href=anchor.href;
                 const file="file:///";
 
-                const route=href.startsWith(base) ? href.substr(base.length-1)
-                    : href.startsWith(root) ? href.substr(root.length-1)
-                        : href.startsWith(file) ? href.substr(file.length-1)
+                const route=href.startsWith(base) ? href.substring(base.length-1)
+                    : href.startsWith(root) ? href.substring(root.length-1)
+                        : href.startsWith(file) ? href.substring(file.length-1)
                             : "";
 
                 if ( route ) { // only internal routes

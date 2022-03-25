@@ -8,8 +8,8 @@ import { CardCards } from "@ec2u/card/pages/cards/cards";
 import { CardContacts } from "@ec2u/card/pages/contacts";
 import { CardKey } from "@ec2u/card/pages/keys/token";
 import { CardKeys } from "@ec2u/card/pages/keys/tokens";
-import { CardPrivacy } from "@ec2u/card/pages/privacy";
-import { CardRoot } from "@ec2u/card/pages/root";
+import { CardPrivacy, privacy } from "@ec2u/card/pages/privacy";
+import { CardRoot, root } from "@ec2u/card/pages/root";
 import { CardUser } from "@ec2u/card/pages/users/user";
 import { CardUsers } from "@ec2u/card/pages/users/users";
 import { NodeRouter } from "@metreeca/nest/router";
@@ -19,10 +19,10 @@ import * as React from "react";
 export function CardRouter() {
     return <NodeRouter routes={{
 
-        "/": CardRoot,
+        [root.id]: CardRoot,
 
         "/about": CardAbout,
-        "/privacy": CardPrivacy,
+        [privacy.id]: CardPrivacy,
         "/contacts": CardContacts,
 
         "/cards/": CardCards,
