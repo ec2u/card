@@ -14,15 +14,13 @@ import eu.ec2u.card.cards.CardsHandler;
 import eu.ec2u.card.keys.KeysHandler;
 import eu.ec2u.card.users.UsersHandler;
 import eu.ec2u.card.works.ESC;
-import eu.ec2u.card.works.SAML;
-import work.Fallback;
+import work.Launcher;
 
 import java.nio.file.Paths;
 import java.time.Instant;
 
 import static com.metreeca.gcp.GCPServer.development;
 import static com.metreeca.gcp.GCPServer.production;
-import static com.metreeca.rest.Handler.asset;
 import static com.metreeca.rest.Toolbox.storage;
 import static com.metreeca.rest.handlers.Router.router;
 import static com.metreeca.rest.services.Cache.cache;
@@ -93,21 +91,15 @@ public final class RootServer implements Runnable {
                         .with(cors())
 
                         .with(new RootKeeper())
+                        .with(new Launcher("/index.html"))
 
                         .wrap(router()
-
-                                .path(SAML.Pattern, new SAML())
-
-                                .path("/*", asset(new Fallback("/index.html"), router()
-
-                                        .path("/", new RootHandler())
-                                        .path("/cards/*", new CardsHandler())
-                                        .path("/users/*", new UsersHandler())
-                                        .path("/keys/*", new KeysHandler())
-
-                                ))
-
+                                .path("/", new RootHandler())
+                                .path("/cards/*", new CardsHandler())
+                                .path("/users/*", new UsersHandler())
+                                .path("/keys/*", new KeysHandler())
                         )
+
                 )
 
         ).start();

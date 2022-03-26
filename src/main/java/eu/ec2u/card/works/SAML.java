@@ -4,9 +4,8 @@
 
 package eu.ec2u.card.works;
 
-import com.metreeca.rest.Request;
-import com.metreeca.rest.Response;
-import com.metreeca.rest.handlers.Delegator;
+import com.metreeca.core.Identifiers;
+import com.metreeca.rest.*;
 import com.metreeca.xml.formats.XMLFormat;
 
 import com.onelogin.saml2.authn.AuthnRequest;
@@ -33,12 +32,11 @@ import static com.metreeca.rest.handlers.Router.router;
 
 import static work.BeanCodec.codec;
 import static work.Notary.notary;
-import static work.Query.query;
 
 import static java.lang.String.format;
 import static java.util.Map.entry;
 
-public final class SAML extends Delegator {
+public final class SAML extends Handler.Base {
 
     public static final String Pattern="/saml/*";
     public static final String Gateway="/saml/gateway";
@@ -224,9 +222,9 @@ public final class SAML extends Delegator {
             );
 
 
-            final Map<String, String> parameters=Map.ofEntries(
-                    entry("SAMLRequest", authnRequest.getEncodedAuthnRequest()),
-                    entry("RelayState", target)
+            final Map<String, List<String>> parameters=Map.ofEntries(
+                    entry("SAMLRequest", List.of(authnRequest.getEncodedAuthnRequest())),
+                    entry("RelayState", List.of(target))
             );
 
             //if ( settings.getAuthnRequestsSigned() ) {
@@ -243,7 +241,7 @@ public final class SAML extends Delegator {
             //lastRequestIssueInstant=authnRequest.getIssueInstant();
             //lastRequest=authnRequest.getAuthnRequestXml();
 
-            return request.reply(Found, query(sso, parameters));
+            return request.reply(Found, sso+(sso.contains("?") ? "&" : "?")+Identifiers.query(parameters));
 
         } catch ( final IOException e ) {
             throw new UncheckedIOException(e);

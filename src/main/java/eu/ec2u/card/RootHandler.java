@@ -4,9 +4,7 @@
 
 package eu.ec2u.card;
 
-import com.metreeca.rest.Request;
-import com.metreeca.rest.Response;
-import com.metreeca.rest.handlers.Delegator;
+import com.metreeca.rest.*;
 
 import eu.ec2u.card.Root.Profile;
 import eu.ec2u.card.works.ESC;
@@ -20,7 +18,7 @@ import static work.BeanFormat.bean;
 
 import static java.lang.String.format;
 
-final class RootHandler extends Delegator {
+final class RootHandler extends Handler.Base {
 
     //private static final String SSO=SAML.Gateway;
     private static final String SSO="https://card.ec2u.eu/eCard/sso";

@@ -4,7 +4,7 @@
 
 package eu.ec2u.card.keys;
 
-import com.metreeca.rest.handlers.Delegator;
+import com.metreeca.rest.Handler;
 
-public final class KeysHandler extends Delegator {
+public final class KeysHandler extends Handler.Base {
 }

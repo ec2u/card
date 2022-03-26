@@ -4,7 +4,7 @@
 
 package eu.ec2u.card.cards;
 
-import com.metreeca.rest.handlers.Delegator;
+import com.metreeca.rest.Handler;
 
-public final class CardsHandler extends Delegator {
+public final class CardsHandler extends Handler.Base {
 }
