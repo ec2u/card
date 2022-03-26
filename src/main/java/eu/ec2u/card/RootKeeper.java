@@ -8,26 +8,36 @@ import com.metreeca.rest.Handler;
 import com.metreeca.rest.Wrapper;
 
 import eu.ec2u.card.Root.Profile;
+import work.BeanCodec;
 import work.Notary;
 
-import javax.json.JsonValue;
+import java.text.ParseException;
 
 import static com.metreeca.rest.Toolbox.service;
 import static com.metreeca.rest.wrappers.Bearer.bearer;
 
+import static work.BeanCodec.codec;
 import static work.Notary.notary;
 
 public final class RootKeeper implements Wrapper {
 
 
     private final Notary notary=service(notary());
+    private final BeanCodec codec=service(codec());
 
     // !!! error handling
 
     private final Wrapper delegate=bearer((token, request) -> notary.verify(token)
-            .map(Notary::decode)
-            .map(JsonValue::asJsonObject)
-            .map(Profile::decode)
+            .map((json -> {
+
+                try {
+                    return codec.decode(json, Profile.class);
+                } catch ( final ParseException e ) {
+                    return null;
+                }
+
+            }))
+
             .map(request::user)
     );
 

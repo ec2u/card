@@ -10,30 +10,20 @@ import eu.ec2u.card.users.Users.User;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
-import javax.json.*;
 import javax.validation.constraints.*;
 
 import static eu.ec2u.card.RootServer.*;
-
-import static javax.json.JsonValue.NULL;
 
 @Getter
 @Setter
 public final class Root {
 
+    private String id="/";
+
     private Profile profile;
-
-
-    public static JsonObject encode(final Root root) {
-        return Json.createObjectBuilder()
-
-                .add("profile", Profile.encode(root.profile))
-
-                .build();
-    }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,35 +37,6 @@ public final class Root {
 
         private User user;
         private Card card;
-
-
-        public static JsonValue encode(final Profile profile) {
-            return profile == null ? NULL : Json.createObjectBuilder()
-
-                    .add("esi", profile.esi)
-                    .add("user", User.encode(profile.user))
-                    .add("card", Card.encode(profile.card))
-
-                    .build();
-        }
-
-        public static Profile decode(final JsonObject json) {
-            return json == NULL ? null : new Profile()
-
-                    .setEsi(json.getString("esi"))
-
-                    .setUser(User.decode(Optional.ofNullable(json.get("user"))
-                            .filter(JsonObject.class::isInstance)
-                            .map(JsonValue::asJsonObject)
-                            .orElse(null)
-                    ))
-
-                    .setCard(Card.decode(Optional.ofNullable(json.get("card"))
-                            .filter(JsonObject.class::isInstance)
-                            .map(JsonValue::asJsonObject)
-                            .orElse(null)
-                    ));
-        }
 
     }
 
@@ -94,8 +55,7 @@ public final class Root {
     public abstract static class Resource {
 
         @Size(max=URLSize)
-        @Pattern(regexp=RelativePattern)
-        private String id;
+        private URI id;
 
         @Size(max=LineSize)
         @Pattern(regexp=LinePattern)
@@ -106,8 +66,7 @@ public final class Root {
         private String brief;
 
         @Size(max=4096)
-        @Pattern(regexp=AbsolutePattern)
-        private String image;
+        private URI image;
 
     }
 

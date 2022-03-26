@@ -13,11 +13,10 @@ import eu.ec2u.card.works.ESC;
 
 import static com.metreeca.rest.Response.OK;
 import static com.metreeca.rest.Toolbox.service;
-import static com.metreeca.rest.formats.JSONFormat.json;
 import static com.metreeca.rest.handlers.Router.router;
 
-import static eu.ec2u.card.Root.encode;
 import static eu.ec2u.card.works.ESC.esc;
+import static work.BeanFormat.bean;
 
 import static java.lang.String.format;
 
@@ -46,7 +45,7 @@ final class RootHandler extends Delegator {
 
                 .map(profile -> request.reply(OK)
 
-                        .body(json(), encode(new Root()
+                        .body(bean(Root.class), new Root()
 
                                 .setProfile(new Profile()
 
@@ -58,9 +57,7 @@ final class RootHandler extends Delegator {
                                                 .orElse(null)
                                         )
 
-                                )
-
-                        ))
+                                ))
 
                 )
 
@@ -69,7 +66,7 @@ final class RootHandler extends Delegator {
                         .header("WWW-Authenticate", format("Bearer realm=\"%s\"", request.base()))
                         .header("Location", SSO)
 
-                        .body(json(), encode(new Root()))
+                        .body(bean(Root.class), new Root())
 
                 );
     }

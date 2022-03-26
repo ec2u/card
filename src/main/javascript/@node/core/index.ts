@@ -55,10 +55,7 @@ export type Immutable<T>=
  * Checks if a value is not `undefined`.
  */
 export function isDefined<T>(value: undefined | T): value is T {
-    return value !== undefined
-
-        && value !== null // !!!
-        ;
+    return value !== undefined;
 }
 
 /**

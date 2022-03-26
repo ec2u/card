@@ -9,13 +9,10 @@ import eu.ec2u.card.users.Users.User;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.json.*;
 import javax.validation.constraints.*;
 
 import static eu.ec2u.card.Root.Container;
 import static eu.ec2u.card.Root.Resource;
-
-import static javax.json.JsonValue.NULL;
 
 @Getter
 @Setter
@@ -49,18 +46,6 @@ public class Users extends Container<User> {
         @Size(max=RootServer.LineSize)
         @Email
         private String email;
-
-
-        public static JsonValue encode(final User user) {
-            return user == null ? NULL : Json.createObjectBuilder()
-                    .add("esi", user.esi)
-                    .build();
-        }
-
-        public static User decode(final JsonObject json) {
-            return json == null || json == NULL ? null : new User()
-                    .setEsi(json.getString("esi"));
-        }
 
     }
 

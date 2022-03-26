@@ -10,14 +10,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Payload;
 
-import java.io.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Supplier;
-
-import javax.json.*;
-import javax.json.stream.JsonParsingException;
 
 import static com.metreeca.rest.Toolbox.service;
 import static com.metreeca.rest.services.Vault.vault;
@@ -40,55 +36,6 @@ public final class Notary {
                 .map(key -> key.getBytes(UTF_8))
                 .orElseThrow(() -> new NoSuchElementException(format("undefined <%s> key", KEY)))
         );
-    }
-
-
-    public static String encode(final JsonValue value) {
-
-        if ( value == null ) {
-            throw new NullPointerException("null value");
-        }
-
-        try (
-                final Writer buffer=new StringWriter();
-                final JsonWriter writer=Json.createWriter(buffer)
-        ) {
-
-            writer.write(value);
-
-            return buffer.toString();
-
-        } catch ( final IOException e ) {
-
-            throw new UncheckedIOException(e);
-
-        }
-
-    }
-
-    public static JsonValue decode(final String json) {
-
-        if ( json == null ) {
-            throw new NullPointerException("null json");
-        }
-
-        try (
-                final Reader buffer=new StringReader(json);
-                final JsonReader reader=Json.createReader(buffer)
-        ) {
-
-            return reader.readValue();
-
-        } catch ( final JsonParsingException e ) {
-
-            throw new RuntimeException(e.getMessage(), e);
-
-        } catch ( final IOException e ) {
-
-            throw new UncheckedIOException(e);
-
-        }
-
     }
 
 

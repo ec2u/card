@@ -17,6 +17,7 @@ import com.onelogin.saml2.http.HttpRequest;
 import com.onelogin.saml2.settings.Saml2Settings;
 import com.onelogin.saml2.settings.SettingsBuilder;
 import eu.ec2u.card.Root.Profile;
+import work.BeanCodec;
 import work.Notary;
 
 import java.io.IOException;
@@ -30,6 +31,7 @@ import static com.metreeca.rest.Toolbox.service;
 import static com.metreeca.rest.formats.TextFormat.text;
 import static com.metreeca.rest.handlers.Router.router;
 
+import static work.BeanCodec.codec;
 import static work.Notary.notary;
 import static work.Query.query;
 
@@ -44,8 +46,6 @@ public final class SAML extends Delegator {
 
     private static final Saml2Settings settings=settings();
     private static final SamlMessageFactory samlMessageFactory=new SamlMessageFactory() { };
-
-    private static final Notary notary=service(notary());
 
 
     private static Saml2Settings settings() {
@@ -78,6 +78,11 @@ public final class SAML extends Delegator {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    private final Notary notary=service(notary());
+    private final BeanCodec codec=service(codec());
+
 
     public SAML() {
         delegate(router()
@@ -160,9 +165,9 @@ public final class SAML extends Delegator {
                                 .findFirst()
                                 .orElseThrow();
 
-                        final String token=notary.create(Notary.encode(Profile.encode(new Profile()
+                        final String token=notary.create(codec.encode(new Profile()
                                 .setEsi(esi)
-                        )));
+                        ));
 
                         return request.reply(Found, format("%s?%s",
                                 request.parameter("RelayState").orElse("/"),
