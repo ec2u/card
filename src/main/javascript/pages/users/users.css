@@ -1,50 +1,96 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+card-users {
+  width: 100%;
+  display: grid;
+  overflow: hidden;
+
+  & header {
+    width: 95%;
+    margin: 1.5em 0em;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+
+    & a {
+      font-size: 1.3em;
+      color: black;
+    }
+  }
+
+  & footer {
+    width: 95%;
+
+    & tr {
+      display: grid;
+      grid-template-columns: 10em 10em 10em 1em;
+    }
+    & tr:nth-child(even) {
+      background: lightgray;
+    }
+    & .spinner::before {
+      animation: 1.5s linear infinite spinner;
+      animation-play-state: inherit;
+      border: solid 5px lightgray;
+      border-bottom-color: gray;
+      border-radius: 50%;
+      content: "";
+      height: 3em;
+      width: 3em;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate3d(-50%, -50%, 0);
+      will-change: transform;
+    }
+  }
 }
 
+@keyframes spinner {
+  0% {
+    transform: translate3d(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+}
+/*
+
 .users {
-  width: 97%;
-  margin-top: 40px;
+  width: 95%;
+  margin-top: 2em;
+  display: grid;
+  
+  align-items: stretch;
 
   & .topnav {
-    display: grid;
-    grid-template-columns: 97.3% 20%;
-    font-size: 30px;
     width: 100%;
-  }
-  & .grid-container {
-    margin-top: 40px;
     display: grid;
-    text-align: left;
+    grid-template-columns: 50em 10em;
   }
+
   & tr {
-    width: 100%;
     display: grid;
-    grid-template-columns: 20% 20% 58% 20%;
-    padding: 6px;
-    align-items: center;
+
+    /* grid-template-columns: repeat(auto-fit, minmax(20em, 1fr)); 
+    grid-template-rows: repeat(auto-fit, min-ciontent);
+  grid-template-columns: min-content 2fr 2fr;
+    /* grid-template-columns: 5fr 0.1fr; 
+
+    & .data {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      /* grid-template-columns: repeat(auto-fill, 7em 7em 1em); 
+
+      text-align: left;
+      align-items: center;
+    }
+    & .actions {
+      display: grid;
+      text-align: center;
+      align-items: center;
+    }
   }
 
-  & tr:nth-child(even) {
-    background-color: rgb(197, 194, 194);
-  }
-  & th {
-    color: rgb(177, 171, 171);
-  }
-  & td {
-    font-size: 21px;
-  }
-
-  & .solid {
-    width: 101%;
-    background-color: lightgray;
-    border: 1px solid rgb(189, 185, 185);
-  }
-  & .button {
+  & .button-search {
     cursor: pointer;
     color: black;
   }
@@ -52,4 +98,42 @@
     cursor: pointer;
     color: black;
   }
+  & .button-arrow {
+    cursor: pointer;
+    color: black;
+  }
+  & .button {
+    color: black;
+  }
+
+  & .spinner::before {
+    animation: 1.5s linear infinite spinner;
+    animation-play-state: inherit;
+    border: solid 5px lightgray;
+    border-bottom-color: gray;
+    border-radius: 50%;
+    content: "";
+    height: 3em;
+    width: 3em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    will-change: transform;
+  }
 }
+@media only (min-width: 420px) {
+  .topnav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: translate3d(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+} */
