@@ -1,4 +1,5 @@
 import { Check, X } from "lucide-react";
+import { traceDeprecation } from "process";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./addcard.css";
@@ -6,38 +7,48 @@ import "./addcard.css";
 
 interface Card {
     holderForename: string;
-    holderSurName: string;
+    holderSurname: string;
     expiringDate: Date;
     virtualCardNumber: number;
-    id: any;
+    id: number | string;
 
 }
 
 
 export function Addcard() {
     const [addcard, setAddcard] = useState({} as Card);
+    const [loading, setLoading] = useState<Boolean>(false)
     const navigate = useNavigate();
 
     const userdata = {
         holderForename: addcard.holderForename,
         expiringDate: addcard.expiringDate,
-        holderSurName: addcard.holderSurName,
+        holderSurname: addcard.holderSurname,
         virtualCardNumber: addcard.virtualCardNumber,
     };
 
 
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-        fetch("/cards/", {
+    const handleSubmit = async () => {
+        setLoading(true)
+        await fetch("/cards/", {
             method: "POST",
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(userdata),
-        }).then((response) => response.json())
-            .then(data => navigate('/users'))
-    };
+        })
+            .then((response) => response.json())
+            .catch(error => console.warn('error:', error));
+        console.log('end of response')
+        navigate('/cards/');
+        console.log('end of handleSubmit');
+
+
+    }
+
+
+
 
 
 
@@ -50,15 +61,23 @@ export function Addcard() {
 
 
 
+    // let showCheck = <span>
+
+    // </span>
+    // let handleSpin =
+    //     <div className="spinner"></div>
+
+
     return (
         <div className="cards">
 
             <div className="topnav-addcard">
 
                 <span> Add Card</span>
-
                 <span>
-                    <Check type='submit' onClick={handleSubmit} size={38} className="button-check" />
+                    <a >
+                        {loading ? (<div className="spinner"></div>) : (<Check onClick={handleSubmit} size={38} className="button-check" />)}
+                    </a>
                 </span>
 
                 <span>
@@ -87,7 +106,7 @@ export function Addcard() {
 
                     </thead>
 
-                    <hr className="solid" />
+
 
                     <tbody>
 
@@ -111,8 +130,8 @@ export function Addcard() {
                                 <input
                                     type="text"
                                     required
-                                    name="holderSurName"
-                                    value={addcard.holderSurName}
+                                    name="holderSurname"
+                                    value={addcard.holderSurname}
                                     onChange={handleChange}
                                 />
 
@@ -125,7 +144,6 @@ export function Addcard() {
                                     type="Date"
                                     required
                                     name="expiringDate"
-                                    value={addcard.expiringDate}
                                     onChange={handleChange}
                                     className={'expiringdate'}
                                 />
@@ -136,6 +154,7 @@ export function Addcard() {
                             <td>
 
                                 <input
+                                    required
                                     className="number"
                                     type="text"
                                     name="virtualCardNumber"
