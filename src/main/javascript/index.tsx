@@ -28,9 +28,7 @@ render((
 
             <CardFetcher>
                 <CardKeeper>
-
                     <CardRouter/>
-
                 </CardKeeper>
             </CardFetcher>
 

@@ -87,9 +87,6 @@ export function string(value: Value, locales: string[] | readonly string []=[]):
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function label(frame: Frame, locales: string[] | readonly string []) {
-
-    console.log(frame.label);
-
     return frame.label && string(frame.label, locales) || guess(frame.id) || "";
 }
 

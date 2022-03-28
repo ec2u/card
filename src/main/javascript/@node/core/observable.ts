@@ -14,9 +14,41 @@
  * limitations under the License.
  */
 
-import { useReducer } from "react";
+
+import { immutable } from "@metreeca/core/index";
 
 
-export function useUpdate(): () => void {
-	return useReducer(v => v+1, 0)[1];
+export interface Observable {
+
+	observe(observer: () => void): () => void;
+
+	notify(): void;
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function Observable(): Observable {
+
+	const observers=new Set<() => void>();
+
+	return immutable({
+
+		observe(observer: () => void): () => void {
+
+			observers.add(observer);
+
+			return () => observers.delete(observer);
+
+		},
+
+		notify(): void {
+
+			observers.forEach(observer => observer());
+
+		}
+
+	});
+
 }

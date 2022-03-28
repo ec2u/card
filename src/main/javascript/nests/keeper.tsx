@@ -6,12 +6,20 @@ import { Card } from "@ec2u/card/pages/cards/card";
 import { User } from "@ec2u/card/pages/users/user";
 import { Optional } from "@metreeca/core";
 import { useSessionStorage } from "@metreeca/hook/storage";
-import { JWTPattern, NodeKeeper } from "@metreeca/nest/keeper";
+import { NodeKeeper } from "@metreeca/nest/keeper";
 import QRCode from "qrcode";
 import React, { ReactNode, useEffect, useState } from "react";
+import { NodeFetcher, useFetcher } from "../@node/nest/fetcher";
 
+
+const JWTPattern=/^(?:[-\w]+\.){2}[-\w]+$/;
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export interface Profile {
+
+    readonly esi: string;
 
     readonly user: Optional<User>;
     readonly card: Optional<Card>;
@@ -28,12 +36,19 @@ export function CardKeeper({
 
 }) {
 
+    const [, fetcher]=useFetcher();
+
     const [gateway, setGateway]=useState<string>();
-    const [profile, setProfile]=useState<User>();
+    const [profile, setProfile]=useState<Profile>();
 
-    const [token, setToken]=useSessionStorage<Optional<string>>("token", undefined); // !!! migrate to NodeFetcher
+    const [token, setToken]=useSessionStorage<Optional<string>>("token", undefined);
 
-    useEffect(() => {
+    console.log(token);
+
+
+    useEffect(() => { // monitor query string for token forwarded by the SSO gateway
+
+        console.log("!!!");
 
         [location.search.substring(1)].filter(query => query.match(JWTPattern)).forEach(token => {
 
@@ -49,23 +64,7 @@ export function CardKeeper({
 
         });
 
-    }, [token]);
-
-    useEffect(() => {
-
-        // !!! move token management to interceptor
-
-        fetch("/", token ? {
-
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: "applications/json",
-                "Cache-Control": "no-cache, max-age=0, must-revalidate"
-            }
-
-        } : {}).then(response => {
-
-            setToken(response.headers.get("X-Token") ?? undefined);
+        interceptor(fetcher, "/").then(response => {
 
             if ( response.ok ) {
 
@@ -85,7 +84,7 @@ export function CardKeeper({
 
                         });
 
-                    } else { // !!! on 401
+                    } else { // !!! on 401?
 
                         setGateway(response.headers.get("Location") ?? undefined);
                         setProfile(profile);
@@ -102,7 +101,7 @@ export function CardKeeper({
 
         });
 
-    }, [token]);
+    }, []);
 
 
     function login() {
@@ -110,26 +109,51 @@ export function CardKeeper({
     }
 
     function logout() {
+        setProfile(undefined);
         setToken(undefined);
     }
 
+    function interceptor(fetcher: typeof fetch, input: RequestInfo, init: RequestInit={}) {
 
-    return <NodeKeeper state={[profile, (profile?: null | User) => {
+        const headers=new Headers(init.headers ?? {});
 
-        if ( profile === undefined ) {
+        if ( token ) { headers.set("Authorization", `Bearer ${token}`); }
 
-            login();
+        return fetcher(input, { ...init, headers }).then(response => {
 
-        } else if ( profile === null ) {
+            setToken(response.headers.get("X-Token") ?? undefined);
 
-            logout();
+            return response;
 
-        }
+        });
 
-    }]}>{
+    }
 
-        children
 
-    }</NodeKeeper>;
+    return <NodeFetcher interceptor={interceptor}>
+
+        <NodeKeeper state={[profile, (profile?: null | Profile) => {
+
+            if ( profile === undefined ) {
+
+                login();
+
+            } else if ( profile === null ) {
+
+                logout();
+
+            } else {
+
+                setProfile(profile);
+
+            }
+
+        }]}>{
+
+            children
+
+        }</NodeKeeper>
+
+    </NodeFetcher>;
 
 }

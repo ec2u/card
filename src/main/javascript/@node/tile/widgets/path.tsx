@@ -36,8 +36,6 @@ export function NodePath({
 
 	const steps=isArray(children) ? children as Array<string | Frame | ReactNode> : [children];
 
-	console.log(steps);
-
 	return createElement("node-path", {}, steps.map((step, index) =>
 			isFrame(step) && index+1 < steps.length ? <a key={step.id} href={step.id}>{string(step, navigator.languages)}</a>
 				: isValue(step) ? <span key={string(step)}>{string(step)}</span>

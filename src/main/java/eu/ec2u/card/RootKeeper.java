@@ -4,7 +4,6 @@
 
 package eu.ec2u.card;
 
-import com.metreeca.rest.Handler;
 import com.metreeca.rest.Wrapper;
 
 import eu.ec2u.card.Root.Profile;
@@ -20,55 +19,39 @@ import static com.metreeca.rest.wrappers.Bearer.bearer;
 import static work.BeanCodec.codec;
 import static work.Notary.notary;
 
-public final class RootKeeper implements Wrapper {
+public final class RootKeeper extends Wrapper.Base {
 
     private final Notary notary=service(notary());
     private final BeanCodec codec=service(codec());
 
     // !!! error handling
 
-    private final Wrapper delegate=
 
-            bearer((token, request) -> notary.verify(token)
-                    .map((json -> {
+    public RootKeeper() {
+        delegate(bearer((token, request) -> notary.verify(token)
 
-                        try {
-                            return codec.decode(json, Profile.class);
-                        } catch ( final ParseException e ) {
-                            return null;
-                        }
+                .map((json -> {
 
-                    }))
+                    try {
+                        return codec.decode(json, Profile.class);
+                    } catch ( final ParseException e ) {
+                        return null;
+                    }
 
-                    .map(profile -> profile
-                            .setEsi("urn:schac:personalUniqueCode:int:esi:unipv.it:999001")
-                    )
+                }))
 
-                    .map(request::user)
-            )
+                .map(profile -> profile // !!! lookup
+                        .setEsi("urn:schac:personalUniqueCode:int:esi:unipv.it:999001")
+                )
 
-                    .with(postprocessor(response -> response.request().user()
-                            .map(profile -> response.header("X-Token", notary.create(codec.encode(profile))))
-                            .orElse(response)
-                    ));
+                .map(request::user)
+        )
 
-
-    @Override public Handler wrap(final Handler handler) {
-
-        if ( handler == null ) {
-            throw new NullPointerException("null handler");
-        }
-
-        return delegate.wrap(handler);
+                .with(postprocessor(response -> response.request().user()
+                        .map(profile -> response.header("X-Token", notary.create(codec.encode(profile))))
+                        .orElse(response)
+                )));
     }
 
-    @Override public Wrapper with(final Wrapper wrapper) {
-
-        if ( wrapper == null ) {
-            throw new NullPointerException("null wrapper");
-        }
-
-        return delegate.with(wrapper);
-    }
 
 }

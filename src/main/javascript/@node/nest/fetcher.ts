@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { isNumber, isObject, isString } from "@metreeca/core";
-import { createContext, createElement, ReactNode, useContext, useState } from "react";
+import { isNumber, isObject, isString, Optional } from "@metreeca/core";
+import { Observable } from "@metreeca/core/observable";
+import { createContext, createElement, ReactNode, useContext, useEffect, useReducer } from "react";
 
 
 /**
@@ -29,7 +30,7 @@ import { createContext, createElement, ReactNode, useContext, useState } from "r
  * @module
  */
 
-const Context=createContext<[Value, Updater]>([false, wrap(fetch)]);
+const Context=createContext<Optional<[Value, Updater]>>(undefined);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +56,13 @@ export type Updater=typeof fetch;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export interface Interceptor {
+
+    (fetcher: typeof fetch, input: RequestInfo, init?: RequestInit): Promise<Response>;
+
+}
+
 
 /**
  * Fetch error report.
@@ -105,50 +113,27 @@ export const Safe: Set<String>=new Set<String>(["GET", "HEAD", "OPTIONS", "TRACE
  */
 export function NodeFetcher({
 
-    fetcher=fetch,
+    interceptor,
 
     children
 
 }: {
 
-    fetcher?: typeof fetch
+    interceptor: Interceptor,
 
     children: ReactNode
 
 }) {
 
-    const wrapped=wrap(fetcher);
-
-    const [promises, setPromises]=useState(new Set<Promise<Response>>());
-
-
-    function monitor(promise: Promise<Response>) {
-
-        const update=new Set(promises);
-
-        update.add(promise);
-
-        setPromises(update);
-
-        return promise.finally(() => {
-
-            const update=new Set(promises);
-
-            update.delete(promise);
-
-            setPromises(update);
-
-        });
-    }
-
+    const [fetching, fetcher]=useFetcher();
 
     return createElement(Context.Provider, {
 
         value: [
 
-            promises.size > 0,
+            fetching,
 
-            (input, init) => monitor(wrapped(input, init))
+            (input, init) => interceptor(fetcher, input, init)
 
         ],
 
@@ -158,52 +143,68 @@ export function NodeFetcher({
 
 }
 
+const promises=new Set<Promise<Response>>();
+const observable=Observable();
+
 /**
  * Creates a fetcher context hook.
  *
  * @return a state tuple including a current {@link Value| value} and an {@link Updater| updater} function.
  */
 export function useFetcher(): [Value, Updater] {
-    return useContext(Context);
+
+    const state=useContext(Context);
+
+    if ( state ) { return state; } else {
+
+        const [, update]=useReducer(v => v+1, 0);
+
+        useEffect(() => observable.observe(update));
+
+        return [
+
+            promises.size > 0,
+
+            (input, init={}) => {
+
+                const method=(init.method || "GET").toUpperCase();
+                const origin=new URL(isString(input) ? input : input.url, location.href).origin;
+                const headers=new Headers(init.headers || {});
+
+                // angular-compatible XSRF protection header
+
+                if ( !Safe.has(method.toUpperCase()) && origin === location.origin ) {
+
+                    let xsrf=(document.cookie.match(/\bXSRF-TOKEN\s*=\s*"?([^\s,;\\"]*)"?/) || [])[1];
+
+                    if ( xsrf ) { headers.set("X-XSRF-TOKEN", xsrf); }
+
+                }
+
+                // error to synthetic response conversion
+
+                const promise=fetch(input, { ...init, headers }).catch(reason =>
+                    new Response(null, reason.name === "AbortError"
+                        ? { status: FetchAborted, statusText: "Network Request Aborted" }
+                        : { status: FetchFailed, statusText: "Network Request Failed" }
+                    )
+                );
+
+                promises.add(promise);
+                observable.notify();
+
+                return promise.finally(() => {
+
+                    promises.delete(promise);
+                    observable.notify();
+
+                });
+
+            }
+
+        ];
+
+    }
+
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Wraps a fetcher with standard services.
- *
- * - injection of angular-compatible XSRF protection header
- * - conversion of network errors to synthetic HTTP status codes
- *
- * @param fetcher the fetcher function to be wrapped
- *
- * @return a wrapped version of `fetcher` supporting standard services
- */ function wrap(fetcher: typeof fetch): typeof fetch {
-    return (input, init={}) => {
-
-        const method=(init.method || "GET").toUpperCase();
-        const origin=new URL(isString(input) ? input : input.url, location.href).origin;
-        const headers=new Headers(init.headers || {});
-
-        // angular-compatible XSRF protection header
-
-        if ( !Safe.has(method.toUpperCase()) && origin === location.origin ) {
-
-            let xsrf=(document.cookie.match(/\bXSRF-TOKEN\s*=\s*"?([^\s,;\\"]*)"?/) || [])[1];
-
-            if ( xsrf ) { headers.append("X-XSRF-TOKEN", xsrf); }
-
-        }
-
-        // error to synthetic response conversion
-
-        return fetcher(input, { ...init, headers }).catch(reason =>
-            new Response(null, reason.name === "AbortError"
-                ? { status: FetchAborted, statusText: "Network Request Aborted" }
-                : { status: FetchFailed, statusText: "Network Request Failed" }
-            )
-        );
-
-    };
-}
