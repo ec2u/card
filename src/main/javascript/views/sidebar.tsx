@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import logo from "../index.svg";
 import "./sidebar.css";
 
-const Sidebar = (props: any) => {
+export const Cardsidebar = (props: any) => {
   const [sidebar, setSidebar] = useState<boolean>(false);
 
   useEffect(() => {
@@ -53,4 +53,4 @@ const Sidebar = (props: any) => {
   );
 };
 
-export default Sidebar;
+
