@@ -1,10 +1,4 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+
 
 .cards {
   width: 95%;
@@ -17,7 +11,7 @@
 
   & .topnav-cardinspect {
     display: grid;
-    grid-template-columns: 5% 3% 88% 0%;
+   grid-template-columns: 4em 30em  1em ;
     font-size: 30px;
     width: 100%;
   }
