@@ -14,6 +14,8 @@ interface Adduser {
 
 export function Adduser() {
   const [adduser, setAdduser] = useState({} as Adduser);
+  const [disable, setDisable] = useState<Boolean>(false);
+  const [loading, setLoading] = useState<Boolean>(false);
   const navigate = useNavigate();
 
   const userdata = {
@@ -24,25 +26,29 @@ export function Adduser() {
   };
 
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    fetch("/users/", {
+  const handleSubmit = async () => {
+    setLoading(true)
+    await fetch("/users/", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify(userdata),
-    }).then((response) => response.json())
-      .then(data => navigate('/users'))
+    })
+      .then((response) => response.json())
+      .catch(error => console.warn('error:', error));
+    navigate('/users')
+    console.log('end of submit')
   };
 
 
 
   const handleChange = (e: any) => {
+    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
     setAdduser((adduser) => ({
       ...adduser,
-      [e.target.name]: e.target.value,
+      [e.target.name]: value,
     }));
   };
 
@@ -56,7 +62,11 @@ export function Adduser() {
         <span> Add User</span>
 
         <span>
-          <Check type='submit' onClick={handleSubmit} size={38} className="button-check" />
+          <a>
+            {loading ? (<div className="spinner"></div>) : (<Check onClick={handleSubmit} size={38} className="button-check" />)}
+          </a>
+
+
         </span>
 
         <span>
@@ -85,7 +95,7 @@ export function Adduser() {
 
           </thead>
 
-          <hr className="solid" />
+
 
           <tbody>
 
@@ -134,10 +144,9 @@ export function Adduser() {
               <td>
 
                 <input
-                  className=""
-                  type="text"
+                  className="checkbox"
+                  type="checkbox"
                   name="admin"
-                  value={adduser.admin}
                   onChange={handleChange}
 
                 />
