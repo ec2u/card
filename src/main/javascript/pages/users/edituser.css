@@ -1,11 +1,3 @@
-*,
-::after,
-::before {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 .users {
   width: 95%;
   display: grid;
@@ -52,6 +44,7 @@
   & .data-start {
     display: flex;
     flex-wrap: wrap;
+    height: 10vh;
 
     & input {
       font-size: 0.8em;
@@ -67,6 +60,7 @@
   & .data-end {
     display: flex;
     flex-wrap: wrap;
+    height: 5vh;
   }
 
   & .checkbox {
@@ -107,54 +101,33 @@
   & .close-button:hover {
     color: red;
   }
+  & .spinner::before {
+    animation: 1.5s linear infinite spinner;
+    animation-play-state: inherit;
+    border: solid 5px lightgray;
+    border-bottom-color: gray;
+    border-radius: 50%;
+    content: "";
+    height: 3em;
+    width: 3em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    will-change: transform;
+  }
 }
 
-/* @media (max-width: 800px) {
-  .main {
-    display: flex;
-    flex-direction: column;
-
-    & .navbar {
-      display: flex;
-      flex-direction: column;
-      align-items: start;
-      flex-flow: column-wrap;
-
-      & .nav-start {
-        display: flex;
-        flex-direction: column;
-        aling-items: start;
-        & a {
-          display: flex;
-          align-items: center;
-        }
-      }
-    }
-    & .data-edit {
-      display: flex;
-      flex-direction: column;
-      align-items: start;
-    }
-    & .data-start {
-      display: flex;
-      flex-direction: column;
-      & label {
-        margin: 0em;
-      }
-      & input {
-        margin: 0em;
-      }
-    }
-    & .data-end {
-      display: flex;
-      flex-direction: column;
-      & input {
-        margin-top: 0em;
-      }
-    }
-    & .solid {
-      height: 0px;
-      width: 0px;
-    }
+@keyframes spinner {
+  0% {
+    transform: translate3d(-50%, -50%) rotate(0deg);
   }
-} */
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+}
+
+@media only (max-width: 800px) {
+  .data-section {
+  }
+}

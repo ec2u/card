@@ -1,13 +1,11 @@
 import { Check, ChevronRight, Trash2, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Dialog } from "./dialog";
+import { Deletedialog } from "./deletedialog";
 import "./edituser.css";
 
 
-interface Props {
-  disabled?: boolean;
-}
+
 interface User {
   admin: boolean;
   label: string;
@@ -31,6 +29,7 @@ export function Edituser() {
   const [dialog, setDialog] = useState<Boolean>(false);
   const [clicked, setClicked] = useState<Boolean>(false);
   const [disable, setDisable] = useState<Boolean>(false)
+  const [loading, setLoading] = useState<Boolean>(false)
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -86,39 +85,50 @@ export function Edituser() {
   };
 
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
+
     if (disable) {
 
     } else {
-      fetch(`/users/${id}`, {
+      setLoading(true)
+      await fetch(`/users/${id}`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
           Accept: "application/json",
         },
         body: JSON.stringify(userdata),
-      }).then((response) => response.json())
+      })
+        .then((response) => response.json())
+        .catch(error => console.warn("error:", error))
+      setLoading(false)
+      navigate(`${updateuser.id}`);
+
     }
   };
 
 
 
 
-  let showCheck = <div>
-    < a title='Update' href={`edit${updateuser.id}`} >
-      <Check size={40} className={'check-button'} onClick={handleEdit} color={disable ? 'lightgray' : 'black'} />
+  let showCheck =
+
+    < a title='Update' >
+      {loading ? (<div className="spinner"></div>) : (
+        <Check size={40} className={'check-button'} onClick={handleEdit} color={disable ? 'lightgray' : 'black'} />
+      )}
+
     </a >
 
 
-  </div>
 
 
 
-  let showTrash = <div><label title='Delete'>
-    <Trash2 size={40} className={"trash-button"} onClick={(e) => Showpopup()} />
-  </label>
+  let showTrash =
+    <a title='Delete'>
+      <Trash2 size={40} className={"trash-button"} onClick={(e) => Showpopup()} />
+    </a>
 
-  </div>
+
 
   const handleonFocus = (e: any) => {
     setClicked(true)
@@ -133,8 +143,6 @@ export function Edituser() {
   return (
     <div className="main">
       <div className="users">
-
-
         <div className={"topnav-edit"}>
           <div className="topnav-start">
 
@@ -237,7 +245,7 @@ export function Edituser() {
 
       {
         dialog && (
-          <Dialog
+          <Deletedialog
             handleyes={() => handleDelete(updateuser.id)}
             handleno={Showpopup}
           />
@@ -247,29 +255,3 @@ export function Edituser() {
   );
 }
 
-
-// { isTrash ? showTrash : showIcon }
-// ar showIcon = <Link to={`${updateuser.id}`}>
-//   < Check size={40} onClick={handleEdit} />
-// </Link>;
-// var showTrash = <Trash size={38} className={"button-trash"} onClick={Showpopup} />;
-// const [isTrash, setTrash] = useState<Boolean>(true);
-// const handleOnClick = (event: any) => {
-
-//   console.log(isTrash)
-//   setTrash(!isTrash);
-// }
-// Jérémy Rousseau4: 35 PM
-// onFocus = { handleOnFocus }
-// onBlur = { handleOnBlur }
-// const handleOnFocus = (event: any) => {
-
-//   console.log(isTrash)
-//   setTrash(false);
-// }
-
-// const handleOnBlur = (event: any) => {
-
-//   console.log(isTrash)
-//   setTrash(true);
-// }
