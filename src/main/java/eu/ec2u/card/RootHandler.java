@@ -44,7 +44,6 @@ final class RootHandler extends Handler.Base {
                 .map(profile -> request.reply(OK)
 
                         .body(bean(Root.class), new Root()
-
                                 .setProfile(new Profile()
 
                                         .setEsi(profile.getEsi())
@@ -55,7 +54,8 @@ final class RootHandler extends Handler.Base {
                                                 .orElse(null)
                                         )
 
-                                ))
+                                )
+                        )
 
                 )
 

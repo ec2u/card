@@ -6,8 +6,9 @@ import { CardOptions } from "@ec2u/card/index";
 import { useOptions } from "@ec2u/card/nests/register";
 import { CardPage } from "@ec2u/card/views/page";
 import { useProfile } from "@metreeca/nest/keeper";
-import { Contact, Landmark } from "@metreeca/skin/lucide";
+import { Contact, Globe, Landmark, LogIn } from "@metreeca/skin/lucide";
 import React, { createElement } from "react";
+import "./home.css";
 
 
 export function CardHome() {
@@ -16,13 +17,21 @@ export function CardHome() {
     const [{ card }, setOptions]=useOptions<typeof CardOptions>();
 
 
+    function doLogIn() {
+        setProfile();
+    }
+
+
     return <CardPage>{createElement("card-home", {}, <>
 
-        <div><p><i title={"About EC2U"}><Landmark/></i> The European Campus of City-Universities (EC2U) is a
-            multi-cultural and multi-lingual Alliance consisting
-            of seven long-standing, education- and research-led, locally and globally engaged universities from four
-            diverse
-            regions of the European Union:</p>
+        <div>
+
+            <i title={"About EC2U"}><Landmark/></i>
+
+            <p>The <a target={"_blank"} href={"https://www.ec2u.eu/"}>EC2U European Campus of City‑Universities</a> is
+                a multi-cultural and multi-lingual Alliance consisting of seven long-standing, education and
+                research-led, locally and globally engaged universities from four diverse regions of the
+                European Union:</p>
 
             <ul>
                 <li>University of Coimbra - Portugal</li>
@@ -36,13 +45,21 @@ export function CardHome() {
 
         </div>
 
-        <div><p><i title={"About the EC2U Virtual Card"}><Contact/></i> The EC2U card is a tool for identifying Students
-            and Staffs that are in a EC2U Mobility Project. By using the
-            card, people can freely move through all contries getting all services and information they need to enjoy
-            their amazing experience of mobility.</p>
+        <div>
 
-            <p>If you joined a EC2U Mobility Project, then, get your eCard.</p>
+            <i title={"About the EC2U Virtual Card"}><Contact/></i>
 
+            <p>The EC2U Virtual Card identifies member faculty, students and staff. Using the card, people can
+                freely move within the Alliance and easily access local services and resources.</p>
+
+            <i title={"Sign up for a EC2U Virtual Card"}><Globe/></i>
+
+            <p>Contact your local International Mobility office to register your new EC2U Virtual Card…</p>
+
+            <i title={"Access your EC2U Virtual Card"}><LogIn/></i>
+
+            <p>… or <a onClick={doLogIn}>authenticate</a> with your local identity service to access your EC2U Virtual
+                Card</p>
 
         </div>
 

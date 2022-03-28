@@ -65,6 +65,8 @@ export function CardKeeper({
 
         } : {}).then(response => {
 
+            setToken(response.headers.get("X-Token") ?? undefined);
+
             if ( response.ok ) {
 
                 response.json().then(({ profile }) => {

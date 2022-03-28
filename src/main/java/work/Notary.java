@@ -44,7 +44,7 @@ public final class Notary {
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
 
-    private final Duration timeout=Duration.ofDays(1);
+    private final Duration timeout=Duration.ofMinutes(60);
 
 
     public Notary(final byte[] key) {

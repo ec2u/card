@@ -32,8 +32,8 @@ public final class Root {
     @Setter
     public static final class Profile {
 
-        @NotNull
-        private String esi;
+        private String uid; // native user identifier, eg email
+        private String esi; // European Student Identifier
 
         private User user;
         private Card card;
