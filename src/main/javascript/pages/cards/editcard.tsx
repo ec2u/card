@@ -17,7 +17,8 @@ export function Editcard() {
     const [updatecard, setUpdatecard] = useState<User>({} as User);
     const [dialog, setDialog] = useState<Boolean>(false);
     const [clicked, setClicked] = useState<Boolean>(false);
-    const [disable, setDisable] = useState<Boolean>(false)
+    const [disable, setDisable] = useState<Boolean>(false);
+    const [loading, setLoading] = useState<Boolean>(false);
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -56,6 +57,7 @@ export function Editcard() {
         if (disable) {
 
         } else {
+            setLoading(true)
             fetch(`/cards/${id}`, {
                 method: "PUT",
                 headers: {
@@ -63,7 +65,11 @@ export function Editcard() {
                     Accept: "application/json",
                 },
                 body: JSON.stringify(userdata),
-            }).then((response) => response.json());
+            })
+                .then((response) => response.json())
+                .catch(error => console.warn('error:', error))
+            setLoading(false)
+            navigate(`${updatecard.id}`)
         }
 
     };
@@ -81,8 +87,9 @@ export function Editcard() {
 
     let showCheck =
         <div>
-            < a title='Update' href={`${updatecard.id}`} >
-                <Check size={40} className={'check-button'} onClick={handleEdit} color={disable ? 'lightgray' : 'black'} />
+            < a title='Update' >
+                {loading ? (<div className={"spinner"}></div>) :
+                    (<Check size={40} className={'check-button'} onClick={handleEdit} color={disable ? 'lightgray' : 'black'} />)}
             </a >
         </div>
 
