@@ -1,77 +1,154 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+
 
 .cards {
   width: 95%;
-  margin-top: 40px;
-  & .cards-link {
-    text-decoration: none;
-    color: black;
-    cursor: pointer;
-  }
+  display: grid;
+  align-items: stretch;
 
   & .topnav-cardedit {
-    display: grid;
-    grid-template-columns: 5% 3% 80% 4% 4% 4%;
-    font-size: 30px;
-  }
-
-  & .grid-container-cardedit {
-    margin-top: 70px;
-    display: grid;
-    text-align: left;
-  }
-  & .tr-cardedit {
     width: 100%;
-    display: grid;
-    grid-template-columns: 15% 15% 20% 15% 25% 18%;
-    padding: 6px;
+    display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: -1em 0em;
+
+    & .topnav-start {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.4em;
+
+      & a {
+        font-size: 1.4em;
+        text-decoration: none;
+        cursor: pointer;
+        color: black;
+      }
+    }
+    & .navend {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 2em;
+    }
   }
 
-  & th {
-    color: rgb(177, 171, 171);
+  & .data-edit {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 2em;
   }
-  & td {
-    font-size: 21px;
+
+  & .data-start {
+    display: flex;
+    flex-wrap: wrap;
+
     & input {
-      padding: 5px;
-      width: 170px;
-      border-radius: 5px;
+      font-size: 0.8em;
       border: 1px solid black;
-      font-size: 21px;
+      border-radius: 0.3em;
+      padding: 0.2em;
     }
-    & .email {
-      width: 280px;
+    & input:required:invalid {
+      border: 2px solid red;
     }
-    & .admin {
-      width: 70px;
-    }
+  }
+
+  & .data-end {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  & .checkbox {
+    width: 2.1em;
+    height: 2.4em;
   }
 
   & .solid {
-    width: 102%;
-    background-color: lightgray;
-    border: 1px solid rgb(189, 185, 185);
+    width: 56em;
+    height: 1px;
+    margin: 0.5em 0em;
   }
-  & .button {
+
+  & .check-button {
     cursor: pointer;
-    color: black;
-    margin-top: 5px;
   }
-  & .button-trash {
+
+  & .forename {
+    width: 9.5em;
+  }
+  & .surname {
+    width: 9.5em;
+  }
+
+  & .trash-button {
     cursor: pointer;
+    transition: 0.7s;
     color: black;
   }
-  & .button-trash:hover {
+  & .trash-button:hover {
     color: red;
   }
-  & .button-check:hover {
-    color: green;
+
+  & .close-button {
+    color: black;
+    transition: 0.7s;
+  }
+  & .close-button:hover {
+    color: red;
   }
 }
+
+/* @media (max-width: 800px) {
+  .main {
+    display: flex;
+    flex-direction: column;
+
+    & .navbar {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      flex-flow: column-wrap;
+
+      & .nav-start {
+        display: flex;
+        flex-direction: column;
+        aling-items: start;
+        & a {
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+    & .data-edit {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+    }
+    & .data-start {
+      display: flex;
+      flex-direction: column;
+      & label {
+        margin: 0em;
+      }
+      & input {
+        margin: 0em;
+      }
+    }
+    & .data-end {
+      display: flex;
+      flex-direction: column;
+      & input {
+        margin-top: 0em;
+      }
+    }
+    & .solid {
+      height: 0px;
+      width: 0px;
+    }
+  }
+} */
