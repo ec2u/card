@@ -1,23 +1,15 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 .cards {
   width: 95%;
-  margin-top: 40px;
+  margin-top: 2em;
 
   & .topnav-cards {
     display: grid;
-    grid-template-columns: 97.3% 20%;
-    font-size: 30px;
+    grid-template-columns: 98% 20%;
+    font-size: 1.4em;
     width: 100%;
   }
   & .grid-container-cards {
-    margin-top: 40px;
+    margin-top: 2em;
     display: grid;
     text-align: left;
   }
@@ -28,7 +20,7 @@
     padding: 6px;
     align-items: center;
   }
-  & tr:nth-child(even) {
+  & tbody:nth-child() {
     background-color: rgb(197, 194, 194);
   }
   & th {
@@ -53,5 +45,29 @@
   & .button-arrow {
     cursor: pointer;
     color: black;
+  }
+  & .spinner::before {
+    animation: 1.5s linear infinite spinner;
+    animation-play-state: inherit;
+    border: solid 5px lightgray;
+    border-bottom-color: gray;
+    border-radius: 50%;
+    content: "";
+    height: 3em;
+    width: 3em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    will-change: transform;
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: translate3d(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
   }
 }
