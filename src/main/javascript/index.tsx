@@ -2,7 +2,6 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
-import { CardFetcher } from "@ec2u/card/nests/fetcher";
 import { CardKeeper } from "@ec2u/card/nests/keeper";
 import { CardRegister } from "@ec2u/card/nests/register";
 import { CardRouter } from "@ec2u/card/nests/router";
@@ -19,20 +18,19 @@ export const CardOptions={
 
 };
 
-
 render((
 
     <React.StrictMode>
 
-        <CardRegister state={CardOptions}>
+        {/*<CardFetcher>*/}
+        <CardKeeper>
 
-            <CardFetcher>
-                <CardKeeper>
-                    <CardRouter/>
-                </CardKeeper>
-            </CardFetcher>
+            <CardRegister state={CardOptions}>
+                <CardRouter/>
+            </CardRegister>
 
-        </CardRegister>
+        </CardKeeper>
+        {/*</CardFetcher>*/}
 
     </React.StrictMode>
 

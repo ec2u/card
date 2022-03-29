@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { isFunction } from "@metreeca/core";
 import { Initial, Updater } from "@metreeca/hook/index";
 import { useCallback, useEffect, useState } from "react";
 
@@ -56,7 +57,9 @@ function useStorage<T=any>(storage: Storage, key: string, initial: Initial<T>): 
 
         const item=storage.getItem(key);
 
-        return item === null ? initial : JSON.parse(item);
+        return item !== null ? JSON.parse(item)
+            : isFunction(initial) ? initial()
+                : initial;
 
     });
 

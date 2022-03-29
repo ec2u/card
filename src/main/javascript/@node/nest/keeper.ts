@@ -15,7 +15,8 @@
  */
 
 import { Optional } from "@metreeca/core";
-import { Context, createContext, createElement, ReactNode, useContext } from "react";
+import { useFetcher } from "@metreeca/nest/fetcher";
+import { Context, createContext, createElement, ReactNode, useContext, useEffect } from "react";
 
 
 /**
@@ -51,9 +52,11 @@ export interface Updater<P=unknown> {
 
     (): void;
 
-    (anonymous: null): void;
+    (none: null): void;
 
-    (authenticated: P): void;
+    (profile: P): void;
+
+    (unknown: typeof fetch): void;
 
 }
 
@@ -70,7 +73,7 @@ export interface Updater<P=unknown> {
  */
 export function NodeKeeper<P>({
 
-    state,
+    state: [profile, setProfile],
 
     children
 
@@ -82,9 +85,17 @@ export function NodeKeeper<P>({
 
 }) {
 
+    const [, fetcher]=useFetcher();
+
+    useEffect(() => {
+
+        setProfile(fetcher);
+
+    }, []);
+
     return createElement((Context as Context<[Value<P>, Updater<P>]>).Provider, {
 
-        value: state,
+        value: [profile, setProfile],
 
         children
 

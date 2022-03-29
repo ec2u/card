@@ -20,8 +20,8 @@ export function CardFetcher({
 
         const headers=new Headers(init.headers || {});
 
-        if ( !headers.get("Content-Type") ) {
-            headers.set("Content-Type", "application/json");
+        if ( !headers.get("Accept") ) {
+            headers.set("Accept", "application/json");
         }
 
         if ( !headers.get("Cache-Control") ) {
