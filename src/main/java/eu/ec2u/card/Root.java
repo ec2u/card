@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.constraints.*;
@@ -23,6 +24,10 @@ public final class Root {
 
     private String id="/";
 
+    private String version;
+    private LocalDateTime instant;
+
+    private String gateway;
     private Profile profile;
 
 

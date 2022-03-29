@@ -50,7 +50,7 @@
         <gae.promote>false</gae.promote>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
+        <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss</maven.build.timestamp.format>
 
         <maven.site.skip>true</maven.site.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -127,7 +127,7 @@
         <dependency> <!-- !!! remove -->
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>7.0.3.Final</version>
+            <version>7.0.4.Final</version>
         </dependency>
 
         <dependency>
@@ -191,7 +191,7 @@
 
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
-                <filtering>false</filtering> <!-- !!! -->
+                <filtering>true</filtering>
             </resource>
 
         </resources>

@@ -17,7 +17,6 @@ import eu.ec2u.card.works.ESC;
 import work.Launcher;
 
 import java.nio.file.Paths;
-import java.time.Instant;
 
 import static com.metreeca.gcp.GCPServer.development;
 import static com.metreeca.gcp.GCPServer.production;
@@ -57,13 +56,6 @@ public final class RootServer implements Runnable {
 
         if ( development() ) { work.SSL.untrusted(); } // disable SSL checks while developing
 
-    }
-
-    static Instant revision() {
-
-        throw new UnsupportedOperationException(";(  be implemented"); // !!!
-
-        //return LocalDateTime.from(Card.InstantFormat.parse(revision)).toInstant(ZoneOffset.UTC);
     }
 
 

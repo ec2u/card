@@ -1,0 +1,5 @@
+{
+    "version": "${project.version}",
+    "instant": "${maven.build.timestamp}",
+    "gateway": "https://card.ec2u.eu/eCard/sso"
+}

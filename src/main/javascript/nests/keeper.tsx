@@ -101,11 +101,11 @@ export function CardKeeper({
 
                 profile("/").then(response => {
 
-                    setGateway(response.headers.get("Location") ?? undefined);
+                    response.json().then(({ gateway, profile }) => { // encode card.test URL into a QR data url
 
-                    if ( response.ok ) {
+                        setGateway(gateway);
 
-                        response.json().then(({ profile }) => { // encode card.test URL into a QR data url
+                        if ( response.ok ) {
 
                             if ( profile?.card ) {
 
@@ -122,13 +122,13 @@ export function CardKeeper({
 
                             }
 
-                        });
+                        } else {
 
-                    } else {
+                            // !!! notify
 
-                        // !!! notify
+                        }
 
-                    }
+                    });
 
                 });
 

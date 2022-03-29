@@ -14,17 +14,14 @@ import static com.metreeca.rest.Response.Unauthorized;
 import static com.metreeca.rest.Toolbox.service;
 import static com.metreeca.rest.handlers.Router.router;
 
+import static eu.ec2u.card.RootSetup.setup;
 import static eu.ec2u.card.works.ESC.esc;
 import static work.BeanFormat.bean;
 
 final class RootHandler extends Handler.Base {
 
-    //private static final String SSO=SAML.Gateway;
-    private static final String SSO="https://card.ec2u.eu/eCard/sso";
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    private final RootSetup setup=service(setup());
     private final ESC esc=service(esc());
 
 
@@ -38,37 +35,39 @@ final class RootHandler extends Handler.Base {
 
 
     private Response get(final Request request) {
+
+        final Root root=new Root()
+
+                .setVersion(setup.getVersion())
+                .setInstant(setup.getInstant())
+
+                .setGateway(setup.getGateway());
+
+
         return request.user(Profile.class)
 
                 .map(profile -> request.reply(OK)
 
-                        .body(bean(Root.class), new Root()
-                                .setProfile(new Profile()
+                        .body(bean(Root.class), root.setProfile(new Profile()
 
-                                        .setEsi(profile.getEsi())
+                                .setEsi(profile.getEsi())
 
-                                        .setUser(null) // !!!
-                                        .setCard(esc.cards(profile.getEsi())
-                                                .findFirst() // !!! multiple
-                                                .orElse(null)
-                                        )
-
+                                .setUser(null) // !!!
+                                .setCard(esc.cards(profile.getEsi())
+                                        .findFirst() // !!! multiple
+                                        .orElse(null)
                                 )
-                        )
+
+                        ))
 
                 )
 
                 .orElseGet(() -> request.reply(Unauthorized)
 
-                        .body(bean(Root.class), new Root())
-
-                )
-
-                .map(response -> response
-
-                        .header("Location", SSO)
+                        .body(bean(Root.class), root)
 
                 );
+
     }
 
 }
