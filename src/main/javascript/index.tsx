@@ -2,6 +2,7 @@
  * Copyright © 2022 EC2U Alliance. All rights reserved.
  */
 
+import { CardFetcher } from "@ec2u/card/nests/fetcher";
 import { CardKeeper } from "@ec2u/card/nests/keeper";
 import { CardRegister } from "@ec2u/card/nests/register";
 import { CardRouter } from "@ec2u/card/nests/router";
@@ -22,15 +23,15 @@ render((
 
     <React.StrictMode>
 
-        {/*<CardFetcher>*/}
-        <CardKeeper>
+        <CardFetcher>
+            <CardKeeper>
 
-            <CardRegister state={CardOptions}>
-                <CardRouter/>
-            </CardRegister>
+                <CardRegister state={CardOptions}>
+                    <CardRouter/>
+                </CardRegister>
 
-        </CardKeeper>
-        {/*</CardFetcher>*/}
+            </CardKeeper>
+        </CardFetcher>
 
     </React.StrictMode>
 

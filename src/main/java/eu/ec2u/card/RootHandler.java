@@ -10,13 +10,12 @@ import eu.ec2u.card.Root.Profile;
 import eu.ec2u.card.works.ESC;
 
 import static com.metreeca.rest.Response.OK;
+import static com.metreeca.rest.Response.Unauthorized;
 import static com.metreeca.rest.Toolbox.service;
 import static com.metreeca.rest.handlers.Router.router;
 
 import static eu.ec2u.card.works.ESC.esc;
 import static work.BeanFormat.bean;
-
-import static java.lang.String.format;
 
 final class RootHandler extends Handler.Base {
 
@@ -59,12 +58,15 @@ final class RootHandler extends Handler.Base {
 
                 )
 
-                .orElseGet(() -> request.reply(OK)
-
-                        .header("WWW-Authenticate", format("Bearer realm=\"%s\"", request.base()))
-                        .header("Location", SSO)
+                .orElseGet(() -> request.reply(Unauthorized)
 
                         .body(bean(Root.class), new Root())
+
+                )
+
+                .map(response -> response
+
+                        .header("Location", SSO)
 
                 );
     }

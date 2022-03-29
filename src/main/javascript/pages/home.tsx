@@ -54,7 +54,7 @@ export function CardHome() {
 
             <i title={"Sign up for a EC2U Virtual Card"}><Globe/></i>
 
-            <p>Contact your local International Mobility office to register your new EC2U Virtual Card…</p>
+            <p>Contact your local International Mobility office to register a new EC2U Virtual Card …</p>
 
             <i title={"Access your EC2U Virtual Card"}><LogIn/></i>
 

@@ -101,11 +101,11 @@ export function CardKeeper({
 
                 profile("/").then(response => {
 
+                    setGateway(response.headers.get("Location") ?? undefined);
+
                     if ( response.ok ) {
 
                         response.json().then(({ profile }) => { // encode card.test URL into a QR data url
-
-                            setGateway(response.headers.get("Location") ?? undefined);
 
                             if ( profile?.card ) {
 
@@ -119,10 +119,6 @@ export function CardKeeper({
                                     setProfile({ ...profile, card: { ...profile.card, test } });
 
                                 });
-
-                            } else { // !!! on 401?
-
-                                setProfile(profile);
 
                             }
 
