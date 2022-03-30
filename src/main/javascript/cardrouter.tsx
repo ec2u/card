@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./index.css";
-import { CardUser } from "./pages/users/user";
+
+import { CardUser } from "./pages/user/user";
 import { CardUsers } from "./pages/users/users";
-import Sidebar from "./views/sidebar";
-import { Inspect } from "./pages/users/inspect";
+import { Cardsidebar } from "./views/sidebar";
+import { Inspect } from "./pages/users/userinspect";
 import { Adduser } from "./pages/users/adduser";
 import { Edituser } from "./pages/users/edituser";
 import { VirtualCards } from "./pages/cards/cards";
@@ -13,13 +14,13 @@ import { Editcard } from "./pages/cards/editcard";
 import { Addcard } from "./pages/cards/addcard";
 
 
-export function CardMain() {
+export function CardRoutes() {
   const [sidebar, setSidebar] = useState<boolean>(false);
 
   return (
     <div>
       <BrowserRouter>
-        <Sidebar
+        <Cardsidebar
           onCollapse={(sidebar: boolean) => {
             setSidebar(sidebar);
           }}

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import logo from "../index.svg";
 import "./sidebar.css";
 
-const Sidebar = (props: any) => {
+export const Cardsidebar = (props: any) => {
   const [sidebar, setSidebar] = useState<boolean>(false);
 
   useEffect(() => {
@@ -24,25 +24,27 @@ const Sidebar = (props: any) => {
         </div>
         <div className="items">
           <Link to="/cards/" className="items-logo">
-            <Contact size={60}/>
+            <Contact size={60} />
             <span> Cards</span>
           </Link>
         </div>
         <div className="items">
           <Link to="/users/" className="items-logo">
-            <Users size = {60}/>
+            <Users size={60} />
             <span> Users </span>
           </Link>
         </div>
         <div className="items">
           <Link to="/tokens/" className="items-logo">
-            <Key size={60}/>
+            <Key size={60} />
             <span> Tokens  </span>
           </Link>
         </div>
-        <div className=" items name">
+      </div>
+      <div className="down-section">
+        <div className=" items-name">
           <Link to="/user/" className="items-logo">
-            <User size={60}/>
+            <User size={60} />
             <span>Name</span>
           </Link>
         </div>
@@ -51,4 +53,4 @@ const Sidebar = (props: any) => {
   );
 };
 
-export default Sidebar;
+

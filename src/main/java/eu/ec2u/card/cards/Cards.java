@@ -11,7 +11,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static eu.ec2u.card.ToolConfiguration.LinePattern;
@@ -22,15 +22,15 @@ import static java.lang.String.format;
 @Setter
 public class Cards extends Container<Card> {
 
-	static final String Id="/cards/";
+	static final String Id = "/cards/";
 
 	@Getter
 	@Setter
 	static final class Card extends Resource {
 
 		@NotNull
-		@Size(max=LineSize)
-		@Pattern(regexp=LinePattern)
+		@Size(max = LineSize)
+		@Pattern(regexp = LinePattern)
 		private String holderForename;
 
 		@NotNull
@@ -39,8 +39,7 @@ public class Cards extends Container<Card> {
 		private String holderSurname;
 
 		@NotNull
-		// @DateTimeFormat
-		private Date expiringDate;
+		private LocalDate expiringDate;
 
 		@NotNull
 		private Long virtualCardNumber;
@@ -54,7 +53,7 @@ public class Cards extends Container<Card> {
 		protected Optional<String> getPath() {
 			return Optional.of(this)
 					.filter(data -> data.id != null)
-					.map(data -> Id+data.id);
+					.map(data -> Id + data.id);
 		}
 
 		@Override
@@ -67,7 +66,7 @@ public class Cards extends Container<Card> {
 
 		private String holderForename;
 		private String holderSurname;
-		private Date expiringDate;
+		private LocalDate expiringDate;
 		private Long virtualCardNumber;
 
 		Card transfer() {
@@ -97,7 +96,7 @@ public class Cards extends Container<Card> {
 		}
 
 	}
-
+	
 }
 
 

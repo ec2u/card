@@ -1,8 +1,10 @@
-import { Check, ChevronRight, Trash, X } from "lucide-react";
+import { Check, ChevronRight, Trash2, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Dialog } from "./dialog";
+import { Deletedialog } from "./deletedialog";
 import "./edituser.css";
+
+
 
 interface User {
   admin: boolean;
@@ -13,13 +15,24 @@ interface User {
   id: any;
 }
 
+
+
 export function Edituser() {
-  const [updateuser, setUpdateuser] = useState<User>({} as User);
+  const [updateuser, setUpdateuser] = useState<User>({
+    admin: false,
+    label: '',
+    forename: '',
+    surname: '',
+    email: '',
+    id: '',
+  });
   const [dialog, setDialog] = useState<Boolean>(false);
-  const [checked, setChecked] = useState<Boolean>(true);
+  const [clicked, setClicked] = useState<Boolean>(false);
+  const [disable, setDisable] = useState<Boolean>(false)
+  const [loading, setLoading] = useState<Boolean>(false)
+
   const { id } = useParams();
   const navigate = useNavigate();
-
 
 
 
@@ -33,12 +46,6 @@ export function Edituser() {
       .then((data) => setUpdateuser(data));
   }, []);
 
-  const handleChange = (event: any) => {
-    setUpdateuser((updateuser) => ({
-      ...updateuser,
-      [event.target.name]: event.target.value,
-    }));
-  };
 
   const userdata = {
     admin: updateuser.admin,
@@ -49,143 +56,202 @@ export function Edituser() {
     label: updateuser.label
   };
 
-  const handleEdit = () => {
-    fetch(`/users/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(userdata),
-    }).then((response) => response.json());
-  };
-
   const handleDelete = (id: any) => {
+
     fetch(`${id}`, {
       method: "DELETE",
     })
       .then(data => navigate('/users/'))
   };
 
+
+  const handleChange = (e: any) => {
+    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
+
+    if (value === "") { setDisable(true) }
+
+    else {
+      setDisable(false)
+    }
+
+    setUpdateuser((updateuser) => ({
+      ...updateuser,
+      [e.target.name]: value,
+    }))
+  }
+
   const Showpopup = () => {
     setDialog(!dialog);
   };
 
-  return (
-    <div>
-      <div className={"users"}>
-        <div className={"topnav-edit"}>
-          <div> <Link className={'users-link'} to='/users/'>Users</Link></div>
-          <div>
-            <ChevronRight size={35} />
-          </div>
 
-          <div>{updateuser.surname}</div>
-          <div>
-            <Link to={`${updateuser.id}`}>
-              < Check size={40} onClick={handleEdit} />
-            </Link>
+  const handleEdit = async () => {
 
-          </div>
-          <div>
-            <Trash size={38} className={"button-trash"} onClick={Showpopup} />
-          </div>
-          <div>
-            <Link to={`${updateuser.id}`}>
-              <X size={42} className={"button-trash"} />
-            </Link>
-          </div>
-        </div>
+    if (disable) {
 
-        <div className="grid-container-edit">
-          <table>
-            <thead>
-              <tr className="tr-edit">
-                <th>forename</th>
-                <th>surname</th>
-                <th>email</th>
-                <th>label</th>
-                <th>id</th>
+    } else {
+      setLoading(true)
+      await fetch(`/users/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(userdata),
+      })
+        .then((response) => response.json())
+        .catch(error => console.warn("error:", error))
+      setLoading(false)
+      navigate(`${updateuser.id}`);
 
-                <th className="th-admin"> admin</th>
-              </tr>
-            </thead>
+    }
+  };
 
-            <hr className={"solid"} />
 
-            <tbody>
-              <tr className="tr-edit">
-                <td>
-                  <input
-                    required
-                    type='text'
-                    name="forename"
-                    value={updateuser.forename}
-                    onChange={handleChange}
-                  />
-                </td>
-                <td>
-                  <input
-                    required
-                    type='text'
-                    name="surname"
-                    value={updateuser.surname}
-                    onChange={handleChange}
-                  />
-                </td>
-                <td>
-                  <input
-                    required
-                    type='email'
-                    className="email"
-                    name="email"
-                    value={updateuser.email}
-                    onChange={handleChange}
-                  />
-                </td>
-                <td>
-                  <input
-                    type='text'
-                    disabled
-                    className="label"
-                    name="label"
-                    value={updateuser.label}
-                    onChange={handleChange}
-                  />
-                </td>
-                <td>
-                  <input
-                    className="id"
-                    disabled
-                    name="id"
-                    value={updateuser.id}
-                    onChange={handleChange}
-                  />
-                </td>
-                <td>
-                  <input
-                    required
-                    type='checkbox'
-                    className="admin"
-                    name="admin"
-                    value={updateuser.admin}
-                    onChange={handleChange}
 
-                  />
 
-                </td>
+  let showCheck =
 
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      {dialog && (
-        <Dialog
-          handleyes={() => handleDelete(updateuser.id)}
-          handleno={Showpopup}
-        />
+    < a title='Update' >
+      {loading ? (<div className="spinner"></div>) : (
+        <Check size={40} className={'check-button'} onClick={handleEdit} color={disable ? 'lightgray' : 'black'} />
       )}
-    </div>
+
+    </a >
+
+
+
+
+
+  let showTrash =
+    <a title='Delete'>
+      <Trash2 size={40} className={"trash-button"} onClick={(e) => Showpopup()} />
+    </a>
+
+
+
+  const handleonFocus = (e: any) => {
+    setClicked(true)
+  }
+
+
+  // const handleonBlur = (e: any) => {
+  //   setClicked(false)
+  // }
+
+
+  return (
+    <div className="main">
+      <div className="users">
+        <div className={"topnav-edit"}>
+          <div className="topnav-start">
+
+            <div>
+              <a href="/users/"> Users &gt;</a>
+            </div>
+            <div>
+              <a href={`${updateuser.id}`}>{updateuser.label}</a>
+            </div>
+
+          </div>
+
+          <div >
+            <div className="navend">
+              <label>
+                {clicked ? showCheck : showTrash}
+              </label>
+
+
+
+              <a href={`${updateuser.id}`} title='Close'>
+                <X size={46} className={"close-button"} />
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+
+        <form >
+
+
+          <div className="data-edit">
+            <div className="data-start">
+
+              <div className="data-section">
+                <label>forename</label>
+
+                <input
+                  required
+                  type='text'
+                  name="forename"
+                  className="forename"
+                  value={updateuser.forename}
+                  onChange={handleChange}
+                  onFocus={handleonFocus}
+                // onBlur={handleonBlur}
+                />
+              </div>
+
+
+              <div className="data-section">
+                <label>surname</label>
+
+                <input
+                  required
+                  type='text'
+                  name="surname"
+                  className="surname"
+                  value={updateuser.surname}
+                  onChange={handleChange}
+                  onFocus={handleonFocus}
+                // onBlur={handleonBlur}
+                />
+              </div>
+
+              <div className="data-section">
+                <label>email</label>
+
+                <input
+                  required
+                  type='email'
+                  className="email"
+                  name="email"
+                  value={updateuser.email}
+                  onChange={handleChange}
+                  onFocus={handleonFocus}
+                // onBlur={handleonBlur}
+                />
+              </div>
+
+            </div>
+
+            <div className="data-end">
+              <div className="end">
+                <label className="label-admin"> admin</label>
+
+                <input className="checkbox" name='admin' type="checkbox" checked={updateuser.admin} onChange={handleChange} onFocus={handleonFocus}
+                // onBlur={handleonBlur}
+                />
+              </div>
+
+            </div>
+
+          </div>
+
+
+        </form>
+      </div>
+
+      {
+        dialog && (
+          <Deletedialog
+            handleyes={() => handleDelete(updateuser.id)}
+            handleno={Showpopup}
+          />
+        )
+      }
+    </div >
   );
 }
+

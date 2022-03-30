@@ -1,13 +1,12 @@
-import { Check, ChevronRight, Trash, X } from "lucide-react";
+import { Check, Trash2, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Dialog } from "../users/dialog";
-import "../users/dialog.css";
+import { Deletedialog } from "../users/deletedialog";
 import './editcard.css'
 
 interface User {
     holderForename: string;
-    holderSurName: string;
+    holderSurname: string;
     expiringDate: Date;
     virtualCardNumber: number;
     label: string;
@@ -17,6 +16,10 @@ interface User {
 export function Editcard() {
     const [updatecard, setUpdatecard] = useState<User>({} as User);
     const [dialog, setDialog] = useState<Boolean>(false);
+    const [clicked, setClicked] = useState<Boolean>(false);
+    const [disable, setDisable] = useState<Boolean>(false);
+    const [loading, setLoading] = useState<Boolean>(false);
+
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -31,6 +34,8 @@ export function Editcard() {
     }, []);
 
     const handleChange = (event: any) => {
+
+
         setUpdatecard((updatecard) => ({
             ...updatecard,
             [event.target.name]: event.target.value,
@@ -40,7 +45,7 @@ export function Editcard() {
     const userdata = {
         virtualCardNumber: updatecard.virtualCardNumber,
         holderForename: updatecard.holderForename,
-        holderSurName: updatecard.holderSurName,
+        holderSurname: updatecard.holderSurname,
         expiringDate: updatecard.expiringDate,
         id: updatecard.id,
         label: updatecard.label
@@ -49,132 +54,166 @@ export function Editcard() {
 
 
     const handleEdit = () => {
-        fetch(`/cards/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-type": "application/json",
-                Accept: "application/json",
-            },
-            body: JSON.stringify(userdata),
-        }).then((response) => response.json());
+        if (disable) {
+
+        } else {
+            setLoading(true)
+            fetch(`/cards/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify(userdata),
+            })
+                .then((response) => response.json())
+                .catch(error => console.warn('error:', error))
+            setLoading(false)
+            navigate(`${updatecard.id}`)
+        }
+
     };
 
     const handleDelete = (id: any) => {
         fetch(`${id}`, {
             method: "DELETE",
         })
-            .then(data => navigate('/users/'))
+            .then(data => navigate('/cards/'))
     };
 
     const Showpopup = () => {
         setDialog(!dialog);
     };
 
+    let showCheck =
+        <div>
+            < a title='Update' >
+                {loading ? (<div className={"spinner"}></div>) :
+                    (<Check size={40} className={'check-button'} onClick={handleEdit} color={disable ? 'lightgray' : 'black'} />)}
+            </a >
+        </div>
+
+    let showTrash =
+        <div>
+            <label title='Delete'>
+                <Trash2 size={40} className={"trash-button"} onClick={(e) => Showpopup()} />
+            </label>
+        </div>
+
+    const handleonFocus = () => {
+        setClicked(true)
+    }
+
+
     return (
         <div>
             <div className={"cards"}>
                 <div className={"topnav-cardedit"}>
-                    <div> <Link to='/cards/' className="cards-link"> Cards</Link></div>
+                    <div className="topnav-start">
+                        <div>
+                            <a href='/cards/'> Cards &gt;</a>
+                        </div>
+
+                        <div>
+                            <a href={`${updatecard.id}`}>{updatecard.label}
+                            </a>
+                        </div>
+                    </div>
                     <div>
-                        <ChevronRight size={35} />
+
+                        <div className="navend">
+                            <label>
+                                {clicked ? showCheck : showTrash}
+                            </label>
+                            <a href={`${updatecard.id}`} title='Close'>
+                                <X size={42} className={"button-trash"} />
+                            </a>
+                        </div>
                     </div>
 
-                    <div>{updatecard.holderSurName}</div>
-                    <div>
-                        <Link to={`${updatecard.id}`}>
-                            < Check size={40} onClick={handleEdit} className='button-check' />
-                        </Link>
 
-                    </div>
-                    <div>
-                        <Trash size={38} className={"button-trash"} onClick={Showpopup} />
-                    </div>
-                    <div>
-                        <Link to={`${updatecard.id}`}>
-                            <X size={42} className={"button-trash"} />
-                        </Link>
-                    </div>
                 </div>
 
-                <div className="grid-container-cardedit">
-                    <table>
-                        <thead>
-                            <tr className="tr-cardedit">
-                                <th>forename</th>
-                                <th>surname</th>
-                                <th>expiry date</th>
-                                <th>label</th>
-                                <th>id</th>
+                <form >
 
-                                <th > card number</th>
-                            </tr>
-                        </thead>
 
-                        <hr className={"solid-cardedit"} />
+                    <div className="data-edit">
+                        <div className="data-start">
 
-                        <tbody>
-                            <tr className="tr-cardedit">
-                                <td>
-                                    <input
-                                        name="holderForename"
-                                        value={updatecard.holderForename}
-                                        onChange={handleChange}
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        name="holderSurName"
-                                        value={updatecard.holderSurName}
-                                        onChange={handleChange}
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        type='text'
-                                        className="expiringDate"
-                                        name="expiringDate"
-                                        value={updatecard.expiringDate}
-                                        onChange={handleChange}
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        disabled
-                                        className="label"
-                                        name="label"
-                                        value={updatecard.label}
-                                        onChange={handleChange}
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        disabled
-                                        className="id"
-                                        name="id"
-                                        value={updatecard.id}
-                                        onChange={handleChange}
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        className="virtualCardNumber"
-                                        name="virtualCardNumber"
-                                        value={updatecard.virtualCardNumber}
-                                        onChange={handleChange}
-                                    />
-                                </td>
+                            <div className="data-section">
+                                <label>forename</label>
 
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                <input
+                                    required
+                                    type='text'
+                                    name="holderForename"
+                                    className="forename"
+                                    value={updatecard.holderForename}
+                                    onChange={handleChange}
+                                    onFocus={handleonFocus}
+                                // onBlur={handleonBlur}
+                                />
+                            </div>
+
+
+                            <div className="data-section">
+                                <label>surname</label>
+
+                                <input
+                                    required
+                                    type='text'
+                                    name="holderSurname"
+                                    className="surname"
+                                    value={updatecard.holderSurname}
+                                    onChange={handleChange}
+                                    onFocus={handleonFocus}
+                                // onBlur={handleonBlur}
+                                />
+                            </div>
+
+                            <div className="data-section">
+                                <label>email</label>
+
+                                <input
+                                    required
+                                    type='date'
+                                    className="date"
+                                    name="expiringDate"
+                                    value={updatecard.expiringDate}
+                                    onChange={handleChange}
+                                    onFocus={handleonFocus}
+                                // onBlur={handleonBlur}
+                                />
+                            </div>
+
+                        </div>
+
+                        <div className="data-end">
+                            <div className="end">
+                                <label className="label-number"> card number</label>
+
+                                <input className="number" required name='virtualCardNumber' type="text" value={updatecard.virtualCardNumber} onChange={handleChange} onFocus={handleonFocus}
+                                // onBlur={handleonBlur}
+                                />
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </form>
+
+
             </div>
-            {dialog && (
-                <Dialog
-                    handleyes={() => handleDelete(updatecard.id)}
-                    handleno={Showpopup}
-                />
-            )}
-        </div>
+            {
+                dialog && (
+                    <Deletedialog
+                        handleyes={() => handleDelete(updatecard.id)}
+                        handleno={Showpopup}
+                    />
+                )
+            }
+        </div >
     );
 }

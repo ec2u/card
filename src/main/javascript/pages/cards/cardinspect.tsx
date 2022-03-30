@@ -5,10 +5,11 @@ import "./cardinspect.css";
 
 interface Card {
     holderForename: string;
-    holderSurName: string;
+    holderSurname: string;
     expiringDate: Date;
     virtualCardNumber: number;
     id: any;
+    label: string;
 
 }
 
@@ -31,19 +32,17 @@ export function CardInspect() {
 
     }, [])
 
-    
+
 
 
     return (
         <div className="cards">
             <div className="topnav-cardinspect">
-                <span> <Link to='/cards/' className="cards-link"> Cards</Link></span>
-                <span>
-                    <ChevronRight size={35} />
-                </span>
+                <span title="close"> <Link to='/cards/' className="cards-link"> Cards &gt;</Link></span>
 
-                <span>{card.holderSurName}</span>
-                <span>
+
+                <span>{card.label}</span>
+                <span title="edit">
                     <Link to={`/edit${card.id}`}>
                         <Edit size={38} className="button-plus" />
                     </Link>
@@ -67,7 +66,7 @@ export function CardInspect() {
                     <tbody>
                         <tr className="tr-cardinspect" key={card.id}>
                             <td>{card.holderForename}</td>
-                            <td>{card.holderSurName}</td>
+                            <td>{card.holderSurname}</td>
                             <td>{card.expiringDate}</td>
                             <td >
 

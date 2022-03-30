@@ -5,20 +5,22 @@
 import * as React from "react";
 import { render } from "react-dom";
 import "./index.css";
-import { CardMain } from "./main";
+import { CardRoutes } from "./cardrouter";
 
 
 /**
  * The absolute root URL with trailing slash.
  */
-export const root=resolve("/");
+export const root = resolve("/");
 
 /**
  * The absolute base URL with trailing slash.
  */
 export const base = resolve(
-  ".",
+
+  "",
   resolve(
+
     import.meta.env.BASE_URL || document.querySelector("base")?.href || "",
     root
   )
@@ -35,11 +37,16 @@ export const copy =
   (document.querySelector("meta[name=copyright]") as HTMLMetaElement)
     ?.content || "";
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
 render(
+
   <>
-      <CardMain/>
+    <CardRoutes />
+
   </>,
   document.body.firstElementChild
 );
@@ -47,5 +54,6 @@ render(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function resolve(path: string, base: string = location.href): string {
+
   return new URL(path, base).href;
 }

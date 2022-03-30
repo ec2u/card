@@ -1,8 +1,8 @@
 import { Trash, X } from "lucide-react";
 import React from "react";
-import "./dialog.css";
+import "./deletedialog.css";
 
-export function Dialog(props: any) {
+export function Deletedialog(props: any) {
   return (
     <div className="header">
       <div className="delete">
@@ -12,7 +12,7 @@ export function Dialog(props: any) {
           <span className="data-header">are you sure ?</span>
 
         </div>
-        {/* <X className="close" size={43} color='red' /> */}
+
         <div className="button">
           <div>
             <button className="yes" onClick={props.handleyes}>
