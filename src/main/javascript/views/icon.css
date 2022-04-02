@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020-2022 Metreeca srl
+ * Copyright © 2020-2022 EC2U Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-import { icon } from "@metreeca/head";
-import * as React from "react";
-import { createElement } from "react";
-import "./icon.css";
+card-icon {
 
+    display: inline-block;
 
-/**
- * Creates a component displaying the app {@link icon}.
- *
- * @constructor
- */
-export function NodeIcon() {
+    width: 1em;
+    height: 1em;
 
-    return createElement("node-icon", {
-
-        style: { backgroundImage: `url(${icon})` }
-
-    }, <></>);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
 
 }
-

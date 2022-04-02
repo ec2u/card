@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020-2022 Metreeca srl
+ * Copyright © 2020-2022 EC2U Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-/**
- * Env variables and modes.
- *
- * @see for instance, {@link https://vitejs.dev/guide/env-and-mode.html}
- * @module
- */
+import { icon } from "@ec2u/card/index";
+import React, { createElement } from "react";
+import "./icon.css";
 
-interface ImportMeta {
-    readonly env: ImportMetaEnv;
-}
 
-interface ImportMetaEnv extends Readonly<Record<string, boolean | string>> {
+export function CardIcon() {
 
-    readonly MODE: string;
-    readonly BASE_URL: string;
-    readonly PROD: boolean;
-    readonly DEV: boolean;
+    return createElement("card-icon", {
+
+        style: { backgroundImage: `url('${icon}')` }
+
+    });
 
 }

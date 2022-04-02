@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020-2022 Metreeca srl
+ * Copyright © 2020-2022 EC2U Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-node-icon {
+export interface Profile {
 
-    display: inline-block;
-
-    width: 1em;
-    aspect-ratio: 1;
-
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
+    readonly esi: string;
 
 }
