@@ -1,10 +1,10 @@
-name: gae-release
+name: gae-deployment
 
 on:
 
   push:
 
-    branches: [ 'release/*' ]
+    branches: [ 'service/*' ]
 
 jobs:
 
@@ -30,10 +30,10 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Convert trigger release branch name into GAE version
+      - name: Convert trigger service branch name into GAE version
         id: release
         run: echo ::set-output
-          name=version::$(echo ${{ github.ref_name }} | sed -r 's:release/(.*):\1:')
+          name=version::$(echo ${{ github.ref_name }} | sed -r 's:service/(.*):\1:')
 
       - name: Deploy GAE version
         run: >
