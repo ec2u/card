@@ -4,42 +4,41 @@
 
 card-home {
 
-    --grid-column-gap: 2.5em;
-
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-
     justify-items: start;
-    grid-column-gap: var(--grid-column-gap);
+
+    grid-column-gap: 2.5em;
     grid-row-gap: 1.5em;
 
-    & > div {
+    & > * {
+        flex-basis: min-content;
+        min-width: 15em;
+    }
 
-        min-width: 10em;
+    & > :first-child {
+        flex-grow: 2;
+    }
 
-        &:first-child {
-            max-width: calc(60% - var(--grid-column-gap));
-        }
+    & > :last-child {
+        flex-grow: 1;
+    }
 
-        &:last-child {
-            max-width: 40%;
-        }
+    & section {
 
-        & > i {
+        display: flex;
+        flex-direction: row;
+        align-items: start;
+        grid-column-gap: 1.5em;
 
-            float: left;
-            margin-right: 1em;
+        & > i,
+        & > button {
+            font-size: 2em;
 
             & > .lucide {
-                font-size: 3em;
-                vertical-align: text-top;
+                vertical-align: baseline;
             }
-
-        }
-
-        & > p {
-            overflow: hidden;
         }
 
     }

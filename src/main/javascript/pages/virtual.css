@@ -67,12 +67,15 @@ card-virtual {
 
             transform-origin: top right;
 
+            & > * {
+                padding: 0;
+                margin: 0;
+            }
+
             & > dt {
 
-                margin-bottom: 0.25rem;
-
                 font-size: 0.75em;
-                color: #999;
+                color: #CCC;
 
                 &:not(:first-child) {
                     margin-top: 0.5rem;
@@ -85,6 +88,7 @@ card-virtual {
             }
 
         }
+
     }
 
 

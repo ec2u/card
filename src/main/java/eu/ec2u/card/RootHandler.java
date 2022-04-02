@@ -20,7 +20,6 @@ import static work.BeanFormat.bean;
 
 final class RootHandler extends Handler.Base {
 
-
     private final RootSetup setup=service(setup());
     private final ESC esc=service(esc());
 
