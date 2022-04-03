@@ -21,7 +21,8 @@ import lombok.Getter;
 import java.net.URI;
 import java.time.LocalDateTime;
 
-@Getter final class CardSetup {
+@Getter
+public final class Setup {
 
     private String version;
     private LocalDateTime instant;
@@ -33,7 +34,7 @@ import java.time.LocalDateTime;
 
 
     @Getter
-    static final class ESC {
+    public static final class ESC {
 
         private String api;
         private String tst;

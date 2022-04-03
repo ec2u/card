@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.ec2u.card;
+package eu.ec2u.card.services;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -29,7 +29,7 @@ import java.util.Locale;
 
 import static java.time.temporal.ChronoField.*;
 
-final class CardTypes {
+public final class Types {
 
     private static final DateTimeFormatter DateFormat=new DateTimeFormatterBuilder()
 
@@ -95,12 +95,12 @@ final class CardTypes {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private CardTypes() { }
+    private Types() { }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static final class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {
+    public static final class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {
 
         @Override public void write(final JsonWriter writer, final LocalDate value) throws IOException {
             writer.value(value.toString());
@@ -112,7 +112,7 @@ final class CardTypes {
 
     }
 
-    static final class LocalDateTimeTypeAdapter extends TypeAdapter<LocalDateTime> {
+    public static final class LocalDateTimeTypeAdapter extends TypeAdapter<LocalDateTime> {
 
         @Override public void write(final JsonWriter writer, final LocalDateTime value) throws IOException {
             writer.value(value.toString());

@@ -19,6 +19,7 @@ package eu.ec2u.card;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.*;
+import eu.ec2u.card.services.*;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -29,9 +30,9 @@ import java.util.Objects;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-final class CardModule extends AbstractModule {
+final class Services extends AbstractModule {
 
-    @Provides @Inject CardSetup setup(final Gson gson) throws IOException {
+    @Provides @Inject Setup setup(final Gson gson) throws IOException {
 
         if ( gson == null ) {
             throw new NullPointerException("null gson");
@@ -45,14 +46,14 @@ final class CardModule extends AbstractModule {
                 final Reader reader=new InputStreamReader(input, UTF_8)
         ) {
 
-            return gson.fromJson(reader, CardSetup.class);
+            return gson.fromJson(reader, Setup.class);
 
         }
 
     }
 
-    @Provides @Inject CardNotary notary(final CardSetup setup, final CardVault vault) {
-        return new CardNotary(vault.get(setup.getJwt())
+    @Provides @Inject Notary notary(final Setup setup, final Vault vault) {
+        return new Notary(vault.get(setup.getJwt())
                 .map(key -> key.getBytes(UTF_8))
                 .orElseThrow(() -> new NoSuchElementException(format("undefined <%s> key", setup.getJwt())))
         );
@@ -63,8 +64,8 @@ final class CardModule extends AbstractModule {
 
                 .setPrettyPrinting()
 
-                .registerTypeAdapter(LocalDate.class, new CardTypes.LocalDateTypeAdapter())
-                .registerTypeAdapter(LocalDateTime.class, new CardTypes.LocalDateTimeTypeAdapter())
+                .registerTypeAdapter(LocalDate.class, new Types.LocalDateTypeAdapter())
+                .registerTypeAdapter(LocalDateTime.class, new Types.LocalDateTimeTypeAdapter())
 
                 .create();
     }

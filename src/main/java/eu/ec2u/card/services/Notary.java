@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.ec2u.card;
+package eu.ec2u.card.services;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -32,7 +32,7 @@ import java.util.Optional;
  *
  * @see <a href="https://github.com/auth0/java-jwt">auth0/java-jwt</a>
  */
-final class CardNotary {
+public final class Notary {
 
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
@@ -40,7 +40,7 @@ final class CardNotary {
     private final Duration timeout=Duration.ofMinutes(60);
 
 
-    CardNotary(final byte[] key) {
+    public Notary(final byte[] key) {
 
         if ( key == null ) {
             throw new NullPointerException("null key");

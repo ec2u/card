@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package eu.ec2u.card;
+package eu.ec2u.card.services;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
-import eu.ec2u.card.CardData.Card;
+import eu.ec2u.card.Setup;
+import eu.ec2u.card.handlers.Root.Card;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -32,15 +33,15 @@ import java.util.stream.Stream;
 import static java.lang.String.format;
 import static java.net.http.HttpClient.newHttpClient;
 
-public final class CardFetcher {
+public final class Fetcher {
 
-    @Inject private CardSetup setup;
-    @Inject private CardVault vault;
+    @Inject private Setup setup;
+    @Inject private Vault vault;
 
     @Inject private Gson gson;
 
 
-    Stream<Card> fetch(final String esi) throws IOException {
+    public Stream<Card> fetch(final String esi) throws IOException {
 
         if ( esi == null ) {
             throw new NullPointerException("null esi");

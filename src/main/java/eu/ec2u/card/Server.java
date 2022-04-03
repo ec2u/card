@@ -19,6 +19,7 @@ package eu.ec2u.card;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.sun.net.httpserver.HttpServer;
+import eu.ec2u.card.handlers.Root;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -31,7 +32,7 @@ import java.util.regex.Pattern;
 import static java.lang.String.format;
 import static java.util.logging.Level.*;
 
-public final class CardServer {
+public final class Server {
 
     private static final String host="localhost";
 
@@ -130,13 +131,13 @@ public final class CardServer {
 
 
     public static void main(final String... args) {
-        Guice.createInjector(new CardModule()).getInstance(CardServer.class).start();
+        Guice.createInjector(new Services()).getInstance(Server.class).start();
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Inject private CardHandler handler;
+    @Inject private Root.Handler handler;
 
     @Inject private Logger logger;
 

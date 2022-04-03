@@ -47,7 +47,7 @@
 
     <properties>
 
-        <main>eu.ec2u.card.CardServer</main>
+        <main>eu.ec2u.card.Server</main>
 
         <revision>${maven.build.timestamp}</revision>
 

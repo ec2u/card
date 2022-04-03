@@ -32,7 +32,9 @@ export function CardContacts() {
         <p>
             EC2U Alliance<br/>
             c/o University of Pavia<br/>
-            Via Ferrata 1, 27100 Pavia
+            Via Ferrata 1<br/>
+            27100 Pavia<br/>
+            Italy
         </p>
 
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.ec2u.card;
+package eu.ec2u.card.services;
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.secretmanager.v1.*;
@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import static java.util.stream.StreamSupport.stream;
 
-public final class CardVault {
+public final class Vault {
 
     public Optional<String> get(final String key) {
 
