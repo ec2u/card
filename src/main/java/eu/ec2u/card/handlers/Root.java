@@ -18,7 +18,7 @@ package eu.ec2u.card.handlers;
 
 import com.google.inject.Inject;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import eu.ec2u.card.Handler;
 import eu.ec2u.card.Setup;
 import eu.ec2u.card.services.Codec;
 import eu.ec2u.card.services.Fetcher;
@@ -29,11 +29,8 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Map.entry;
 import static java.util.stream.Collectors.toList;
 
 @Getter
@@ -78,12 +75,8 @@ import static java.util.stream.Collectors.toList;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final class Handler implements HttpHandler {
+    public static final class Route extends Handler {
 
-        private static final Pattern BearerPattern=Pattern.compile("\\s*Bearer\\s*(?<token>\\S*)\\s*");
-
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         @Inject private Setup setup;
         @Inject private Codec codec;
@@ -91,21 +84,13 @@ import static java.util.stream.Collectors.toList;
 
 
         @Override public void handle(final HttpExchange exchange) throws IOException {
-            Optional.ofNullable(exchange.getRequestHeaders().getFirst("Authorization"))
+            holder(exchange).ifPresentOrElse(
 
-                    .map(BearerPattern::matcher)
-                    .filter(Matcher::matches)
-                    .map(matcher -> matcher.group("token"))
+                    holder -> ok(exchange, holder),
 
-                    .map(this::validate)
+                    () -> unauthorized(exchange)
 
-                    .ifPresentOrElse(
-
-                            holder -> ok(exchange, holder),
-
-                            () -> unauthorized(exchange)
-
-                    );
+            );
         }
 
 
@@ -118,7 +103,7 @@ import static java.util.stream.Collectors.toList;
                         .fetch(holder.getEsi())
                         .collect(toList());
 
-                send(exchange, 200, data()
+                send(exchange, OK, data()
                         .setHolder(holder)
                         .setCards(cards)
                 );
@@ -131,9 +116,7 @@ import static java.util.stream.Collectors.toList;
         private void unauthorized(final HttpExchange exchange) {
             try {
 
-                send(exchange, 401, data(),
-                        entry("WWW-Authenticate", "Bearer realm=\"card.ec2u.eu\"")
-                );
+                exchange.sendResponseHeaders(Unauthorized, -1);
 
             } catch ( final IOException e ) {
                 throw new UncheckedIOException(e);
@@ -142,12 +125,6 @@ import static java.util.stream.Collectors.toList;
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        private Holder validate(final String token) {
-            return new Holder()
-                    .setEsi("urn:schac:personalUniqueCode:int:esi:unipv.it:999001")
-                    .setUni("unipv.it");
-        }
 
         private Root data() {
             return new Root()

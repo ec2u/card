@@ -19,13 +19,14 @@ package eu.ec2u.card;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.sun.net.httpserver.HttpServer;
-import eu.ec2u.card.handlers.Root;
+import eu.ec2u.card.filters.Keeper;
+import eu.ec2u.card.filters.Loader;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.logging.Formatter;
 import java.util.logging.*;
 import java.util.regex.Pattern;
 
@@ -63,7 +64,9 @@ public final class Server {
 
             final Logger logger=Logger.getLogger("");
 
-            for (final Handler h : logger.getHandlers()) { logger.removeHandler(h); } // clear existing handlers
+            for (final java.util.logging.Handler h : logger.getHandlers()) { // clear existing handlers
+                logger.removeHandler(h);
+            }
 
             logger.setLevel(INFO);
 
@@ -85,12 +88,12 @@ public final class Server {
 
 
                 private String level(final Level level) {
-                    return level.equals(Level.SEVERE) ? "!!!"
-                            : level.equals(Level.WARNING) ? "!!"
+                    return level.equals(SEVERE) ? "!!!"
+                            : level.equals(WARNING) ? "!!"
                             : level.equals(INFO) ? "!"
-                            : level.equals(Level.FINE) ? "?"
-                            : level.equals(Level.FINER) ? "??"
-                            : level.equals(Level.FINEST) ? "???"
+                            : level.equals(FINE) ? "?"
+                            : level.equals(FINER) ? "??"
+                            : level.equals(FINEST) ? "???"
                             : "";
                 }
 
@@ -137,8 +140,9 @@ public final class Server {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Inject private Root.Handler handler;
-
+    @Inject private Loader loader;
+    @Inject private Keeper keeper;
+    @Inject private Router router;
     @Inject private Logger logger;
 
 
@@ -149,17 +153,26 @@ public final class Server {
 
             server.setExecutor(Executors.newCachedThreadPool());
 
-            server.createContext("/", exchange -> {
-                try {
+            server
 
-                    handler.handle(exchange);
+                    .createContext("/", exchange -> {
+                        try {
 
-                } catch ( final RuntimeException e ) {
+                            router.handle(exchange);
 
-                    logger.log(SEVERE, "unhandled exception", e);
+                        } catch ( final RuntimeException e ) {
 
-                }
-            });
+                            logger.log(SEVERE, "unhandled exception", e);
+
+                        }
+                    })
+
+                    .getFilters().addAll(List.of(
+
+                            loader,
+                            keeper
+
+                    ));
 
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {

@@ -29,11 +29,18 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 final class Services extends AbstractModule {
 
-    @Provides @Inject Setup setup(final Codec codec) throws IOException, ParseException {
+    @Provides @Inject Notary notary(final Setup setup, final Vault vault) {
 
-        if ( codec == null ) {
-            throw new NullPointerException("null codec");
-        }
+        final String id=setup.getJwt();
+
+        return new Notary(vault.get(id)
+                .map(key -> key.getBytes(UTF_8))
+                .orElseThrow(() -> new NoSuchElementException(format("undefined <%s> key", id)))
+        );
+
+    }
+
+    @Provides @Inject Setup setup(final Codec codec) throws IOException, ParseException {
 
         final String setup="application.json";
         final ClassLoader loader=getClass().getClassLoader();
@@ -47,13 +54,6 @@ final class Services extends AbstractModule {
 
         }
 
-    }
-
-    @Provides @Inject Notary notary(final Setup setup, final Vault vault) {
-        return new Notary(vault.get(setup.getJwt())
-                .map(key -> key.getBytes(UTF_8))
-                .orElseThrow(() -> new NoSuchElementException(format("undefined <%s> key", setup.getJwt())))
-        );
     }
 
 }
