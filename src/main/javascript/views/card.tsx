@@ -15,7 +15,7 @@
  */
 
 import { icon } from "@ec2u/card/index";
-import { Heart, LogIn, LogOut, RefreshCw, User } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, LogIn, LogOut, RefreshCw, User } from "lucide-react";
 import QRCode from "qrcode";
 import React, { createElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -82,7 +82,7 @@ export function CardCard() {
 
     const [gateway, setGateway]=useState<string>(); // the SSO gateway URL provided by the backend
     const [profile, setProfile]=useState<Profile>(); // the current user profile
-
+    const [index, setIndex]=useState(0); // the index of the current profile card
 
     useEffect(() => {
 
@@ -112,9 +112,10 @@ export function CardCard() {
 
                 if ( response.ok ) {
 
-
                     if ( profile.cards ) {
+
                         Promise.all(profile.cards.map(card => {
+
                             return QRCode.toDataURL(card.test, {
 
                                 errorCorrectionLevel: "M",
@@ -124,10 +125,10 @@ export function CardCard() {
 
                         })).then(cards => setProfile({ ...profile, cards })); // !!! save to storage
 
-
                     } else {
 
                         setProfile(profile); // !!! save to storage
+
                     }
 
                 } else if ( response.status === 401 ) {
@@ -150,26 +151,6 @@ export function CardCard() {
 
     }, []);
 
-    // const data=useRef<HTMLDListElement>(null);
-    //
-    // useLayoutEffect(() => {
-    //
-    //     const element=data.current;
-    //
-    //     if ( element && element.parentElement ) {
-    //
-    //         const inner=element.getBoundingClientRect();
-    //         const outer=element.parentElement.getBoundingClientRect();
-    //
-    //         const fw=outer.width/inner.width;
-    //         const fh=outer.height/inner.height;
-    //
-    //         element.style.transform=`scale(${Math.min(fw, fh)})`;
-    //
-    //     }
-    //
-    // });
-    //
 
     function doFlip() {
         navigate("/about");
@@ -180,59 +161,75 @@ export function CardCard() {
     }
 
     function doLogOut() {
-        if ( gateway ) { location.replace(gateway); }
+        if ( profile ) { setProfile({ ...profile, holder: undefined, cards: undefined });}
+    }
+
+    function doCycle(delta: number) {
+        if ( profile?.cards?.length ) { setIndex((index+delta)%(profile?.cards?.length)); }
     }
 
 
     return createElement("card-card", {}, <>
 
-        {cardLogo()}
+        {CardLogo()}
+        {CardMenu()}
 
-        {!profile
+        {!profile ? <div className={"info"}>
 
-            ? CardSpin()
+                <span>Loading your ESC cards</span>
 
-            : <>
+            </div>
 
+            : !profile.holder ? <div className={"info"}>
 
-                <div className={"menu"}>
-                    {profile?.holder
-                        ? <button onClick={doLogOut}><LogOut style={{ transform: "scaleX(-1)" }}/></button>
-                        : <button onClick={doLogIn}><LogIn/></button>
-                    }
-                    <button onClick={doFlip}><Heart/></button>
+                    <span>Log in to access your ESC cards</span>
+
                 </div>
 
+                : !profile.cards || !profile.cards.length ? <div className={"info"}>
 
-                {profile?.cards?.[0] && <>
+                        <span>Your eduGAIN profile isn't associate with an ESC card</span>
+                        <span>Contact your local mobility office to get one</span>
 
-                    {CardPhoto(profile?.cards?.[0])}
+                    </div>
 
-                    <div className={"qr"} title={"QR Code"} style={profile?.cards?.[0] ? { backgroundImage: `url('${profile?.cards?.[0].test}')` } : {}}/>
-                    <div className={"hologram"} title={"ESC Hologram"} style={{ backgroundImage: "url('/assets/hologram.png')" }}/>
+                    : <>
 
-                    {CardData(profile?.cards?.[0])}
-                </>
-                }
+                        {CardData(profile.cards[0])}
+                        {CardPhoto(profile.cards[0])}
+                        {CardQR(profile.cards[0])}
+                        {CardHologram()}
 
-
-            </>
-
+                    </>
         }
 
     </>);
 
 
-    function cardLogo() {
+    function CardLogo() {
         return <a className={"logo"}
             target={"_blank"} href={"https://www.ec2u.eu/"} // !!! from profile
             style={{ backgroundImage: `url('${icon}')` }}
         />;
     }
 
-    function CardSpin() {
-        return <div className={"spin"}>
-            <RefreshCw/>
+    function CardMenu() {
+        return <div className={"menu"}>
+
+            {!profile ? <button title={"Loading"} className={"spin"}><RefreshCw/></button>
+
+                : !profile.holder ? <button title={"Log in"} onClick={doLogIn}><LogIn/></button>
+
+                    : <button title={"Log out"} onClick={doLogOut}><LogOut style={{ transform: "scaleX(-1)" }}/></button>
+            }
+
+            <button title={"About"} onClick={doFlip}><Heart/></button>
+
+            {profile?.cards && profile.cards.length > 1 && <>
+                <button title={"Previous card"} onClick={() => doCycle(-1)}><ChevronLeft/></button>
+                <button title={"Next card"} onClick={() => doCycle(+1)}><ChevronRight/></button>
+            </>}
+
         </div>;
     }
 
@@ -286,6 +283,18 @@ export function CardCard() {
         return <div className={"photo"} title={"Photo ID"} style={photo ? { backgroundImage: `url('${photo}')` } : {}}>{
             photo ? <></> : <User/>
         }</div>;
+    }
+
+    function CardQR({ test }: Card) {
+        return <div className={"qr"} title={"QR Code"}
+            style={{ backgroundImage: `url('${test}')` }}
+        />;
+    }
+
+    function CardHologram() {
+        return <div className={"hologram"} title={"ESC Hologram"}
+            style={{ backgroundImage: "url('/assets/hologram.png')" }}
+        />;
     }
 
 }

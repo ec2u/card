@@ -37,18 +37,6 @@ card-card {
         background-repeat: no-repeat;
     }
 
-    & > .spin {
-
-        font-size: 2.5em;
-        color: #CCC;
-
-        & > svg {
-            stroke-width: 1px;
-            animation: spin-rotate 1.75s infinite linear;
-        }
-
-    }
-
     & > .menu {
 
         display: grid;
@@ -60,6 +48,29 @@ card-card {
         color: #999;
 
         transform: translateX(-0.1em);
+
+        & > .spin {
+
+            & > svg {
+                animation: spin-rotate 1.75s infinite linear;
+            }
+
+        }
+
+    }
+
+    & > .info {
+
+        align-self: center;
+        justify-self: center;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        grid-gap: 0.5em;
+
+        text-align: center;
+        font-size: 9vmin;
 
     }
 
@@ -143,15 +154,26 @@ card-card {
             grid-area: 1 / 1;
         }
 
-
-        & > .spin {
+        & > .menu {
             grid-area: 2 / 1;
             align-self: end;
         }
 
-        & > .menu {
-            grid-area: 2 / 1;
-            align-self: end;
+        & > .info {
+
+            grid-column: 2 / span 3;
+            grid-row: 1 / span 2;
+
+            padding: 0.75em 1em;
+
+        }
+
+        & > .data {
+
+            grid-area: 1 / 2 / span 2 / span 1;
+
+            font-size: 5.75vh;
+
         }
 
         & > .photo {
@@ -166,10 +188,6 @@ card-card {
             grid-area: 2 / 4;
         }
 
-        & > .data {
-            grid-area: 1 / 2 / span 2 / span 1;
-        }
-
     }
 
     @media only screen and (orientation: portrait) {
@@ -181,14 +199,26 @@ card-card {
             grid-area: 1 / 1;
         }
 
-        & > .spin {
-            grid-area: 4 / 1;
-            align-self: end;
-        }
-
         & > .menu {
             grid-area: 2 / 1;
             align-self: start;
+        }
+
+        & > .info {
+
+            grid-column: 1 / span 2;
+            grid-row: 2 / span 3;
+
+            padding: 0.75em;
+
+        }
+
+        & > .data {
+
+            grid-area: 1 / 2 / span 2 / span 1;
+
+            font-size: 6vw;
+
         }
 
         & > .photo {
@@ -201,10 +231,6 @@ card-card {
 
         & > .hologram {
             grid-area: 4 / 1;
-        }
-
-        & > .data {
-            grid-area: 1 / 2 / span 2 / span 1;
         }
 
     }
