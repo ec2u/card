@@ -16,11 +16,11 @@
 
 package eu.ec2u.card.handlers;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import eu.ec2u.card.Setup;
+import eu.ec2u.card.services.Codec;
 import eu.ec2u.card.services.Fetcher;
 import lombok.Getter;
 import lombok.Setter;
@@ -86,9 +86,8 @@ import static java.util.stream.Collectors.toList;
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         @Inject private Setup setup;
+        @Inject private Codec codec;
         @Inject private Fetcher fetcher;
-
-        @Inject private Gson gson;
 
 
         @Override public void handle(final HttpExchange exchange) throws IOException {
@@ -178,7 +177,7 @@ import static java.util.stream.Collectors.toList;
                     final Writer writer=new OutputStreamWriter(output, UTF_8)
             ) {
 
-                gson.toJson(body, writer);
+                codec.encode(writer, body);
 
             }
         }

@@ -16,29 +16,30 @@
 
 package eu.ec2u.card.services;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
 import eu.ec2u.card.Setup;
 import eu.ec2u.card.handlers.Root.Card;
 import lombok.Getter;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.net.http.HttpClient.newHttpClient;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class Fetcher {
 
     @Inject private Setup setup;
     @Inject private Vault vault;
-
-    @Inject private Gson gson;
+    @Inject private Codec codec;
 
 
     public Stream<Card> fetch(final String esi) throws IOException {
@@ -47,41 +48,49 @@ public final class Fetcher {
             throw new NullPointerException("null esi");
         }
 
+        final HttpRequest request=HttpRequest.newBuilder().GET()
+                .uri(URI.create(format("%s/v1/students/%s", setup.getEsc().getApi(), esi)))
+                .header("Key", vault.get(setup.getEsc().getKey()).orElseThrow())
+                .build();
+
         try {
-            // !!! error handling
 
-            final String json=newHttpClient().send(
+            final HttpResponse<InputStream> response=newHttpClient().send(request, BodyHandlers.ofInputStream());
 
-                    HttpRequest.newBuilder().GET()
-                            .uri(URI.create(format("%s/v1/students/%s", setup.getEsc().getApi(), esi)))
-                            .header("Key", vault.get(setup.getEsc().getKey()).orElseThrow())
-                            .build(),
+            // !!! network error handling
 
-                    HttpResponse.BodyHandlers.ofString()
+            try (
+                    final InputStream input=response.body();
+                    final Reader reader=new InputStreamReader(input, UTF_8)
+            ) {
 
-            ).body();
+                final ESCStudent student=codec.decode(reader, ESCStudent.class);
 
-            final ESCStudent student=gson.fromJson(json, ESCStudent.class);
+                // !!! required fields
 
-            // !!! required fields
+                return student.cards.stream().map(card -> new Card()
 
-            return student.cards.stream().map(card -> new Card()
+                        .setCode(card.europeanStudentCardNumber)
+                        .setTest(format("%s/%s", setup.getEsc().getTst(), card.europeanStudentCardNumber))
 
-                    .setCode(card.europeanStudentCardNumber)
-                    .setTest(format("%s/%s", setup.getEsc().getTst(), card.europeanStudentCardNumber))
+                        .setExpiry(student.getExpiryDate().toLocalDate())
 
-                    .setExpiry(student.getExpiryDate().toLocalDate())
+                        .setEsi(student.getEuropeanStudentIdentifier())
+                        .setPic(student.getPicInstitutionCode())
+                        .setLevel(student.getAcademicLevel())
 
-                    .setEsi(student.getEuropeanStudentIdentifier())
-                    .setPic(student.getPicInstitutionCode())
-                    .setLevel(student.getAcademicLevel())
+                        .setName(student.getName())
+                        //.setPhoto(student.???)
+                        .setEmail(student.getEmailAddress())
 
-                    .setName(student.getName())
-                    //.setPhoto(student.???)
-                    .setEmail(student.getEmailAddress())
+                );
 
-            );
 
+            } catch ( final ParseException e ) {  // !!! handle
+
+                return Stream.empty();
+
+            }
 
         } catch ( final InterruptedException e ) {  // !!! handle
 

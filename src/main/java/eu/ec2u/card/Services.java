@@ -16,14 +16,11 @@
 
 package eu.ec2u.card;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.inject.*;
 import eu.ec2u.card.services.*;
 
 import java.io.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.text.ParseException;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -32,10 +29,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 final class Services extends AbstractModule {
 
-    @Provides @Inject Setup setup(final Gson gson) throws IOException {
+    @Provides @Inject Setup setup(final Codec codec) throws IOException, ParseException {
 
-        if ( gson == null ) {
-            throw new NullPointerException("null gson");
+        if ( codec == null ) {
+            throw new NullPointerException("null codec");
         }
 
         final String setup="application.json";
@@ -46,7 +43,7 @@ final class Services extends AbstractModule {
                 final Reader reader=new InputStreamReader(input, UTF_8)
         ) {
 
-            return gson.fromJson(reader, Setup.class);
+            return codec.decode(reader, Setup.class);
 
         }
 
@@ -57,17 +54,6 @@ final class Services extends AbstractModule {
                 .map(key -> key.getBytes(UTF_8))
                 .orElseThrow(() -> new NoSuchElementException(format("undefined <%s> key", setup.getJwt())))
         );
-    }
-
-    @Provides Gson gson() {
-        return new GsonBuilder()
-
-                .setPrettyPrinting()
-
-                .registerTypeAdapter(LocalDate.class, new Types.LocalDateTypeAdapter())
-                .registerTypeAdapter(LocalDateTime.class, new Types.LocalDateTimeTypeAdapter())
-
-                .create();
     }
 
 }

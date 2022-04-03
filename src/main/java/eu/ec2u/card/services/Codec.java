@@ -22,21 +22,86 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.*;
 import java.text.ParseException;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Locale;
+
+import static java.time.temporal.ChronoField.*;
 
 public final class Codec {
+
+    private static final DateTimeFormatter DateFormat=new DateTimeFormatterBuilder()
+
+            .parseStrict()
+
+            .appendValue(YEAR, 4)
+
+            .optionalStart()
+            .appendLiteral('-')
+            .optionalEnd()
+
+            .appendValue(MONTH_OF_YEAR, 2)
+
+            .optionalStart()
+            .appendLiteral('-')
+            .optionalEnd()
+
+            .appendValue(DAY_OF_MONTH, 2)
+
+            .toFormatter(Locale.ROOT);
+
+    private static final DateTimeFormatter TimeFormat=new DateTimeFormatterBuilder()
+
+            .parseStrict()
+
+            .appendValue(HOUR_OF_DAY, 2)
+
+            .optionalStart()
+            .appendLiteral(':')
+            .optionalEnd()
+
+            .appendValue(MINUTE_OF_HOUR, 2)
+
+            .optionalStart()
+            .appendLiteral(':')
+            .optionalEnd()
+
+            .appendValue(SECOND_OF_MINUTE, 2)
+
+            .optionalStart()
+            .appendLiteral('.')
+            .appendValue(MILLI_OF_SECOND)
+            .optionalEnd()
+
+            .toFormatter(Locale.ROOT);
+
+    private static final DateTimeFormatter DateTimeFormat=new DateTimeFormatterBuilder()
+
+            .parseStrict()
+
+            .append(DateFormat)
+
+            .appendLiteral("T")
+
+            .append(TimeFormat)
+
+            .optionalStart()
+            .appendLiteral('Z')
+            .optionalEnd()
+
+            .toFormatter(Locale.ROOT);
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private final Gson gson=new GsonBuilder()
 
             .setPrettyPrinting()
 
-            .registerTypeAdapter(Instant.class, new InstantTimeTypeAdapter())
-            .registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeTypeAdapter())
             .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
-            .registerTypeAdapter(LocalTime.class, new LocalTimeTypeAdapter())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
-            .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
-            .registerTypeAdapter(Period.class, new PeriodTypeAdapter())
 
             .create();
 
@@ -90,98 +155,28 @@ public final class Codec {
     }
 
 
-    private static final class InstantTimeTypeAdapter extends TypeAdapter<Instant> {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        @Override public void write(final JsonWriter writer, final Instant value) throws IOException {
-            writer.value(value.toString());
-        }
-
-        @Override public Instant read(final JsonReader reader) throws IOException {
-            return Instant.parse(reader.nextString());
-        }
-
-    }
-
-    private static final class ZonedDateTimeTypeAdapter extends TypeAdapter<ZonedDateTime> {
-
-        @Override public void write(final JsonWriter writer, final ZonedDateTime value) throws IOException {
-            writer.value(value.toString());
-        }
-
-        @Override public ZonedDateTime read(final JsonReader reader) throws IOException {
-            return ZonedDateTime.parse(reader.nextString());
-        }
-
-    }
-
-    private static final class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {
+    public static final class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {
 
         @Override public void write(final JsonWriter writer, final LocalDate value) throws IOException {
             writer.value(value.toString());
         }
 
         @Override public LocalDate read(final JsonReader reader) throws IOException {
-            return LocalDate.parse(reader.nextString());
+            return LocalDate.parse(reader.nextString(), DateFormat);
         }
 
     }
 
-    private static final class LocalTimeTypeAdapter extends TypeAdapter<LocalTime> {
-
-        @Override public void write(final JsonWriter writer, final LocalTime value) throws IOException {
-            writer.value(value.toString());
-        }
-
-        @Override public LocalTime read(final JsonReader reader) throws IOException {
-            return LocalTime.parse(reader.nextString());
-        }
-
-    }
-
-    private static final class LocalDateTimeTypeAdapter extends TypeAdapter<LocalDateTime> {
+    public static final class LocalDateTimeTypeAdapter extends TypeAdapter<LocalDateTime> {
 
         @Override public void write(final JsonWriter writer, final LocalDateTime value) throws IOException {
             writer.value(value.toString());
         }
 
         @Override public LocalDateTime read(final JsonReader reader) throws IOException {
-            return LocalDateTime.parse(reader.nextString());
-        }
-
-    }
-
-    private static final class YearTypeAdapter extends TypeAdapter<Year> {
-
-        @Override public void write(final JsonWriter writer, final Year value) throws IOException {
-            writer.value(value.toString());
-        }
-
-        @Override public Year read(final JsonReader reader) throws IOException {
-            return Year.parse(reader.nextString());
-        }
-
-    }
-
-    private static final class DurationTypeAdapter extends TypeAdapter<Duration> {
-
-        @Override public void write(final JsonWriter writer, final Duration value) throws IOException {
-            writer.value(value.toString());
-        }
-
-        @Override public Duration read(final JsonReader reader) throws IOException {
-            return Duration.parse(reader.nextString());
-        }
-
-    }
-
-    private static final class PeriodTypeAdapter extends TypeAdapter<Period> {
-
-        @Override public void write(final JsonWriter writer, final Period value) throws IOException {
-            writer.value(value.toString());
-        }
-
-        @Override public Period read(final JsonReader reader) throws IOException {
-            return Period.parse(reader.nextString());
+            return LocalDateTime.parse(reader.nextString(), DateTimeFormat);
         }
 
     }
