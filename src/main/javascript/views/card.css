@@ -44,7 +44,7 @@ card-card {
         grid-template-rows: repeat(auto-fit, min-content);
         grid-gap: 0.25em;
 
-        font-size: 1.25em;
+        font-size: 4.5vmax;
         color: #999;
 
         transform: translateX(-0.1em);
@@ -233,6 +233,15 @@ card-card {
             grid-area: 4 / 1;
         }
 
+    }
+
+    @media screen and (min-width: 960px) {
+
+        border-style: solid;
+        border-radius: 1em;
+        transform: scale(0.5);
+
+        box-shadow: 0 0 0 0.5em #F8F8F8;
     }
 
 }
