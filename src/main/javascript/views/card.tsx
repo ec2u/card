@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { icon } from "@ec2u/card/index";
+import { useStorage } from "@ec2u/card/hooks/storage";
+import { Card, home, icon, Profile } from "@ec2u/card/index";
 import { ChevronLeft, ChevronRight, Heart, LogIn, LogOut, RefreshCw, User } from "lucide-react";
 import QRCode from "qrcode";
 import React, { createElement, useEffect, useState } from "react";
@@ -40,59 +41,24 @@ const Levels: Record<number, string>={
 };
 
 
-interface Profile {
-
-    readonly version: string;
-    readonly instant: string;
-
-    readonly holder?: User;
-
-    readonly cards?: Card[];
-
-}
-
-interface User {
-
-    readonly esi: string;
-    readonly uni: string;
-
-}
-
-interface Card {
-
-    readonly code: string;
-    readonly test: string;
-    readonly expiry: string;
-
-    readonly esi: string;
-    readonly pic: number;
-    readonly level: number;
-
-    readonly name: string;
-    readonly photo?: string;
-
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export function CardCard() {
 
     const navigate=useNavigate();
 
-    const [gateway, setGateway]=useState<string>(); // the SSO gateway URL provided by the backend
-    const [profile, setProfile]=useState<Profile>(); // the current user profile
+    const [profile, setProfile]=useStorage<undefined | Profile>(localStorage, "profile", undefined);
+    const [gateway, setGateway]=useStorage<undefined | string>(localStorage, "gateway", undefined);
+
     const [index, setIndex]=useState(0); // the index of the current profile card
 
     useEffect(() => {
 
-        // !!! load profile from storage
-
-        // look in query string for an auth token forwarded by the SSO gateway
+        // look in the query string for an auth token forwarded by the SSO gateway
 
         const token=[location.search.substring(1)].filter(query => query.match(JWTPattern))[0];
 
-        queueMicrotask(() => { // clear query string
+        queueMicrotask(() => { // clear the query string
 
             history.replaceState(history.state, "", location.href.replace(/\?[^#]*/, ""));
 
@@ -103,7 +69,7 @@ export function CardCard() {
 
             headers: {
                 Accept: "application/json",
-                Authorization: token ? `Bearer "${token}"` : `Bearer "${"!!!"}"`
+                Authorization: token ? `Bearer "${token}"` : ""
             }
 
         }).then(response => {
@@ -123,11 +89,11 @@ export function CardCard() {
 
                             }).then(test => ({ ...card, test }));
 
-                        })).then(cards => setProfile({ ...profile, cards })); // !!! save to storage
+                        })).then(cards => setProfile({ ...profile, cards }));
 
                     } else {
 
-                        setProfile(profile); // !!! save to storage
+                        setProfile(profile);
 
                     }
 
@@ -149,7 +115,7 @@ export function CardCard() {
 
         });
 
-    }, []);
+    }, [JSON.stringify(profile)]);
 
 
     function doFlip() {
@@ -161,7 +127,7 @@ export function CardCard() {
     }
 
     function doLogOut() {
-        if ( profile ) { setProfile({ ...profile, holder: undefined, cards: undefined });}
+        setProfile(undefined);
     }
 
     function doCycle(delta: number) {
@@ -195,9 +161,9 @@ export function CardCard() {
 
                     : <>
 
-                        {CardData(profile.cards[0])}
-                        {CardPhoto(profile.cards[0])}
-                        {CardQR(profile.cards[0])}
+                        {CardData(profile.cards[index])}
+                        {CardPhoto(profile.cards[index])}
+                        {CardQR(profile.cards[index])}
                         {CardHologram()}
 
                     </>
@@ -207,8 +173,7 @@ export function CardCard() {
 
 
     function CardLogo() {
-        return <a className={"logo"}
-            target={"_blank"} href={"https://www.ec2u.eu/"} // !!! from profile
+        return <a className={"logo"} target={"_blank"} href={home}
             style={{ backgroundImage: `url('${icon}')` }}
         />;
     }
@@ -235,15 +200,13 @@ export function CardCard() {
 
     function CardData({
 
-        code,
         expiry,
 
         esi,
         pic,
         level,
 
-        name,
-        photo
+        name
 
 
     }: Card) {

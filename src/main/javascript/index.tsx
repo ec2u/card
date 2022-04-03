@@ -18,16 +18,50 @@ import { About, CardAbout } from "@ec2u/card/pages/about";
 import { CardContacts, Contacts } from "@ec2u/card/pages/contacts";
 import { CardPrivacy, Privacy } from "@ec2u/card/pages/privacy";
 import { CardCard } from "@ec2u/card/views/card";
+import { User } from "lucide-react";
 import * as React from "react";
 import { render } from "react-dom";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./index.css";
 
 
-export const Home="https://www.ec2u.eu/";
+export interface Profile {
+
+    readonly version: string;
+    readonly instant: string;
+
+    readonly holder?: User;
+
+    readonly cards?: Card[];
+
+}
+
+export interface User {
+
+    readonly esi: string;
+    readonly uni: string;
+
+}
+
+export interface Card {
+
+    readonly code: string;
+    readonly test: string;
+    readonly expiry: string;
+
+    readonly esi: string;
+    readonly pic: number;
+    readonly level: number;
+
+    readonly name: string;
+    readonly photo?: string;
+
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const home="https://www.ec2u.eu/"; // !!! from profile
 
 /**
  * The app name as read from the `<title>` HTML head tag.

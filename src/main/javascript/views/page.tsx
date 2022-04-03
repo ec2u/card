@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { copy, Home } from "@ec2u/card/index";
+import { copy, home } from "@ec2u/card/index";
 import { About } from "@ec2u/card/pages/about";
 import { Contacts } from "@ec2u/card/pages/contacts";
 import { Privacy } from "@ec2u/card/pages/privacy";
@@ -44,7 +44,7 @@ export function CardPage({
     return createElement("card-page", {}, <>
         <header>
 
-            <a href={Home} target={"_blank"}><CardIcon/></a>
+            <a href={home} target={"_blank"}><CardIcon/></a>
 
             <Link to={"/"}>Virtual Card</Link>
 
