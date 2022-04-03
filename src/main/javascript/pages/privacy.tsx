@@ -1,56 +1,76 @@
 /*
- * Copyright © 2022 EC2U Alliance. All rights reserved.
+ * Copyright © 2020-2022 EC2U Alliance
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import { CardPage } from "@ec2u/card/views/page";
-import { immutable } from "@metreeca/core";
-import React, { createElement } from "react";
-import "./privacy.css";
+import React from "react";
 
 
-export const privacy=immutable({
+export const Privacy=Object.freeze({
 
-    id: "/privacy",
+    route: "/privacy",
     label: "Privacy"
 
 });
 
-
 export function CardPrivacy() {
-    return <CardPage name={privacy.label}>{createElement("card-privacy", {}, <>
+    return <CardPage name={Privacy.label}>
 
         <h1>Information on the Processing of Personal Data</h1>
 
-        <small>pursuant to EU Regulation 2016/679 drawn up on 16/12/2021</small>
+        <blockquote>Pursuant to EU Regulation 2016/679 drawn up on 16/12/2021</blockquote>
 
         <p>This document is intended to inform the interested party on how data concerning them is used in
-            the context of the processing activity.</p>
+            the context of the following processing activities:</p>
 
         <table>
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
             <tbody>
                 <tr>
-                    <td><dfn>EC2U-CARD</dfn></td>
-                    <td>EC2U-CARD Issue of personal card for mobility projects - Federation of identities</td>
+                    <td><strong><dfn>EC2U-CARD</dfn></strong></td>
+                    <td>Issue of personal card for mobility projects - Federation of identities</td>
                 </tr>
             </tbody>
         </table>
 
-        <p>Pursuant to articles 13 and 14 of EU regulation 2016/679, the interested party is informed that their data
-            will be processed by the Data Controller defined in the <a href={"#subjects"}>Subjects</a> section, for
-            the purpose defined in the section <a href={"#purpose"}>Purpose</a>, for a certain period of time defined
-            in the <a href={"#retention"}>Retention Period</a> section and could be communicated to subjects identified
-            in
+        <p>Pursuant to articles 13 and 14 of EU regulation 2016/679, the interested party is informed that their
+            data
+            will be processed by the Data Controller defined in the <a href={"#subjects"}>Subjects</a> section,
+            for the
+            purpose defined in the <a href={"#purpose"}>Purpose</a> section, for a period of time defined in
+            the <a href={"#retention"}>Retention Period</a> section, and could be communicated to subjects
+            identified in
             the <a href={"#diffusion"}>Diffusion</a> section.</p>
 
-        <p>The interested party is also informed that with regard to their personal data they can exercise the right
-            listed this information in the <a href={"#rights"}>Rights of the Interested Party </a> section. The rights
-            of the interested party can be exercised at any time by contacting the Data Protection Officer (DPO) or,
-            in his absence, the Data Controller.</p>
+        <p>The interested party is also informed that with regard to their personal data they can exercise the
+            right
+            listed this information in the <a href={"#rights"}>Rights of the Interested Party</a> section. The
+            rights
+            of the interested party can be exercised at any time by contacting the Data Protection Officer (DPO)
+            or,
+            in their absence, the Data Controller.</p>
 
 
         <h2 id={"subjects"}>Subjects</h2>
 
-        <small>Who processes my data and who can I contact for information and deal my rights?</small>
+        <blockquote>Who processes my data and who can I contact for information and deal my rights?</blockquote>
 
         <table>
             <thead>
@@ -63,52 +83,20 @@ export function CardPrivacy() {
             <tbody>
                 <tr>
                     <td>Holder</td>
-                    <td><dfn>The University of Pavia</dfn></td>
+                    <td><dfn>University of Pavia</dfn></td>
                     <td>
-
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>phone</td>
-                                    <td>+39 0382 989898</td>
-                                </tr>
-                                <tr>
-                                    <td>email</td>
-                                    <td>
-                                        <a href="mailto:amministrazione-centrale@certunipv.it">amministrazione-centrale@certunipv.it</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>address</td>
-                                    <td>Strada Nuova, 65 - 27100 Pavia</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
+                        Strada Nuova, 65 - 27100 Pavia<br/>
+                        +39 0382 989898<br/>
+                        <a href="mailto:amministrazione-centrale@certunipv.it">amministrazione-centrale@certunipv.it</a>
                     </td>
                 </tr>
                 <tr>
                     <td>Responsible for data protection (RPD)</td>
-                    <td><dfn>The University of Pavia</dfn></td>
+                    <td><dfn>University of Pavia</dfn></td>
                     <td>
-
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>phone</td>
-                                    <td>+39 0382 985490</td>
-                                </tr>
-                                <tr>
-                                    <td>email</td>
-                                    <td><a href="mailto:privacy@unipv.it">privacy@unipv.it</a></td>
-                                </tr>
-                                <tr>
-                                    <td>address</td>
-                                    <td>Strada Nuova, 65 - 27100 Pavia</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
+                        Strada Nuova, 65 - 27100 Pavia<br/>
+                        +39 0382 985490<br/>
+                        <a href="mailto:privacy@unipv.it">privacy@unipv.it</a>
                     </td>
                 </tr>
             </tbody>
@@ -116,7 +104,7 @@ export function CardPrivacy() {
 
         <h2 id={"purpose"}>Purpose</h2>
 
-        <p>Why is data processed?</p>
+        <blockquote>Why is data processed?</blockquote>
 
         <table>
             <thead>
@@ -127,22 +115,17 @@ export function CardPrivacy() {
             </thead>
             <tbody>
                 <tr>
-                    <td>Student services</td>
+                    <td width={"33%"}>Student and staff services</td>
                     <td>Free and informed consent</td>
                 </tr>
                 <tr>
-                    <td>Student services</td>
-                    <td>EC2U is an alliance of seven historical
-                        and multidisciplinary European universities. The Universities that are part
-                        of the alliance are the University of Coimbra (Portugal), Alexandru Ioan Cuza
-                        of Iasi (Romania), the Friedrich Schiller University of Jena (Germany), Pavia
-                        (Italy), Poitiers (Coordinator, France), Salamanca ( Spain) and Turku
-                        (Finland). The EC2U Alliance has obtained the funding of an Erasmus +
+                    <td>Mobility card</td>
+                    <td>The EC2U Alliance has obtained the funding of an Erasmus +
                         Strategic Partnership 'European Digital University Card Student - EDUcardS'
                         for the adoption of the European Student Card (ESC) within the alliance,
                         which it can offer to all students of the universities involved access to the
                         services provided for those of the headquarters (canteen, sports services,
-                        public transport, etc.).
+                        public transport,&nbsp;…).
                     </td>
                 </tr>
             </tbody>
@@ -174,9 +157,7 @@ export function CardPrivacy() {
             <tbody>
                 <tr>
                     <td>Necessity - Based on the principle of necessity of the treatment in
-                        relation to the purpose<br/>Description: Data about end users
-                        of the service are not stored. The card is displayed in real
-                        time and not stored by the system
+                        relation to the purpose; data about end users are not stored permanently by the service
                     </td>
                 </tr>
             </tbody>
@@ -197,7 +178,7 @@ export function CardPrivacy() {
             </tbody>
         </table>
 
-        <h2 id={"categories"}>Categories of data processed</h2>
+        <h2 id={"categories"}>Categories of Data Processed</h2>
 
         <table>
             <thead>
@@ -209,15 +190,17 @@ export function CardPrivacy() {
             <tbody>
                 <tr>
                     <td>Personal data</td>
-                    <td>Name, Surname, Tax Code</td>
+                    <td>Name, surname, email address, personal identification codes</td>
                 </tr>
             </tbody>
         </table>
 
         <h2 id={"automation"}>Automated Decision Making and Profiling</h2>
 
-        <small>Is data concerning me used to profile me? Are decisions made automatically on the basis of the
-            profile?</small>
+        <blockquote>
+            Is data concerning me used to profile me?<br/>
+            Are decisions made automatically on the basis of the profile?
+        </blockquote>
 
         <table>
             <thead>
@@ -272,16 +255,17 @@ export function CardPrivacy() {
             </tbody>
         </table>
 
-        <p>The interested party can also withdraw the expressed consent at any time without prejudice to the lawfulness
-            of the treatment based on the consent given before the revocation. </p>
+        <p>The interested party can also withdraw the expressed consent at any time without prejudice to the
+            lawfulness
+            of the treatment based on the consent given before the revocation.</p>
 
-        <p>To exercise the aforementioned rights, the interested party can contact the Data Protection Officer or the
+        <p>To exercise the aforementioned rights, the interested party can contact the Data Protection Officer or
+            the
             Holder.</p>
 
         <p>The interested party has the right to lodge a complaint with a supervisory authority, by writing
             to <a href="mailto:garante@gpdp.it">garante@gpdp.it</a>, or
             to <a href="mailto: protocol@pec.gpdp.it ">protocol@pec.gpdp.it</a>.</p>
 
-    </>)}</CardPage>;
-
+    </CardPage>;
 }

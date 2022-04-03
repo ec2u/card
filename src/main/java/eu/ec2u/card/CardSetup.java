@@ -14,9 +14,31 @@
  * limitations under the License.
  */
 
-package eu.ec2u.card.users;
+package eu.ec2u.card;
 
-import com.metreeca.rest.Handler;
+import lombok.Getter;
 
-public final class UsersHandler extends Handler.Base {
+import java.net.URI;
+import java.time.LocalDateTime;
+
+@Getter final class CardSetup {
+
+    private String version;
+    private LocalDateTime instant;
+
+    private URI sso;
+    private String jwt;
+
+    private ESC esc;
+
+
+    @Getter
+    static final class ESC {
+
+        private String api;
+        private String tst;
+        private String key;
+
+    }
+
 }

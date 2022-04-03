@@ -28,6 +28,21 @@ export const About=Object.freeze({
 export function CardAbout() {
     return <CardPage name={About.label}>
 
+        <p>The <a target={"_blank"} href={"https://www.ec2u.eu/"}>EC2U European Campus of
+            City‑Universities</a> is a multi&#8209;cultural and multi&#8209;lingual Alliance of seven
+            long&#8209;standing, education and research&#8209;led, locally and globally engaged universities
+            from four diverse regions of the European Union:</p>
+
+        <ul>
+            <li>University of Coimbra - Portugal</li>
+            <li>Alexandru Ioan Cuza University of Iasi - Romania</li>
+            <li>University of Jena - Germany</li>
+            <li>University of Pavia - Italy</li>
+            <li>University of Poitiers - France (Coordinator)</li>
+            <li>University of Salamanca - Spain</li>
+            <li>University of Turku - Finland</li>
+        </ul>
+
         <h1>Service</h1>
 
         The EC2U Virtual Card is a lightweight mobile-based academic identification card built on top of two mature and
@@ -63,10 +78,15 @@ export function CardAbout() {
 
         <h1>Support</h1>
 
-        <p>Provided by the IT Services of the University of Pavia
-            (<a href={"mailto:cc@ml.ec2u.eu"}>cc@ml.ec2u.eu</a>).
-        </p>
-
+        <ul>
+            <li>open a GitHub <a href={"https://github.com/ec2u/card/issues"} target={"_blank"}>issue</a> to report a
+                problem or to suggest a new feature
+            </li>
+            <li>start a GitHub <a href={"https://github.com/ec2u/card/discussions"} target={"_blank"}>discussion</a> to
+                ask a how-to question or to share an idea
+            </li>
+            <li>contact the <a href={"mailto:cc@ml.ec2u.eu"}>EC2U Connect Centre</a> for all other needs</li>
+        </ul>
 
         <h1>Privacy</h1>
 

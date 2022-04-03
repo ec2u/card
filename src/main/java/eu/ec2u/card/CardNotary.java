@@ -1,8 +1,20 @@
 /*
- *   Copyright © 2021 Luxottica. All rights reserved.
+ * Copyright © 2020-2022 EC2U Alliance
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package work;
+package eu.ec2u.card;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -12,34 +24,15 @@ import com.auth0.jwt.interfaces.Payload;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
-import java.util.function.Supplier;
-
-import static com.metreeca.rest.Toolbox.service;
-import static com.metreeca.rest.services.Vault.vault;
-
-import static java.lang.String.format;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import java.util.Date;
+import java.util.Optional;
 
 /**
  * JWT token manager.
  *
  * @see <a href="https://github.com/auth0/java-jwt">auth0/java-jwt</a>
  */
-public final class Notary {
-
-    private static final String KEY="key-jwt";
-
-
-    public static Supplier<Notary> notary() {
-        return () -> new Notary(service(vault()).get(KEY)
-                .map(key -> key.getBytes(UTF_8))
-                .orElseThrow(() -> new NoSuchElementException(format("undefined <%s> key", KEY)))
-        );
-    }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+final class CardNotary {
 
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
@@ -47,7 +40,7 @@ public final class Notary {
     private final Duration timeout=Duration.ofMinutes(60);
 
 
-    public Notary(final byte[] key) {
+    CardNotary(final byte[] key) {
 
         if ( key == null ) {
             throw new NullPointerException("null key");
