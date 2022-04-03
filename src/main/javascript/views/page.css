@@ -41,8 +41,22 @@ card-page {
     }
 
     & > * {
+
         padding-left: 0.5rem;
         padding-right: 0.5rem;
+
+        & > footer {
+
+            margin-top: auto;
+
+            padding-top: 2.5em;
+            padding-bottom: 0.75rem;
+
+            font-size: 0.75em;
+            color: #CCC;
+
+        }
+
     }
 
     & > header {
@@ -106,18 +120,6 @@ card-page {
 
         & > header {
             margin-bottom: 1em;
-        }
-
-        & > footer {
-
-            margin-top: auto;
-
-            padding-top: 2.5em;
-            padding-bottom: 0.75rem;
-
-            font-size: 0.75em;
-            color: #CCC;
-
         }
 
     }

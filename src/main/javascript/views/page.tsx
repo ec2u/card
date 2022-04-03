@@ -15,7 +15,7 @@
  */
 
 import { useProfile } from "@ec2u/card/hooks/profile";
-import { copy } from "@ec2u/card/index";
+import { copy, Profile } from "@ec2u/card/index";
 import { About } from "@ec2u/card/pages/about";
 import { Contacts } from "@ec2u/card/pages/contacts";
 import { Privacy } from "@ec2u/card/pages/privacy";
@@ -43,7 +43,21 @@ export function CardPage({
     const [profile]=useProfile();
     const [menu, setMenu]=useState(false);
 
+
+    function version({ version, instant }: Profile) {
+
+        const date=new Date(instant);
+
+        const year=date.getFullYear().toString();
+        const month=(date.getMonth()+1).toString().padStart(2, "0");
+        const day=date.getDate().toString().padStart(2, "0");
+
+        return `v${version}+${year}${month}${day}`;
+    }
+
+
     return createElement("card-page", {}, <>
+
         <header>
 
             <a href={profile?.manager || "/"} target={"_blank"}><CardIcon/></a>
@@ -63,6 +77,8 @@ export function CardPage({
             <NavLink to={About.route}>{About.label}</NavLink>
             <NavLink to={Privacy.route}>{Privacy.label}</NavLink>
             <NavLink to={Contacts.route}>{Contacts.label}</NavLink>
+
+            <footer>{profile && version(profile)}</footer>
 
         </nav>
 
