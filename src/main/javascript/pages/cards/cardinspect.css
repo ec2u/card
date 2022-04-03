@@ -1,54 +1,56 @@
-
-
-.cards {
+card-inspectcard {
   width: 95%;
-  margin-top: 40px;
-  & .cards-link {
-    text-decoration: none;
-    color: black;
-    cursor: pointer;
-  }
+  display: flex;
+  flex-direction: column;
 
-  & .topnav-cardinspect {
-    display: grid;
-   grid-template-columns: 4em 30em  1em ;
-    font-size: 30px;
+  & header {
     width: 100%;
+    margin: 2em 0em;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    & section {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5em;
+    }
+    & a {
+      text-decoration: none;
+      color: black;
+      font-size: 1.4em;
+    }
   }
-  & .grid-container-cardinspect {
-    margin-top: 80px;
-    display: grid;
-    text-align: left;
-  }
-  & .tr-cardinspect {
+  & form {
     width: 100%;
-    display: grid;
-    grid-template-columns: 20% 20% 50% 20%;
-    padding: 6px;
-  }
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 
-  & th {
-    color: rgb(177, 171, 171);
-  }
-  & td {
-    font-size: 24px;
-  }
+    & .start {
+      width: 60%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
 
-  & .solid {
-    width: 102%;
-    background-color: lightgray;
-    border: 1px solid rgb(189, 185, 185);
+    & section {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      & label {
+        color: rgb(161, 157, 157);
+      }
+      & span {
+        margin-top: 1em;
+        font-size: 0.9em;
+      }
+    }
   }
-  & .button {
-    cursor: pointer;
-    color: black;
-  }
-  & .button-plus {
-    cursor: pointer;
-    color: black;
-  }
-  & .checkbox {
-    width: 28px;
-    height: 28px;
+  & .button-edit:hover {
+    color: green;
+    transform: translateY(-3px);
   }
 }

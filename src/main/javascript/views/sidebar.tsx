@@ -4,16 +4,22 @@ import { Link } from "react-router-dom";
 import logo from "../index.svg";
 import "./sidebar.css";
 
+
+3
 export const Cardsidebar = (props: any) => {
+
+
   const [sidebar, setSidebar] = useState<boolean>(false);
 
   useEffect(() => {
+
     props.onCollapse(sidebar);
+
   }, [sidebar]);
 
   return (
     <div className={`side-menu ${sidebar ? "inactive" : ""}`}>
-      <div className="top-section">
+      <section>
         <div className="logo">
           <img
             src={logo}
@@ -40,16 +46,16 @@ export const Cardsidebar = (props: any) => {
             <span> Tokens  </span>
           </Link>
         </div>
-      </div>
-      <div className="down-section">
+      </section>
+      <section>
         <div className=" items-name">
           <Link to="/user/" className="items-logo">
             <User size={60} />
             <span>Name</span>
           </Link>
         </div>
-      </div>
-    </div>
+      </section>
+    </div >
   );
 };
 

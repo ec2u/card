@@ -1,6 +1,5 @@
-import { ChevronRight, Plus, Search } from "lucide-react";
-import React, { createElement, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { ChevronRight, Plus, Search, X } from "lucide-react";
+import React, { createElement, useCallback, useEffect, useRef, useState } from "react";
 import './users.css';
 
 
@@ -16,87 +15,143 @@ interface User {
 export function CardUsers() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<Boolean>(false);
+  const [error, setError] = useState<any>(null);
+  const [search, setSearch] = useState<string>("");
+  const [clicked, setClicked] = useState<Boolean>(false);
+
+
+  function useKey(key: number, cb: any) {
+
+    const callbackRef = useRef(cb);
+  }
 
 
   useEffect(() => {
 
+
+    setLoading(true)
     const fetchData = async () => {
-      setLoading(true)
       await fetch("/users/", {
         headers: {
           Accept: "application/json",
         },
       })
         .then((response) => response.json())
-        .then((data) => setUsers(data.contains));
+        .then((data) => setUsers(data.contains))
+        .catch((error) => console.warn(error))
       setLoading(false)
     }
     fetchData();
   }, []);
 
 
+  const handleInput = (e: any) => {
+    setSearch(e.target.value)
+
+    if (e.keyCode === 27) {
+      setClicked(false)
+    }
+
+  }
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  let searchInput =
+    <div className={"search-box"}
+      onSubmit={(e) => inputRef.current?.blur()
+      }
+    >
+
+      <input
+        ref={inputRef}
+        type="text"
+        value={search}
+        placeholder="search by surname"
+        onChange={handleInput}
+
+
+      />
+      <X size={28}
+        className={"close-button"}
+        onClick={() => setClicked(false)}
+      />
+
+    </div>
+
+
+
+  let SearchIcon =
+    <div>
+      <Search size={28}
+        onClick={() => setClicked(true)}
+
+        className={"search-button"}
+      />
+    </div>
+
+
 
   return createElement('card-users', {},
-    <>
 
+    <>
 
       <header>
 
-
         <a> Users </a>
-        <a href='/users/add' title="add"> <Plus size={40} className={"button-plus"} /> </a>
-
+        <a href='/users/add' title="add">
+          <Plus size={40} className={"button-plus"} />
+        </a>
 
       </header>
 
+      <table>
 
-      <footer>
+        <thead>
 
-        <table>
+          <tr>
 
-          <thead>
+            <th>forename</th>
+            <th>surname</th>
+            <th>email</th>
+            <th>
+              {clicked ? searchInput : SearchIcon}
 
-            <tr>
+            </th>
 
-              <th>forename</th>
-              <th>surname</th>
-              <th>email</th>
-              <th>
-                <Search size={28} className={"button"} />
-              </th>
+          </tr>
 
-            </tr>
+        </thead>
 
-          </thead>
+        <hr />
 
-          {loading ?
+        {loading ?
 
-            (<div className="spinner"></div>) : (
-              <tbody>
-                {users.map((user) => {
+          (<div className="spinner"></div>
 
-                  return (
-                    <tr key={user.id} >
+          ) : (
 
-                      <td>{user.forename}</td>
-                      <td>{user.surname}</td>
-                      <td>{user.email}</td>
-                      <td>
-                        <Link to={`${user.id}`}>
-                          <ChevronRight size={40} className={"button"} />
-                        </Link>
-                      </td>
+            <tbody>
+              {users.filter(user => user.surname.toLowerCase().includes(search.toLowerCase())).map((user) => {
 
-                    </tr>
-                  );
-                })}
-              </tbody>
+                return (
+                  <tr key={user.id} >
 
-            )}
-        </table>
-      </footer>
+                    <td>{user.forename}</td>
+                    <td>{user.surname}</td>
+                    <td>{user.email}</td>
+                    <td><a href={`${user.id}`}><ChevronRight color="black" size={40} /></a></td>
+
+                  </tr>
+                );
+              })}
+            </tbody>
+          )}
+
+      </table>
+
     </>
   );
 
 }
+
 
