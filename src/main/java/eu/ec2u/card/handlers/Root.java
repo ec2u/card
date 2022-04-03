@@ -31,7 +31,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.stream.Collectors.toList;
 
 @Getter
 @Setter public final class Root {
@@ -68,7 +67,6 @@ import static java.util.stream.Collectors.toList;
 
         private String name;
         private String photo;
-        private String email;
 
     }
 
@@ -98,9 +96,7 @@ import static java.util.stream.Collectors.toList;
         private void ok(final HttpExchange exchange, final Holder holder) {
             try {
 
-                final List<Card> cards=fetcher // !!! error handling
-                        .fetch(holder.getEsi())
-                        .collect(toList());
+                final List<Card> cards=fetcher.fetch(holder.getEsi());// !!! error handling
 
                 send(exchange, OK, data()
                         .setHolder(holder)
@@ -115,7 +111,7 @@ import static java.util.stream.Collectors.toList;
         private void unauthorized(final HttpExchange exchange) {
             try {
 
-                exchange.sendResponseHeaders(Unauthorized, -1);
+                send(exchange, Unauthorized, data());
 
             } catch ( final IOException e ) {
                 throw new UncheckedIOException(e);

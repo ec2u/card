@@ -29,11 +29,11 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.net.http.HttpClient.newHttpClient;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toList;
 
 public final class Fetcher {
 
@@ -42,7 +42,7 @@ public final class Fetcher {
     @Inject private Codec codec;
 
 
-    public Stream<Card> fetch(final String esi) throws IOException {
+    public List<Card> fetch(final String esi) throws IOException {
 
         if ( esi == null ) {
             throw new NullPointerException("null esi");
@@ -57,7 +57,7 @@ public final class Fetcher {
 
             final HttpResponse<InputStream> response=newHttpClient().send(request, BodyHandlers.ofInputStream());
 
-            // !!! network error handling
+            // !!! network error handling / return null on 404
 
             try (
                     final InputStream input=response.body();
@@ -68,33 +68,36 @@ public final class Fetcher {
 
                 // !!! required fields
 
-                return student.cards.stream().map(card -> new Card()
+                return student.cards.stream()
 
-                        .setCode(card.europeanStudentCardNumber)
-                        .setTest(format("%s/%s", setup.getEsc().getTst(), card.europeanStudentCardNumber))
+                        .map(card -> new Card()
 
-                        .setExpiry(student.getExpiryDate().toLocalDate())
+                                .setCode(card.europeanStudentCardNumber)
+                                .setTest(format("%s/%s", setup.getEsc().getTst(), card.europeanStudentCardNumber))
 
-                        .setEsi(student.getEuropeanStudentIdentifier())
-                        .setPic(student.getPicInstitutionCode())
-                        .setLevel(student.getAcademicLevel())
+                                .setExpiry(student.getExpiryDate().toLocalDate())
 
-                        .setName(student.getName())
-                        //.setPhoto(student.???)
-                        .setEmail(student.getEmailAddress())
+                                .setEsi(student.getEuropeanStudentIdentifier())
+                                .setPic(student.getPicInstitutionCode())
+                                .setLevel(student.getAcademicLevel())
 
-                );
+                                .setName(student.getName())
+                                .setPhoto(null) // !!!
+
+                        )
+
+                        .collect(toList());
 
 
             } catch ( final ParseException e ) {  // !!! handle
 
-                return Stream.empty();
+                return null;
 
             }
 
         } catch ( final InterruptedException e ) {  // !!! handle
 
-            return Stream.empty();
+            return null;
 
         }
 

@@ -18,6 +18,9 @@ card-card {
 
     --qr-size: clamp(4em, 25vmin, 6em);
 
+    align-self: stretch;
+    justify-self: stretch;
+
     display: grid;
 
     align-items: stretch;
@@ -28,16 +31,36 @@ card-card {
 
     overflow: hidden;
 
-    & > button {
+    & > .logo {
         background-position: 0 0;
         background-size: contain;
         background-repeat: no-repeat;
     }
 
+    & > .spin {
 
-    & > div {
-        background-position: center;
-        background-repeat: no-repeat;
+        font-size: 2.5em;
+        color: #CCC;
+
+        & > svg {
+            stroke-width: 1px;
+            animation: spin-rotate 1.75s infinite linear;
+        }
+
+    }
+
+    & > .menu {
+
+        display: grid;
+        grid-template-columns: repeat(2, min-content);
+        grid-template-rows: repeat(auto-fit, min-content);
+        grid-gap: 0.25em;
+
+        font-size: 1.25em;
+        color: #999;
+
+        transform: translateX(-0.1em);
+
     }
 
     & > .photo {
@@ -47,10 +70,12 @@ card-card {
         border-style: solid;
         border-radius: 0.75em;
         background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
 
         & > svg {
             margin: auto;
-            color: var(--node--border-color);
+            color: #CCC;
             transform: scale(5);
             stroke-width: 0.5;
         }
@@ -59,10 +84,14 @@ card-card {
 
     & > .qr {
         background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
     }
 
     & > .hologram {
         background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
     }
 
 
@@ -106,12 +135,23 @@ card-card {
 
     @media only screen and (orientation: landscape) {
 
-        grid-template-rows: 1fr var(--qr-size);
         grid-template-columns: minmax(2.5em, 10vmax) 1fr var(--qr-size) calc(4 / 3 * var(--qr-size));
+        grid-template-rows: 1fr var(--qr-size);
 
 
-        & > button {
+        & > .logo {
             grid-area: 1 / 1;
+        }
+
+
+        & > .spin {
+            grid-area: 2 / 1;
+            align-self: end;
+        }
+
+        & > .menu {
+            grid-area: 2 / 1;
+            align-self: end;
         }
 
         & > .photo {
@@ -134,11 +174,21 @@ card-card {
 
     @media only screen and (orientation: portrait) {
 
-        grid-template-rows: minmax(2.5em, 12.5vmax) 1fr var(--qr-size) calc(3 / 4 * var(--qr-size));
         grid-template-columns: var(--qr-size) 1fr;
+        grid-template-rows: minmax(2.5em, 10vmax) 1fr var(--qr-size) calc(3 / 4 * var(--qr-size));
 
-        & > button {
+        & > .logo {
             grid-area: 1 / 1;
+        }
+
+        & > .spin {
+            grid-area: 4 / 1;
+            align-self: end;
+        }
+
+        & > .menu {
+            grid-area: 2 / 1;
+            align-self: start;
         }
 
         & > .photo {
@@ -159,4 +209,11 @@ card-card {
 
     }
 
+}
+
+
+@keyframes spin-rotate {
+    100% {
+        transform: rotate(360deg);
+    }
 }

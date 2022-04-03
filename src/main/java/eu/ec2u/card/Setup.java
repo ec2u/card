@@ -32,7 +32,6 @@ public final class Setup {
 
     private ESC esc;
 
-
     @Getter
     public static final class ESC {
 

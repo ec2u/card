@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { Profile } from "@ec2u/card/nests/session";
-import { About } from "@ec2u/card/pages/about";
-import React, { createElement, useState } from "react";
-import { Link } from "react-router-dom";
+import { icon } from "@ec2u/card/index";
+import { Heart, LogIn, LogOut, RefreshCw, User } from "lucide-react";
+import QRCode from "qrcode";
+import React, { createElement, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./card.css";
 
 
@@ -30,15 +31,126 @@ import "./card.css";
  */
 
 
+const JWTPattern=/^(?:[-\w]+\.){2}[-\w]+$/;
+
+const Levels: Record<number, string>={
+    6: "Bachelor",
+    7: "Master",
+    8: "Doctorate"
+};
+
+
+interface Profile {
+
+    readonly version: string;
+    readonly instant: string;
+
+    readonly holder?: User;
+
+    readonly cards?: Card[];
+
+}
+
+interface User {
+
+    readonly esi: string;
+    readonly uni: string;
+
+}
+
+interface Card {
+
+    readonly code: string;
+    readonly test: string;
+    readonly expiry: string;
+
+    readonly esi: string;
+    readonly pic: number;
+    readonly level: number;
+
+    readonly name: string;
+    readonly photo?: string;
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export function CardCard() {
 
-    const [profile, setProfile]=useState<Profile>();
+    const navigate=useNavigate();
+
+    const [gateway, setGateway]=useState<string>(); // the SSO gateway URL provided by the backend
+    const [profile, setProfile]=useState<Profile>(); // the current user profile
+
+
+    useEffect(() => {
+
+        // !!! load profile from storage
+
+        // look in query string for an auth token forwarded by the SSO gateway
+
+        const token=[location.search.substring(1)].filter(query => query.match(JWTPattern))[0];
+
+        queueMicrotask(() => { // clear query string
+
+            history.replaceState(history.state, "", location.href.replace(/\?[^#]*/, ""));
+
+        });
+
+
+        fetch("/", {
+
+            headers: {
+                Accept: "application/json",
+                Authorization: token ? `Bearer "${token}"` : `Bearer "${"!!!"}"`
+            }
+
+        }).then(response => {
+
+            response.json().then((profile: Profile) => { // encode card.test URL into a QR data url
+
+                if ( response.ok ) {
+
+
+                    if ( profile.cards ) {
+                        Promise.all(profile.cards.map(card => {
+                            return QRCode.toDataURL(card.test, {
+
+                                errorCorrectionLevel: "M",
+                                margin: 0
+
+                            }).then(test => ({ ...card, test }));
+
+                        })).then(cards => setProfile({ ...profile, cards })); // !!! save to storage
+
+
+                    } else {
+
+                        setProfile(profile); // !!! save to storage
+                    }
+
+                } else if ( response.status === 401 ) {
+
+                    setGateway((response.headers.get("WWW-Authenticate") ?? "")
+                        .match(/Bearer\s+realm\s*=\s*"(.*)"/)?.[1]
+                    );
+
+                    setProfile(undefined);
+
+                } else {
+
+                    // !!! notify
+
+                }
+
+            });
+
+        });
+
+    }, []);
 
     // const data=useRef<HTMLDListElement>(null);
-    //
-    // const [{ card }, setOptions]=useOptions();
-    // const [profile, setProfile]=useProfile<Profile>();
-    //
     //
     // useLayoutEffect(() => {
     //
@@ -60,91 +172,120 @@ export function CardCard() {
     //
 
     function doFlip() {
-        // setOptions({ card: false });
+        navigate("/about");
     }
 
-    return createElement("card-xxx", {},
+    function doLogIn() {
+        if ( gateway ) { location.replace(gateway); }
+    }
 
-        <>
-            <Link to={About.route}>{About.label}</Link>
-        </>
-
-
-        // profile?.card
-        //
-        // ? <>
-        //
-        //     {/*<button title={"Home"} onClick={doFlip} style={{ backgroundImage: "url('/assets/identity.svg')" }}/>*/}
-        //
-        //     {/*{CardPhoto(profile.card)}*/}
-        //     {/*<div className={"qr"} title={"QR Code"} style={profile.card ? { backgroundImage: `url('${profile.card.test}')` } : {}}/>*/}
-        //     {/*<div className={"hologram"} title={"ESC Hologram"} style={{ backgroundImage: "url('/assets/hologram.png')" }}/>*/}
-        //
-        //     {/*{profile?.card && CardData(profile.card)}*/}
-        //
-        // </>
-        //
-        // : <>
-        //
-        //     <button title={"Home"} onClick={doFlip} style={{ backgroundImage: "url('/assets/identity.svg')" }}/>
-        //
-        // </>
+    function doLogOut() {
+        if ( gateway ) { location.replace(gateway); }
+    }
 
 
-    );
+    return createElement("card-card", {}, <>
+
+        {cardLogo()}
+
+        {!profile
+
+            ? CardSpin()
+
+            : <>
 
 
-    // function CardData({
-    //
-    //     code,
-    //     expiry,
-    //
-    //     esi,
-    //     pic,
-    //     level,
-    //
-    //     name,
-    //     photo,
-    //     email
-    //
-    //
-    // }: Card) {
-    //
-    //     const institution="University of Pavia"; // !!!
-    //     const countryName="Italy"; // !!!
-    //     const countryCode="IT"; // !!!
-    //
-    //     return <div className={"data"}>
-    //
-    //         <dl ref={data}>
-    //
-    //             <dt>Name</dt>
-    //             <dd>{name}<br/>{esi
-    //                 .replace("urn:schac:personalUniqueCode:int:esi:", "")
-    //                 .replace(":", " · ")
-    //             }</dd>
-    //
-    //             <dt>Institution</dt>
-    //             <dd>{institution}<br/>{pic}</dd>
-    //
-    //             <dt>Country</dt>
-    //             <dd>{countryName} · {countryCode}</dd>
-    //
-    //             <dt>Level</dt>
-    //             <dd>{CardLevels[level]}</dd>
-    //
-    //             <dt>Validity</dt>
-    //             <dd>{expiry}</dd>
-    //
-    //         </dl>
-    //
-    //     </div>;
-    // }
+                <div className={"menu"}>
+                    {profile?.holder
+                        ? <button onClick={doLogOut}><LogOut style={{ transform: "scaleX(-1)" }}/></button>
+                        : <button onClick={doLogIn}><LogIn/></button>
+                    }
+                    <button onClick={doFlip}><Heart/></button>
+                </div>
 
-    // function CardPhoto({ photo }: Card) {
-    //     return <div className={"photo"} title={"Photo ID"} style={photo ? { backgroundImage: `url('${photo}')` } : {}}>{
-    //         photo ? <></> : <User/>
-    //     }</div>;
-    // }
+
+                {profile?.cards?.[0] && <>
+
+                    {CardPhoto(profile?.cards?.[0])}
+
+                    <div className={"qr"} title={"QR Code"} style={profile?.cards?.[0] ? { backgroundImage: `url('${profile?.cards?.[0].test}')` } : {}}/>
+                    <div className={"hologram"} title={"ESC Hologram"} style={{ backgroundImage: "url('/assets/hologram.png')" }}/>
+
+                    {CardData(profile?.cards?.[0])}
+                </>
+                }
+
+
+            </>
+
+        }
+
+    </>);
+
+
+    function cardLogo() {
+        return <a className={"logo"}
+            target={"_blank"} href={"https://www.ec2u.eu/"} // !!! from profile
+            style={{ backgroundImage: `url('${icon}')` }}
+        />;
+    }
+
+    function CardSpin() {
+        return <div className={"spin"}>
+            <RefreshCw/>
+        </div>;
+    }
+
+    function CardData({
+
+        code,
+        expiry,
+
+        esi,
+        pic,
+        level,
+
+        name,
+        photo
+
+
+    }: Card) {
+
+        const institution="University of Pavia"; // !!!
+        const countryName="Italy"; // !!!
+        const countryCode="IT"; // !!!
+
+        return <div className={"data"}>
+
+            <dl>
+
+                <dt>Name</dt>
+                <dd>{name}<br/>{esi
+                    .replace("urn:schac:personalUniqueCode:int:esi:", "")
+                    .replace(":", " · ")
+                }</dd>
+
+                <dt>Institution</dt>
+                <dd>{institution}<br/>{pic}</dd>
+
+                <dt>Country</dt>
+                <dd>{countryName} · {countryCode}</dd>
+
+                <dt>Level</dt>
+                <dd>{Levels[level]}</dd>
+
+                <dt>Validity</dt>
+                <dd>{expiry}</dd>
+
+            </dl>
+
+        </div>;
+    }
+
+    function CardPhoto({ photo }: Card) {
+        return <div className={"photo"} title={"Photo ID"} style={photo ? { backgroundImage: `url('${photo}')` } : {}}>{
+            photo ? <></> : <User/>
+        }</div>;
+    }
 
 }
