@@ -14,34 +14,31 @@
  * limitations under the License.
  */
 
-import { CardPage } from "@ec2u/card/views/page";
-import React from "react";
+import { useState } from "react";
 
 
-export const Contacts=Object.freeze({
+export function useStorage<T=any>(storage: Storage, key: string, initial: T | (() => T)): [T, (value: T) => void] {
 
-    route: "/contacts",
-    label: "Contacts"
+    const [value, setValue]=useState<T>(() => {
 
-});
+        const item=storage.getItem(key);
 
-export function CardContacts() {
+        return item !== null ? JSON.parse(item)
+            : initial instanceof Function ? initial()
+                : initial;
 
-    return <CardPage name={Contacts.label}>
+    });
 
-        <p>
-            EC2U Alliance<br/>
-            c/o University of Pavia<br/>
-            Via Ferrata 1<br/>
-            27100 Pavia<br/>
-            Italy
-        </p>
+    return [value, value => {
 
+        try { setValue(value); } finally {
 
-        <p>
-            <a href={"https://www.ec2u.eu"}>www.ec2u.eu</a><br/>
-            <a href={"mailto:cc@ml.ec2u.eu"}>cc@ml.ec2u.eu</a>
-        </p>
+            value === undefined
+                ? storage.removeItem(key)
+                : storage.setItem(key, JSON.stringify(value));
 
-    </CardPage>;
+        }
+
+    }];
+
 }

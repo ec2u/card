@@ -1,97 +1,104 @@
 /*
- * Copyright © 2022 EC2U Alliance. All rights reserved.
+ * Copyright © 2020-2022 EC2U Alliance
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 card-page {
 
-    display: grid;
+    width: 100%;
+    height: 100%;
 
-    grid-template-rows: 1fr;
-    grid-template-columns: min-content 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    & > header,
+    & > main > header {
+
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+
+        margin-bottom: 0.5em;
+
+        font-size: 1.5em;
+        white-space: nowrap;
+
+    }
 
     & > * {
 
-        grid-row: 1;
-
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-
-        overflow: hidden auto;
-
-        scroll-padding-top: 5em;
-
-        & > * {
-            flex-shrink: 0;
-        }
-
-        & > header {
-
-            z-index: 1;
-            position: sticky;
-            top: 0;
-            box-shadow: 0 0 0.75rem 0.75rem #FFF;
-
-            height: 2em;
-
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
-
-            white-space: nowrap;
-
-            font-size: 2.5rem;
-            font-weight: 600;
-
-            & > a {
-
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-
-            }
-
-        }
-
-        & > section {
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-            flex-grow: 1;
-        }
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
 
         & > footer {
-            padding-top: 1rem;
-            padding-bottom: 1rem;
+
+            margin-top: auto;
+
+            padding-top: 2.5em;
+            padding-bottom: 0.75rem;
+
+            font-size: 0.75em;
+            color: #CCC;
+
         }
 
     }
 
-    & > aside {
+    & > header {
 
+        position: sticky;
+        top: 0;
+
+        display: flex;
+        flex-direction: row;
         align-items: center;
+        grid-column-gap: 0.5em;
 
-        border-right-style: solid;
-        font-size: 2.5rem;
-
-        color: var(--node--color-light);
+        box-shadow: 0 0 0.5em 0.5em #FFF;
 
         & > * {
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
         }
 
-        & > section {
+        & > a {
+            flex-grow: 1;
+            text-decoration-line: none;
+        }
 
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
+    }
 
-            grid-row-gap: 0.5em;
+    & > nav {
+
+        flex-grow: 1;
+
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+
+        & > a {
+
+            text-decoration-line: none;
+
+            &.active {
+                text-decoration-line: underline;
+            }
 
         }
 
@@ -99,30 +106,94 @@ card-page {
 
     & > main {
 
+        flex-grow: 1;
+
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+
+        scroll-padding-top: 1em;
+
         & > * {
-            max-width: 50em;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
+            max-width: 40rem;
         }
 
-        & > footer {
+        & > header {
+            margin-bottom: 1em;
+        }
 
+    }
+
+    @media screen and (max-width: 512px) {
+
+        & > header {
+            text-align: center;
+        }
+
+    }
+
+    @media screen and (max-width: 768px) {
+
+        & > *:not(header):not(.active) {
+            display: none;
+        }
+
+    }
+
+    @media screen and (min-width: 768px) {
+
+        display: grid;
+        grid-template-columns: minmax(min-content, 1fr) minmax(min-content, 3fr) ;
+        grid-template-rows: min-content 1fr ;
+
+        grid-column-gap: 1em;
+
+        align-items: stretch;
+        justify-items: stretch;
+
+        & > header,
+        & > main > header {
+
+            padding-top: 0.75rem;
+            padding-bottom: 0.25rem;
+
+            margin-bottom: 0.5em;
+
+            font-size: 1.5em;
             white-space: nowrap;
-            font-size: 0.8em;
-            color: #CCC;
 
-            & > a, & > a:visited {
+        }
 
-                font: inherit;
-                color: inherit;
+        & > header {
 
-                &::before {
-                    content: '';
-                    margin-left: 0.5em;
-                    padding-left: 0.5em;
-                    border-left-style: solid;
-                }
+            justify-self: end;
+
+            grid-column: 1;
+            grid-row: 1;
+
+            & > :last-child {
+                display: none;
             }
+
+        }
+
+        & > nav {
+
+            justify-self: end;
+
+            grid-column: 1;
+            grid-row: 2;
+
+            align-items: end;
+
+        }
+
+        & > main {
+
+            grid-column: 2;
+            grid-row: 1 / span 2;
+
+            overflow-y: auto;
 
         }
 

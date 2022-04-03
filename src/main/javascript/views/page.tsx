@@ -1,91 +1,97 @@
 /*
- * Copyright © 2022 EC2U Alliance. All rights reserved.
+ * Copyright © 2020-2022 EC2U Alliance
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-import { root } from "@ec2u/card/pages/root";
-import { Immutable, isArray, isDefined } from "@metreeca/core";
-import { Value } from "@metreeca/core/value";
-import { copy } from "@metreeca/head";
-import { useProfile } from "@metreeca/nest/keeper";
-import { CreditCard, Key, LogIn, LogOut, Users } from "@metreeca/skin/lucide";
-import { NodeIcon } from "@metreeca/tile/widgets/icon";
-import { NodePath } from "@metreeca/tile/widgets/path";
-import React, { createElement, ReactNode } from "react";
+import { useProfile } from "@ec2u/card/hooks/profile";
+import { copy, Profile } from "@ec2u/card/index";
+import { About } from "@ec2u/card/pages/about";
+import { Contacts } from "@ec2u/card/pages/contacts";
+import { Privacy } from "@ec2u/card/pages/privacy";
+import { CardIcon } from "@ec2u/card/views/icon";
+import { Menu, X } from "lucide-react";
+import React, { createElement, ReactNode, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 import "./page.css";
 
 
 export function CardPage({
 
-    name=[],
+    name,
 
     children
 
 }: {
 
-    name?: Value | ReactNode | Immutable<Array<Value | ReactNode>>
+    name: string
 
     children: ReactNode
 
 }) {
 
-    const [profile, setProfile]=useProfile();
+    const [profile]=useProfile();
+    const [menu, setMenu]=useState(false);
 
 
-    function doLogIn() {
-        setProfile();
-    }
+    function version({ version, instant }: Profile) {
 
-    function doLogOut() {
-        setProfile(null);
+        const date=new Date(instant);
+
+        const year=date.getFullYear().toString();
+        const month=(date.getMonth()+1).toString().padStart(2, "0");
+        const day=date.getDate().toString().padStart(2, "0");
+
+        return `v${version}+${year}${month}${day}`;
     }
 
 
     return createElement("card-page", {}, <>
 
-        <aside>
+        <header>
 
-            <header>
-                <a href={"/"}><NodeIcon/></a>
-            </header>
+            <a href={profile?.manager || "/"} target={"_blank"}><CardIcon/></a>
 
-            <section>{profile ? <>
+            <Link to={"/"}>Virtual Card</Link>
 
-                <a href={"/cards/"}><CreditCard/></a>
-                <a href={"/users/"}><Users/></a>
-                <a href={"/keys/"}><Key/></a>
+            {menu
+                ? <button onClick={() => setMenu(false)}><X/></button>
+                : <button onClick={() => setMenu(true)}><Menu/></button>
+            }
 
-            </> : null}</section>
 
-            <footer>{isDefined(profile)
+        </header>
 
-                ? <button title={"Log Out"} onClick={doLogOut}><LogOut style={{ transform: "scaleX(-1)" }}/></button>
-                : <button title={"Log In"} onClick={doLogIn}><LogIn/></button>
+        <nav {...(menu ? { className: "active" } : {})}>
 
-            }</footer>
+            <NavLink to={About.route}>{About.label}</NavLink>
+            <NavLink to={Privacy.route}>{Privacy.label}</NavLink>
+            <NavLink to={Contacts.route}>{Contacts.label}</NavLink>
 
-        </aside>
+            <footer>{profile && version(profile)}</footer>
 
-        <main>
+        </nav>
 
-            <header>
-                <NodePath>{isArray(name) ? [root, ...name] : [root, name]}</NodePath>
-            </header>
+        <main {...(!menu ? { className: "active" } : {})}>
+
+            <header>{name}</header>
 
             <section>{children}</section>
 
-            <footer>
-
-                {copy}
-
-                <a href={"/about"}>About</a>
-                <a href={"/privacy"}>Privacy</a>
-                <a href={"/contacts"}>Contacts</a>
-
-            </footer>
+            <footer>{copy}</footer>
 
         </main>
 
-        </>
-    );
+    </>);
 
 }

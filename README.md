@@ -33,3 +33,9 @@ dynamically retrieved from central ESC facilities on the basis of a personal ide
 
 - open an [issue](https://github.com/ec2u/card/issues) to report a problem or to suggest a new feature
 - start a [discussion](https://github.com/ec2u/card/discussions) to ask a how-to question or to share an idea
+
+
+# License
+
+This project is licensed under the Apache 2.0 License – see [LICENSE](https://github.com/ec2u/card/blob/main/LICENSE)
+file for details.

@@ -1,85 +1,99 @@
 /*
- * Copyright © 2022 EC2U Alliance. All rights reserved.
+ * Copyright © 2020-2022 EC2U Alliance
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import { CardPage } from "@ec2u/card/views/page";
-import { immutable } from "@metreeca/core";
-import React, { createElement } from "react";
-import "./about.css";
+import React from "react";
 
 
-export const about=immutable({
+export const About=Object.freeze({
 
-    id: "/about",
+    route: "/about",
     label: "About"
 
 });
 
 export function CardAbout() {
-    return <CardPage name={about}>{createElement("card-about", {}, <dl>
+    return <CardPage name={About.label}>
 
-        <dt>Service</dt>
+        <p>The <a target={"_blank"} href={"https://www.ec2u.eu/"}>EC2U European Campus of
+            City‑Universities</a> is a multi&#8209;cultural and multi&#8209;lingual Alliance of seven
+            long&#8209;standing, education and research&#8209;led, locally and globally engaged universities
+            from four diverse regions of the European Union:</p>
 
-        <dd>
+        <ul>
+            <li>University of Coimbra - Portugal</li>
+            <li>Alexandru Ioan Cuza University of Iasi - Romania</li>
+            <li>University of Jena - Germany</li>
+            <li>University of Pavia - Italy</li>
+            <li>University of Poitiers - France (Coordinator)</li>
+            <li>University of Salamanca - Spain</li>
+            <li>University of Turku - Finland</li>
+        </ul>
 
-            <p>The EC2U virtual web-based Card Management System is the centralized application in charge of issuing and
-                managing EC2U cards on behalf of all universities.</p>
+        <h1>Service</h1>
 
-            <p>All EC2U people can get their virtual cards by authenticating themselves using the personal eduGAIN
-                credential provided by the university they come from.</p> <p>The card will contain a few personal
-            information (such as the card holder name, the expiring date, the identifier, the card number, the EC2U
-            hologram, the university logo and a QR-Code for integrity verification).</p>
+        The EC2U Virtual Card is a lightweight mobile-based academic identification card built on top of two mature and
+        widespread identity management systems:
 
-            <p>Card holders can then show their own card to local university or public service providers in order to get
-                the services they need. By scanning the QR-code, the local providers can verify the integrity and the
-                validness of the card.</p>
-        </dd>
+        <ul>
+            <li>the <a href={"https://europeanstudentcard.eu"} target={"_blank"}>European Student Card</a> (ESC)
+                framework
+            </li>
+            <li>the <a href={"https://edugain.org"} target={"_blank"}>eduGAIN</a> federated identity network</li>
+        </ul>
 
-        <dt>Users</dt>
+        <h1>Users</h1>
 
-        <dd>The EC2U virtual card is usable by all EC2U peoples: students, teachers or staff, as long as they are
-            provided with eduGAIN credentials by their university.
-        </dd>
+        <p>Faculty, students and staff registered with eduGAIN may be easily provided with a virtual card and
+            access it using personal credentials issued by their home institution.</p>
+
+        <p>Cardholders can demonstrate their academic affiliation and status by presenting their virtual card to local
+            academic, public or commercial service providers.</p>
+
+        <p>Service providers may verify card integrity and validity by scanning its QR code and automatically
+            retrieve authoritative data about the card and its holder from to the central ESC server.</p>
+
+        <h1>Management</h1>
+
+        <p>Mobility operators at partner universities issue and manage virtual cards directly on the central
+            ESC management system using their institutional accounts.</p>
+
+        <p>Partner universities may opt to delegate the EC2U Connect Centre to operate on their behalf on the central
+            ESC management system, in order to retrieve card details required to render virtual cards on mobile
+            devices.</p>
 
 
-        <dt>Management</dt>
+        <h1>Support</h1>
 
-        <dd> Each university can interact with the system via API or application in order to issue EC2U Cards.
-            Implementing local adapters to interact with the Card Management System is left in charge of each university:
-            each partner indeed with the support of the Consortium and the possible involvement of external suppliers
-            will be responsible for implementing local procedures enabling their systems to receive and send data
-            requests to the EC2U Card Management System according to the shared standards.
-        </dd>
+        <ul>
+            <li>open a GitHub <a href={"https://github.com/ec2u/card/issues"} target={"_blank"}>issue</a> to report a
+                problem or to suggest a new feature
+            </li>
+            <li>start a GitHub <a href={"https://github.com/ec2u/card/discussions"} target={"_blank"}>discussion</a> to
+                ask a how-to question or to share an idea
+            </li>
+            <li>contact the <a href={"mailto:cc@ml.ec2u.eu"}>EC2U Connect Centre</a> for all other needs</li>
+        </ul>
 
-        <dt>Support</dt>
+        <h1>Privacy</h1>
 
-        <dd>[TBC]</dd>
+        <p>The EC2U Virtual Card doesn't permanently store any personal cardholder information: all data
+            required to render virtual cards are dynamically retrieved from central ESC facilities on the basis of a
+            personal identification codes provided by the eduGAIN identity federation; both systems store personal
+            information in compliance with the European General Data Protection Regulation (GDPR).</p>
 
-        <dt>Privacy</dt>
-
-        <dd>
-
-            <p>No user data will be stored inside the EC2U Card Management System but just retrieved by two different
-                repositories:</p>
-
-            <dl>
-
-                <dt>ESC Router</dt>
-                <dd>this system is part of the EWP infrastructure, it holds several information about people involved
-                    in a Erasmus process. Those information is retrieved by the EC2U Card Management System via API
-                </dd>
-
-                <dt>Local University Identity Management Systems</dt>
-                <dd>this system is managed by the local universities and contains
-                    information about the user identity, such as username and password as well as the European Student
-                    Identifier. Such information is retrieved by the EC2U Card Management System through eduGAIN
-                </dd>
-
-            </dl>
-
-            <p>These two repositories comply with the european’s general data protection regulation (GDPR)</p>
-
-        </dd>
-
-    </dl>)}</CardPage>;
+    </CardPage>;
 }

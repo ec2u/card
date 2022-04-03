@@ -14,34 +14,17 @@
  * limitations under the License.
  */
 
-import { CardPage } from "@ec2u/card/views/page";
-import React from "react";
+import { icon } from "@ec2u/card/index";
+import React, { createElement } from "react";
+import "./icon.css";
 
 
-export const Contacts=Object.freeze({
+export function CardIcon() {
 
-    route: "/contacts",
-    label: "Contacts"
+    return createElement("card-icon", {
 
-});
+        style: { backgroundImage: `url('${icon}')` }
 
-export function CardContacts() {
+    });
 
-    return <CardPage name={Contacts.label}>
-
-        <p>
-            EC2U Alliance<br/>
-            c/o University of Pavia<br/>
-            Via Ferrata 1<br/>
-            27100 Pavia<br/>
-            Italy
-        </p>
-
-
-        <p>
-            <a href={"https://www.ec2u.eu"}>www.ec2u.eu</a><br/>
-            <a href={"mailto:cc@ml.ec2u.eu"}>cc@ml.ec2u.eu</a>
-        </p>
-
-    </CardPage>;
 }

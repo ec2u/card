@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  Copyright © 2022 EC2U Alliance. All rights reserved.
+  Copyright © 2020-2022 EC2U Alliance
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -35,9 +47,9 @@
 
     <properties>
 
-        <main>eu.ec2u.card.RootServer</main>
+        <main>eu.ec2u.card.Server</main>
 
-		<revision>work</revision>
+        <revision>${maven.build.timestamp}</revision>
 
         <java.version>11</java.version>
         <maven.version>3.6</maven.version>
@@ -49,8 +61,10 @@
         <gae.version>${revision}</gae.version>
         <gae.promote>false</gae.promote>
 
+        <project.instant>${maven.build.timestamp}</project.instant>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss</maven.build.timestamp.format>
+
+        <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
 
         <maven.site.skip>true</maven.site.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -68,13 +82,14 @@
         <url>https://github.com/ec2u/card/issues</url>
     </issueManagement>
 
+
     <dependencyManagement>
         <dependencies>
 
-            <dependency>
-                <groupId>com.metreeca</groupId>
-                <artifactId>metreeca-java</artifactId>
-                <version>0.0.0-SNAPSHOT</version>
+            <dependency> <!-- https://search.maven.org/artifact/com.google.cloud/libraries-bom -->
+                <groupId>com.google.cloud</groupId>
+                <artifactId>libraries-bom</artifactId>
+                <version>24.3.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -85,13 +100,9 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.metreeca</groupId>
-            <artifactId>metreeca-gcp</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.metreeca</groupId>
-            <artifactId>metreeca-xml</artifactId>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>5.1.0</version>
         </dependency>
 
         <dependency>
@@ -101,33 +112,19 @@
         </dependency>
 
         <dependency>
-            <groupId>eu.europeanstudentcard</groupId>
-            <artifactId>escn-generator</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>3.19.0</version>
         </dependency>
 
-        <dependency> <!-- !!! remove -->
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
-        </dependency>
-
-        <dependency> <!-- !!! remove -->
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>7.0.4.Final</version>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-secretmanager</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <scope>runtime</scope>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-core</artifactId>
         </dependency>
 
         <dependency>
@@ -140,42 +137,18 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+            <version>3.22.0</version>
             <scope>test</scope>
         </dependency>
 
     </dependencies>
-
-    <repositories>
-
-        <repository>
-
-            <id>central-releases</id>
-            <url>https://oss.sonatype.org/content/repositories/releases</url>
-
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-
-        </repository>
-
-        <repository>
-
-            <id>central-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-
-        </repository>
-
-    </repositories>
 
     <build>
 
@@ -413,13 +386,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.2.0</version>
-
-                <configuration>
-                    <nonFilteredFileExtensions>
-                        <nonFilteredFileExtension>key</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>crt</nonFilteredFileExtension>
-                    </nonFilteredFileExtensions>
-                </configuration>
 
                 <executions>
                     <execution>
