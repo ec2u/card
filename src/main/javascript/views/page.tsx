@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { copy, home } from "@ec2u/card/index";
+import { useProfile } from "@ec2u/card/hooks/profile";
+import { copy } from "@ec2u/card/index";
 import { About } from "@ec2u/card/pages/about";
 import { Contacts } from "@ec2u/card/pages/contacts";
 import { Privacy } from "@ec2u/card/pages/privacy";
@@ -39,12 +40,13 @@ export function CardPage({
 
 }) {
 
+    const [profile]=useProfile();
     const [menu, setMenu]=useState(false);
 
     return createElement("card-page", {}, <>
         <header>
 
-            <a href={home} target={"_blank"}><CardIcon/></a>
+            <a href={profile?.manager || "/"} target={"_blank"}><CardIcon/></a>
 
             <Link to={"/"}>Virtual Card</Link>
 

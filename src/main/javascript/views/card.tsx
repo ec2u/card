@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { useStorage } from "@ec2u/card/hooks/storage";
-import { Card, icon, Profile } from "@ec2u/card/index";
+import { useProfile } from "@ec2u/card/hooks/profile";
+import { Card, icon } from "@ec2u/card/index";
 import { ChevronLeft, ChevronRight, Heart, LogIn, LogOut, RefreshCw, User } from "lucide-react";
-import QRCode from "qrcode";
-import React, { createElement, useEffect, useState } from "react";
+import React, { createElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./card.css";
 
@@ -30,9 +29,6 @@ import "./card.css";
  *
  * @module
  */
-
-
-const JWTPattern=/^(?:[-\w]+\.){2}[-\w]+$/;
 
 const Levels: Record<number, string>={
     6: "Bachelor",
@@ -47,75 +43,8 @@ export function CardCard() {
 
     const navigate=useNavigate();
 
-    const [profile, setProfile]=useStorage<undefined | Profile>(localStorage, "profile", undefined);
-    const [gateway, setGateway]=useStorage<undefined | string>(localStorage, "gateway", undefined);
-
+    const [profile, setProfile]=useProfile();
     const [index, setIndex]=useState(0); // the index of the current profile card
-
-    useEffect(() => {
-
-        // look in the query string for an auth token forwarded by the SSO gateway
-
-        const token=[location.search.substring(1)].filter(query => query.match(JWTPattern))[0];
-
-        queueMicrotask(() => { // clear the query string
-
-            history.replaceState(history.state, "", location.href.replace(/\?[^#]*/, ""));
-
-        });
-
-
-        fetch("/", {
-
-            headers: {
-                Accept: "application/json",
-                ...(token ? { Authorization: `Bearer "${token}"` } : {})
-            }
-
-        }).then(response => {
-
-            response.json().then((profile: Profile) => { // encode card.test URL into a QR data url
-
-                if ( response.ok ) {
-
-                    if ( profile.cards ) {
-
-                        Promise.all(profile.cards.map(card => {
-
-                            return QRCode.toDataURL(card.test, {
-
-                                errorCorrectionLevel: "M",
-                                margin: 0
-
-                            }).then(test => ({ ...card, test }));
-
-                        })).then(cards => setProfile({ ...profile, cards }));
-
-                    } else {
-
-                        setProfile(profile);
-
-                    }
-
-                } else if ( response.status === 401 ) {
-
-                    setGateway((response.headers.get("WWW-Authenticate") ?? "")
-                        .match(/Bearer\s+realm\s*=\s*"(.*)"/)?.[1]
-                    );
-
-                    setProfile(profile);
-
-                } else {
-
-                    // !!! notify
-
-                }
-
-            });
-
-        });
-
-    }, [JSON.stringify(profile)]);
 
 
     function doFlip() {
@@ -123,11 +52,11 @@ export function CardCard() {
     }
 
     function doLogIn() {
-        if ( gateway ) { location.replace(gateway); }
+        setProfile();
     }
 
     function doLogOut() {
-        setProfile(undefined);
+        setProfile(null);
     }
 
     function doCycle(delta: number) {

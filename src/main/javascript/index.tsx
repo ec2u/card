@@ -22,6 +22,7 @@ import { User } from "lucide-react";
 import * as React from "react";
 import { render } from "react-dom";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { CardProfile } from "./hooks/profile";
 import "./index.css";
 
 
@@ -69,8 +70,6 @@ export interface Card {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const home="https://www.ec2u.eu/"; // !!! from profile.manager
-
 /**
  * The app name as read from the `<title>` HTML head tag.
  */
@@ -93,19 +92,23 @@ render((
 
     <React.StrictMode>
 
-        <BrowserRouter>
-            <Routes>
+        <CardProfile>
 
-                <Route path={"/"} element={<CardCard/>}/>
+            <BrowserRouter>
+                <Routes>
 
-                <Route path={About.route} element={<CardAbout/>}/>
-                <Route path={Privacy.route} element={<CardPrivacy/>}/>
-                <Route path={Contacts.route} element={<CardContacts/>}/>
+                    <Route path={"/"} element={<CardCard/>}/>
 
-                <Route path="*" element={<Navigate replace to="/"/>}/>
+                    <Route path={About.route} element={<CardAbout/>}/>
+                    <Route path={Privacy.route} element={<CardPrivacy/>}/>
+                    <Route path={Contacts.route} element={<CardContacts/>}/>
 
-            </Routes>
-        </BrowserRouter>
+                    <Route path="*" element={<Navigate replace to="/"/>}/>
+
+                </Routes>
+            </BrowserRouter>
+
+        </CardProfile>
 
     </React.StrictMode>
 
