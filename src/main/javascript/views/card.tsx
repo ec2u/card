@@ -15,7 +15,7 @@
  */
 
 import { useStorage } from "@ec2u/card/hooks/storage";
-import { Card, home, icon, Profile } from "@ec2u/card/index";
+import { Card, icon, Profile } from "@ec2u/card/index";
 import { ChevronLeft, ChevronRight, Heart, LogIn, LogOut, RefreshCw, User } from "lucide-react";
 import QRCode from "qrcode";
 import React, { createElement, useEffect, useState } from "react";
@@ -69,7 +69,7 @@ export function CardCard() {
 
             headers: {
                 Accept: "application/json",
-                Authorization: token ? `Bearer "${token}"` : ""
+                ...(token ? { Authorization: `Bearer "${token}"` } : {})
             }
 
         }).then(response => {
@@ -103,7 +103,7 @@ export function CardCard() {
                         .match(/Bearer\s+realm\s*=\s*"(.*)"/)?.[1]
                     );
 
-                    setProfile(undefined);
+                    setProfile(profile);
 
                 } else {
 
@@ -146,7 +146,7 @@ export function CardCard() {
 
             </div>
 
-            : !profile.holder ? <div className={"info"}>
+            : !profile.user ? <div className={"info"}>
 
                     <span>Log in to access your ESC cards</span>
 
@@ -173,7 +173,7 @@ export function CardCard() {
 
 
     function CardLogo() {
-        return <a className={"logo"} target={"_blank"} href={home}
+        return <a className={"logo"} target={"_blank"} href={profile?.manager || "/"}
             style={{ backgroundImage: `url('${icon}')` }}
         />;
     }
@@ -183,7 +183,7 @@ export function CardCard() {
 
             {!profile ? <button title={"Loading"} className={"spin"}><RefreshCw/></button>
 
-                : !profile.holder ? <button title={"Log in"} onClick={doLogIn}><LogIn/></button>
+                : !profile.user ? <button title={"Log in"} onClick={doLogIn}><LogIn/></button>
 
                     : <button title={"Log out"} onClick={doLogOut}><LogOut style={{ transform: "scaleX(-1)" }}/></button>
             }
@@ -203,17 +203,13 @@ export function CardCard() {
         expiry,
 
         esi,
-        pic,
         level,
+        name,
 
-        name
+        hei
 
 
     }: Card) {
-
-        const institution="University of Pavia"; // !!!
-        const countryName="Italy"; // !!!
-        const countryCode="IT"; // !!!
 
         return <div className={"data"}>
 
@@ -226,10 +222,10 @@ export function CardCard() {
                 }</dd>
 
                 <dt>Institution</dt>
-                <dd>{institution}<br/>{pic}</dd>
+                <dd>{hei.name}<br/>{hei.pic}</dd>
 
                 <dt>Country</dt>
-                <dd>{countryName} · {countryCode}</dd>
+                <dd>{hei.country} · {hei.iso}</dd>
 
                 <dt>Level</dt>
                 <dd>{Levels[level]}</dd>

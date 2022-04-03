@@ -20,7 +20,7 @@ import com.google.inject.Inject;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;
 import eu.ec2u.card.Setup;
-import eu.ec2u.card.handlers.Root.Holder;
+import eu.ec2u.card.handlers.Root.User;
 import eu.ec2u.card.services.Notary;
 import lombok.experimental.Delegate;
 
@@ -59,7 +59,9 @@ public final class Keeper extends Filter {
 
                 .map(this::validate) // !!! malformed/expired
 
-                .ifPresent(holder -> holder(exchange, holder));
+                .ifPresent(user -> holder(exchange, user));
+
+        holder(exchange, validate("")); // !!!
 
         chain.doFilter(new ExchangeWrapper(exchange) {
 
@@ -79,8 +81,8 @@ public final class Keeper extends Filter {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private Holder validate(final String token) {
-        return new Holder()
+    private User validate(final String token) {
+        return new User()
                 .setEsi("urn:schac:personalUniqueCode:int:esi:unipv.it:999001")
                 .setUni("unipv.it");
     }

@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 @Getter
 public final class Setup {
 
+    private String manager;
     private String version;
     private LocalDateTime instant;
 

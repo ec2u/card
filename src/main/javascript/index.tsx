@@ -27,11 +27,11 @@ import "./index.css";
 
 export interface Profile {
 
+    readonly manager: string;
     readonly version: string;
     readonly instant: string;
 
-    readonly holder?: User;
-
+    readonly user?: User;
     readonly cards?: Card[];
 
 }
@@ -50,18 +50,26 @@ export interface Card {
     readonly expiry: string;
 
     readonly esi: string;
-    readonly pic: number;
     readonly level: number;
-
     readonly name: string;
     readonly photo?: string;
+
+    readonly hei: {
+
+        readonly pic: number;
+        readonly name: string;
+
+        readonly iso: string;
+        readonly country: string;
+
+    };
 
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const home="https://www.ec2u.eu/"; // !!! from profile
+export const home="https://www.ec2u.eu/"; // !!! from profile.manager
 
 /**
  * The app name as read from the `<title>` HTML head tag.

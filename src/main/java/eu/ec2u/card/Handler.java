@@ -18,7 +18,8 @@ package eu.ec2u.card;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import eu.ec2u.card.handlers.Root.Holder;
+import eu.ec2u.card.handlers.Root;
+import eu.ec2u.card.handlers.Root.User;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -53,17 +54,17 @@ public abstract class Handler implements HttpHandler {
     }
 
 
-    public static Optional<Holder> holder(final HttpExchange exchange) {
-        return Optional.of(Holder.class.getName())
+    public static Optional<Root.User> holder(final HttpExchange exchange) {
+        return Optional.of(Root.User.class.getName())
 
                 .map(exchange::getAttribute)
-                .filter(Holder.class::isInstance)
-                .map(Holder.class::cast);
+                .filter(User.class::isInstance)
+                .map(User.class::cast);
     }
 
-    public static HttpExchange holder(final HttpExchange exchange, final Holder holder) {
+    public static HttpExchange holder(final HttpExchange exchange, final User user) {
 
-        exchange.setAttribute(Holder.class.getName(), holder);
+        exchange.setAttribute(User.class.getName(), user);
 
         return exchange;
     }

@@ -19,6 +19,7 @@ package eu.ec2u.card.services;
 import com.google.inject.Inject;
 import eu.ec2u.card.Setup;
 import eu.ec2u.card.handlers.Root.Card;
+import eu.ec2u.card.handlers.Root.HEI;
 import lombok.Getter;
 
 import java.io.*;
@@ -29,6 +30,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static java.lang.String.format;
 import static java.net.http.HttpClient.newHttpClient;
@@ -48,9 +50,13 @@ public final class Fetcher {
             throw new NullPointerException("null esi");
         }
 
+        final String key=setup.getEsc().getKey(); // !!! switch on user.uni
+
         final HttpRequest request=HttpRequest.newBuilder().GET()
                 .uri(URI.create(format("%s/v1/students/%s", setup.getEsc().getApi(), esi)))
-                .header("Key", vault.get(setup.getEsc().getKey()).orElseThrow())
+                .header("Key", vault.get(key).orElseThrow(() ->
+                        new NoSuchElementException(format("undefined <%s> key", key))
+                ))
                 .build();
 
         try {
@@ -78,11 +84,16 @@ public final class Fetcher {
                                 .setExpiry(student.getExpiryDate().toLocalDate())
 
                                 .setEsi(student.getEuropeanStudentIdentifier())
-                                .setPic(student.getPicInstitutionCode())
                                 .setLevel(student.getAcademicLevel())
-
                                 .setName(student.getName())
                                 .setPhoto(null) // !!!
+
+                                .setHei(new HEI()
+                                        .setPic(student.getPicInstitutionCode())
+                                        .setName("University of Pavia")
+                                        .setCountry("Italy")
+                                        .setIso("IT")
+                                )
 
                         )
 

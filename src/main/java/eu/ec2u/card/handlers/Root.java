@@ -35,10 +35,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Getter
 @Setter public final class Root {
 
+    private String manager;
     private String version;
     private LocalDateTime instant;
 
-    private Holder holder;
+    private User user;
     private List<Card> cards;
 
 
@@ -46,7 +47,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
     @Getter
     @Setter
-    public static final class Holder {
+    public static final class User {
 
         private String esi;
         private String uni;
@@ -62,11 +63,24 @@ import static java.nio.charset.StandardCharsets.UTF_8;
         private LocalDate expiry;
 
         private String esi;
-        private int pic;
         private int level;
-
         private String name;
         private String photo;
+
+        private HEI hei;
+
+    }
+
+    @Getter
+    @Setter
+    public static final class HEI {
+
+        private int pic;
+        private String name;
+
+        private String iso;
+        private String country;
+
 
     }
 
@@ -83,7 +97,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
         @Override public void handle(final HttpExchange exchange) {
             holder(exchange).ifPresentOrElse(
 
-                    holder -> ok(exchange, holder),
+                    user -> ok(exchange, user),
 
                     () -> unauthorized(exchange)
 
@@ -93,13 +107,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private void ok(final HttpExchange exchange, final Holder holder) {
+        private void ok(final HttpExchange exchange, final User user) {
             try {
 
-                final List<Card> cards=fetcher.fetch(holder.getEsi());// !!! error handling
+                final List<Card> cards=fetcher.fetch(user.getEsi());// !!! error handling
 
                 send(exchange, OK, data()
-                        .setHolder(holder)
+                        .setUser(user)
                         .setCards(cards)
                 );
 
@@ -123,6 +137,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
         private Root data() {
             return new Root()
+                    .setManager(setup.getManager())
                     .setVersion(setup.getVersion())
                     .setInstant(setup.getInstant());
         }
