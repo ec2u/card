@@ -21,6 +21,8 @@ import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;
 import eu.ec2u.card.Setup;
 import eu.ec2u.card.handlers.Root.Holder;
+import eu.ec2u.card.services.Notary;
+import lombok.experimental.Delegate;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -40,6 +42,7 @@ public final class Keeper extends Filter {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject private Setup setup;
+    @Inject private Notary notary;
 
 
     @Override public String description() {
@@ -58,11 +61,18 @@ public final class Keeper extends Filter {
 
                 .ifPresent(holder -> holder(exchange, holder));
 
-        chain.doFilter(exchange);
+        chain.doFilter(new ExchangeWrapper(exchange) {
 
-        if ( exchange.getResponseCode() == Unauthorized ) {
-            exchange.getResponseHeaders().set("WWW-Authenticate", format("Bearer realm=\"%s\"", setup.getSso()));
-        }
+            @Override public void sendResponseHeaders(final int rCode, final long responseLength) throws IOException {
+
+                if ( rCode == Unauthorized ) {
+                    getResponseHeaders().set("WWW-Authenticate", format("Bearer realm=\"%s\"", setup.getSso()));
+                }
+
+                super.sendResponseHeaders(rCode, responseLength);
+            }
+
+        });
 
     }
 
@@ -73,6 +83,17 @@ public final class Keeper extends Filter {
         return new Holder()
                 .setEsi("urn:schac:personalUniqueCode:int:esi:unipv.it:999001")
                 .setUni("unipv.it");
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private abstract static class ExchangeWrapper extends HttpExchange {
+
+        @Delegate private final HttpExchange exchange;
+
+        ExchangeWrapper(final HttpExchange exchange) { this.exchange=exchange; }
+
     }
 
 }

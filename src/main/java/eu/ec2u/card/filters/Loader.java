@@ -16,19 +16,81 @@
 
 package eu.ec2u.card.filters;
 
-import com.sun.net.httpserver.Filter;
-import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.*;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.Optional;
+
+import static eu.ec2u.card.Handler.*;
+
+import static java.lang.String.format;
 
 public final class Loader extends Filter {
 
     @Override public String description() {
-        return "frontend loader";
+        return "SPA loader";
     }
 
     @Override public void doFilter(final HttpExchange exchange, final Chain chain) throws IOException {
-        chain.doFilter(exchange);
+
+        if ( isSafe(exchange) && isInteractive(exchange) && !isAsset(exchange) ) {
+
+            final Headers headers=exchange.getRequestHeaders();
+
+            final String proto=Optional.ofNullable(headers.getFirst("X-Forwarded-Proto"))
+                    .or(() -> Optional.ofNullable(exchange.getProtocol())
+                            .map(p -> p.substring(p.indexOf('/')))
+                            .map(p -> p.toLowerCase(Locale.ROOT))
+                    )
+                    .orElse("http");
+
+            final String host=Optional.ofNullable(headers.getFirst("X-Forwarded-Host"))
+                    .or(() -> Optional.ofNullable(headers.getFirst("Host")))
+                    .orElse("localhost");
+
+
+            final String index=format("%s://%s/index.html", proto, host);
+
+            // !!! replace
+
+            exchange.getResponseHeaders().set("Location", index);
+            exchange.sendResponseHeaders(302, -1);
+
+            //final HttpRequest request=HttpRequest.newBuilder().GET()
+            //        .uri(URI.create(index))
+            //        .build();
+            //
+            //// !!! prevent loops
+            //
+            //try {
+            //
+            //    final HttpResponse<String> response=newHttpClient().send(request, BodyHandlers.ofString());
+            //
+            //    // !!! network error handling
+            //
+            //    exchange.getResponseHeaders().set("Content-Type", "text/html");
+            //
+            //    exchange.sendResponseHeaders(OK, 0);
+            //
+            //    try (
+            //            final OutputStream output=exchange.getResponseBody();
+            //    ) {
+            //
+            //        output.write(response.body().getBytes(UTF_8));
+            //
+            //    }
+            //
+            //} catch ( final InterruptedException e ) {
+            //    throw new RuntimeException(e); // !!! handle
+            //}
+
+        } else {
+
+            chain.doFilter(exchange);
+
+        }
+
     }
 
 }

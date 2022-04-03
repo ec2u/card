@@ -21,12 +21,36 @@ import com.sun.net.httpserver.HttpHandler;
 import eu.ec2u.card.handlers.Root.Holder;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class Handler implements HttpHandler {
 
     public static final int OK=200;
     public static final int Unauthorized=401;
     public static final int NotFound=404;
+
+    private static final Pattern HTMLPattern=Pattern.compile("\\btext/x?html\\b");
+    private static final Pattern FilePattern=Pattern.compile("\\.\\w+$");
+
+
+    public static boolean isSafe(final HttpExchange exchange) {
+        return exchange.getRequestMethod().equalsIgnoreCase("GET");
+    }
+
+    public static boolean isAsset(final HttpExchange exchange) {
+        return Optional.ofNullable(exchange.getRequestURI().getPath())
+                .map(FilePattern::matcher)
+                .filter(Matcher::find)
+                .isPresent();
+    }
+
+    public static boolean isInteractive(final HttpExchange exchange) {
+        return Optional.ofNullable(exchange.getRequestHeaders().getFirst("Accept"))
+                .map(HTMLPattern::matcher)
+                .filter(Matcher::find)
+                .isPresent();
+    }
 
 
     public static Optional<Holder> holder(final HttpExchange exchange) {

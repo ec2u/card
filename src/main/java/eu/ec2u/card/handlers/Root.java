@@ -77,13 +77,12 @@ import static java.util.stream.Collectors.toList;
 
     public static final class Route extends Handler {
 
-
         @Inject private Setup setup;
         @Inject private Codec codec;
         @Inject private Fetcher fetcher;
 
 
-        @Override public void handle(final HttpExchange exchange) throws IOException {
+        @Override public void handle(final HttpExchange exchange) {
             holder(exchange).ifPresentOrElse(
 
                     holder -> ok(exchange, holder),
@@ -157,6 +156,7 @@ import static java.util.stream.Collectors.toList;
                 codec.encode(writer, body);
 
             }
+
         }
 
     }
