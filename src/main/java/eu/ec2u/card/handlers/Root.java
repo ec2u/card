@@ -81,6 +81,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
         private String iso;
         private String country;
 
+        private String key; // the vault id of the HEI ESC Router API key
 
     }
 
@@ -110,7 +111,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
         private void ok(final HttpExchange exchange, final User user) {
             try {
 
-                final List<Card> cards=fetcher.fetch(user.getEsi());// !!! error handling
+                final List<Card> cards=fetcher.fetch(user);// !!! error handling
 
                 send(exchange, OK, data()
                         .setUser(user)

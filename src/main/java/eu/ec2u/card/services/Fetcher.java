@@ -18,8 +18,7 @@ package eu.ec2u.card.services;
 
 import com.google.inject.Inject;
 import eu.ec2u.card.Setup;
-import eu.ec2u.card.handlers.Root.Card;
-import eu.ec2u.card.handlers.Root.HEI;
+import eu.ec2u.card.handlers.Root.*;
 import lombok.Getter;
 
 import java.io.*;
@@ -44,16 +43,20 @@ public final class Fetcher {
     @Inject private Codec codec;
 
 
-    public List<Card> fetch(final String esi) throws IOException {
+    public List<Card> fetch(final User user) throws IOException {
 
-        if ( esi == null ) {
+        if ( user == null ) {
             throw new NullPointerException("null esi");
         }
 
-        final String key=setup.getEsc().getKey(); // !!! switch on user.uni
+        final String uni="unipv.it"; // !!! from user
+
+        final HEI tenant=setup.getTenants().get(uni); // !!! handle missing elements
+
+        final String key=tenant.getKey();
 
         final HttpRequest request=HttpRequest.newBuilder().GET()
-                .uri(URI.create(format("%s/v1/students/%s", setup.getEsc().getApi(), esi)))
+                .uri(URI.create(format("%s/v1/students/%s", setup.getEsc().getApi(), user.getEsi())))
                 .header("Key", vault.get(key).orElseThrow(() ->
                         new NoSuchElementException(format("undefined <%s> key", key))
                 ))
@@ -72,7 +75,8 @@ public final class Fetcher {
 
                 final ESCStudent student=codec.decode(reader, ESCStudent.class);
 
-                // !!! required fields
+                // !!! assert required fields
+                // !!! assert student.getPicInstitutionCode() == tenant.pic
 
                 return student.cards.stream()
 
@@ -88,12 +92,7 @@ public final class Fetcher {
                                 .setName(student.getName())
                                 .setPhoto(null) // !!!
 
-                                .setHei(new HEI()
-                                        .setPic(student.getPicInstitutionCode())
-                                        .setName("University of Pavia")
-                                        .setCountry("Italy")
-                                        .setIso("IT")
-                                )
+                                .setHei(tenant)
 
                         )
 

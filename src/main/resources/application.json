@@ -6,7 +6,15 @@
     "jwt": "key-jwt",
     "esc": {
         "api": "https://api-sandbox.europeanstudentcard.eu",
-        "tst": "http://pp.esc.gg",
-        "key": "key-esc-sandbox"
+        "tst": "http://pp.esc.gg"
+    },
+    "tenants": {
+        "unipv.it": {
+            "pic": 999893752,
+            "name": "University of Pavia",
+            "iso": "IT",
+            "country": "Italy",
+            "key": "key-esc-sandbox"
+        }
     }
 }

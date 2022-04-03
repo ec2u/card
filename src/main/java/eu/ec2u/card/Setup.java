@@ -16,10 +16,12 @@
 
 package eu.ec2u.card;
 
+import eu.ec2u.card.handlers.Root.HEI;
 import lombok.Getter;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Getter
 public final class Setup {
@@ -33,12 +35,16 @@ public final class Setup {
 
     private ESC esc;
 
+    private Map<String, HEI> tenants;
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Getter
     public static final class ESC {
 
         private String api;
         private String tst;
-        private String key;
 
     }
 
