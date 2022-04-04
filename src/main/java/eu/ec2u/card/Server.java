@@ -18,15 +18,16 @@ package eu.ec2u.card;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
-import eu.ec2u.card.filters.Keeper;
-import eu.ec2u.card.filters.Loader;
+import eu.ec2u.card.handlers.Loader;
+import eu.ec2u.card.handlers.Router;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.Executors;
-import java.util.logging.Formatter;
 import java.util.logging.*;
 import java.util.regex.Pattern;
 
@@ -45,7 +46,7 @@ public final class Server {
 
             })
 
-            .orElse(8080);
+            .orElse(3000);
 
 
     private static final int backlog=128;
@@ -141,7 +142,6 @@ public final class Server {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject private Loader loader;
-    @Inject private Keeper keeper;
     @Inject private Router router;
     @Inject private Logger logger;
 
@@ -153,26 +153,21 @@ public final class Server {
 
             server.setExecutor(Executors.newCachedThreadPool());
 
-            server
+            final HttpContext context=server.createContext("/", exchange -> {
+                try {
 
-                    .createContext("/", exchange -> {
-                        try {
+                    router.handle(exchange);
 
-                            router.handle(exchange);
+                    logger.info(format("%d %s", exchange.getResponseCode(), exchange.getRequestURI()));
 
-                        } catch ( final RuntimeException e ) {
+                } catch ( final RuntimeException e ) {
 
-                            logger.log(SEVERE, "unhandled exception", e);
+                    logger.log(SEVERE, "unhandled exception", e);
 
-                        }
-                    })
+                }
+            });
 
-                    .getFilters().addAll(List.of(
-
-                            loader,
-                            keeper
-
-                    ));
+            context.getFilters().add(loader);
 
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {

@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 
     resolve: {
         alias: [
-            { find: /^@ec2u\/card\/(.*)$/, replacement: resolve(src, "$1") },
+            { find: /^@ec2u\/card\/(.*)$/, replacement: resolve(src, "$1") }
         ]
     },
 
@@ -57,14 +57,10 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 
     server: {
 
-        https: true,
-        host: "127.0.0.1", // as required by GWS SAML configuration
-        open: "/",
-
         proxy: {
             "^(/[-a-zA-Z0-9]+)*/?(\\?.*)?$": { // routes with optional query
                 target: "http://localhost:8080/",
-                xfwd: true // required to properly generate SAML URLs
+                xfwd: true
             }
         }
 

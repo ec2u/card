@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.ec2u.card.filters;
+package eu.ec2u.card.handlers;
 
 import com.sun.net.httpserver.*;
 
@@ -24,16 +24,50 @@ import java.net.URL;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.util.Locale;
-import java.util.Optional;
-
-import static eu.ec2u.card.Handler.*;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static java.net.http.HttpClient.newHttpClient;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Map.entry;
 
 public final class Loader extends Filter {
+
+    private static final Map<String, String> Mimes=Map.ofEntries(
+            entry("html", "text/html"),
+            entry("css", "text/css"),
+            entry("js", "text/javascript"),
+            entry("svg", "image/svg+xml"),
+            entry("png", "image/png"),
+            entry("webp", "image/webp")
+    );
+
+
+    private static final Pattern HTMLPattern=Pattern.compile("\\btext/x?html\\b");
+    private static final Pattern FilePattern=Pattern.compile("\\.\\w+$");
+
+
+    private static boolean isSafe(final HttpExchange exchange) {
+        return exchange.getRequestMethod().equalsIgnoreCase("GET");
+    }
+
+    private static boolean isAsset(final HttpExchange exchange) {
+        return Optional.ofNullable(exchange.getRequestURI().getPath())
+                .map(FilePattern::matcher)
+                .filter(Matcher::find)
+                .isPresent();
+    }
+
+    private static boolean isInteractive(final HttpExchange exchange) {
+        return Optional.ofNullable(exchange.getRequestHeaders().getFirst("Accept"))
+                .map(HTMLPattern::matcher)
+                .filter(Matcher::find)
+                .isPresent();
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override public String description() {
         return "SPA loader";
@@ -66,19 +100,22 @@ public final class Loader extends Filter {
 
     private void asset(final HttpExchange exchange) throws IOException {
 
-        // !!! prevent tree walking
+        final String path=exchange.getRequestURI().normalize().getPath(); // normalize to prevent tree walking
+        final String type=path.substring(path.lastIndexOf('.')+1);
 
-        final URL asset=Loader.class.getResource("/static"+exchange.getRequestURI());
-
+        final URL asset=Loader.class.getResource(format("/static%s", path));
 
         if ( asset == null ) {
 
-            exchange.sendResponseHeaders(NotFound, -1);
+            exchange.sendResponseHeaders(404, -1);
 
         } else {
 
-            exchange.sendResponseHeaders(OK, 0);
-            //exchange.getResponseHeaders().set("Content-Type", "text/html");
+            exchange.getResponseHeaders().set("Content-Type",
+                    Mimes.getOrDefault(type, "application/octet-stream")
+            );
+
+            exchange.sendResponseHeaders(200, 0);
 
             try (
                     final InputStream input=asset.openStream();
@@ -98,7 +135,7 @@ public final class Loader extends Filter {
 
         final String proto=Optional.ofNullable(headers.getFirst("X-Forwarded-Proto"))
                 .or(() -> Optional.ofNullable(exchange.getProtocol())
-                        .map(p -> p.substring(p.indexOf('/')))
+                        .map(p -> p.substring(0, p.indexOf('/')))
                         .map(p -> p.toLowerCase(Locale.ROOT))
                 )
                 .orElse("http");
@@ -108,7 +145,7 @@ public final class Loader extends Filter {
                 .orElse("localhost");
 
 
-        final String index=format("%s://%s/", proto, host);
+        final String index=format("%s://%s/index.html", proto, host);
 
         final HttpRequest request=HttpRequest.newBuilder().GET()
                 .uri(URI.create(index))
@@ -118,19 +155,24 @@ public final class Loader extends Filter {
 
         try {
 
-            final HttpResponse<String> response=newHttpClient().send(request, BodyHandlers.ofString());
+            final HttpResponse<InputStream> response=newHttpClient().send(request, BodyHandlers.ofInputStream());
 
             // !!! network error handling
 
-            exchange.getResponseHeaders().set("Content-Type", "text/html");
+            exchange.getResponseHeaders().set("Content-Type", response.headers()
+                    .firstValue("Content-Type")
+                    .orElse("text/html")
+            );
 
-            exchange.sendResponseHeaders(OK, 0);
+
+            exchange.sendResponseHeaders(200, 0);
 
             try (
-                    final OutputStream output=exchange.getResponseBody();
+                    final InputStream input=response.body();
+                    final OutputStream output=exchange.getResponseBody()
             ) {
 
-                output.write(response.body().getBytes(UTF_8));
+                input.transferTo(output);
 
             }
 

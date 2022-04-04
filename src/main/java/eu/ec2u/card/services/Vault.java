@@ -37,9 +37,7 @@ public final class Vault {
             throw new IllegalArgumentException("empty key");
         }
 
-        try {
-
-            final SecretManagerServiceClient client=SecretManagerServiceClient.create();
+        try ( final SecretManagerServiceClient client=SecretManagerServiceClient.create() ) {
 
             final String project=ServiceOptions.getDefaultProjectId();
             final Iterable<Secret> secrets=client.listSecrets(ProjectName.of(project)).iterateAll();

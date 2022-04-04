@@ -16,7 +16,7 @@
 
 package eu.ec2u.card;
 
-import eu.ec2u.card.handlers.Root.HEI;
+import eu.ec2u.card.Profile.HEI;
 import lombok.Getter;
 
 import java.net.URI;

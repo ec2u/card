@@ -2,7 +2,7 @@
     "private": true,
     "scripts": {
         "setup": "npm install",
-        "start": "vite",
+        "start": "vite --open",
         "build": "vite build"
     },
     "dependencies": {

@@ -17,8 +17,8 @@
 package eu.ec2u.card.services;
 
 import com.google.inject.Inject;
+import eu.ec2u.card.Profile.*;
 import eu.ec2u.card.Setup;
-import eu.ec2u.card.handlers.Root.*;
 import lombok.Getter;
 
 import java.io.*;
@@ -43,7 +43,7 @@ public final class Fetcher {
     @Inject private Codec codec;
 
 
-    public List<Card> fetch(final User user) throws IOException {
+    public List<Card> fetch(final User user) {
 
         if ( user == null ) {
             throw new NullPointerException("null esi");
@@ -101,13 +101,18 @@ public final class Fetcher {
 
             } catch ( final ParseException e ) {  // !!! handle
 
-                return null;
+                throw new RuntimeException(e);
 
             }
 
+        } catch ( final IOException e ) {  // !!! handle
+
+            throw new UncheckedIOException(e);
+
+
         } catch ( final InterruptedException e ) {  // !!! handle
 
-            return null;
+            throw new RuntimeException(e);
 
         }
 
