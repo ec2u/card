@@ -4,7 +4,7 @@
 {
     "compilerOptions": {
         "baseUrl": "src/main/javascript",
-        "outDir": "target/static/",
+        "outDir": "target/classes/static/",
         "paths": {
             "@ec2u/card/*": [
                 "*"

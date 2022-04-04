@@ -111,15 +111,17 @@ export function CardProfile({
 
         value: [profile, (action?: null) => {
 
-            if ( action === undefined ) { // login
+           if ( action === undefined ) { // login
 
-                if ( gateway ) { location.replace(gateway); }
+               if ( gateway ) {
+                   location.replace(`${gateway}?target=${encodeURIComponent(location.href)}`);
+               }
 
-            } else { // logout
+           } else { // logout
 
-                setProfile(undefined);
+               setProfile(undefined);
 
-            }
+           }
 
         }],
 

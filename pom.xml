@@ -403,7 +403,7 @@
 
                             <resources>
                                 <resource>
-                                    <directory>${project.build.directory}/static</directory>
+                                    <directory>${project.build.outputDirectory}/static</directory>
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>

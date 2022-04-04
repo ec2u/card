@@ -61,8 +61,6 @@ public final class Keeper extends Filter {
 
                 .ifPresent(user -> holder(exchange, user));
 
-        holder(exchange, validate("")); // !!!
-
         chain.doFilter(new ExchangeWrapper(exchange) {
 
             @Override public void sendResponseHeaders(final int rCode, final long responseLength) throws IOException {
@@ -81,7 +79,7 @@ public final class Keeper extends Filter {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private User validate(final String token) {
+    private User validate(final String token) { // !!!
         return new User()
                 .setEsi("urn:schac:personalUniqueCode:int:esi:unipv.it:999001")
                 .setUni("unipv.it");
