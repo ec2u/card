@@ -37,24 +37,16 @@ import static java.util.logging.Level.*;
 public final class Server {
 
     private static final String host="localhost";
-
-    private static final int port=Optional.ofNullable(System.getenv().get("PORT"))
-
-            .map(value -> {
-
-                try { return Integer.parseInt(value); } catch ( final NumberFormatException e ) { return null; }
-
-            })
-
-            .orElse(3000);
-
+    private static final int port=3000;
 
     private static final int backlog=128;
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private static final String PortVariable="PORT";
     private static final Pattern EOLPattern=Pattern.compile("\n");
+
 
     static {  // logging not configured: reset and load compact console configuration ;(unless on GAE)
 
@@ -149,7 +141,16 @@ public final class Server {
     private void start() {
         try {
 
-            final HttpServer server=HttpServer.create(new InetSocketAddress(host, port), backlog);
+            final HttpServer server=HttpServer.create(new InetSocketAddress(host,
+                    Optional.ofNullable(System.getenv().get(PortVariable))
+
+                    .map(value -> {
+
+                        try { return Integer.parseInt(value); } catch ( final NumberFormatException e1 ) { return null; }
+
+                    })
+
+                    .orElse(port)), backlog);
 
             server.setExecutor(Executors.newCachedThreadPool());
 
@@ -184,7 +185,19 @@ public final class Server {
 
             server.start();
 
-            logger.info(format("server listening at <http://%s:%d/>", host, port));
+            logger.info(format("server listening at <http://%s:%d/>", host, Optional
+
+                    .ofNullable(System.getenv().get(PortVariable))
+
+                    .map(value -> {
+
+                        try { return Integer.parseInt(value); } catch ( final NumberFormatException e1 ) { return null; }
+
+                    })
+
+                    .orElse(port)
+
+            ));
 
         } catch ( final IOException e ) {
             throw new UncheckedIOException(e);
