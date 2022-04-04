@@ -53,75 +53,90 @@ export function CardProfile({
 
         });
 
+        if ( !profile || token ) {
 
-        fetch("/", {
+            fetch("/", {
 
-            headers: {
-                Accept: "application/json",
-                ...(token ? { Authorization: `Bearer "${token}"` } : {})
-            }
+                headers: {
+                    Accept: "application/json",
+                    ...(token ? { Authorization: `Bearer "${token}"` } : {})
+                }
 
-        }).then(response => {
+            }).then(response => {
 
-            response.json().then((profile: Profile) => { // encode card.test URL into a QR data url
+                response.json().then((profile: Profile) => { // encode card.test URL into a QR data url
 
-                if ( response.ok ) {
+                    if ( response.ok ) {
 
-                    if ( profile.cards ) {
+                        if ( profile.cards ) {
 
-                        Promise.all(profile.cards.map(card => {
+                            Promise.all(profile.cards.map(card => {
 
-                            return QRCode.toDataURL(card.test, {
+                                return QRCode.toDataURL(card.test, {
 
-                                errorCorrectionLevel: "M",
-                                margin: 0
+                                    errorCorrectionLevel: "M",
+                                    margin: 0
 
-                            }).then(test => ({ ...card, test }));
+                                }).then(test => ({ ...card, test }));
 
-                        })).then(cards => setProfile({ ...profile, cards }));
+                            })).then(cards => setProfile({ ...profile, cards }));
 
-                    } else {
+                        } else {
+
+                            setProfile(profile);
+
+                        }
+
+                    } else if ( response.status === 401 ) {
+
+                        setGateway((response.headers.get("WWW-Authenticate") ?? "")
+                            .match(/Bearer\s+realm\s*=\s*"(.*)"/)?.[1]
+                        );
 
                         setProfile(profile);
 
+                    } else {
+
+                        // !!! notify
+
                     }
 
-                } else if ( response.status === 401 ) {
-
-                    setGateway((response.headers.get("WWW-Authenticate") ?? "")
-                        .match(/Bearer\s+realm\s*=\s*"(.*)"/)?.[1]
-                    );
-
-                    setProfile(profile);
-
-                } else {
-
-                    // !!! notify
-
-                }
+                });
 
             });
 
-        });
+        }
 
-    }, [JSON.stringify(profile)]);
+    }, []);
+
+
+    function login() {
+        if ( gateway ) {
+            setProfile(undefined);
+            location.replace(`${gateway}?target=${encodeURIComponent(location.href)}`);
+        }
+    }
+
+    function logout() {
+        if ( profile ) {
+            setProfile({ ...profile, user: undefined, cards: undefined });
+        }
+    }
 
 
     return createElement(Context.Provider, {
 
         value: [profile, (action?: null) => {
 
-           if ( action === undefined ) { // login
+            if ( action === undefined ) {
 
-               if ( gateway ) {
-                   location.replace(`${gateway}?target=${encodeURIComponent(location.href)}`);
-               }
+                login();
 
-           } else { // logout
+            } else {
 
-               setProfile(undefined);
+                logout();
 
-           }
+            }
 
         }],
 

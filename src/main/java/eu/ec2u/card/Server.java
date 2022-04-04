@@ -158,8 +158,6 @@ public final class Server {
 
                     router.handle(exchange);
 
-                    logger.info(format("%d %s", exchange.getResponseCode(), exchange.getRequestURI()));
-
                 } catch ( final RuntimeException e ) {
 
                     logger.log(SEVERE, "unhandled exception", e);
