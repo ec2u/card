@@ -1,6 +1,6 @@
 import { Check, Trash2, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import React, { createElement, useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Deletedialog } from "../users/deletedialog";
 import './editcard.css'
 
@@ -33,8 +33,14 @@ export function Editcard() {
             .then((data) => setUpdatecard(data));
     }, []);
 
-    const handleChange = (event: any) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value
 
+        if (value === "") { setDisable(true) }
+
+        else {
+            setDisable(false)
+        }
 
         setUpdatecard((updatecard) => ({
             ...updatecard,
@@ -54,9 +60,15 @@ export function Editcard() {
 
 
     const handleEdit = () => {
+
+
         if (disable) {
 
-        } else {
+
+        }
+        
+        else {
+
             setLoading(true)
             fetch(`/cards/${id}`, {
                 method: "PUT",
@@ -74,146 +86,135 @@ export function Editcard() {
 
     };
 
-    const handleDelete = (id: any) => {
+
+    const handleDelete = (id: number) => {
         fetch(`${id}`, {
             method: "DELETE",
         })
             .then(data => navigate('/cards/'))
     };
 
+
     const Showpopup = () => {
         setDialog(!dialog);
     };
 
+
+
     let showCheck =
-        <div>
-            < a title='Update' >
-                {loading ? (<div className={"spinner"}></div>) :
-                    (<Check size={40} className={'check-button'} onClick={handleEdit} color={disable ? 'lightgray' : 'black'} />)}
-            </a >
-        </div>
+
+        < a title='Update' >
+            {loading ? (<div className={"spinner"}></div>) :
+                (<Check size={40} className={'check-button'}
+                    onClick={handleEdit}
+                    color={disable ? 'lightgray' : 'black'}
+                />)}
+        </a >
+
 
     let showTrash =
         <div>
             <label title='Delete'>
-                <Trash2 size={40} className={"trash-button"} onClick={(e) => Showpopup()} />
+                <Trash2 size={40}
+                    className={"trash-button"}
+                    onClick={() => Showpopup()} />
             </label>
         </div>
+
+
 
     const handleonFocus = () => {
         setClicked(true)
     }
 
 
-    return (
-        <div>
-            <div className={"cards"}>
-                <div className={"topnav-cardedit"}>
-                    <div className="topnav-start">
-                        <div>
-                            <a href='/cards/'> Cards &gt;</a>
-                        </div>
+    return createElement("card-editcard", {},
+        <>
+            <header>
 
-                        <div>
-                            <a href={`${updatecard.id}`}>{updatecard.label}
-                            </a>
-                        </div>
-                    </div>
-                    <div>
+                <section>
+                    <a href='/cards/'> Cards &#62;</a>
+                    <a href={`${updatecard.id}`}>{updatecard.label} </a>
+                </section>
+                <section>
+                    <a> {clicked ? showCheck : showTrash}</a>
+                    <a href={`${updatecard.id}`} title='Close'>
+                        <X size={44} className={"close-button"} />
+                    </a>
+                </section>
 
-                        <div className="navend">
-                            <label>
-                                {clicked ? showCheck : showTrash}
-                            </label>
-                            <a href={`${updatecard.id}`} title='Close'>
-                                <X size={42} className={"button-trash"} />
-                            </a>
-                        </div>
-                    </div>
+            </header>
 
+            <form>
+
+                <div className={"start"}>
+
+                    <section>
+                        <label>forename</label>
+                        <input
+                            required
+                            type='text'
+                            name="holderForename"
+                            className="forename"
+                            value={updatecard.holderForename}
+                            onChange={handleChange}
+                            onFocus={handleonFocus}
+                        />
+                    </section>
+
+                    <section>
+                        <label>surname</label>
+                        <input
+                            required
+                            type='text'
+                            name="holderSurname"
+                            className="surname"
+                            value={updatecard.holderSurname}
+                            onChange={handleChange}
+                            onFocus={handleonFocus}
+                        />
+                    </section>
+
+                    <section>
+                        <label>expiry date</label>
+                        <input
+                            required
+                            type='date'
+                            className="date"
+                            name="expiringDate"
+                            value={updatecard.expiringDate}
+                            onChange={handleChange}
+                            onFocus={handleonFocus}
+                        />
+                    </section>
 
                 </div>
 
-                <form >
+                <div>
 
+                    <section>
+                        <label>card number</label>
+                        <input className="number"
+                            required
+                            name='virtualCardNumber'
+                            type="text"
+                            value={updatecard.virtualCardNumber}
+                            onChange={handleChange}
+                            onFocus={handleonFocus}
+                        />
+                    </section>
 
-                    <div className="data-edit">
-                        <div className="data-start">
+                </div>
 
-                            <div className="data-section">
-                                <label>forename</label>
+            </form>
 
-                                <input
-                                    required
-                                    type='text'
-                                    name="holderForename"
-                                    className="forename"
-                                    value={updatecard.holderForename}
-                                    onChange={handleChange}
-                                    onFocus={handleonFocus}
-                                // onBlur={handleonBlur}
-                                />
-                            </div>
-
-
-                            <div className="data-section">
-                                <label>surname</label>
-
-                                <input
-                                    required
-                                    type='text'
-                                    name="holderSurname"
-                                    className="surname"
-                                    value={updatecard.holderSurname}
-                                    onChange={handleChange}
-                                    onFocus={handleonFocus}
-                                // onBlur={handleonBlur}
-                                />
-                            </div>
-
-                            <div className="data-section">
-                                <label>email</label>
-
-                                <input
-                                    required
-                                    type='date'
-                                    className="date"
-                                    name="expiringDate"
-                                    value={updatecard.expiringDate}
-                                    onChange={handleChange}
-                                    onFocus={handleonFocus}
-                                // onBlur={handleonBlur}
-                                />
-                            </div>
-
-                        </div>
-
-                        <div className="data-end">
-                            <div className="end">
-                                <label className="label-number"> card number</label>
-
-                                <input className="number" required name='virtualCardNumber' type="text" value={updatecard.virtualCardNumber} onChange={handleChange} onFocus={handleonFocus}
-                                // onBlur={handleonBlur}
-                                />
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                </form>
-
-
-            </div>
-            {
-                dialog && (
-                    <Deletedialog
-                        handleyes={() => handleDelete(updatecard.id)}
-                        handleno={Showpopup}
-                    />
-                )
-            }
-        </div >
+            {dialog && (
+                <Deletedialog
+                    handleyes={() => handleDelete(updatecard.id)}
+                    handleno={Showpopup}
+                />
+            )}
+        </>
     );
+
 }

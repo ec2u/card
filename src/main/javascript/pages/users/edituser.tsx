@@ -1,6 +1,6 @@
-import { Check, ChevronRight, Trash2, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Check, Trash2, X } from "lucide-react";
+import React, { createElement, useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Deletedialog } from "./deletedialog";
 import "./edituser.css";
 
@@ -56,7 +56,7 @@ export function Edituser() {
     label: updateuser.label
   };
 
-  const handleDelete = (id: any) => {
+  const handleDelete = (id: number) => {
 
     fetch(`${id}`, {
       method: "DELETE",
@@ -65,7 +65,7 @@ export function Edituser() {
   };
 
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
 
     if (value === "") { setDisable(true) }
@@ -85,13 +85,14 @@ export function Edituser() {
   };
 
 
-  const handleEdit = async () => {
+  const handleEdit = () => {
 
     if (disable) {
 
-    } else {
+    }
+    else {
       setLoading(true)
-      await fetch(`/users/${id}`, {
+      fetch(`/users/${id}`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
@@ -113,15 +114,13 @@ export function Edituser() {
   let showCheck =
 
     < a title='Update' >
-      {loading ? (<div className="spinner"></div>) : (
-        <Check size={40} className={'check-button'} onClick={handleEdit} color={disable ? 'lightgray' : 'black'} />
-      )}
-
+      {loading ? (<div className={"spinner"}></div>)
+        : (
+          <Check size={40} className={'check-button'}
+            onClick={handleEdit}
+            color={disable ? 'lightgray' : 'black'} />
+        )}
     </a >
-
-
-
-
 
   let showTrash =
     <a title='Delete'>
@@ -130,7 +129,7 @@ export function Edituser() {
 
 
 
-  const handleonFocus = (e: any) => {
+  const handleonFocus = () => {
     setClicked(true)
   }
 
@@ -140,118 +139,98 @@ export function Edituser() {
   // }
 
 
-  return (
-    <div className="main">
-      <div className="users">
-        <div className={"topnav-edit"}>
-          <div className="topnav-start">
+  return createElement('card-edituser', {}, <>
 
-            <div>
-              <a href="/users/"> Users &gt;</a>
-            </div>
-            <div>
-              <a href={`${updateuser.id}`}>{updateuser.label}</a>
-            </div>
+    <header>
 
-          </div>
+      <section>
+        <a href="/users/">Users &#62;</a>
+        <a href={`${updateuser.id}`}>{updateuser.label}</a>
+      </section>
 
-          <div >
-            <div className="navend">
-              <label>
-                {clicked ? showCheck : showTrash}
-              </label>
+      <section>
+        <a>{clicked ? showCheck : showTrash}</a>
+        <a href={`${updateuser.id}`} title='Close'>
+          <X size={46} className={"close-button"} />
+        </a>
+      </section>
 
 
+    </header>
 
-              <a href={`${updateuser.id}`} title='Close'>
-                <X size={46} className={"close-button"} />
-              </a>
-            </div>
+    <form >
 
-          </div>
-        </div>
+      <div className={'start'} >
+        <section>
+          <label>forename</label>
+          <input
+            required
+            type='text'
+            name="forename"
+            className="forename"
+            value={updateuser.forename}
+            onChange={handleChange}
+            onFocus={handleonFocus}
+          />
+        </section>
 
+        <section>
+          <label>surname</label>
+          <input
+            required
+            type='text'
+            name="surname"
+            className="surname"
+            value={updateuser.surname}
+            onChange={handleChange}
+            onFocus={handleonFocus}
+          />
+        </section>
 
-        <form >
+        <section>
+          <label>email</label>
+          <input
+            required
+            type='email'
+            className="email"
+            name="email"
+            value={updateuser.email}
+            onChange={handleChange}
+            onFocus={handleonFocus}
+          />
+        </section>
 
-
-          <div className="data-edit">
-            <div className="data-start">
-
-              <div className="data-section">
-                <label>forename</label>
-
-                <input
-                  required
-                  type='text'
-                  name="forename"
-                  className="forename"
-                  value={updateuser.forename}
-                  onChange={handleChange}
-                  onFocus={handleonFocus}
-                // onBlur={handleonBlur}
-                />
-              </div>
-
-
-              <div className="data-section">
-                <label>surname</label>
-
-                <input
-                  required
-                  type='text'
-                  name="surname"
-                  className="surname"
-                  value={updateuser.surname}
-                  onChange={handleChange}
-                  onFocus={handleonFocus}
-                // onBlur={handleonBlur}
-                />
-              </div>
-
-              <div className="data-section">
-                <label>email</label>
-
-                <input
-                  required
-                  type='email'
-                  className="email"
-                  name="email"
-                  value={updateuser.email}
-                  onChange={handleChange}
-                  onFocus={handleonFocus}
-                // onBlur={handleonBlur}
-                />
-              </div>
-
-            </div>
-
-            <div className="data-end">
-              <div className="end">
-                <label className="label-admin"> admin</label>
-
-                <input className="checkbox" name='admin' type="checkbox" checked={updateuser.admin} onChange={handleChange} onFocus={handleonFocus}
-                // onBlur={handleonBlur}
-                />
-              </div>
-
-            </div>
-
-          </div>
-
-
-        </form>
       </div>
 
-      {
-        dialog && (
-          <Deletedialog
-            handleyes={() => handleDelete(updateuser.id)}
-            handleno={Showpopup}
+      <div className={"end"}>
+        <section>
+          <label className="label-admin"> admin</label>
+          <input
+            className="checkbox"
+            name='admin'
+            type="checkbox"
+            checked={updateuser.admin}
+            onChange={handleChange}
+            onFocus={handleonFocus}
           />
-        )
-      }
-    </div >
+        </section>
+      </div>
+
+
+    </form>
+
+    {
+      dialog && (
+        <Deletedialog
+          handleyes={() => handleDelete(updateuser.id)}
+          handleno={Showpopup}
+        />
+      )
+    }
+
+  </>
   );
+
+
 }
 

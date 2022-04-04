@@ -1,65 +1,91 @@
-.cards {
-  width: 95%;
-  margin-top: 2em;
+card-cards {
+  width: 95.3%;
+  display: grid;
+  text-align: left;
+  /* align-items: stretch; */
 
-  & .topnav-cards {
-    display: grid;
-    grid-template-columns: 98% 20%;
-    font-size: 1.4em;
+  & header {
     width: 100%;
-  }
-  & .grid-container-cards {
-    margin-top: 2em;
-    display: grid;
-    text-align: left;
-  }
-  & .tr-cards {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 15% 13% 25% 45% 10%;
-    padding: 6px;
+    margin: 2em 0em;
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
+    & a {
+      color: black;
+      font-size: 1.4em;
+    }
+    & .button-plus:hover {
+      color: green;
+      transform: translateY(-4px);
+    }
   }
-  & tbody:nth-child() {
-    background-color: rgb(197, 194, 194);
+  & table {
+    width: 100%;
+    border-collapse: collapse;
+    display: grid;
+    overflow: auto;
+
+    & tr {
+      display: grid;
+      grid-template-columns: 200px 200px 210px 5fr 0fr;
+      text-align: left;
+      padding: 0.1em;
+      align-items: center;
+      grid-column-gap: 3em;
+    }
+    & th {
+      color: rgb(161, 157, 157);
+      text-align: left;
+    }
+    & td {
+      text-align: left;
+    }
+    & .button-arrow {
+      color: black;
+    }
+
+    & tr:nth-child(even) {
+      background: rgb(236, 233, 233);
+    }
+    & hr {
+      height: 1px;
+      width: 99%;
+    }
   }
-  & th {
-    color: rgb(177, 171, 171);
+}
+
+.spinner::before {
+  animation: 1.5s linear infinite spinner;
+  animation-play-state: inherit;
+  border: solid 5px lightgray;
+  border-bottom-color: gray;
+  border-radius: 50%;
+  content: "";
+  height: 3em;
+  width: 3em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform;
+}
+
+.search-box {
+  position: fixed;
+  top: 5%;
+  left: 40%;
+  transition: 0.2s ease-all;
+
+  & input {
+    padding: 0.6em;
+    width: 22em;
+    border: 1px solid gray;
+    box-shadow: 0 0 7px black;
   }
-  & td {
-    font-size: 20px;
-  }
-  & .solid-cards {
-    width: 101%;
-    background-color: lightgray;
-    border: 1px solid rgb(189, 185, 185);
-  }
-  & .button-search {
-    cursor: pointer;
-    color: black;
-  }
-  & .button-plus {
-    cursor: pointer;
-    color: black;
-  }
-  & .button-arrow {
-    cursor: pointer;
-    color: black;
-  }
-  & .spinner::before {
-    animation: 1.5s linear infinite spinner;
-    animation-play-state: inherit;
-    border: solid 5px lightgray;
-    border-bottom-color: gray;
-    border-radius: 50%;
-    content: "";
-    height: 3em;
-    width: 3em;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate3d(-50%, -50%, 0);
-    will-change: transform;
+  & input:focus {
+    border: none;
+    box-shadow: 0 0 100px 1000px rgba(0, 0, 0, 0.3);
   }
 }
 

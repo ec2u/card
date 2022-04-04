@@ -1,6 +1,6 @@
 import { Check, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { createElement, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./adduser.css";
 
 
@@ -39,12 +39,12 @@ export function Adduser() {
       .then((response) => response.json())
       .catch(error => console.warn('error:', error));
     navigate('/users')
-    console.log('end of submit')
+
   };
 
 
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
     setAdduser((adduser) => ({
       ...adduser,
@@ -54,115 +54,84 @@ export function Adduser() {
 
 
 
-  return (
-    <div className="users">
+  return createElement("card-adduser", {},
+    <>
+      <header>
+        <section>
+          <a>Add user</a>
+        </section>
 
-      <div className="topnav-add">
+        <section>
+          <a title="save">
+            {loading ? (<div className="spinner"></div>
 
-        <span> Add User</span>
+            ) : (
 
-        <span>
-          <a>
-            {loading ? (<div className="spinner"></div>) : (<Check onClick={handleSubmit} size={38} className="button-check" />)}
+              <Check onClick={handleSubmit} size={42}
+                className="button-check" />
+            )}
           </a>
+          <a href="/users/" title="close">
+            <X size={42} className={'button-close'} />
+          </a>
+        </section>
 
+      </header>
 
-        </span>
+      <form>
 
-        <span>
-          <Link to='/users/'>
-            < X size={40} className={'button-close'} />
-          </Link>
-        </span>
+        <div className={"start"}>
 
-      </div>
+          <section>
+            <label>forename</label>
+            <input
+              type="text"
+              required
+              name="forename"
+              value={adduser.forename}
+              onChange={handleChange}
+            />
+          </section>
 
-      <div className="grid-container-add">
+          <section>
+            <label>surname</label>
+            <input
+              type="text"
+              required
+              name="surname"
+              value={adduser.surname}
+              onChange={handleChange}
+            />
+          </section>
 
+          <section>
+            <label>email</label>
+            <input
+              type="email"
+              required
+              name="email"
+              value={adduser.email}
+              onChange={handleChange}
+              className={'email'}
+            />
+          </section>
 
-        <table>
+        </div>
 
-          <thead>
+        <div className={"end"}>
 
-            <tr className="tr-add">
-              <th>forename</th>
-              <th>surname</th>
-              <th>email</th>
+          <section>
+            <label>admin</label>
+            <input
+              className="checkbox"
+              type="checkbox"
+              name="admin"
+              onChange={handleChange}
+            />
+          </section>
 
-              <th className="th-admin"> admin</th>
-
-            </tr>
-
-          </thead>
-
-
-
-          <tbody>
-
-            <tr className="tr-add" >
-
-              <td>
-
-                <input
-                  type="text"
-                  required
-                  name="forename"
-                  value={adduser.forename}
-                  onChange={handleChange}
-                />
-
-              </td>
-
-
-              <td>
-
-                <input
-                  type="text"
-                  required
-                  name="surname"
-                  value={adduser.surname}
-                  onChange={handleChange}
-                />
-
-              </td>
-
-
-              <td>
-
-                <input
-                  type="email"
-                  required
-                  name="email"
-                  value={adduser.email}
-                  onChange={handleChange}
-                  className={'email'}
-                />
-
-              </td>
-
-
-              <td>
-
-                <input
-                  className="checkbox"
-                  type="checkbox"
-                  name="admin"
-                  onChange={handleChange}
-
-                />
-
-              </td>
-
-            </tr>
-
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </div>
-
+        </div>
+      </form>
+    </>
   );
 }

@@ -1,7 +1,6 @@
 import { Check, X } from "lucide-react";
-import { traceDeprecation } from "process";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { createElement, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./addcard.css";
 
 
@@ -17,6 +16,7 @@ interface Card {
 
 export function Addcard() {
     const [addcard, setAddcard] = useState({} as Card);
+    const [disable, setDisable] = useState<Boolean>(false)
     const [loading, setLoading] = useState<Boolean>(false)
     const navigate = useNavigate();
 
@@ -27,154 +27,124 @@ export function Addcard() {
         virtualCardNumber: addcard.virtualCardNumber,
     };
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        const value = e.target.value
+
+        if (!addcard.holderForename) { setDisable(true) }
+
+
+        else {
+            setDisable(false)
+        }
+
+        setAddcard((addcard) => ({
+            ...addcard,
+            [e.target.name]: value,
+        }));
+    };
 
     const handleSubmit = async () => {
-        setLoading(true)
-        await fetch("/cards/", {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(userdata),
-        })
-            .then((response) => response.json())
-            .catch(error => console.warn('error:', error));
-        console.log('end of response')
-        navigate('/cards/');
-        console.log('end of handleSubmit');
+        if (disable) {
 
+        } else {
 
+            setLoading(true)
+            await fetch("/cards/", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(userdata),
+            })
+                .then((response) => response.json())
+                .catch(error => console.warn('error:', error));
+
+            navigate('/cards/');
+        }
     }
 
 
 
+    return createElement("card-addcard", {},
+        <>
+            <header>
 
-
-
-    const handleChange = (e: any) => {
-        setAddcard((addcard) => ({
-            ...addcard,
-            [e.target.name]: e.target.value,
-        }));
-    };
-
-
-
-    // let showCheck = <span>
-
-    // </span>
-    // let handleSpin =
-    //     <div className="spinner"></div>
-
-
-    return (
-        <div className="cards">
-
-            <div className="topnav-addcard">
-
-                <span> Add Card</span>
-                <span>
+                <a>Add Card</a>
+                <section>
                     <a >
-                        {loading ? (<div className="spinner"></div>) : (<Check onClick={handleSubmit} size={38} className="button-check" />)}
+                        {loading ? (<div className="spinner"></div>
+                        ) : (
+                            <Check onClick={handleSubmit}
+                                size={38}
+                                color={disable ? 'lightgray' : 'black'}
+                                className="button-check"
+                            />)}
                     </a>
-                </span>
-
-                <span>
-                    <Link to='/cards/'>
+                    <a href="/cards/">
                         < X size={40} className={'button-close'} />
-                    </Link>
-                </span>
+                    </a>
+                </section>
 
-            </div>
+            </header>
 
-            <div className="grid-container-addcard">
+            <form>
 
+                <div className={"start"}>
 
-                <table>
+                    <section>
+                        <label>forename</label>
+                        <input
+                            type="text"
+                            required
+                            name="holderForename"
+                            value={addcard.holderForename}
+                            onChange={handleChange}
+                        />
+                    </section>
 
-                    <thead>
+                    <section>
+                        <label>surname</label>
+                        <input
+                            type="text"
+                            required
+                            name="holderSurname"
+                            value={addcard.holderSurname}
+                            onChange={handleChange}
+                        />
+                    </section>
 
-                        <tr className="tr-addcard">
-                            <th>forename</th>
-                            <th>surname</th>
-                            <th>expiry date</th>
+                    <section>
+                        <label>expiry date</label>
+                        <input
+                            type="Date"
+                            required
+                            name="expiringDate"
+                            onChange={handleChange}
+                            className={'expiringdate'}
+                        />
+                    </section>
 
-                            <th > card number</th>
+                </div>
 
-                        </tr>
+                <div className={"end"}>
 
-                    </thead>
+                    <section>
+                        <label>card number</label>
+                        <input
+                            required
+                            className="number"
+                            type="text"
+                            name="virtualCardNumber"
+                            value={addcard.virtualCardNumber}
+                            onChange={handleChange}
+                        />
+                    </section>
 
+                </div>
 
-
-                    <tbody>
-
-                        <tr className="tr-addcard" >
-
-                            <td>
-
-                                <input
-                                    type="text"
-                                    required
-                                    name="holderForename"
-                                    value={addcard.holderForename}
-                                    onChange={handleChange}
-                                />
-
-                            </td>
-
-
-                            <td>
-
-                                <input
-                                    type="text"
-                                    required
-                                    name="holderSurname"
-                                    value={addcard.holderSurname}
-                                    onChange={handleChange}
-                                />
-
-                            </td>
-
-
-                            <td>
-
-                                <input
-                                    type="Date"
-                                    required
-                                    name="expiringDate"
-                                    onChange={handleChange}
-                                    className={'expiringdate'}
-                                />
-
-                            </td>
-
-
-                            <td>
-
-                                <input
-                                    required
-                                    className="number"
-                                    type="text"
-                                    name="virtualCardNumber"
-                                    value={addcard.virtualCardNumber}
-                                    onChange={handleChange}
-
-                                />
-
-                            </td>
-
-                        </tr>
-
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
+            </form>
+        </>
     );
 }

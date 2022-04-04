@@ -1,6 +1,6 @@
-import { ChevronRight, Edit, Trash } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import React, { createElement, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "./cardinspect.css";
 
 interface Card {
@@ -35,48 +35,46 @@ export function CardInspect() {
 
 
 
-    return (
-        <div className="cards">
-            <div className="topnav-cardinspect">
-                <span title="close"> <Link to='/cards/' className="cards-link"> Cards &gt;</Link></span>
+    return createElement("card-inspectcard", {},
+        <>
+            <header>
+                <section>
+                    <a href="/cards/">Cards &#62;</a>
+                    <a>{card.label}</a>
+                </section>
+
+                <a href={`/edit${card.id}`}>
+                    <Edit size={38} className="button-edit" />
+                </a>
+            </header>
+            <form>
+                <div className={"start"}>
+                    <section>
+                        <label>forename</label>
+                        <span>{card.holderForename}</span>
+                    </section>
+
+                    <section>
+                        <label>surname</label>
+                        <span>{card.holderSurname}</span>
+                    </section>
+
+                    <section>
+                        <label>expiry date</label>
+                        <span>{card.expiringDate}</span>
+                    </section>
 
 
-                <span>{card.label}</span>
-                <span title="edit">
-                    <Link to={`/edit${card.id}`}>
-                        <Edit size={38} className="button-plus" />
-                    </Link>
-                </span>
-            </div>
+                </div>
 
-            <div className="grid-container-cardinspect">
-                <table>
-                    <thead>
-                        <tr className="tr-cardinspect">
-                            <th>forename</th>
-                            <th>surname</th>
-                            <th>expiry date</th>
-
-                            <th> card number </th>
-                        </tr>
-                    </thead>
-
-                    <hr className="solid" />
-
-                    <tbody>
-                        <tr className="tr-cardinspect" key={card.id}>
-                            <td>{card.holderForename}</td>
-                            <td>{card.holderSurname}</td>
-                            <td>{card.expiringDate}</td>
-                            <td >
-
-                                {card.virtualCardNumber}
-
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                <div>
+                    <section>
+                        <label>card number</label>
+                        <span>{card.virtualCardNumber}</span>
+                    </section>
+                </div>
+            </form>
+        </>
     );
+
 }

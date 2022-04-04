@@ -1,131 +1,100 @@
 card-users {
-  width: 100%;
+  width: 95.3%;
   display: grid;
-  overflow: hidden;
+  align-items: stretch;
 
   & header {
-    width: 95%;
-    margin: 1.5em 0em;
-
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-
+    width: 100%;
+    margin: 2em 0em;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
     & a {
-      font-size: 1.3em;
       color: black;
+      font-size: 1.4em;
+    }
+    & .button-plus:hover {
+      color: green;
+      transform: translateY(-4px);
     }
   }
-
-  & footer {
-    width: 95%;
+  & table {
+    width: 100%;
+    border-collapse: collapse;
+    display: grid;
+    overflow-x: auto;
 
     & tr {
       display: grid;
-      grid-template-columns: 10em 10em 10em 1em;
-    }
-    & tr:nth-child(even) {
-      background: lightgray;
-    }
-    & .spinner::before {
-      animation: 1.5s linear infinite spinner;
-      animation-play-state: inherit;
-      border: solid 5px lightgray;
-      border-bottom-color: gray;
-      border-radius: 50%;
-      content: "";
-      height: 3em;
-      width: 3em;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate3d(-50%, -50%, 0);
-      will-change: transform;
-    }
-  }
-}
-
-@keyframes spinner {
-  0% {
-    transform: translate3d(-50%, -50%) rotate(0deg);
-  }
-  100% {
-    transform: translate3d(-50%, -50%, 0) rotate(360deg);
-  }
-}
-/*
-
-.users {
-  width: 95%;
-  margin-top: 2em;
-  display: grid;
-  
-  align-items: stretch;
-
-  & .topnav {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 50em 10em;
-  }
-
-  & tr {
-    display: grid;
-
-    /* grid-template-columns: repeat(auto-fit, minmax(20em, 1fr)); 
-    grid-template-rows: repeat(auto-fit, min-ciontent);
-  grid-template-columns: min-content 2fr 2fr;
-    /* grid-template-columns: 5fr 0.1fr; 
-
-    & .data {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      /* grid-template-columns: repeat(auto-fill, 7em 7em 1em); 
-
+      grid-template-columns: 250px 210px 5fr 0fr;
       text-align: left;
+      padding: 0.1em;
       align-items: center;
     }
-    & .actions {
-      display: grid;
-      text-align: center;
-      align-items: center;
+    & th {
+      color: rgb(161, 157, 157);
     }
-  }
+    & .search-button {
+      cursor: pointer;
+    }
+    & .search-button:hover {
+      color: black;
+      transform: translateY(-4px);
+    }
 
-  & .button-search {
-    cursor: pointer;
-    color: black;
-  }
-  & .button-plus {
-    cursor: pointer;
-    color: black;
-  }
-  & .button-arrow {
-    cursor: pointer;
-    color: black;
-  }
-  & .button {
-    color: black;
-  }
-
-  & .spinner::before {
-    animation: 1.5s linear infinite spinner;
-    animation-play-state: inherit;
-    border: solid 5px lightgray;
-    border-bottom-color: gray;
-    border-radius: 50%;
-    content: "";
-    height: 3em;
-    width: 3em;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate3d(-50%, -50%, 0);
-    will-change: transform;
+    & tr:nth-child(even) {
+      background: rgb(236, 233, 233);
+    }
+    & hr {
+      height: 1px;
+      width: 99%;
+    }
   }
 }
-@media only (min-width: 420px) {
-  .topnav {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+.spinner::before {
+  animation: 1.5s linear infinite spinner;
+  animation-play-state: inherit;
+  border: solid 5px lightgray;
+  border-bottom-color: gray;
+  border-radius: 50%;
+  content: "";
+  height: 3em;
+  width: 3em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform;
+}
+
+.search-box {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  top: 5%;
+  left: 40%;
+  transition: 0.2s ease-all;
+
+  & input {
+    padding: 0.6em;
+    width: 22em;
+    border: 1px solid gray;
+    box-shadow: 0 0 7px black;
+  }
+  & input:focus {
+    border: none;
+    box-shadow: 0 0 100px 1000px rgba(0, 0, 0, 0.3);
+  }
+  & .close-button {
+    position: absolute;
+    right: -13px;
+    top: -12px;
+    cursor: pointer;
+  }
+  & .close-button:hover {
+    color: red;
   }
 }
 
@@ -136,4 +105,4 @@ card-users {
   100% {
     transform: translate3d(-50%, -50%, 0) rotate(360deg);
   }
-} */
+}
