@@ -1,0 +1,25 @@
+name: ghp-publishing
+
+on:
+
+  push:
+
+    branches: [ 'release/0.0' ]
+
+jobs:
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check out main branch
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Merge trigger branch
+        run: |
+          git merge ${{ github.ref_name }}
+          git push origin main
