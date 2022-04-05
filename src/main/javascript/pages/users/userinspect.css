@@ -1,109 +1,83 @@
-.users {
+card-inspectuser {
   width: 95%;
   display: grid;
   align-items: stretch;
 
-  & .topnav-inspect {
+  & header {
+    margin: 2em 0em;
     width: 100%;
     display: flex;
-    align-items: center;
     flex-wrap: wrap;
     justify-content: space-between;
-    margin-bottom: 2em;
+    align-items: center;
 
-    & .topnav-start {
-      gap: 0.4em;
+    & section {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
+      gap: 0.5em;
+    }
+    & a {
+      text-decoration: none;
+      color: black;
+      font-size: 1.4em;
+    }
+  }
+  & form {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    overflow-x: auto;
 
-      & a {
-        text-decoration: none;
-        color: black;
-        cursor: pointer;
-        font-size: 1.4em;
+    & .start {
+      width: 60%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    & section {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      & label {
+        color: rgb(161, 157, 157);
       }
       & span {
-        font-size: 1.4em;
+        margin-top: 1em;
+        font-size: 0.9em;
+      }
+      & .checkbox {
+        margin-top: 1.5em;
+        height: 1.8em;
+        width: 1.8em;
       }
     }
   }
-
-  & .data-inspect {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    width: 100%;
-    height: 100vh;
-  }
-  & .data-start {
-    display: flex;
-    align-items: flex-start;
-    gap: 5em;
-    flex-wrap: wrap;
-    height: 30vh;
-  }
-  & .data-end {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  & label {
-    margin: 1em 0em;
-    color: rgb(175, 170, 170);
-  }
-  & .checkbox {
-    height: 30px;
-    width: 30px;
-  }
-  & .data-section {
-    display: flex;
-    flex-direction: column;
-  }
-  & .end {
-    display: flex;
-    flex-direction: column;
-  }
-  & .spinner::before {
-    animation: 1.5s linear infinite spinner;
-    animation-play-state: inherit;
-    border: solid 5px lightgray;
-    border-bottom-color: gray;
-    border-radius: 50%;
-    content: "";
-    height: 3em;
-    width: 3em;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate3d(-50%, -50%, 0);
-    will-change: transform;
+  & .button-edit:hover {
+    color: green;
+    transform: translateY(-3px);
   }
 }
 
-@keyframes spinner {
-  0% {
-    transform: translate3d(-50%, -50%) rotate(0deg);
-  }
-  100% {
-    transform: translate3d(-50%, -50%, 0) rotate(360deg);
+@media screen and (max-width: 500px) {
+  form {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
   }
 }
 
-@media (max-width: 780px) {
-  .users {
-    width: 95%;
-  }
-  .data-inspect {
+@media screen and (max-width: 400px) {
+  header {
     display: flex;
-    height: 1vh;
-    width: 100%;
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-  .data-section {
-    height: 0.5vh;
-  }
-  .end {
-    margin-bottom: 15em;
+    flex-direction: column;
+    align-content: flex-start;
+
+    & section {
+      display: flex;
+      flex-direction: column;
+    }
   }
 }

@@ -1,72 +1,88 @@
-.users {
+card-adduser {
   width: 95%;
-  margin-top: 40px;
+  display: grid;
+  align-items: stretch;
 
-  & .topnav-add {
-    display: grid;
-    grid-template-columns: 90% 5% 20%;
-    font-size: 30px;
+  & header {
     width: 100%;
+    margin: 2em 0em;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    & section {
+      display: flex;
+      align-items: center;
+      flex-flow: wrap;
+      gap: 0.5em;
+    }
+    & a {
+      color: black;
+      font-size: 1.4em;
+    }
   }
-  & .grid-container-add {
-    margin-top: 80px;
-    display: grid;
+  & form {
+    width: 100%;
+    display: flex;
     text-align: left;
-  }
-  & .tr-add {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 20% 20% 54% 20%;
-    padding: 6px;
-  }
+    justify-content: space-between;
+    overflow: auto;
 
-  & tr:nth-child(even) {
-    background-color: rgb(197, 194, 194);
-  }
-  & th {
-    color: rgb(177, 171, 171);
-  }
-  & td {
-    font-size: 22px;
-  }
+    & .start {
+      width: 50%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    & section {
+      display: flex;
+      flex-flow: wrap;
+      flex-direction: column;
 
-  & .solid {
-    width: 102%;
-    background-color: lightgray;
-    border: 1px solid rgb(189, 185, 185);
+      & label {
+        color: rgb(161, 157, 157);
+      }
+      & input {
+        margin-top: 1em;
+        border: 1px solid black;
+        padding: 0.2em;
+        border-radius: 0.3em;
+        font-size: 0.9em;
+      }
+      & .checkbox {
+        height: 1.6em;
+        width: 1.6em;
+      }
+    }
   }
-
   & .button-check {
     cursor: pointer;
-    color: black;
-    transition: 0.7s;
   }
   & .button-check:hover {
     color: green;
-  }
-  & .button-close {
-    cursor: pointer;
-    color: black;
-    transition: 0.6s;
+    transform: translateY(-3px);
   }
   & .button-close:hover {
     color: red;
+    transform: translateY(-3px);
   }
-  & .spinner::before {
-    animation: 1.5s linear infinite spinner;
-    animation-play-state: inherit;
-    border: solid 5px lightgray;
-    border-bottom-color: gray;
-    border-radius: 50%;
-    content: "";
-    height: 3em;
-    width: 3em;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate3d(-50%, -50%, 0);
-    will-change: transform;
-  }
+}
+
+.spinner::before {
+  animation: 1.5s linear infinite spinner;
+  animation-play-state: inherit;
+  border: solid 5px lightgray;
+  border-bottom-color: gray;
+  border-radius: 50%;
+  content: "";
+  height: 3em;
+  width: 3em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform;
 }
 
 @keyframes spinner {
@@ -75,5 +91,14 @@
   }
   100% {
     transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+}
+
+@media screen and (max-width: 500px) {
+  form {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
   }
 }
