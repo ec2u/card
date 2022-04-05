@@ -44,6 +44,13 @@ card-cards {
     & .button-arrow {
       color: black;
     }
+    & .button-search {
+      cursor: pointer;
+    }
+    & .button-search:hover {
+      color: black;
+      transform: translateY(-4px);
+    }
 
     & tr:nth-child(even) {
       background: rgb(236, 233, 233);
