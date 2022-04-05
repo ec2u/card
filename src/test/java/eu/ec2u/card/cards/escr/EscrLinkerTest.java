@@ -19,7 +19,7 @@ public class EscrLinkerTest {
 	private final String ESC = "fc3a1f80-93fb-103a-9b31-000999893752";
 
 	@BeforeEach
-	protected void setUp() throws Exception {
+	protected void setUp() {
 
 		escrLinker = new EscrLinker(new EscrHttpManager());
 
