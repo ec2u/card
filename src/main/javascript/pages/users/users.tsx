@@ -81,7 +81,7 @@ export function CardUsers() {
 
 
   let SearchIcon =
-    <div>
+    <div title={"search"}>
       <Search size={28}
         onClick={() => setClicked(true)}
 
@@ -139,7 +139,7 @@ export function CardUsers() {
                     <td>{user.forename}</td>
                     <td>{user.surname}</td>
                     <td>{user.email}</td>
-                    <td><a href={`${user.id}`}><ChevronRight color="black" size={40} /></a></td>
+                    <td><a href={`${user.id}`} title={"inspect"}><ChevronRight color="black" size={40} /></a></td>
 
                   </tr>
                 );
