@@ -47,7 +47,7 @@ card-users {
       background: rgb(236, 233, 233);
     }
     & hr {
-      height: 1px;
+      height: 0px;
       width: 99%;
     }
     & .button-arrow {
