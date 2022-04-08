@@ -74,12 +74,12 @@ export function Addcard() {
                 <a>Add Card</a>
                 <section>
                     <a >
-                        {loading ? (<div className="spinner"></div>
+                        {loading ? (<div className={"spinner"}></div>
                         ) : (
                             <Check onClick={handleSubmit}
                                 size={38}
                                 color={disable ? 'lightgray' : 'black'}
-                                className="button-check"
+                                className={"button-check"}
                             />)}
                     </a>
                     <a href="/cards/">

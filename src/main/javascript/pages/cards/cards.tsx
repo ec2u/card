@@ -69,9 +69,9 @@ export function VirtualCards() {
         </div>
 
     let SearchIcon =
-        <div>
-            <Search size={28} color="black"
-                className='button-search'
+        <div title={"search"}>
+            <Search size={28}
+                className={'button-search'}
                 onClick={() => setClicked(true)}
                 onBlur={() => setClicked(false)}
             />
@@ -104,7 +104,7 @@ export function VirtualCards() {
 
                 <hr />
 
-                {loading ? (<div className='spinner'></div>) : (
+                {loading ? (<div className={'spinner'}></div>) : (
                     <tbody>
                         {cards.filter(card => card.holderSurname.toLowerCase().includes(search.toLowerCase())).map((card) => {
                             return (
@@ -115,7 +115,7 @@ export function VirtualCards() {
                                     <td>{card.virtualCardNumber}</td>
 
                                     <td>
-                                        <Link to={`${card.id}`}>
+                                        <Link to={`${card.id}`} title="inspect">
                                             <ChevronRight size={40}
                                                 className={"button-arrow"} />
                                         </Link>
