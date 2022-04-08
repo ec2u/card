@@ -7,14 +7,14 @@ import java.io.IOException;
 
 public class StudentSerializer extends StdSerializer<StudentTransfer> {
 
-	public StudentSerializer(Class<StudentTransfer> t) {
+	public StudentSerializer(final Class<StudentTransfer> t) {
 
 		super(t);
 
 	}
 
 	@Override
-	public void serialize(StudentTransfer student, JsonGenerator generator, SerializerProvider provider) throws IOException {
+	public void serialize(final StudentTransfer student, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
 
 		generator.writeStartObject();
 		generator.writeStringField("europeanStudentIdentifier", student.getEuropeanStudentIdentifier());

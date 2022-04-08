@@ -18,22 +18,22 @@ public class StudentDeserializer extends StdDeserializer<StudentTransfer> {
 
 	}
 
-	public StudentDeserializer(Class<?> t) {
+	public StudentDeserializer(final Class<?> t) {
 
 		super(t);
 
 	}
 
 	@Override
-	public StudentTransfer deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+	public StudentTransfer deserialize(final JsonParser parser, final DeserializationContext context) throws IOException {
 
-		JsonNode studentNode = parser.getCodec().readTree(parser);
+		final JsonNode studentNode = parser.getCodec().readTree(parser);
 
-		Set<String> cardsNumbersSet = new HashSet<>();
+		final Set<String> cardsNumbersSet = new HashSet<>();
 
-		ArrayNode cardsNode = (ArrayNode) studentNode.get("cards");
+		final ArrayNode cardsNode = (ArrayNode) studentNode.get("cards");
 
-		Iterator<JsonNode> iterator = cardsNode.elements();
+		final Iterator<JsonNode> iterator = cardsNode.elements();
 
 		while (iterator.hasNext()) {
 
@@ -41,7 +41,7 @@ public class StudentDeserializer extends StdDeserializer<StudentTransfer> {
 
         }
 
-		DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		final DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 		return new StudentTransfer(
 
