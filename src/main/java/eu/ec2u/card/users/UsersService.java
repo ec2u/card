@@ -7,14 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsersService {
 
     @Autowired private UsersRepository users;
-
 
     Users browse(final Pageable slice) {
 
@@ -33,31 +34,37 @@ public class UsersService {
 
     @Transactional
     User create(final User user) {
+
         return Optional.of(new UserData())
                 .map(data -> data.transfer(user))
                 .map(data -> users.save(data))
                 .map(UserData::transfer)
                 .orElseThrow(NoSuchElementException::new);
+
     }
 
-
     User relate(final long id) {
+
         return users.findById(id)
                 .map(UserData::transfer)
                 .orElseThrow(NoSuchElementException::new);
+
     }
 
     @Transactional
     User update(final long id, final User user) {
+
         return users.findById(id)
                 .map(data -> data.transfer(user))
                 .map(data -> users.save(data))
                 .map(UserData::transfer)
                 .orElseThrow(NoSuchElementException::new);
+
     }
 
     @Transactional
     User delete(final long id) {
+
         return users.findById(id)
                 .map(data -> {
 
@@ -68,6 +75,16 @@ public class UsersService {
                 })
                 .map(UserData::transfer)
                 .orElseThrow(NoSuchElementException::new);
+
+    }
+
+    List<User> searchBySurnamePrefix(final String surnamePrefix) {
+
+        return users.findBySurnameStartingWith(surnamePrefix)
+                .stream()
+                .map(UserData::transfer)
+                .collect(Collectors.toList());
+
     }
 
 }
