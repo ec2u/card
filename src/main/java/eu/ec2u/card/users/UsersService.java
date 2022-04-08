@@ -19,7 +19,7 @@ public class UsersService {
 
     Users browse(final Pageable slice) {
 
-        final Users users=new Users();
+        final Users users = new Users();
 
         users.setPath(Users.Id);
 
@@ -78,12 +78,18 @@ public class UsersService {
 
     }
 
-    List<User> searchBySurnamePrefix(final String surnamePrefix) {
+    Users searchBySurnamePrefix(final String surnamePrefix, final Pageable slice) {
 
-        return users.findBySurnameStartingWith(surnamePrefix)
+        final Users users = new Users();
+
+        users.setPath(Users.Id);
+
+        users.setContains(this.users.findBySurnameStartingWith(surnamePrefix, slice)
                 .stream()
                 .map(UserData::transfer)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()) );
+
+        return users;
 
     }
 
