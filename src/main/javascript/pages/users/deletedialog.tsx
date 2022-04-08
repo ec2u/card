@@ -7,7 +7,7 @@ export function Deletedialog(props: any) {
     <div className={"header"}>
       <div className={"delete"}>
         <div className={"data"}>
-          <Trash2 size={78} className={"trash"} />
+          <Trash2 size={58} className={"trash"} />
 
           <span className={"data-header"}>are you sure ?</span>
 
