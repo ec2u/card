@@ -1,0 +1,87 @@
+card-inspecttoken {
+  width: 95%;
+  display: grid;
+  align-items: stretch;
+
+  & header {
+    margin: 2em 0em;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    & section {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5em;
+    }
+    & a {
+      text-decoration: none;
+      color: black;
+      font-size: 1.4em;
+    }
+    & .tokens-link:hover {
+      color: orange;
+      transform: translateX(-3px);
+    }
+  }
+  & form {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    overflow-x: auto;
+
+    & .start {
+      width: 30%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    & section {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      & label {
+        color: rgb(161, 157, 157);
+      }
+      & span {
+        margin-top: 1em;
+        font-size: 0.9em;
+      }
+      & .checkbox {
+        margin-top: 1.5em;
+        height: 1.8em;
+        width: 1.8em;
+      }
+    }
+  }
+  & .button-edit:hover {
+    color: green;
+    transform: translateY(-3px);
+  }
+}
+
+@media screen and (max-width: 500px) {
+  form {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  header {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+
+    & section {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
