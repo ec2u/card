@@ -66,7 +66,7 @@ export function Editcard() {
 
 
         }
-        
+
         else {
 
             setLoading(true)
@@ -133,7 +133,7 @@ export function Editcard() {
             <header>
 
                 <section>
-                    <a href='/cards/'> Cards &#62;</a>
+                    <a href='/cards/' className={"cards-link"}> Cards &#8250;</a>
                     <a href={`${updatecard.id}`}>{updatecard.label} </a>
                 </section>
                 <section>

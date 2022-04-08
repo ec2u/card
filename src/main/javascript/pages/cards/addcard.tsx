@@ -70,8 +70,12 @@ export function Addcard() {
     return createElement("card-addcard", {},
         <>
             <header>
+                <section>
+                    <a href="/cards/" className={"cards-link"}>Cards </a>
+                    <a>&#8250;</a>
+                    <a> New Card</a>
+                </section>
 
-                <a>Add Card</a>
                 <section>
                     <a >
                         {loading ? (<div className={"spinner"}></div>

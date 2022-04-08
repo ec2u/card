@@ -144,7 +144,7 @@ export function Edituser() {
     <header>
 
       <section>
-        <a href="/users/">Users &#62;</a>
+        <a href="/users/" className={"users-link"}>Users &#8250;</a>
         <a href={`${updateuser.id}`}>{updateuser.label}</a>
       </section>
 

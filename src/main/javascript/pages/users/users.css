@@ -50,6 +50,13 @@ card-users {
       height: 1px;
       width: 99%;
     }
+    & .button-arrow {
+      color: black;
+    }
+    & .button-arrow:hover {
+      color: orange;
+      transform: translateX(3px);
+    }
   }
 }
 

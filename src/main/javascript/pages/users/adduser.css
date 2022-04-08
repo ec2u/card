@@ -7,7 +7,7 @@ card-adduser {
     width: 100%;
     margin: 2em 0em;
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     align-items: center;
     justify-content: space-between;
 
@@ -18,8 +18,13 @@ card-adduser {
       gap: 0.5em;
     }
     & a {
+      text-decoration: none;
       color: black;
       font-size: 1.4em;
+    }
+    & .users-link:hover {
+      color: orange;
+      transform: translateX(-3px);
     }
   }
   & form {

@@ -2,14 +2,12 @@ card-cards {
   width: 95.3%;
   display: grid;
   text-align: left;
-  /* align-items: stretch; */
 
   & header {
-    width: 100%;
     margin: 2em 0em;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    /* flex-wrap: wrap; */
+    /* align-items: center; */
     justify-content: space-between;
     & a {
       color: black;
@@ -24,6 +22,7 @@ card-cards {
     width: 100%;
     border-collapse: collapse;
     display: grid;
+
     overflow: auto;
 
     & tr {
@@ -36,13 +35,17 @@ card-cards {
     }
     & th {
       color: rgb(161, 157, 157);
-      text-align: left;
+      /* text-align: left; */
     }
     & td {
       text-align: left;
     }
     & .button-arrow {
       color: black;
+    }
+    & .button-arrow:hover {
+      color: orange;
+      transform: translateX(3px);
     }
     & .button-search {
       cursor: pointer;

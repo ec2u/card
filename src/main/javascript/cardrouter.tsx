@@ -12,6 +12,8 @@ import { VirtualCards } from "./pages/cards/cards";
 import { CardInspect } from "./pages/cards/cardinspect";
 import { Editcard } from "./pages/cards/editcard";
 import { Addcard } from "./pages/cards/addcard";
+import { Tokens } from "./pages/tokens/tokens";
+
 
 
 export function CardRoutes() {
@@ -44,7 +46,7 @@ export function CardRoutes() {
 
 
 
-            {/*<Route path="/tokens/" element={<Tokens/>}/>*/}
+            <Route path="/tokens/" element={<Tokens />} />
           </Routes>
         </div>
       </BrowserRouter>

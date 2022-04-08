@@ -22,6 +22,10 @@ card-inspectuser {
       color: black;
       font-size: 1.4em;
     }
+    & .users-link:hover {
+      color: orange;
+      transform: translateX(-3px);
+    }
   }
   & form {
     width: 100%;

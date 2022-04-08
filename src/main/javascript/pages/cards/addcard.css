@@ -18,8 +18,13 @@ card-addcard {
       gap: 0.5em;
     }
     & a {
+      text-decoration: none;
       color: black;
       font-size: 1.4em;
+    }
+    & .cards-link:hover {
+      color: orange;
+      transform: translateX(-3px);
     }
   }
   & form {
