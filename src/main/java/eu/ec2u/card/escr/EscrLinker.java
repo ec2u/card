@@ -1,0 +1,294 @@
+package eu.ec2u.card.escr;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import lombok.AllArgsConstructor;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonValue;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+@AllArgsConstructor
+public class EscrLinker {
+
+	private static final String BASE_PATH = "https://api-sandbox.europeanstudentcard.eu/v1";
+
+	private final EscrHttpManager httpManager;
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public void addStudent(final StudentTransfer student) throws JsonProcessingException {
+
+		httpManager.httpPoster(
+				BASE_PATH + "/students",
+				studentTransferToStudentJson(student)
+		);
+
+	}
+
+	public String listStudents() {
+
+		return httpManager.httpGetter(BASE_PATH + "/students");
+
+	} // Tested
+
+	public List<StudentTransfer> listStudentsWithTransferObject() throws JsonProcessingException {
+
+		List<StudentTransfer> studentsList = new ArrayList<>();
+
+		JsonArray studentsJsonArray = Json.createReader(new StringReader(listStudents())).readArray();
+
+		for (JsonValue jsonValue : studentsJsonArray) {
+
+			studentsList.add(studentJsonToStudentTransfer(jsonValue.toString()));
+
+		}
+
+		return studentsList;
+
+	}	// Tested
+
+	public String retrieveStudent(final String esi) throws IOException {
+
+		if (checkEsi(esi)) {
+
+			throw new IOException("European Student Identifier doesn't match the correct format");
+
+		}
+
+		return httpManager.httpGetter(BASE_PATH + "/students/" + esi);
+
+	}	// Tested
+
+	public StudentTransfer retrieveStudentWithTransferObject(final String esi) throws IOException {
+
+		if (checkEsi(esi)) {
+
+			throw new IOException("European Student Identifier doesn't match the correct format");
+
+		}
+
+		return studentJsonToStudentTransfer(httpManager.httpGetter(BASE_PATH + "/students/" + esi));
+
+	}	// Tested
+
+	public void updateStudentDetails(final StudentTransfer studentTransfer) throws IOException {
+
+		if (checkEsi(studentTransfer.getEuropeanStudentIdentifier())) {
+
+			throw new IOException("European Student Identifier doesn't match the correct format");
+
+		}
+
+			httpManager.httpPutter(
+					BASE_PATH + "/students/" + studentTransfer.getEuropeanStudentIdentifier(),
+					studentTransferToStudentJson(studentTransfer)
+			);
+
+	}
+
+	public void deleteStudent(final StudentTransfer studentTransfer) throws IOException {
+
+		if (checkEsi(studentTransfer.getEuropeanStudentIdentifier())) {
+
+			throw new IOException("European Student Identifier doesn't match the correct format");
+
+		}
+
+			httpManager.httpDeleter(BASE_PATH + "/students/" + studentTransfer.getEuropeanStudentIdentifier());
+
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public void addCard(final CardTransfer cardTransfer) throws IOException {
+
+		if (checkEsi(cardTransfer.getEuropeanStudentIdentifier())) {
+
+			throw new IOException("European Student Identifier doesn't match the correct format");
+
+		}
+
+		httpManager.httpPoster(
+				BASE_PATH + "/students/" + cardTransfer.getEuropeanStudentIdentifier() + "/cards",
+				cardTransferToCardJson(cardTransfer)
+		);
+
+	}
+
+	public String listCards() {
+
+		return httpManager.httpGetter(BASE_PATH + "/cards");
+
+	}	// Tested
+
+	public List<CardTransfer> listCardsWithTransferObject() throws JsonProcessingException {
+
+		List<CardTransfer> cardsList = new ArrayList<>();
+
+		JsonArray cardsJsonArray =	Json.createReader(new StringReader(listCards())).readArray();
+
+		for (JsonValue jsonValue : cardsJsonArray) {
+
+			cardsList.add(cardJsonToCardTransfer(jsonValue.toString()));
+
+		}
+
+		return cardsList;
+
+	}	// Tested
+
+	public String retrieveCard(final String esi, final String esc) throws IOException {
+
+		if (checkEsi(esi)) {
+
+			throw new IOException("European Student Identifier doesn't match the correct format");
+
+		}
+
+		if (checkEsc(esc)) {
+
+			throw new IOException("European Student Card doesn't match the correct format");
+
+		}
+
+		return httpManager.httpGetter(BASE_PATH + "/students/" + esi + "/cards/" + esc);
+
+	}
+
+	public CardTransfer retrieveCardWithTransferObject(final String esi, final String esc) throws IOException {
+
+		if (checkEsi(esi)) {
+
+			throw new IOException("European Student Identifier doesn't match the correct format");
+
+		}
+
+		if (checkEsc(esc)) {
+
+			throw new IOException("European Student Card doesn't match the correct format");
+
+		}
+
+		return cardJsonToCardTransfer(httpManager.httpGetter(BASE_PATH + "/students/" + esi + "/cards/" + esc));
+
+	}	// Tested
+
+	public void deleteCard(CardTransfer cardTransfer) throws IOException {
+
+		if (checkEsi(cardTransfer.getEuropeanStudentIdentifier())) {
+
+			throw new IOException("esi doesn't match the correct format");
+
+		}
+
+		if (checkEsc(cardTransfer.getEuropeanStudentCardNumber())) {
+
+			throw new IOException("esc or esc doesn't match the correct format");
+
+		}
+
+			httpManager.httpDeleter(BASE_PATH + "/students/" + cardTransfer.getEuropeanStudentIdentifier()
+					+ "/cards/" + cardTransfer.getEuropeanStudentCardNumber());
+
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private boolean checkEsi(final String esi) {
+
+		return !Pattern.compile("^urn:schac:personalUniqueCode:int:esi:[a-zA-Z]+\\.[a-zA-Z]+:[0-9]{6}$")
+				.matcher(esi)
+				.matches();
+
+	}
+
+	private boolean checkEsc(final String esc) {
+
+		return !Pattern.compile("^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[0-9]{12}+$")
+				.matcher(esc)
+				.matches();
+
+	}
+
+	private CardTransfer cardJsonToCardTransfer(String cardJson) throws JsonProcessingException {
+
+		return bindJsonDeserializer("CardDeserializer").readValue(cardJson, CardTransfer.class);
+
+	}
+
+	private StudentTransfer studentJsonToStudentTransfer(String studentJson) throws JsonProcessingException {
+
+		return bindJsonDeserializer("StudentDeserializer").readValue(studentJson, StudentTransfer.class);
+
+	}
+
+	private String cardTransferToCardJson(CardTransfer cardTransfer) throws JsonProcessingException {
+
+		return bindJsonSerializer("CardSerializer").writeValueAsString(cardTransfer);
+
+	}
+
+	private String studentTransferToStudentJson(StudentTransfer studentTransfer) throws JsonProcessingException {
+
+		return bindJsonSerializer("StudentSerializer").writeValueAsString(studentTransfer);
+
+	}
+
+	private ObjectMapper bindJsonSerializer(String serializerName) {
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		SimpleModule module =
+				new SimpleModule(
+						serializerName,
+						new Version(1, 0, 0, null, null, null)
+				);
+
+		if(serializerName.equalsIgnoreCase("StudentSerializer")) {
+
+			module.addSerializer(StudentTransfer.class, new StudentSerializer(StudentTransfer.class));
+
+		} else if (serializerName.equalsIgnoreCase("CardSerializer")) {
+
+			module.addSerializer(CardTransfer.class, new CardSerializer(CardTransfer.class));
+
+        }
+
+		return mapper.registerModule(module);
+
+	}
+
+	private ObjectMapper bindJsonDeserializer(String type) {
+
+		String deserializerName = "";
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		SimpleModule module =
+				new SimpleModule(
+						deserializerName,
+						new Version(1, 0, 0, null, null, null)
+				);
+
+		if(type.contains("Student")) {
+
+			module.addDeserializer(StudentTransfer.class, new StudentDeserializer());
+
+		} else if (type.contains("Card")) {
+
+			module.addDeserializer(CardTransfer.class, new CardDeserializer());
+
+		}
+
+		return mapper.registerModule(module);
+
+	}
+
+}

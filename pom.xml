@@ -4,438 +4,450 @@
   Copyright © 2020-2022 EC2U Consortium. All rights reserved.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-
-	<groupId>eu.ec2u</groupId>
-	<artifactId>ec2u-card</artifactId>
-	<version>${revision}</version>
-	<packaging>jar</packaging>
-
-	<name>EC2U Virtual Card</name>
-	<description>EC2U mobile-based virtual mobility card.</description>
-	<url>https://github.com/ec2u/card</url>
-	<inceptionYear>2021</inceptionYear>
-
-	<organization>
-		<name>EC2U</name>
-		<url>https://ec2u.eu/</url>
-	</organization>
-
-	<developers>
-		<developer>
-			<name>EC2U Connect Centre</name>
-			<email>cc@ec2u.eu</email>
-			<organization>EC2U Consortium</organization>
-			<organizationUrl>https://ec2u.eu</organizationUrl>
-		</developer>
-	</developers>
-
-	<properties>
-
-		<main>eu.ec2u.card.ToolApplication</main>
-
-		<revision>${maven.build.timestamp}</revision>
-
-		<java.version>11</java.version>
-		<maven.version>3.6</maven.version>
-
-		<node.version>14.15.4</node.version>
-		<npm.version>7.7.6</npm.version>
-
-		<gae.project>${project.artifactId}</gae.project>
-		<gae.version>next</gae.version>
-		<gae.promote>false</gae.promote>
-
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
-
-		<maven.site.skip>true</maven.site.skip>
-		<maven.deploy.skip>true</maven.deploy.skip>
-
-	</properties>
-
-	<scm>
-		<connection>scm:git:git@github.com:ec2u/card.git</connection>
-		<developerConnection>scm:git:git@github.com:ec2u/card.git</developerConnection>
-		<url>https://github.com/ec2u/card</url>
-	</scm>
-
-	<issueManagement>
-		<system>GitHub</system>
-		<url>https://github.com/ec2u/card/issues</url>
-	</issueManagement>
-
-	<dependencyManagement>
-		<dependencies>
-
-			<dependency> <!-- https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>2.6.3</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-			<dependency> <!-- https://search.maven.org/artifact/com.google.cloud/spring-cloud-gcp-dependencies -->
-				<groupId>com.google.cloud</groupId>
-				<artifactId>spring-cloud-gcp-dependencies</artifactId>
-				<version>3.1.0</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-			<dependency>
-				<!-- https://search.maven.org/artifact/org.junit.jupiter/junit-bom -->
-				<groupId>org.junit</groupId>
-				<artifactId>junit-bom</artifactId>
-				<version>5.7.2</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-			<dependency>
-				<!-- https://search.maven.org/artifact/org.assertj/assertj-core -->
-				<groupId>org.assertj</groupId>
-				<artifactId>assertj-core</artifactId>
-				<version>3.20.2</version>
-				<scope>test</scope>
-			</dependency>
-
-		</dependencies>
-	</dependencyManagement>
-
-	<dependencies>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>eu.ec2u</groupId>
+    <artifactId>ec2u-card</artifactId>
+    <version>${revision}</version>
+    <packaging>jar</packaging>
+
+    <name>EC2U Virtual Card</name>
+    <description>EC2U mobile-based virtual mobility card.</description>
+    <url>https://github.com/ec2u/card</url>
+    <inceptionYear>2021</inceptionYear>
+
+    <organization>
+        <name>EC2U</name>
+        <url>https://ec2u.eu/</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <name>EC2U Connect Centre</name>
+            <email>cc@ec2u.eu</email>
+            <organization>EC2U Consortium</organization>
+            <organizationUrl>https://ec2u.eu</organizationUrl>
+        </developer>
+    </developers>
+
+    <properties>
+
+        <main>eu.ec2u.card.ToolApplication</main>
+
+        <revision>${maven.build.timestamp}</revision>
+
+        <java.version>11</java.version>
+        <maven.version>3.6</maven.version>
+
+        <node.version>14.15.4</node.version>
+        <npm.version>7.7.6</npm.version>
+
+        <gae.project>${project.artifactId}</gae.project>
+        <gae.version>next</gae.version>
+        <gae.promote>false</gae.promote>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
+
+        <maven.site.skip>true</maven.site.skip>
+        <maven.deploy.skip>true</maven.deploy.skip>
+
+    </properties>
+
+    <scm>
+        <connection>scm:git:git@github.com:ec2u/card.git</connection>
+        <developerConnection>scm:git:git@github.com:ec2u/card.git</developerConnection>
+        <url>https://github.com/ec2u/card</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/ec2u/card/issues</url>
+    </issueManagement>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency> <!-- https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>2.6.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency> <!-- https://search.maven.org/artifact/com.google.cloud/spring-cloud-gcp-dependencies -->
+                <groupId>com.google.cloud</groupId>
+                <artifactId>spring-cloud-gcp-dependencies</artifactId>
+                <version>3.1.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <!-- https://search.maven.org/artifact/org.junit.jupiter/junit-bom -->
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.7.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <!-- https://search.maven.org/artifact/org.assertj/assertj-core -->
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>3.20.2</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-saml2-service-provider</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>spring-cloud-gcp-starter-data-datastore</artifactId>
+        </dependency>
+
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-saml2-service-provider</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>spring-cloud-gcp-starter-data-datastore</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    </dependencies>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
-		</dependency>
+    <build>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-		</dependency>
+        <finalName>${project.artifactId}</finalName>
 
+        <resources>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
 
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
+        </resources>
 
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <plugins>
 
-	</dependencies>
+            <plugin> <!-- https://maven.apache.org/plugins/maven-clean-plugin/ -->
 
-	<build>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
 
-		<finalName>${project.artifactId}</finalName>
+                <executions>
+                    <execution>
 
-		<resources>
+                        <id>clean-work-folders</id>
+                        <phase>clean</phase>
 
-			<resource>
-				<directory>${project.basedir}/src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
 
-		</resources>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${project.basedir}/node_modules</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
 
-		<plugins>
+                    </execution>
+                </executions>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-clean-plugin/ -->
+            </plugin>
 
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>3.1.0</version>
+            <plugin> <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
 
-				<executions>
-					<execution>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0</version>
 
-						<id>clean-work-folders</id>
-						<phase>clean</phase>
+                <executions>
+                    <execution>
 
-						<goals>
-							<goal>clean</goal>
-						</goals>
+                        <id>enforce-maven</id>
 
-						<configuration>
-							<filesets>
-								<fileset>
-									<directory>${project.basedir}/node_modules</directory>
-								</fileset>
-							</filesets>
-						</configuration>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
 
-					</execution>
-				</executions>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${maven.version}</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
 
-			</plugin>
+                    </execution>
+                </executions>
 
-			<plugin> <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/ -->
+            </plugin>
 
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.0.0</version>
+            <plugin> <!-- https://maven.apache.org/plugins/maven-compiler-plugin -->
 
-				<executions>
-					<execution>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.9.0</version>
 
-						<id>enforce-maven</id>
+                <configuration>
 
-						<goals>
-							<goal>enforce</goal>
-						</goals>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
 
-						<configuration>
-							<rules>
-								<requireMavenVersion>
-									<version>${maven.version}</version>
-								</requireMavenVersion>
-							</rules>
-						</configuration>
+                </configuration>
 
-					</execution>
-				</executions>
+            </plugin>
 
-			</plugin>
+            <plugin> <!-- https://github.com/eirslett/frontend-maven-plugin -->
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-compiler-plugin -->
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.12.0</version>
 
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.9.0</version>
+                <configuration>
 
-				<configuration>
+                    <installDirectory>target</installDirectory>
 
-					<source>${java.version}</source>
-					<target>${java.version}</target>
+                </configuration>
 
-				</configuration>
+                <executions>
 
-			</plugin>
+                    <execution>
 
-			<plugin> <!-- https://github.com/eirslett/frontend-maven-plugin -->
+                        <id>install-node-and-npm</id>
+                        <phase>validate</phase>
 
-				<groupId>com.github.eirslett</groupId>
-				<artifactId>frontend-maven-plugin</artifactId>
-				<version>1.12.0</version>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
 
-				<configuration>
+                        <configuration>
+                            <nodeVersion>v${node.version}</nodeVersion>
+                            <npmVersion>${npm.version}</npmVersion>
+                        </configuration>
 
-					<installDirectory>target</installDirectory>
+                    </execution>
 
-				</configuration>
+                    <execution>
 
-				<executions>
+                        <id>npm-install</id>
+                        <phase>initialize</phase>
 
-					<execution>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
 
-						<id>install-node-and-npm</id>
-						<phase>validate</phase>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
 
-						<goals>
-							<goal>install-node-and-npm</goal>
-						</goals>
+                    </execution>
 
-						<configuration>
-							<nodeVersion>v${node.version}</nodeVersion>
-							<npmVersion>${npm.version}</npmVersion>
-						</configuration>
+                    <execution>
 
-					</execution>
+                        <id>npm-build</id>
+                        <phase>compile</phase>
 
-					<execution>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
 
-						<id>npm-install</id>
-						<phase>initialize</phase>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
 
-						<goals>
-							<goal>npm</goal>
-						</goals>
+                    </execution>
 
-						<configuration>
-							<arguments>install</arguments>
-						</configuration>
+                </executions>
 
-					</execution>
+            </plugin>
 
-					<execution>
+            <plugin> <!-- https://maven.apache.org/surefire/maven-surefire-plugin/ -->
 
-						<id>npm-build</id>
-						<phase>compile</phase>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
 
-						<goals>
-							<goal>npm</goal>
-						</goals>
+            </plugin>
 
-						<configuration>
-							<arguments>run build</arguments>
-						</configuration>
+            <plugin> <!-- https://maven.apache.org/plugins/maven-jar-plugin/ -->
 
-					</execution>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
 
-				</executions>
+                <configuration>
 
-			</plugin>
+                    <archive>
 
-			<plugin> <!-- https://maven.apache.org/surefire/maven-surefire-plugin/ -->
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
 
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
+                    </archive>
 
-			</plugin>
+                </configuration>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-jar-plugin/ -->
+            </plugin>
 
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.2.2</version>
+            <plugin> <!-- https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/  -->
 
-				<configuration>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.4.0</version>
 
-					<archive>
+                <executions>
+                    <execution>
 
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
+                        <id>spring-package</id>
 
-					</archive>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
 
-				</configuration>
+                    </execution>
+                </executions>
 
-			</plugin>
+            </plugin>
 
-			<plugin> <!-- https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/  -->
+            <plugin> <!-- https://maven.apache.org/plugins/maven-resources-plugin/ -->
 
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>2.4.0</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
 
-				<executions>
-					<execution>
+                <executions>
+                    <execution>
 
-						<id>spring-package</id>
+                        <id>stage-static-assets</id>
+                        <phase>package</phase>
 
-						<goals>
-							<goal>repackage</goal>
-						</goals>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
 
-					</execution>
-				</executions>
+                        <configuration>
 
-			</plugin>
+                            <outputDirectory>${project.build.directory}/appengine-staging/static
+                            </outputDirectory>
 
-			<plugin> <!-- https://maven.apache.org/plugins/maven-resources-plugin/ -->
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.outputDirectory}/static</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
 
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.2.0</version>
+                        </configuration>
 
-				<executions>
-					<execution>
+                    </execution>
+                </executions>
 
-						<id>stage-static-assets</id>
-						<phase>package</phase>
+            </plugin>
 
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
+            <plugin> <!-- https://cloud.google.com/appengine/docs/standard/java-gen2/maven-reference -->
 
-						<configuration>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>appengine-maven-plugin</artifactId>
+                <version>2.4.1</version>
 
-							<outputDirectory>${project.build.directory}/appengine-staging/static</outputDirectory>
+                <configuration>
+                    <projectId>${gae.project}</projectId>
+                    <version>${gae.version}</version>
+                    <promote>${gae.promote}</promote>
+                </configuration>
 
-							<resources>
-								<resource>
-									<directory>${project.build.outputDirectory}/static</directory>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
+                <executions>
+                    <execution>
 
-						</configuration>
+                        <id>deploy-to-gae</id>
+                        <phase>deploy</phase>
 
-					</execution>
-				</executions>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
 
-			</plugin>
+                    </execution>
+                </executions>
 
-			<plugin> <!-- https://cloud.google.com/appengine/docs/standard/java-gen2/maven-reference -->
+            </plugin>
 
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>appengine-maven-plugin</artifactId>
-				<version>2.4.1</version>
+        </plugins>
 
-				<configuration>
-					<projectId>${gae.project}</projectId>
-					<version>${gae.version}</version>
-					<promote>${gae.promote}</promote>
-				</configuration>
-
-				<executions>
-					<execution>
-
-						<id>deploy-to-gae</id>
-						<phase>deploy</phase>
-
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-
-					</execution>
-				</executions>
-
-			</plugin>
-
-		</plugins>
-
-	</build>
+    </build>
 
 </project>
