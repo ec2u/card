@@ -37,7 +37,7 @@ import static java.util.logging.Level.*;
 public final class Server {
 
     private static final String host="localhost";
-    private static final int port=3000;
+    private static final int port=8080;
 
     private static final int backlog=128;
 

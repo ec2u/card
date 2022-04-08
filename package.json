@@ -7,13 +7,8 @@
     },
     "dependencies": {
         "@types/qrcode": "^1.4.2",
-        "@types/react": "^17.0.0",
-        "@types/react-dom": "^17.0.0",
-        "lucide-react": "^0.16.0",
         "qrcode": "^1.5.0",
-        "react": "^17.0.0",
-        "react-dom": "^17.0.0",
-        "react-router-dom": "^6.2.2"
+        "@ec2u/core": "^0.0.1-2"
     },
     "devDependencies": {
         "@vitejs/plugin-react-refresh": "^1.0.0",
