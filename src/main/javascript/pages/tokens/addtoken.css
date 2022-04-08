@@ -1,0 +1,96 @@
+card-addtoken {
+  width: 95%;
+  display: grid;
+  align-items: stretch;
+
+  & header {
+    width: 100%;
+    margin: 2em 0em;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    & section {
+      display: flex;
+      align-items: center;
+      flex-flow: wrap;
+      gap: 0.5em;
+    }
+    & a {
+      text-decoration: none;
+      color: black;
+      font-size: 1.4em;
+    }
+    & .tokens-link:hover {
+      color: orange;
+      transform: translateX(-3px);
+    }
+  }
+  & form {
+    width: 100%;
+    display: flex;
+    text-align: left;
+    justify-content: space-between;
+    overflow: auto;
+
+    & .start {
+      width: 50%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    & section {
+      display: flex;
+      flex-flow: wrap;
+      flex-direction: column;
+
+      & label {
+        color: rgb(161, 157, 157);
+      }
+      & input {
+        margin-top: 1em;
+        border: 1px solid black;
+        padding: 0.2em;
+        border-radius: 0.3em;
+        font-size: 0.9em;
+      }
+    }
+  }
+  & .button-check {
+    cursor: pointer;
+  }
+  & .button-check:hover {
+    color: green;
+    transform: translateY(-3px);
+  }
+  & .button-close:hover {
+    color: red;
+    transform: translateY(-3px);
+  }
+}
+
+.spinner::before {
+  animation: 1.5s linear infinite spinner;
+  animation-play-state: inherit;
+  border: solid 5px lightgray;
+  border-bottom-color: gray;
+  border-radius: 50%;
+  content: "";
+  height: 3em;
+  width: 3em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform;
+}
+
+@keyframes spinner {
+  0% {
+    transform: translate3d(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+}
