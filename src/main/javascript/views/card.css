@@ -96,6 +96,7 @@ card-card {
 
         & > .data {
 
+            display: inline-block;
             transform-origin: top right;
 
             & > * {
@@ -202,8 +203,8 @@ card-card {
             grid-column: 2;
             grid-row: 1;
 
-            margin-right: 1em;
-            font-size: 6.15vh;
+            margin-left: 0.5em;
+            margin-right: 1.5em;
 
         }
 
@@ -239,7 +240,7 @@ card-card {
         --unit: calc((100vw - 2 * var(--padding)) / ((5 + (5 + 4) * var(--ratio))));
         --logo: calc(3 * var(--unit));
 
-        grid-template-columns: 1fr;
+        grid-template-columns: min-content 1fr;
         grid-template-rows: 1fr min-content;
 
 
@@ -275,8 +276,8 @@ card-card {
             grid-row: 1;
             grid-column: 2;
 
+            margin-left: 0.5em;
             margin-bottom: 1em;
-            font-size: 3.25vh;
 
         }
 
@@ -307,7 +308,7 @@ card-card {
 
     }
 
-    @media screen and (min-width: 960px) {
+    @media screen and (min-width: 512px) and (min-height: 512px) {
 
         border-style: solid;
         border-radius: 1em;

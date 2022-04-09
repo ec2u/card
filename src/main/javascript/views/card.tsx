@@ -17,7 +17,7 @@
 import { Card, useProfile } from "@ec2u/card/hooks/profile";
 import { page } from "@ec2u/card/index";
 import { ChevronLeft, ChevronRight, Heart, LogIn, LogOut, RefreshCw, User } from "lucide-react";
-import React, { createElement, useState } from "react";
+import React, { createElement, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./card.css";
 
@@ -45,6 +45,41 @@ export function CardCard() {
 
     const [profile, setProfile]=useProfile();
     const [index, setIndex]=useState(0); // the index of the current profile card
+
+    const data=useRef<HTMLDListElement>(null);
+
+
+    function fit() {
+
+        if ( data.current ) {
+
+            data.current.style.transform=`scale(1)`;
+
+            const inner=data.current.getBoundingClientRect();
+            const outer=data.current.parentElement?.getBoundingClientRect() ?? inner;
+
+            const fw=inner.width === 0 ? 1 : outer.width/inner.width;
+            const fh=inner.height === 0 ? 1 : outer.height/inner.height;
+
+            data.current.style.transform=`scale(${Math.min(fw, fh)})`;
+
+        }
+
+    }
+
+    useEffect(() => {
+
+        fit();
+
+    });
+
+    useEffect(() => {
+
+        window.addEventListener("resize", fit);
+
+        return () => window.removeEventListener("resize", fit);
+
+    }, []);
 
 
     function doFlip() {
@@ -149,7 +184,7 @@ export function CardCard() {
 
     }: Card) {
 
-        return <dl className={"data"}>
+        return <dl ref={data} className={"data"}>
 
             <dt>Name</dt>
             <dd>{name}<br/>{esi
