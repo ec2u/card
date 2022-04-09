@@ -20,7 +20,7 @@ import reactRefresh from "@vitejs/plugin-react-refresh";
 import postcssNesting from "postcss-nesting";
 
 const src=resolve(process.env.src || "src/main/javascript/");
-const out=resolve(process.env.out || "target/classes/static/");
+const out=resolve(process.env.out || "target/static/");
 
 export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 
