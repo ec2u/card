@@ -14,34 +14,31 @@
  * limitations under the License.
  */
 
-package eu.ec2u.card.handlers;
+package eu.ec2u.card;
 
+import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import eu.ec2u.card.Profile;
-import eu.ec2u.card.Setup;
-import eu.ec2u.card.services.Codec;
-import eu.ec2u.card.services.Fetcher;
+import eu.ec2u.card.Setup.HEI;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public final class Router implements HttpHandler {
-
-    private static final Pattern BearerPattern=Pattern.compile("\\s*Bearer\\s*(?<token>\\S*)\\s*");
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * HTTP resource handler.
+ */
+final class Handler implements HttpHandler {
 
     @Inject private Setup setup;
-    @Inject private Codec codec;
+    @Inject private Gson codec;
     @Inject private Fetcher fetcher;
 
 
@@ -58,21 +55,19 @@ public final class Router implements HttpHandler {
         } else {
 
             final Profile data=new Profile()
-                    .setManager(setup.getManager())
                     .setVersion(setup.getVersion())
                     .setInstant(setup.getInstant());
 
             final int status=Optional.ofNullable(exchange.getRequestHeaders().getFirst("Authorization"))
 
-                    .map(BearerPattern::matcher)
-                    .filter(Matcher::matches)
-                    .map(matcher -> matcher.group("token"))
-
-                    .map(this::validate) // !!! malformed/expired
+                    .map(token -> new User() // !!! from request parameters
+                            .setEsi("urn:schac:personalUniqueCode:int:esi:unipv.it:999001")
+                            .setHei("unipv.it")
+                    )
 
                     .map(user -> {
 
-                        final List<Profile.Card> cards=fetcher.fetch(user);// !!! error handling
+                        final List<Card> cards=fetcher.fetch(user); // !!! error handling
 
                         data
                                 .setUser(user)
@@ -84,9 +79,9 @@ public final class Router implements HttpHandler {
 
                     .orElseGet(() -> {
 
-                        exchange.getResponseHeaders().set(
-                                "WWW-Authenticate", format("Bearer realm=\"%s\"", setup.getSso())
-                        );
+                        //exchange.getResponseHeaders().set(
+                        //        "WWW-Authenticate", format("Bearer realm=\"%s\"", setup.getSso())
+                        //);
 
                         return 401;
 
@@ -102,7 +97,7 @@ public final class Router implements HttpHandler {
                     final Writer writer=new OutputStreamWriter(output, UTF_8)
             ) {
 
-                codec.encode(writer, data);
+                codec.toJson(data, writer);
 
             }
 
@@ -113,10 +108,41 @@ public final class Router implements HttpHandler {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private Profile.User validate(final String token) { // !!!
-        return new Profile.User()
-                .setEsi("urn:schac:personalUniqueCode:int:esi:unipv.it:999001")
-                .setHei("unipv.it");
+    @Getter
+    @Setter private static final class Profile {
+
+        private String version;
+        private LocalDateTime instant;
+
+        private User user;
+        private List<Card> cards;
+
+    }
+
+    @Getter
+    @Setter
+    static final class User {
+
+        private String esi;
+        private String hei;
+
+    }
+
+    @Getter
+    @Setter
+    static final class Card {
+
+        private String code;
+        private String test; // ESC testing service
+        private LocalDate expiry;
+
+        private String esi;
+        private int level;
+        private String name;
+        private String photo;
+
+        private HEI hei;
+
     }
 
 }

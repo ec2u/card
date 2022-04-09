@@ -16,22 +16,20 @@
 
 package eu.ec2u.card;
 
-import eu.ec2u.card.Profile.HEI;
+import eu.ec2u.card.Fetcher.ESC;
 import lombok.Getter;
+import lombok.Setter;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-@Getter
-public final class Setup {
+/**
+ * Server setup.
+ */
+@Getter final class Setup {
 
-    private String manager;
     private String version;
     private LocalDateTime instant;
-
-    private URI sso;
-    private String jwt;
 
     private ESC esc;
 
@@ -41,10 +39,16 @@ public final class Setup {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Getter
-    public static final class ESC {
+    @Setter
+    static final class HEI {
 
-        private String api;
-        private String tst;
+        private int pic;
+        private String name;
+
+        private String iso;
+        private String country;
+
+        private String key; // the vault id of the HEI ESC Router API key
 
     }
 

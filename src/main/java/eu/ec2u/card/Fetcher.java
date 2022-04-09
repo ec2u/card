@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package eu.ec2u.card.services;
+package eu.ec2u.card;
 
+import com.google.gson.Gson;
 import com.google.inject.Inject;
-import eu.ec2u.card.Profile.*;
-import eu.ec2u.card.Setup;
+import eu.ec2u.card.Handler.Card;
+import eu.ec2u.card.Handler.User;
+import eu.ec2u.card.Setup.HEI;
 import lombok.Getter;
 
 import java.io.*;
@@ -26,40 +28,36 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static java.lang.String.format;
 import static java.net.http.HttpClient.newHttpClient;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
 
-public final class Fetcher {
+/**
+ * ESC card fetcher.
+ */
+final class Fetcher {
 
     @Inject private Setup setup;
-    @Inject private Vault vault;
-    @Inject private Codec codec;
+    @Inject private Gson codec;
 
 
-    public List<Card> fetch(final User user) {
+    List<Card> fetch(final User user) {
 
         if ( user == null ) {
             throw new NullPointerException("null esi");
         }
 
         final String uni="unipv.it"; // !!! from user
-
         final HEI tenant=setup.getTenants().get(uni); // !!! handle missing elements
-
         final String key=tenant.getKey();
 
         final HttpRequest request=HttpRequest.newBuilder().GET()
                 .uri(URI.create(format("%s/v1/students/%s", setup.getEsc().getApi(), user.getEsi())))
-                .header("Key", vault.get(key).orElseThrow(() ->
-                        new NoSuchElementException(format("undefined <%s> key", key))
-                ))
+                .header("Key", key)
                 .build();
 
         try {
@@ -73,7 +71,7 @@ public final class Fetcher {
                     final Reader reader=new InputStreamReader(input, UTF_8)
             ) {
 
-                final ESCStudent student=codec.decode(reader, ESCStudent.class);
+                final ESCStudent student=codec.fromJson(reader, ESCStudent.class);
 
                 // !!! assert required fields
                 // !!! assert student.getPicInstitutionCode() == tenant.pic
@@ -98,11 +96,6 @@ public final class Fetcher {
 
                         .collect(toList());
 
-
-            } catch ( final ParseException e ) {  // !!! handle
-
-                throw new RuntimeException(e);
-
             }
 
         } catch ( final IOException e ) {  // !!! handle
@@ -122,6 +115,14 @@ public final class Fetcher {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Getter
+    static final class ESC {
+
+        private String api;
+        private String tst;
+
+    }
+
+    @Getter
     private static final class ESCStudent {
 
         private String europeanStudentIdentifier;
@@ -133,7 +134,6 @@ public final class Fetcher {
         private int academicLevel;
 
         private List<ESCCard> cards;
-
 
     }
 

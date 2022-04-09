@@ -1,9 +1,6 @@
 {
-    "manager": "https://www.ec2u.eu/",
     "version": "${project.version}",
     "instant": "${project.instant}",
-    "sso": "https://card.ec2u.eu/saml/sso",
-    "jwt": "key-jwt",
     "esc": {
         "api": "https://api-sandbox.europeanstudentcard.eu",
         "tst": "http://pp.esc.gg"
@@ -14,7 +11,7 @@
             "name": "University of Pavia",
             "iso": "IT",
             "country": "Italy",
-            "key": "key-esc-sandbox"
+            "key": "esc-key-pavia-sandbox"
         }
     }
 }

@@ -18,22 +18,20 @@ package eu.ec2u.card;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
-import eu.ec2u.card.handlers.Loader;
-import eu.ec2u.card.handlers.Router;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.InetSocketAddress;
-import java.util.Locale;
-import java.util.Optional;
 import java.util.concurrent.Executors;
-import java.util.logging.*;
-import java.util.regex.Pattern;
+import java.util.logging.Logger;
 
 import static java.lang.String.format;
-import static java.util.logging.Level.*;
+import static java.util.logging.Level.SEVERE;
 
+/**
+ * HTTP server.
+ */
 public final class Server {
 
     private static final String host="localhost";
@@ -42,122 +40,28 @@ public final class Server {
     private static final int backlog=128;
 
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private static final String PortVariable="PORT";
-    private static final Pattern EOLPattern=Pattern.compile("\n");
-
-
-    static {  // logging not configured: reset and load compact console configuration ;(unless on GAE)
-
-        if ( System.getProperty("java.util.logging.config.file") == null
-                && System.getProperty("java.util.logging.config.class") == null
-                && !"Production".equals(System.getProperty("com.google.appengine.runtime.environment"))
-        ) {
-
-            final Logger logger=Logger.getLogger("");
-
-            for (final java.util.logging.Handler h : logger.getHandlers()) { // clear existing handlers
-                logger.removeHandler(h);
-            }
-
-            logger.setLevel(INFO);
-
-            final ConsoleHandler handler=new ConsoleHandler();
-
-            handler.setLevel(ALL); // enable detailed reporting from children loggers
-
-            handler.setFormatter(new Formatter() {
-
-                @Override public String format(final LogRecord record) {
-
-                    return String.format(Locale.ROOT, "%3s %-15s %s%s\n",
-                            level(record.getLevel()),
-                            name(record.getLoggerName()),
-                            message(record.getMessage()),
-                            trace(record.getThrown()));
-
-                }
-
-
-                private String level(final Level level) {
-                    return level.equals(SEVERE) ? "!!!"
-                            : level.equals(WARNING) ? "!!"
-                            : level.equals(INFO) ? "!"
-                            : level.equals(FINE) ? "?"
-                            : level.equals(FINER) ? "??"
-                            : level.equals(FINEST) ? "???"
-                            : "";
-                }
-
-                private String name(final String name) {
-                    return name == null ? "<global>" : name.substring(name.lastIndexOf('.')+1);
-                }
-
-                private String message(final CharSequence message) {
-                    return message == null ? "" : EOLPattern.matcher(message).replaceAll("\n    ");
-                }
-
-                private String trace(final Throwable cause) {
-                    if ( cause == null ) { return ""; } else {
-                        try (
-                                final StringWriter writer=new StringWriter();
-                                final PrintWriter printer=new PrintWriter(writer.append(' '))
-                        ) {
-
-                            printer.append("caused by ");
-
-                            cause.printStackTrace(printer);
-
-                            return writer.toString();
-
-                        } catch ( final IOException unexpected ) {
-                            throw new UncheckedIOException(unexpected);
-                        }
-                    }
-                }
-
-            });
-
-            logger.addHandler(handler);
-
-        }
-
-    }
-
-
     public static void main(final String... args) {
-        Guice.createInjector(new Services()).getInstance(Server.class).start();
+        Guice.createInjector(new Loader()).getInstance(Server.class).start();
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Inject private Loader loader;
-    @Inject private Router router;
+    @Inject private Handler handler;
     @Inject private Logger logger;
 
 
     private void start() {
         try {
 
-            final HttpServer server=HttpServer.create(new InetSocketAddress(host,
-                    Optional.ofNullable(System.getenv().get(PortVariable))
-
-                    .map(value -> {
-
-                        try { return Integer.parseInt(value); } catch ( final NumberFormatException e1 ) { return null; }
-
-                    })
-
-                    .orElse(port)), backlog);
+            final HttpServer server=HttpServer.create(new InetSocketAddress(host, port), backlog);
 
             server.setExecutor(Executors.newCachedThreadPool());
 
-            final HttpContext context=server.createContext("/", exchange -> {
+            server.createContext("/", exchange -> {
                 try {
 
-                    router.handle(exchange);
+                    handler.handle(exchange);
 
                 } catch ( final RuntimeException e ) {
 
@@ -165,8 +69,6 @@ public final class Server {
 
                 }
             });
-
-            context.getFilters().add(loader);
 
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -185,19 +87,7 @@ public final class Server {
 
             server.start();
 
-            logger.info(format("server listening at <http://%s:%d/>", host, Optional
-
-                    .ofNullable(System.getenv().get(PortVariable))
-
-                    .map(value -> {
-
-                        try { return Integer.parseInt(value); } catch ( final NumberFormatException e1 ) { return null; }
-
-                    })
-
-                    .orElse(port)
-
-            ));
+            logger.info(format("server listening at <http://%s:%d/>", host, port));
 
         } catch ( final IOException e ) {
             throw new UncheckedIOException(e);
