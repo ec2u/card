@@ -14,81 +14,100 @@
  * limitations under the License.
  */
 
-import { useProfile } from "@ec2u/card/hooks/profile";
-import { copy, Profile } from "@ec2u/card/index";
-import { About } from "@ec2u/card/pages/about";
-import { Contacts } from "@ec2u/card/pages/contacts";
-import { Privacy } from "@ec2u/card/pages/privacy";
+import { page } from "@ec2u/card/index";
 import { CardIcon } from "@ec2u/card/views/icon";
+import { CardSpin } from "@ec2u/card/views/spin";
 import { Menu, X } from "lucide-react";
-import React, { createElement, ReactNode, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { createElement, useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import rehypeSlug from "rehype-slug";
+import remarkFrontmatter from "remark-frontmatter";
+import remarkGemoji from "remark-gemoji";
+import remarkGfm from "remark-gfm";
 import "./page.css";
 
 
-export function CardPage({
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    name,
+export function CardPage() {
 
-    children
+    const [navigate, setNavigate]=useState(false);
 
-}: {
+    const [status, setStatus]=useState<number>();
+    const [content, setContent]=useState<string>();
 
-    name: string
+    const path=useLocation().pathname;
 
-    children: ReactNode
+    useEffect(() => {
 
-}) {
+        setStatus(undefined);
+        setContent(undefined);
 
-    const [profile]=useProfile();
-    const [menu, setMenu]=useState(false);
+        if ( path.match(/^\/([-.\w]+\/)*([-.\w]*)$/) ) { // no user content and path is route
+
+            fetch(`${path}${path.endsWith("/") ? "index.md" : ".md"}`)
+
+                .then(response => response.text().then(content => {
+
+                    setStatus(response.status);
+                    setContent(content);
+
+                }))
+
+                .catch(() => {});
+        }
 
 
-    function version({ version, instant }: Profile) {
-
-        const date=new Date(instant);
-
-        const year=date.getFullYear().toString();
-        const month=(date.getMonth()+1).toString().padStart(2, "0");
-        const day=date.getDate().toString().padStart(2, "0");
-
-        return `v${version}+${year}${month}${day}`;
-    }
-
+    }, [path]);
 
     return createElement("card-page", {}, <>
 
         <header>
 
-            <a href={profile?.manager || "/"} target={"_blank"}><CardIcon/></a>
+            <a href={"https://www.ec2u.eu/"} target={"_blank"}><CardIcon/></a>
 
-            <Link to={"/"}>Virtual Card</Link>
+            <Link to={"/"}>{page.name}</Link>
 
-            {menu
-                ? <button onClick={() => setMenu(false)}><X/></button>
-                : <button onClick={() => setMenu(true)}><Menu/></button>
+            {navigate
+                ? <button onClick={() => setNavigate(false)}><X/></button>
+                : <button onClick={() => setNavigate(true)}><Menu/></button>
             }
-
 
         </header>
 
-        <nav {...(menu ? { className: "active" } : {})}>
+        <nav {...(navigate ? { className: "active" } : {})} onClick={e => {
 
-            <NavLink to={About.route}>{About.label}</NavLink>
-            <NavLink to={Privacy.route}>{Privacy.label}</NavLink>
-            <NavLink to={Contacts.route}>{Contacts.label}</NavLink>
+            if ( (e.target as Element).tagName === "A" ) { setNavigate(false); }
 
-            <footer>{profile && version(profile)}</footer>
+        }}>
+
+            <NavLink to={"/about"}>About</NavLink>
+            <NavLink to={"/privacy"}>Privacy</NavLink>
+            <NavLink to={"/contacts"}>Contacts</NavLink>
+
+            {/*{<footer>{meta}</footer>}*/}
 
         </nav>
 
-        <main {...(!menu ? { className: "active" } : {})}>
+        <main {...(!navigate ? { className: "active" } : {})}>
 
-            <header>{name}</header>
+            <header>{status === undefined ? <CardSpin/>
+                : status === 404 ? ":-( Page Not Found"
+                    : status/100 >= 4 ? `:-( The Server Says ${status}…`
+                        : content?.match(/^\s*title:\s*(.*)$/m)?.[1]
+            }</header>
 
-            <section>{children}</section>
+            <section>
+                {content && <ReactMarkdown
 
-            <footer>{copy}</footer>
+                    remarkPlugins={[remarkFrontmatter, remarkGfm, remarkGemoji]}
+                    rehypePlugins={[rehypeSlug]}
+
+                >{content}</ReactMarkdown>}
+            </section>
+
+            <footer>{page.copy}</footer>
 
         </main>
 

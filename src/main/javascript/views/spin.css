@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-import { page } from "@ec2u/card/index";
-import React, { createElement } from "react";
-import "./icon.css";
+card-spin {
+
+    display: inline-grid;
+    align-items: center;
+    justify-items: center;
+
+    color: #999;
+
+    & > svg {
+        animation: card-spin-rotate 1.5s infinite linear;
+    }
+
+}
 
 
-export function CardIcon() {
-
-    return createElement("card-icon", {
-
-        style: { backgroundImage: `url('${page.icon}')` }
-
-    });
-
+@keyframes card-spin-rotate {
+    100% {
+        transform: rotate(360deg);
+    }
 }

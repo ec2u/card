@@ -15,8 +15,7 @@
  */
 
 import { useProfile } from "@ec2u/card/hooks/profile";
-import { Card } from "@ec2u/card/index";
-import { meta } from "@ec2u/core";
+import { Card, page } from "@ec2u/card/index";
 import { ChevronLeft, ChevronRight, Heart, LogIn, LogOut, RefreshCw, User } from "lucide-react";
 import React, { createElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -104,7 +103,7 @@ export function CardCard() {
 
     function CardLogo() {
         return <a className={"logo"} target={"_blank"} href={profile?.manager || "/"}
-            style={{ backgroundImage: `url('${meta.icon}')` }}
+            style={{ backgroundImage: `url('${page.icon}')` }}
         />;
     }
 

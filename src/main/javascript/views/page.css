@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 card-page {
 
     width: 100%;
@@ -30,13 +29,34 @@ card-page {
     & > header,
     & > main > header {
 
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        grid-column-gap: 0.5em;
+
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
 
         margin-bottom: 0.5em;
 
         font-size: 1.5em;
-        white-space: nowrap;
+
+        & > * {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        & > a {
+
+            flex-grow: 1;
+            text-decoration-line: none;
+
+            &::after {
+                content: '​'; /* prevent vertical collapsing */
+            }
+
+        }
 
     }
 
@@ -46,8 +66,6 @@ card-page {
         padding-right: 0.5rem;
 
         & > footer {
-
-            margin-top: auto;
 
             padding-top: 2.5em;
             padding-bottom: 0.75rem;
@@ -64,23 +82,7 @@ card-page {
         position: sticky;
         top: 0;
 
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        grid-column-gap: 0.5em;
-
         box-shadow: 0 0 0.5em 0.5em #FFF;
-
-        & > * {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-        }
-
-        & > a {
-            flex-grow: 1;
-            text-decoration-line: none;
-        }
 
     }
 
@@ -92,7 +94,11 @@ card-page {
         flex-direction: column;
         align-items: start;
 
+        max-width: 12.5em;
+
         & > a {
+
+            display: block;
 
             text-decoration-line: none;
 
@@ -113,13 +119,28 @@ card-page {
         align-items: stretch;
 
         scroll-padding-top: 1em;
+        overflow-x: auto;
 
         & > * {
             max-width: 40rem;
         }
 
         & > header {
+
             margin-bottom: 1em;
+
+            & > ec2u-spin {
+
+                & > svg {
+                    stroke-width: 1px;
+                }
+
+            }
+
+        }
+
+        & > section {
+            flex-grow: 1;
         }
 
     }
@@ -128,6 +149,12 @@ card-page {
 
         & > header {
             text-align: center;
+        }
+
+        & > main {
+
+            scroll-padding-top: 2.5em;
+
         }
 
     }
@@ -159,8 +186,8 @@ card-page {
 
             margin-bottom: 0.5em;
 
-            font-size: 1.5em;
             white-space: nowrap;
+            font-size: 1.5em;
 
         }
 
@@ -171,7 +198,7 @@ card-page {
             grid-column: 1;
             grid-row: 1;
 
-            & > :last-child {
+            & > button {
                 display: none;
             }
 
@@ -185,6 +212,7 @@ card-page {
             grid-row: 2;
 
             align-items: end;
+            text-align: end;
 
         }
 

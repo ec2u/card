@@ -1,0 +1,275 @@
+/*
+ * Copyright © 2020-2022 EC2U Alliance
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&family=Poppins&family=Quicksand:wght@400;600;700&display=swap');
+
+:root {
+
+    --ec2u--font-size: 14pt;
+
+    --ec2u--color-accent-lite: #F7D638;
+    --ec2u--color-accent-dark: #162372;
+
+}
+
+/**** Typography ******************************************************************************************************/
+
+html {
+
+    font-family: "Quicksand", "Helvetica Neue", "Arial", sans-serif;
+    font-weight: 400;
+    font-size: var(--ec2u--font-size);
+
+    line-height: 1.25;
+
+}
+
+h1, h2, header {
+
+    font-family: "Poppins", "Helvetica Neue", "Arial", sans-serif;
+    font-weight: 400;
+
+    letter-spacing: -0.01em;
+
+}
+
+code {
+
+    font-family: "Courier Prime", "Courier New", "Courier", monospace;
+    font-weight: 400;
+    font-size: 0.9em;
+
+}
+
+
+/**** Defaults ********************************************************************************************************/
+
+* {
+
+    box-sizing: content-box;
+    padding: 0;
+    margin: 0;
+
+    border-style: none;
+    border-width: 1px;
+    border-color: #CCC;
+
+    font: inherit;
+    color: inherit;
+    background-color: inherit;
+
+}
+
+html {
+    color: #000;
+    background-color: #FFF;
+}
+
+
+/**** Headings ********************************************************************************************************/
+
+h1, h2 {
+
+    &:not(:first-child) {
+        margin-top: 1em;
+    }
+
+    &:not(:last-child) {
+        margin-bottom: 0.5em;
+    }
+
+}
+
+h1 {
+
+    padding-bottom: 0.1em;
+    border-bottom-style: solid;
+
+    font-size: 1.25em;
+
+}
+
+h2 {
+    font-size: 1.1em;
+}
+
+h3 {
+    font-size: 1.1em;
+}
+
+
+/**** Lists **********************************************************************************************************/
+
+ul,
+ol {
+
+    margin-bottom: 0.5em;
+
+    & > li {
+        margin-top: 0.25em;
+        list-style-position: outside;
+    }
+
+}
+
+ul {
+
+    & > li {
+        list-style-type: disc;
+        padding-left: 0;
+        margin-left: 1.25em;
+    }
+
+}
+
+ol {
+
+    & > li {
+        list-style-type: decimal;
+        padding-left: 0.5em;
+        margin-left: 1.5em;
+    }
+
+}
+
+
+/**** Tables **********************************************************************************************************/
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+
+    & th, & td {
+
+        padding-top: 0.25em;
+        padding-bottom: 0.25em;
+
+        &:not(:first-child) {
+            padding-left: 0.5em;
+        }
+
+        &:not(:last-child) {
+            padding-right: 0.5em;
+        }
+
+        text-align: start;
+        vertical-align: text-top;
+
+    }
+
+    & th {
+        border-bottom-style: solid;
+        white-space: nowrap;
+        font-size: 90%;
+        font-weight: 700;
+        color: #CCC;
+    }
+
+    & tr:not(:last-child) > * {
+        border-bottom-style: solid;
+    }
+
+}
+
+
+/**** Blocks **********************************************************************************************************/
+
+p {
+
+    margin-bottom: 0.5em;
+
+    &:only-child {
+        margin: 0;
+    }
+
+}
+
+blockquote {
+    padding: 0.5em 0.5em;
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+    border-left: solid 0.25em #789;
+    background-color: #F0F0F0;
+}
+
+pre {
+
+    white-space: pre;
+
+    & > code:only-child {
+        display: block;
+        padding: 0.5em 0.75em;
+        margin-bottom: 1em;
+    }
+
+}
+
+hr {
+    width: 100%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    border-bottom-style: solid;
+}
+
+
+/**** Inlines *********************************************************************************************************/
+
+a, a:visited {
+
+    text-decoration-line: underline;
+    text-decoration-color: #567;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+
+    font-weight: 700;
+
+    color: #567;
+
+}
+
+em {
+    font-style: italic;
+}
+
+strong {
+    font-weight: 700;
+}
+
+dfn {
+    white-space: nowrap;
+}
+
+code {
+    padding: 0.2em 0.5em 0.1em;
+    border-radius: 0.25em;
+    white-space: pre;
+    background-color: #F0F0F0;
+}
+
+
+/**** Icons ***********************************************************************************************************/
+
+svg.lucide {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+}

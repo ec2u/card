@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-import { page } from "@ec2u/card/index";
+import { RefreshCw } from "lucide-react";
 import React, { createElement } from "react";
-import "./icon.css";
+import "./spin.css";
 
 
-export function CardIcon() {
-
-    return createElement("card-icon", {
-
-        style: { backgroundImage: `url('${page.icon}')` }
-
-    });
-
+export function CardSpin() {
+    return createElement("card-spin", {}, <RefreshCw/>);
 }

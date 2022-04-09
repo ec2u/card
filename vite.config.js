@@ -58,10 +58,7 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
     server: {
 
         proxy: {
-            "^(/[-a-zA-Z0-9]+)*/?(\\?.*)?$": { // routes with optional query
-                target: "http://localhost:8080/",
-                xfwd: true
-            }
+            "^/profile$": { target: "http://localhost:8080/" }
         }
 
     }

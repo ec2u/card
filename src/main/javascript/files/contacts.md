@@ -1,4 +1,8 @@
-EC2U Alliance  
+---
+title: Contacts
+---
+
+EC2U Connect Centre  
 c/o University of Pavia  
 Via Ferrata 1  
 27100 Pavia  

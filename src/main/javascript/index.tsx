@@ -15,12 +15,13 @@
  */
 
 import { CardCard } from "@ec2u/card/views/card";
-import { EC2UPage } from "@ec2u/core/page";
+import { CardPage } from "@ec2u/card/views/page";
 import { User } from "lucide-react";
 import * as React from "react";
 import { render } from "react-dom";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { CardProfile } from "./hooks/profile";
+import "./index.css";
 
 
 export interface Profile {
@@ -47,7 +48,6 @@ export interface Card {
     readonly test: string;
     readonly expiry: string;
 
-    readonly esi: string;
     readonly level: number;
     readonly name: string;
     readonly photo?: string;
@@ -65,6 +65,29 @@ export interface Card {
 }
 
 
+/**
+ * Page metadata.
+ */
+export const page=Object.freeze({
+
+    /**
+     * The URL of the page icon as read from the `<link rel="icon">` HTML head tag.
+     */
+    icon: (document.querySelector("link[rel=icon]") as HTMLLinkElement)?.href || "",
+
+    /**
+     * The page name as read from the `<title>` HTML head tag.
+     */
+    name: document.title.replace(/^EC2U\s+/, ""),
+
+    /**
+     * The page copyright as read from the `<meta name="copyright">` HTML head tag.
+     */
+    copy: (document.querySelector("meta[name=copyright]") as HTMLMetaElement)?.content || ""
+
+});
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 render((
@@ -77,7 +100,7 @@ render((
                 <Routes>
 
                     <Route path={"/"} element={<CardCard/>}/>
-                    <Route path="*" element={<EC2UPage/>}/>
+                    <Route path={"*"} element={<CardPage/>}/>
 
                 </Routes>
             </BrowserRouter>
