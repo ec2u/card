@@ -16,53 +16,11 @@
 
 import { CardCard } from "@ec2u/card/views/card";
 import { CardPage } from "@ec2u/card/views/page";
-import { User } from "lucide-react";
 import * as React from "react";
 import { render } from "react-dom";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { CardProfile } from "./hooks/profile";
 import "./index.css";
-
-
-export interface Profile {
-
-    readonly manager: string;
-    readonly version: string;
-    readonly instant: string;
-
-    readonly user?: User;
-    readonly cards?: Card[];
-
-}
-
-export interface User {
-
-    readonly esi: string;
-    readonly uni: string;
-
-}
-
-export interface Card {
-
-    readonly code: string;
-    readonly test: string;
-    readonly expiry: string;
-
-    readonly level: number;
-    readonly name: string;
-    readonly photo?: string;
-
-    readonly hei: {
-
-        readonly pic: number;
-        readonly name: string;
-
-        readonly iso: string;
-        readonly country: string;
-
-    };
-
-}
 
 
 /**

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { useProfile } from "@ec2u/card/hooks/profile";
-import { Card, page } from "@ec2u/card/index";
+import { Card, useProfile } from "@ec2u/card/hooks/profile";
+import { page } from "@ec2u/card/index";
 import { ChevronLeft, ChevronRight, Heart, LogIn, LogOut, RefreshCw, User } from "lucide-react";
 import React, { createElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -66,34 +66,43 @@ export function CardCard() {
 
     return createElement("card-card", {}, <>
 
-        {CardLogo()}
-        {CardMenu()}
+        <nav>
 
-        {!profile ? <div className={"info"}>
+            {CardLogo()}
+            {CardMenu()}
 
-                <span>Loading your ESC cards</span>
+        </nav>
+
+        {!profile ? <div>
+
+                <span>Loading your ESC&nbsp;cards</span>
 
             </div>
 
-            : !profile.user ? <div className={"info"}>
+            : !profile.user ? <div>
 
                     <span>Log in to access your ESC cards</span>
 
                 </div>
 
-                : !profile.cards || !profile.cards.length ? <div className={"info"}>
+                : !profile.cards?.length ? <div>
 
-                        <span>Your eduGAIN profile isn't associate with an ESC card</span>
-                        <span>Contact your local mobility office to get one</span>
+                        <span>Your eduGAIN profile isn't associated with an ESC card</span>
+                        <span>Contact your local mobility office to get&nbsp;one</span>
 
                     </div>
 
                     : <>
 
-                        {CardData(profile.cards[index])}
-                        {CardPhoto(profile.cards[index])}
-                        {CardQR(profile.cards[index])}
-                        {CardHologram()}
+                        <main>
+                            {CardData(profile.cards[index])}
+                        </main>
+
+                        <aside>
+                            {CardPhoto(profile.cards[index])}
+                            {CardQR(profile.cards[index])}
+                            {CardHologram()}
+                        </aside>
 
                     </>
         }
@@ -102,7 +111,7 @@ export function CardCard() {
 
 
     function CardLogo() {
-        return <a className={"logo"} target={"_blank"} href={profile?.manager || "/"}
+        return <a className={"logo"} target={"_blank"} href={"https://www.ec2u.eu/"}
             style={{ backgroundImage: `url('${page.icon}')` }}
         />;
     }
@@ -140,31 +149,27 @@ export function CardCard() {
 
     }: Card) {
 
-        return <div className={"data"}>
+        return <dl className={"data"}>
 
-            <dl>
+            <dt>Name</dt>
+            <dd>{name}<br/>{esi
+                .replace("urn:schac:personalUniqueCode:int:esi:", "")
+                .replace(":", " · ")
+            }</dd>
 
-                <dt>Name</dt>
-                <dd>{name}<br/>{esi
-                    .replace("urn:schac:personalUniqueCode:int:esi:", "")
-                    .replace(":", " · ")
-                }</dd>
+            <dt>Institution</dt>
+            <dd>{hei.name}<br/>{hei.pic}</dd>
 
-                <dt>Institution</dt>
-                <dd>{hei.name}<br/>{hei.pic}</dd>
+            <dt>Country</dt>
+            <dd>{hei.country} · {hei.iso}</dd>
 
-                <dt>Country</dt>
-                <dd>{hei.country} · {hei.iso}</dd>
+            <dt>Level</dt>
+            <dd>{Levels[level]}</dd>
 
-                <dt>Level</dt>
-                <dd>{Levels[level]}</dd>
+            <dt>Validity</dt>
+            <dd>{expiry}</dd>
 
-                <dt>Validity</dt>
-                <dd>{expiry}</dd>
-
-            </dl>
-
-        </div>;
+        </dl>;
     }
 
     function CardPhoto({ photo }: Card) {

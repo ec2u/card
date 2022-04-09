@@ -15,7 +15,7 @@
  */
 
 import { useStorage } from "@ec2u/card/hooks/storage";
-import { Profile } from "@ec2u/card/index";
+import { User } from "lucide-react";
 import QRCode from "qrcode";
 import { createContext, createElement, ReactNode, useContext, useEffect } from "react";
 
@@ -23,6 +23,50 @@ import { createContext, createElement, ReactNode, useContext, useEffect } from "
 const JWTPattern=/^(?:[-\w]+\.){2}[-\w]+$/;
 
 const Context=createContext<[undefined | Profile, (action?: null) => void]>([undefined, () => {}]);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export interface Profile {
+
+    readonly manager: string;
+    readonly version: string;
+    readonly instant: string;
+
+    readonly user?: User;
+    readonly cards?: Card[];
+
+}
+
+export interface User {
+
+    readonly esi: string;
+    readonly uni: string;
+
+}
+
+export interface Card {
+
+    readonly code: string;
+    readonly test: string;
+    readonly expiry: string;
+
+    readonly esi: string;
+    readonly level: number;
+    readonly name: string;
+    readonly photo?: string;
+
+    readonly hei: {
+
+        readonly pic: number;
+        readonly name: string;
+
+        readonly iso: string;
+        readonly country: string;
+
+    };
+
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,4 +194,3 @@ export function CardProfile({
 export function useProfile<P>(): [undefined | Profile, (profile?: null) => void] {
     return useContext(Context);
 }
-
