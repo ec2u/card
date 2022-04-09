@@ -5,10 +5,10 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonValue;
-import java.lang.IllegalArgumentException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,42 +19,36 @@ public class EscrLinker {
 
 	private static final String BASE_PATH = "https://api-sandbox.europeanstudentcard.eu/v1";
 
-	private final EscrHttpManager httpManager;
+	@Autowired EscrHttpManager httpManager;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public void addStudent(final StudentTransfer student) throws JsonProcessingException {
-
-		httpManager.httpPoster(
-				BASE_PATH + "/students",
-				studentTransferToStudentJson(student)
-		);
-
-	}
 
 	public String listStudents() {
 
 		return httpManager.httpGetter(BASE_PATH + "/students");
 
-	} // Tested
+	}
 
-	public List<StudentTransfer> listStudentsWithTransferObject() throws JsonProcessingException {
+	public List<StudentTransfer> listStudentsWithTransferObject() {
 
 		final List<StudentTransfer> studentsList = new ArrayList<>();
 
 		final JsonArray studentsJsonArray = Json.createReader(new StringReader(listStudents())).readArray();
 
-		for (final JsonValue jsonValue : studentsJsonArray) {
-
-			studentsList.add(studentJsonToStudentTransfer(jsonValue.toString()));
-
-		}
+		studentsJsonArray.forEach(jsonValue -> {
+			try {
+				studentsList.add(studentJsonToStudentTransfer(jsonValue.toString()));
+			} catch (final JsonProcessingException e) {
+				e.printStackTrace();
+			}
+		});
 
 		return studentsList;
 
-	}	// Tested
+	}
 
-	public String retrieveStudent(final String esi) throws IllegalArgumentException {
+	public String retrieveStudent(final String esi)
+			throws IllegalArgumentException {
 
 		if (checkEsi(esi)) {
 
@@ -64,10 +58,10 @@ public class EscrLinker {
 
 		return httpManager.httpGetter(BASE_PATH + "/students/" + esi);
 
-	}	// Tested
+	}
 
-	public StudentTransfer retrieveStudentWithTransferObject(final String esi) throws IllegalArgumentException,
-			JsonProcessingException {
+	public StudentTransfer retrieveStudentWithTransferObject(final String esi)
+			throws IllegalArgumentException, JsonProcessingException {
 
 		if (checkEsi(esi)) {
 
@@ -77,10 +71,20 @@ public class EscrLinker {
 
 		return studentJsonToStudentTransfer(httpManager.httpGetter(BASE_PATH + "/students/" + esi));
 
-	}	// Tested
+	}
 
-	public void updateStudentDetails(final StudentTransfer studentTransfer) throws IllegalArgumentException,
-			JsonProcessingException {
+	public void addStudent(final StudentTransfer student)
+			throws JsonProcessingException {
+
+		httpManager.httpPoster(
+				BASE_PATH + "/students",
+				studentTransferToStudentJson(student)
+		);
+
+	}
+
+	public void updateStudentDetails(final StudentTransfer studentTransfer)
+			throws IllegalArgumentException, JsonProcessingException {
 
 		if (checkEsi(studentTransfer.getEuropeanStudentIdentifier())) {
 
@@ -95,7 +99,8 @@ public class EscrLinker {
 
 	}
 
-	public void deleteStudent(final StudentTransfer studentTransfer) throws IllegalArgumentException {
+	public void deleteStudent(final StudentTransfer studentTransfer)
+			throws IllegalArgumentException {
 
 		if (checkEsi(studentTransfer.getEuropeanStudentIdentifier())) {
 
@@ -109,44 +114,32 @@ public class EscrLinker {
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public void addCard(final CardTransfer cardTransfer) throws IllegalArgumentException, JsonProcessingException {
-
-		if (checkEsi(cardTransfer.getEuropeanStudentIdentifier())) {
-
-			throw new IllegalArgumentException("European Student Identifier doesn't match the correct format");
-
-		}
-
-		httpManager.httpPoster(
-				BASE_PATH + "/students/" + cardTransfer.getEuropeanStudentIdentifier() + "/cards",
-				cardTransferToCardJson(cardTransfer)
-		);
-
-	}
-
 	public String listCards() {
 
 		return httpManager.httpGetter(BASE_PATH + "/cards");
 
-	}	// Tested
+	}
 
-	public List<CardTransfer> listCardsWithTransferObject() throws JsonProcessingException {
+	public List<CardTransfer> listCardsWithTransferObject() {
 
 		final List<CardTransfer> cardsList = new ArrayList<>();
 
-		final JsonArray cardsJsonArray =	Json.createReader(new StringReader(listCards())).readArray();
+		final JsonArray cardsJsonArray = Json.createReader(new StringReader(listCards())).readArray();
 
-		for (final JsonValue jsonValue : cardsJsonArray) {
-
-			cardsList.add(cardJsonToCardTransfer(jsonValue.toString()));
-
-		}
+		cardsJsonArray.forEach(jsonValue -> {
+			try {
+				cardsList.add(cardJsonToCardTransfer(jsonValue.toString()));
+			} catch (final JsonProcessingException e) {
+				e.printStackTrace();
+			}
+		});
 
 		return cardsList;
 
-	}	// Tested
+	}
 
-	public String retrieveCard(final String esi, final String esc) throws IllegalArgumentException {
+	public String retrieveCard(final String esi, final String esc)
+			throws IllegalArgumentException {
 
 		if (checkEsi(esi)) {
 
@@ -164,7 +157,8 @@ public class EscrLinker {
 
 	}
 
-	public CardTransfer retrieveCardWithTransferObject(final String esi, final String esc) throws IllegalArgumentException, JsonProcessingException {
+	public CardTransfer retrieveCardWithTransferObject(final String esi, final String esc)
+			throws IllegalArgumentException, JsonProcessingException {
 
 		if (checkEsi(esi)) {
 
@@ -180,9 +174,42 @@ public class EscrLinker {
 
 		return cardJsonToCardTransfer(httpManager.httpGetter(BASE_PATH + "/students/" + esi + "/cards/" + esc));
 
-	}	// Tested
+	}
 
-	public void deleteCard(final CardTransfer cardTransfer) throws IllegalArgumentException {
+	public void addCard(final CardTransfer cardTransfer)
+			throws IllegalArgumentException, JsonProcessingException {
+
+		if (checkEsi(cardTransfer.getEuropeanStudentIdentifier())) {
+
+			throw new IllegalArgumentException("European Student Identifier doesn't match the correct format");
+
+		}
+
+		httpManager.httpPoster(
+				BASE_PATH + "/students/" + cardTransfer.getEuropeanStudentIdentifier() + "/cards",
+				cardTransferToCardJson(cardTransfer)
+		);
+
+	}
+
+	public void updateCardDetails(final CardTransfer cardTransfer)
+			throws IllegalArgumentException, JsonProcessingException {
+
+		if (checkEsi(cardTransfer.getEuropeanStudentIdentifier())) {
+
+			throw new IllegalArgumentException("European Student Identifier doesn't match the correct format");
+
+		}
+
+		httpManager.httpPutter(
+				BASE_PATH + "/students/" + cardTransfer.getEuropeanStudentIdentifier(),
+				cardTransferToCardJson(cardTransfer)
+		);
+
+	}
+
+	public void deleteCard(final CardTransfer cardTransfer)
+			throws IllegalArgumentException {
 
 		if (checkEsi(cardTransfer.getEuropeanStudentIdentifier())) {
 
@@ -219,6 +246,8 @@ public class EscrLinker {
 
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private CardTransfer cardJsonToCardTransfer(final String cardJson) throws JsonProcessingException {
 
 		return bindJsonDeserializer("CardDeserializer").readValue(cardJson, CardTransfer.class);
@@ -242,6 +271,8 @@ public class EscrLinker {
 		return bindJsonSerializer("StudentSerializer").writeValueAsString(studentTransfer);
 
 	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private ObjectMapper bindJsonSerializer(final String serializerName) {
 
