@@ -1,3 +1,7 @@
+---
+title: Contacts
+---
+
 EC2U Alliance  
 c/o University of Pavia  
 Via Ferrata 1  
