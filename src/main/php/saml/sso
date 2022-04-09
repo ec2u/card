@@ -1,0 +1,55 @@
+<?php
+
+# 25.03.2022: although this file is extension-free, it is a php file
+# Apache has been configured in order to consider as PHP all those file without any extension
+# This configuration has be done using RewriteRule directive
+
+$config = include_once('../config.php');
+
+include("../vendor/firebase/php-jwt/src/JWT.php");
+include("../vendor/firebase/php-jwt/src/Key.php");
+include("../vendor/firebase/php-jwt/src/SignatureInvalidException.php");
+
+// Parametri restituiti da SSO/Shibboleth
+//$_SERVER["schacPersonalUniqueCode"]
+//$_SERVER["schacHomeOrganisation"]
+//$_SERVER["cn"]
+//$_SERVER["sn"]
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Firebase\JWT\SignatureInvalidException;
+
+$target = $_REQUEST['target'];
+$found = array_search($target, $config['whitelist']);
+if ($found === false)
+{
+        #header('WWW-Authenticate: Basic realm="My Realm"');
+        $page401 = $config['page401'];
+        header("Location: $page401");
+	return;
+}
+
+if (isset($_SERVER['mail'])) $uid = $_SERVER['mail'];
+if (isset($_SERVER["schacPersonalUniqueCode"])) $esi = $_SERVER["schacPersonalUniqueCode"];
+//"urn:schac:personalUniqueCode:int:esi:unipv.it:296679";
+
+// TODO: ridurre il time interval
+$payload = array(
+	"exp" => intval(microtime(true))+60,
+	"sub" => json_encode(array("esi" => $esi, "uid" => $uid))
+);
+
+$jwt = JWT::encode($payload, $config['jwt-key'], 'HS256');
+$location = "Location: $target?$jwt";
+header($location);
+
+/*try {
+	$decoded = JWT::decode($jwt, new Key($config['jwt-key'], 'HS256'));
+}
+catch (SignatureInvalidException $e)
+{
+	echo "Impossibile decodificare";
+}*/
+
+?>
