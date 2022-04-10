@@ -1,0 +1,263 @@
+/*
+ * Copyright © 2020-2022 EC2U Alliance
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package eu.ec2u.card.works;
+
+import com.metreeca.core.Identifiers;
+import com.metreeca.rest.*;
+import com.metreeca.xml.formats.XMLFormat;
+
+import com.onelogin.saml2.authn.AuthnRequest;
+import com.onelogin.saml2.authn.AuthnRequestParams;
+import com.onelogin.saml2.exception.Error;
+import com.onelogin.saml2.factory.SamlMessageFactory;
+import com.onelogin.saml2.http.HttpRequest;
+import com.onelogin.saml2.settings.Saml2Settings;
+import com.onelogin.saml2.settings.SettingsBuilder;
+import eu.ec2u.card.Root.Profile;
+import work.BeanCodec;
+import work.Notary;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.security.cert.CertificateEncodingException;
+import java.util.*;
+
+import static com.metreeca.core.Lambdas.checked;
+import static com.metreeca.rest.Response.*;
+import static com.metreeca.rest.Toolbox.service;
+import static com.metreeca.rest.formats.TextFormat.text;
+import static com.metreeca.rest.handlers.Router.router;
+
+import static work.BeanCodec.codec;
+import static work.Notary.notary;
+
+import static java.lang.String.format;
+import static java.util.Map.entry;
+
+public final class SAML extends Handler.Base {
+
+    public static final String Pattern="/saml/*";
+    public static final String Gateway="/saml/gateway";
+
+
+    private static final Saml2Settings settings=settings();
+    private static final SamlMessageFactory samlMessageFactory=new SamlMessageFactory() { };
+
+
+    private static Saml2Settings settings() {
+
+        try {
+
+            final Saml2Settings settings=new SettingsBuilder().fromFile("eu/ec2u/card/works/SAML.properties_").build();
+
+            //final List<String> settingsErrors = settings.checkSettings();
+            //if (!settingsErrors.isEmpty()) {
+            //    String errorMsg = "Invalid settings: ";
+            //    errorMsg += StringUtils.join(settingsErrors, ", ");
+            //    LOGGER.error(errorMsg);
+            //    throw new SettingsException(errorMsg, SettingsException.SETTINGS_INVALID);
+            //}
+            //LOGGER.debug("Settings validated");
+
+            return settings;
+
+        } catch ( final Error e ) {
+
+            throw new RuntimeException(e); // !!!
+
+        } catch ( final IOException e ) {
+
+            throw new UncheckedIOException(e);
+
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    private final Notary notary=service(notary());
+    private final BeanCodec codec=service(codec());
+
+
+    public SAML() {
+        delegate(router()
+
+                .path("/", router().get(this::metadata))
+                .path("/acs", router().post(this::acs))
+                .path("/gateway", router().get(this::gateway))
+
+        );
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private Response metadata(final Request request) {
+
+        settings.setSPValidationOnly(true);
+
+        //List<String> errors = settings.checkSettings();
+        //
+        //if (errors.isEmpty()) {
+        //    String metadata = settings.getSPMetadata();
+        //    out.println(metadata);
+        //} else {
+        //    response.setContentType("text/html; charset=UTF-8");
+        //
+        //    for (String error : errors) {
+        //        out.println("<p>"+error+"</p>");
+        //    }
+        //}
+
+        try {
+
+            return request.reply(OK)
+                    .header("Content-Type", XMLFormat.MIME)
+                    .body(text(), settings.getSPMetadata());
+
+        } catch ( final CertificateEncodingException e ) {
+            throw new RuntimeException(e); // !!!
+        }
+    }
+
+    private Response acs(final Request request) {
+
+        final HttpRequest http=new HttpRequest(request.item(), request.parameters(), request.query());
+
+        return Optional.ofNullable(http.getParameter("SAMLResponse"))
+
+                .map(checked(samlResponse -> { return samlMessageFactory.createSamlResponse(settings, http); }))
+
+                .map(checked(samlResponse -> {
+
+                    // !!! replay attack?
+
+                    //lastResponse = samlResponse.getSAMLResponseXml();
+
+                    if ( samlResponse.isValid(null) ) {
+
+                        //nameid = samlResponse.getNameId();
+                        //nameidFormat = samlResponse.getNameIdFormat();
+                        //nameidNameQualifier = samlResponse.getNameIdNameQualifier();
+                        //nameidSPNameQualifier = samlResponse.getNameIdSPNameQualifier();
+                        //authenticated = true;
+                        //attributes = samlResponse.getAttributes();
+                        //sessionIndex = samlResponse.getSessionIndex();
+                        //sessionExpiration = samlResponse.getSessionNotOnOrAfter();
+
+                        // !!! replay attack?
+
+                        //lastMessageId = samlResponse.getId();
+                        //lastMessageIssueInstant = samlResponse.getResponseIssueInstant();
+                        //lastAssertionId = samlResponse.getAssertionId();
+                        //lastAssertionNotOnOrAfter = samlResponse.getAssertionNotOnOrAfter();
+
+                        //LOGGER.debug("processResponse success --> " + samlResponseParameter);
+
+                        final String esi=samlResponse.getAttributes()
+                                .getOrDefault("schacPersonalUniqueCode", List.of())
+                                .stream()
+                                .findFirst()
+                                .orElseThrow();
+
+                        final String token=notary.create(codec.encode(new Profile()
+                                .setEsi(esi)
+                        ));
+
+                        return request.reply(Found, format("%s?%s",
+                                request.parameter("RelayState").orElse("/"),
+                                token
+                        ));
+
+                    } else {
+
+                        //errorReason = samlResponse.getError();
+                        //validationException = samlResponse.getValidationException();
+                        //final SamlResponseStatus samlResponseStatus = samlResponse.getResponseStatus();
+                        //if (samlResponseStatus.getStatusCode() == null || !samlResponseStatus.getStatusCode().equals
+                        // (Constants.STATUS_SUCCESS)) {
+                        //    errors.add("response_not_success");
+                        //    LOGGER.error("processResponse error. sso_not_success");
+                        //    LOGGER.debug(" --> " + samlResponseParameter);
+                        //    errors.add(samlResponseStatus.getStatusCode());
+                        //    if (samlResponseStatus.getSubStatusCode() != null) {
+                        //        errors.add(samlResponseStatus.getSubStatusCode());
+                        //    }
+                        //} else {
+                        //    errors.add("invalid_response");
+                        //    LOGGER.error("processResponse error. invalid_response");
+                        //    LOGGER.debug(" --> " + samlResponseParameter);
+                        //}
+
+                        return null;
+                    }
+
+
+                }))
+
+                .orElseGet(() -> {
+
+                    //errors.add("invalid_binding");
+                    //final String errorMsg = "SAML Response not found, Only supported HTTP_POST Binding";
+                    //LOGGER.error("processResponse error." + errorMsg);
+                    //throw new Error(errorMsg, Error.SAML_RESPONSE_NOT_FOUND);
+
+                    return request.reply(BadRequest);
+
+                });
+
+    }
+
+    private Response gateway(final Request request) {
+        try {
+
+            final String sso=settings.getIdpSingleSignOnServiceUrl().toString();
+            final String target=request.parameter("target").orElse("/");
+
+            final AuthnRequest authnRequest=samlMessageFactory.createAuthnRequest(settings,
+                    new AuthnRequestParams(false, false, true)
+            );
+
+
+            final Map<String, List<String>> parameters=Map.ofEntries(
+                    entry("SAMLRequest", List.of(authnRequest.getEncodedAuthnRequest())),
+                    entry("RelayState", List.of(target))
+            );
+
+            //if ( settings.getAuthnRequestsSigned() ) {
+            //    final String sigAlg=settings.getSignatureAlgorithm();
+            //    final String signature=this.buildRequestSignature(samlRequest, relayState, sigAlg);
+            //
+            //    parameters.put("SigAlg", sigAlg);
+            //    parameters.put("Signature", signature);
+            //}
+
+            // !!! replay attack?
+
+            //lastRequestId=authnRequest.getId();
+            //lastRequestIssueInstant=authnRequest.getIssueInstant();
+            //lastRequest=authnRequest.getAuthnRequestXml();
+
+            return request.reply(Found, sso+(sso.contains("?") ? "&" : "?")+Identifiers.query(parameters));
+
+        } catch ( final IOException e ) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+}
