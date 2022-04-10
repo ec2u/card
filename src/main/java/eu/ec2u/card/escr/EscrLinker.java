@@ -12,6 +12,7 @@ import javax.json.JsonArray;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @AllArgsConstructor
@@ -36,11 +37,17 @@ public class EscrLinker {
 		final JsonArray studentsJsonArray = Json.createReader(new StringReader(listStudents())).readArray();
 
 		studentsJsonArray.forEach(jsonValue -> {
+
 			try {
-				studentsList.add(studentJsonToStudentTransfer(jsonValue.toString()));
+
+				if (studentJsonToStudentTransfer(jsonValue.toString()).isPresent()) {
+					studentsList.add(studentJsonToStudentTransfer(jsonValue.toString()).get());
+				}
+
 			} catch (final JsonProcessingException e) {
 				e.printStackTrace();
 			}
+
 		});
 
 		return studentsList;
@@ -60,7 +67,7 @@ public class EscrLinker {
 
 	}
 
-	public StudentTransfer retrieveStudentWithTransferObject(final String esi)
+	public Optional<StudentTransfer> retrieveStudentWithTransferObject(final String esi)
 			throws IllegalArgumentException, JsonProcessingException {
 
 		if (checkEsi(esi)) {
@@ -127,11 +134,17 @@ public class EscrLinker {
 		final JsonArray cardsJsonArray = Json.createReader(new StringReader(listCards())).readArray();
 
 		cardsJsonArray.forEach(jsonValue -> {
+
 			try {
-				cardsList.add(cardJsonToCardTransfer(jsonValue.toString()));
+
+				if (cardJsonToCardTransfer(jsonValue.toString()).isPresent()) {
+					cardsList.add(cardJsonToCardTransfer(jsonValue.toString()).get());
+				}
+
 			} catch (final JsonProcessingException e) {
 				e.printStackTrace();
 			}
+
 		});
 
 		return cardsList;
@@ -157,7 +170,7 @@ public class EscrLinker {
 
 	}
 
-	public CardTransfer retrieveCardWithTransferObject(final String esi, final String esc)
+	public Optional<CardTransfer> retrieveCardWithTransferObject(final String esi, final String esc)
 			throws IllegalArgumentException, JsonProcessingException {
 
 		if (checkEsi(esi)) {
@@ -172,6 +185,7 @@ public class EscrLinker {
 
 		}
 
+		System.out.println(httpManager.httpGetter(BASE_PATH + "/students/" + esi + "/cards/" + esc));
 		return cardJsonToCardTransfer(httpManager.httpGetter(BASE_PATH + "/students/" + esi + "/cards/" + esc));
 
 	}
@@ -248,15 +262,31 @@ public class EscrLinker {
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private CardTransfer cardJsonToCardTransfer(final String cardJson) throws JsonProcessingException {
+	private Optional<CardTransfer> cardJsonToCardTransfer(final String cardJson) throws JsonProcessingException {
 
-		return bindJsonDeserializer("CardDeserializer").readValue(cardJson, CardTransfer.class);
+		if (cardJson.contains("this student does not exist") || cardJson.contains("this card does not exist")) {
+
+			return Optional.empty();
+
+		} else {
+
+			return Optional.ofNullable(bindJsonDeserializer("CardDeserializer").readValue(cardJson, CardTransfer.class));
+
+		}
 
 	}
 
-	private StudentTransfer studentJsonToStudentTransfer(final String studentJson) throws JsonProcessingException {
+	private Optional<StudentTransfer> studentJsonToStudentTransfer(final String studentJson) throws JsonProcessingException {
 
-		return bindJsonDeserializer("StudentDeserializer").readValue(studentJson, StudentTransfer.class);
+		if (studentJson.contains("this student does not exist")) {
+
+			return Optional.empty();
+
+		} else {
+
+			return Optional.ofNullable(bindJsonDeserializer("StudentDeserializer").readValue(studentJson, StudentTransfer.class));
+
+		}
 
 	}
 
