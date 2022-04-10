@@ -18,20 +18,21 @@ package eu.ec2u.card;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
+import eu.ec2u.card.handlers.Loader;
+import eu.ec2u.card.handlers.Router;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.InetSocketAddress;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 import static java.lang.String.format;
 import static java.util.logging.Level.SEVERE;
 
-/**
- * HTTP server.
- */
 public final class Server {
 
     private static final String host="localhost";
@@ -40,28 +41,45 @@ public final class Server {
     private static final int backlog=128;
 
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static final String PortVariable="PORT";
+
+
     public static void main(final String... args) {
-        Guice.createInjector(new Loader()).getInstance(Server.class).start();
+        Guice.createInjector(new Services()).getInstance(Server.class).start();
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Inject private Handler handler;
+    @Inject private Loader loader;
+    @Inject private Router router;
     @Inject private Logger logger;
 
 
     private void start() {
         try {
 
-            final HttpServer server=HttpServer.create(new InetSocketAddress(host, port), backlog);
+            final HttpServer server=HttpServer.create(new InetSocketAddress(host,
+                    Optional.ofNullable(System.getenv().get(PortVariable))
+
+                            .map(value -> {
+
+                                try { return Integer.parseInt(value); } catch ( final NumberFormatException e1 ) {
+                                    return null;
+                                }
+
+                            })
+
+                            .orElse(port)), backlog);
 
             server.setExecutor(Executors.newCachedThreadPool());
 
-            server.createContext("/", exchange -> {
+            final HttpContext context=server.createContext("/", exchange -> {
                 try {
 
-                    handler.handle(exchange);
+                    router.handle(exchange);
 
                 } catch ( final RuntimeException e ) {
 
@@ -69,6 +87,8 @@ public final class Server {
 
                 }
             });
+
+            context.getFilters().add(loader);
 
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -87,7 +107,19 @@ public final class Server {
 
             server.start();
 
-            logger.info(format("server listening at <http://%s:%d/>", host, port));
+            logger.info(format("server listening at <http://%s:%d/>", host, Optional
+
+                    .ofNullable(System.getenv().get(PortVariable))
+
+                    .map(value -> {
+
+                        try { return Integer.parseInt(value); } catch ( final NumberFormatException e1 ) { return null; }
+
+                    })
+
+                    .orElse(port)
+
+            ));
 
         } catch ( final IOException e ) {
             throw new UncheckedIOException(e);

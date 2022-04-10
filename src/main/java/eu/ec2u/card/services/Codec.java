@@ -14,68 +14,23 @@
  * limitations under the License.
  */
 
-package eu.ec2u.card;
+package eu.ec2u.card.services;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.google.inject.*;
 
 import java.io.*;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.*;
+import java.util.Locale;
 
-import static java.lang.String.format;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.temporal.ChronoField.*;
 
-/**
- * Shared service loader.
- */
-final class Loader extends AbstractModule {
-
-    @Provides Gson codec() {
-
-        return new GsonBuilder()
-
-                .setPrettyPrinting()
-
-                .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
-
-                .create();
-
-    }
-
-    @Provides @Inject Setup setup(final Gson codec) throws IOException {
-
-        final String source=format("%s.json", Setup.class.getSimpleName());
-
-        try (
-                final InputStream input=Objects.requireNonNull(Setup.class.getResourceAsStream(source));
-                final Reader reader=new InputStreamReader(input, UTF_8)
-        ) {
-
-            final Setup setup=codec.fromJson(reader, Setup.class);
-
-            setup.getTenants().forEach((schac, hei) -> hei.setKey(Optional
-                    .ofNullable(System.getenv(hei.getKey()))
-                    .orElseThrow(() -> new NoSuchElementException(format(
-                            "undefined ESC API key <%s> for tenant <%s>", hei.getKey(), schac
-                    )))
-            ));
-
-            return setup;
-
-        }
-
-    }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+public final class Codec {
 
     private static final DateTimeFormatter DateFormat=new DateTimeFormatterBuilder()
 
@@ -141,7 +96,68 @@ final class Loader extends AbstractModule {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {
+    private final Gson gson=new GsonBuilder()
+
+            .setPrettyPrinting()
+
+            .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
+
+            .create();
+
+
+    public <W extends Writer> W encode(final W writer, final Object bean) throws IOException {
+
+        if ( writer == null ) {
+            throw new NullPointerException("null writer");
+        }
+
+        if ( bean == null ) {
+            throw new NullPointerException("null bean");
+        }
+
+        try {
+
+            gson.toJson(bean, writer);
+
+            return writer;
+
+        } catch ( final JsonIOException e ) {
+
+            throw new IOException(e);
+
+        }
+    }
+
+    public <T> T decode(final Reader reader, final Class<T> type) throws IOException, ParseException {
+
+        if ( reader == null ) {
+            throw new NullPointerException("null reader");
+        }
+
+        if ( type == null ) {
+            throw new NullPointerException("null type");
+        }
+
+        try {
+
+            return gson.fromJson(reader, type);
+
+        } catch ( final JsonSyntaxException e ) {
+
+            throw new ParseException(e.getMessage(), 0);
+
+        } catch ( final JsonIOException e ) {
+
+            throw new IOException(e);
+
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static final class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {
 
         @Override public void write(final JsonWriter writer, final LocalDate value) throws IOException {
             writer.value(value.toString());
@@ -153,7 +169,7 @@ final class Loader extends AbstractModule {
 
     }
 
-    private static final class LocalDateTimeTypeAdapter extends TypeAdapter<LocalDateTime> {
+    public static final class LocalDateTimeTypeAdapter extends TypeAdapter<LocalDateTime> {
 
         @Override public void write(final JsonWriter writer, final LocalDateTime value) throws IOException {
             writer.value(value.toString());

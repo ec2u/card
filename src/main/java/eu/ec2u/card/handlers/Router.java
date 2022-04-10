@@ -14,31 +14,33 @@
  * limitations under the License.
  */
 
-package eu.ec2u.card;
+package eu.ec2u.card.handlers;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import eu.ec2u.card.Setup.HEI;
-import lombok.Getter;
-import lombok.Setter;
+import eu.ec2u.card.Profile;
+import eu.ec2u.card.Setup;
+import eu.ec2u.card.services.Codec;
+import eu.ec2u.card.services.Fetcher;
 
 import java.io.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
+import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-/**
- * HTTP resource handler.
- */
-final class Handler implements HttpHandler {
+public final class Router implements HttpHandler {
+
+    private static final Pattern BearerPattern=Pattern.compile("\\s*Bearer\\s*(?<token>\\S*)\\s*");
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject private Setup setup;
-    @Inject private Gson codec;
+    @Inject private Codec codec;
     @Inject private Fetcher fetcher;
 
 
@@ -60,14 +62,15 @@ final class Handler implements HttpHandler {
 
             final int status=Optional.ofNullable(exchange.getRequestHeaders().getFirst("Authorization"))
 
-                    .map(token -> new User() // !!! from request parameters
-                            .setEsi("urn:schac:personalUniqueCode:int:esi:unipv.it:999001")
-                            .setHei("unipv.it")
-                    )
+                    .map(token -> { // !!!
+                        return new Profile.User()
+                                .setEsi("urn:schac:personalUniqueCode:int:esi:unipv.it:999001")
+                                .setHei("unipv.it");
+                    })
 
                     .map(user -> {
 
-                        final List<Card> cards=fetcher.fetch(user); // !!! error handling
+                        final List<Profile.Card> cards=fetcher.fetch(user);// !!! error handling
 
                         data
                                 .setUser(user)
@@ -79,9 +82,9 @@ final class Handler implements HttpHandler {
 
                     .orElseGet(() -> {
 
-                        //exchange.getResponseHeaders().set(
-                        //        "WWW-Authenticate", format("Bearer realm=\"%s\"", setup.getSso())
-                        //);
+                        exchange.getResponseHeaders().set(
+                                "WWW-Authenticate", format("Bearer realm=\"%s\"", setup.getSso())
+                        );
 
                         return 401;
 
@@ -97,51 +100,11 @@ final class Handler implements HttpHandler {
                     final Writer writer=new OutputStreamWriter(output, UTF_8)
             ) {
 
-                codec.toJson(data, writer);
+                codec.encode(writer, data);
 
             }
 
         }
-
-    }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Getter
-    @Setter private static final class Profile {
-
-        private String version;
-        private LocalDateTime instant;
-
-        private User user;
-        private List<Card> cards;
-
-    }
-
-    @Getter
-    @Setter
-    static final class User {
-
-        private String esi;
-        private String hei;
-
-    }
-
-    @Getter
-    @Setter
-    static final class Card {
-
-        private String code;
-        private String test; // ESC testing service
-        private LocalDate expiry;
-
-        private String esi;
-        private int level;
-        private String name;
-        private String photo;
-
-        private HEI hei;
 
     }
 
