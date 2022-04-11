@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -85,6 +84,21 @@ public class UsersService {
         users.setPath(Users.Id);
 
         users.setContains(this.users.findBySurnameStartingWith(surnamePrefix, slice)
+                .stream()
+                .map(UserData::transfer)
+                .collect(Collectors.toList()) );
+
+        return users;
+
+    }
+
+    Users searchBySurnamePrefix(final String surnamePrefix) {
+
+        final Users users = new Users();
+
+        users.setPath(Users.Id);
+
+        users.setContains(this.users.findBySurnameStartingWith(surnamePrefix)
                 .stream()
                 .map(UserData::transfer)
                 .collect(Collectors.toList()) );
