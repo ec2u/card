@@ -1,9 +1,7 @@
 package eu.ec2u.card.escr;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,11 +14,15 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @AllArgsConstructor
-public class EscrLinker {
+public class NewEscrLinker {
 
 	private static final String BASE_PATH = "https://api-sandbox.europeanstudentcard.eu/v1";
 
-	@Autowired EscrHttpManager httpManager;
+	@Autowired
+	EscrHttpManager httpManager;
+
+	@Autowired
+	ObjectMapper mapper;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -57,7 +59,7 @@ public class EscrLinker {
 	public String retrieveStudent(final String esi)
 			throws IllegalArgumentException {
 
-		if (checkEsi(esi)) {
+		if (isEsiValid(esi)) {
 
 			throw new IllegalArgumentException("European Student Identifier doesn't match the correct format");
 
@@ -65,12 +67,13 @@ public class EscrLinker {
 
 		return httpManager.httpGetter(BASE_PATH + "/students/" + esi);
 
+
 	}
 
 	public Optional<StudentTransfer> retrieveStudentWithTransferObject(final String esi)
 			throws IllegalArgumentException, JsonProcessingException {
 
-		if (checkEsi(esi)) {
+		if (isEsiValid(esi)) {
 
 			throw new IllegalArgumentException("European Student Identifier doesn't match the correct format");
 
@@ -93,29 +96,29 @@ public class EscrLinker {
 	public void updateStudentDetails(final StudentTransfer studentTransfer)
 			throws IllegalArgumentException, JsonProcessingException {
 
-		if (checkEsi(studentTransfer.getEuropeanStudentIdentifier())) {
+		if (isEsiValid(studentTransfer.getEuropeanStudentIdentifier())) {
 
 			throw new IllegalArgumentException("European Student Identifier doesn't match the correct format");
 
 		}
 
-			httpManager.httpPutter(
-					BASE_PATH + "/students/" + studentTransfer.getEuropeanStudentIdentifier(),
-					studentTransferToStudentJson(studentTransfer)
-			);
+		httpManager.httpPutter(
+				BASE_PATH + "/students/" + studentTransfer.getEuropeanStudentIdentifier(),
+				studentTransferToStudentJson(studentTransfer)
+		);
 
 	}
 
 	public void deleteStudent(final StudentTransfer studentTransfer)
 			throws IllegalArgumentException {
 
-		if (checkEsi(studentTransfer.getEuropeanStudentIdentifier())) {
+		if (isEsiValid(studentTransfer.getEuropeanStudentIdentifier())) {
 
 			throw new IllegalArgumentException("European Student Identifier doesn't match the correct format");
 
 		}
 
-			httpManager.httpDeleter(BASE_PATH + "/students/" + studentTransfer.getEuropeanStudentIdentifier());
+		httpManager.httpDeleter(BASE_PATH + "/students/" + studentTransfer.getEuropeanStudentIdentifier());
 
 	}
 
@@ -154,13 +157,13 @@ public class EscrLinker {
 	public String retrieveCard(final String esi, final String esc)
 			throws IllegalArgumentException {
 
-		if (checkEsi(esi)) {
+		if (isEsiValid(esi)) {
 
 			throw new IllegalArgumentException("European Student Identifier doesn't match the correct format");
 
 		}
 
-		if (checkEsc(esc)) {
+		if (isEscValid(esc)) {
 
 			throw new IllegalArgumentException("European Student Card doesn't match the correct format");
 
@@ -173,19 +176,18 @@ public class EscrLinker {
 	public Optional<CardTransfer> retrieveCardWithTransferObject(final String esi, final String esc)
 			throws IllegalArgumentException, JsonProcessingException {
 
-		if (checkEsi(esi)) {
+		if (isEsiValid(esi)) {
 
 			throw new IllegalArgumentException("European Student Identifier doesn't match the correct format");
 
 		}
 
-		if (checkEsc(esc)) {
+		if (isEscValid(esc)) {
 
 			throw new IllegalArgumentException("European Student Card doesn't match the correct format");
 
 		}
 
-		System.out.println(httpManager.httpGetter(BASE_PATH + "/students/" + esi + "/cards/" + esc));
 		return cardJsonToCardTransfer(httpManager.httpGetter(BASE_PATH + "/students/" + esi + "/cards/" + esc));
 
 	}
@@ -193,7 +195,7 @@ public class EscrLinker {
 	public void addCard(final CardTransfer cardTransfer)
 			throws IllegalArgumentException, JsonProcessingException {
 
-		if (checkEsi(cardTransfer.getEuropeanStudentIdentifier())) {
+		if (isEsiValid(cardTransfer.getEuropeanStudentIdentifier())) {
 
 			throw new IllegalArgumentException("European Student Identifier doesn't match the correct format");
 
@@ -209,7 +211,7 @@ public class EscrLinker {
 	public void updateCardDetails(final CardTransfer cardTransfer)
 			throws IllegalArgumentException, JsonProcessingException {
 
-		if (checkEsi(cardTransfer.getEuropeanStudentIdentifier())) {
+		if (isEsiValid(cardTransfer.getEuropeanStudentIdentifier())) {
 
 			throw new IllegalArgumentException("European Student Identifier doesn't match the correct format");
 
@@ -225,26 +227,26 @@ public class EscrLinker {
 	public void deleteCard(final CardTransfer cardTransfer)
 			throws IllegalArgumentException {
 
-		if (checkEsi(cardTransfer.getEuropeanStudentIdentifier())) {
+		if (isEsiValid(cardTransfer.getEuropeanStudentIdentifier())) {
 
 			throw new IllegalArgumentException("European Student Identifier doesn't match the correct format");
 
 		}
 
-		if (checkEsc(cardTransfer.getEuropeanStudentCardNumber())) {
+		if (isEscValid(cardTransfer.getEuropeanStudentCardNumber())) {
 
-			throw new IllegalArgumentException("esc or esc doesn't match the correct format");
+			throw new IllegalArgumentException("European Student Card doesn't match the correct format");
 
 		}
 
-			httpManager.httpDeleter(BASE_PATH + "/students/" + cardTransfer.getEuropeanStudentIdentifier()
-					+ "/cards/" + cardTransfer.getEuropeanStudentCardNumber());
+		httpManager.httpDeleter(BASE_PATH + "/students/" + cardTransfer.getEuropeanStudentIdentifier()
+				+ "/cards/" + cardTransfer.getEuropeanStudentCardNumber());
 
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private boolean checkEsi(final String esi) {
+	private boolean isEsiValid(final String esi) {
 
 		return !Pattern.compile("^urn:schac:personalUniqueCode:int:esi:[a-zA-Z]+\\.[a-zA-Z]+:[0-9]{6}$")
 				.matcher(esi)
@@ -252,7 +254,7 @@ public class EscrLinker {
 
 	}
 
-	private boolean checkEsc(final String esc) {
+	private boolean isEscValid(final String esc) {
 
 		return !Pattern.compile("^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[0-9]{12}+$")
 				.matcher(esc)
@@ -264,13 +266,13 @@ public class EscrLinker {
 
 	private Optional<StudentTransfer> studentJsonToStudentTransfer(final String studentJson) throws JsonProcessingException {
 
-		if (studentJson.contains("this student does not exist")) {
+		if(studentJson.contains("this student does not exist")) {
 
 			return Optional.empty();
 
 		} else {
 
-			return Optional.ofNullable(bindJsonDeserializer("StudentDeserializer").readValue(studentJson, StudentTransfer.class));
+			return Optional.of(mapper.readValue(studentJson, StudentTransfer.class));
 
 		}
 
@@ -284,73 +286,21 @@ public class EscrLinker {
 
 		} else {
 
-			return Optional.ofNullable(bindJsonDeserializer("CardDeserializer").readValue(cardJson, CardTransfer.class));
+			return Optional.of(mapper.readValue(cardJson, CardTransfer.class));
 
 		}
-
-	}
-
-	private String cardTransferToCardJson(final CardTransfer cardTransfer) throws JsonProcessingException {
-
-		return bindJsonSerializer("CardSerializer").writeValueAsString(cardTransfer);
 
 	}
 
 	private String studentTransferToStudentJson(final StudentTransfer studentTransfer) throws JsonProcessingException {
 
-		return bindJsonSerializer("StudentSerializer").writeValueAsString(studentTransfer);
+		return mapper.writeValueAsString(studentTransfer);
 
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	private String cardTransferToCardJson(final CardTransfer cardTransfer) throws JsonProcessingException {
 
-	private ObjectMapper bindJsonSerializer(final String serializerName) {
-
-		final ObjectMapper mapper = new ObjectMapper();
-
-		final SimpleModule module =
-				new SimpleModule(
-						serializerName,
-						new Version(1, 0, 0, null, null, null)
-				);
-
-		if(serializerName.equalsIgnoreCase("StudentSerializer")) {
-
-			module.addSerializer(StudentTransfer.class, new StudentSerializer(StudentTransfer.class));
-
-		} else if (serializerName.equalsIgnoreCase("CardSerializer")) {
-
-			module.addSerializer(CardTransfer.class, new CardSerializer(CardTransfer.class));
-
-        }
-
-		return mapper.registerModule(module);
-
-	}
-
-	private ObjectMapper bindJsonDeserializer(final String type) {
-
-		final String deserializerName = "";
-
-		final ObjectMapper mapper = new ObjectMapper();
-
-		final SimpleModule module =
-				new SimpleModule(
-						deserializerName,
-						new Version(1, 0, 0, null, null, null)
-				);
-
-		if(type.contains("Student")) {
-
-			module.addDeserializer(StudentTransfer.class, new StudentDeserializer());
-
-		} else if (type.contains("Card")) {
-
-			module.addDeserializer(CardTransfer.class, new CardDeserializer());
-
-		}
-
-		return mapper.registerModule(module);
+		return mapper.writeValueAsString(cardTransfer);
 
 	}
 
