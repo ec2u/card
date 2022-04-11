@@ -1,4 +1,4 @@
-card-adduser {
+card-edittoken {
   width: 95%;
   display: grid;
   align-items: stretch;
@@ -7,44 +7,44 @@ card-adduser {
     width: 100%;
     margin: 2em 0em;
     display: flex;
-    /* flex-wrap: wrap; */
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
 
     & section {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      flex-flow: wrap;
       gap: 0.5em;
-    }
-    & a {
-      text-decoration: none;
-      color: black;
-      font-size: 1.4em;
-    }
-    & .users-link:hover {
-      color: orange;
-      transform: translateX(-3px);
+
+      & a {
+        text-decoration: none;
+        color: black;
+        font-size: 1.4em;
+      }
+      & .tokens-link:hover {
+        color: orange;
+        transform: translateX(-3px);
+      }
     }
   }
   & form {
     width: 100%;
     display: flex;
-    text-align: left;
     justify-content: space-between;
+    text-align: left;
     overflow: auto;
 
     & .start {
       width: 50%;
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
+      flex-wrap: wrap;
     }
     & section {
       display: flex;
-      flex-flow: wrap;
       flex-direction: column;
-
+      flex-wrap: wrap;
       & label {
         color: rgb(161, 157, 157);
       }
@@ -55,20 +55,26 @@ card-adduser {
         border-radius: 0.3em;
         font-size: 0.9em;
       }
-      & .checkbox {
-        height: 1.6em;
-        width: 1.6em;
+      & input:required:invalid {
+        border: 2px solid red;
       }
     }
   }
-  & .button-check {
+  & .check-button {
     cursor: pointer;
   }
-  & .button-check:hover {
+  & .check-button:hover {
     color: green;
     transform: translateY(-3px);
   }
-  & .button-close:hover {
+  & .close-button:hover {
+    color: red;
+    transform: translateY(-3px);
+  }
+  & .trash-button {
+    cursor: pointer;
+  }
+  & .trash-button:hover {
     color: red;
     transform: translateY(-3px);
   }
@@ -96,14 +102,5 @@ card-adduser {
   }
   100% {
     transform: translate3d(-50%, -50%, 0) rotate(360deg);
-  }
-}
-
-@media screen and (max-width: 500px) {
-  form {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
   }
 }

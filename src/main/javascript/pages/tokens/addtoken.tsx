@@ -1,45 +1,44 @@
 import { Check, X } from "lucide-react";
 import React, { createElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./addcard.css";
+import "./addtoken.css";
 
 
-interface Card {
-    holderForename: string;
-    holderSurname: string;
-    expiringDate: Date;
-    virtualCardNumber: number;
-    id: number | string;
+interface Token {
+    readonly label: string;
+    readonly serviceOrUserName: string;
+    readonly serviceOrUserPassword: string;
+    readonly id: number | string;
+    readonly tokenNumber: number;
 
 }
 
 
-export function Addcard() {
-    const [addcard, setAddcard] = useState({} as Card);
+export function Addtoken() {
+    const [addtoken, setAddtoken] = useState({} as Token);
     const [disable, setDisable] = useState<Boolean>(false)
     const [loading, setLoading] = useState<Boolean>(false)
     const navigate = useNavigate();
 
-    const userdata = {
-        holderForename: addcard.holderForename,
-        expiringDate: addcard.expiringDate,
-        holderSurname: addcard.holderSurname,
-        virtualCardNumber: addcard.virtualCardNumber,
+    const tokendata = {
+        serviceOrUserName: addtoken.serviceOrUserName,
+        serviceOrUserPassword: addtoken.serviceOrUserPassword,
+        tokenNumber: addtoken.tokenNumber,
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         const value = e.target.value
 
-        if (!addcard.holderForename) { setDisable(true) }
+        if (!addtoken.serviceOrUserName) { setDisable(true) }
 
 
         else {
             setDisable(false)
         }
 
-        setAddcard((addcard) => ({
-            ...addcard,
+        setAddtoken((addtoken) => ({
+            ...addtoken,
             [e.target.name]: value,
         }));
     };
@@ -50,30 +49,30 @@ export function Addcard() {
         } else {
 
             setLoading(true)
-            await fetch("/cards/", {
+            await fetch("/tokens/", {
                 method: "POST",
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(userdata),
+                body: JSON.stringify(tokendata),
             })
                 .then((response) => response.json())
                 .catch(error => console.warn('error:', error));
 
-            navigate('/cards/');
+            navigate('/tokens/');
         }
     }
 
 
 
-    return createElement("card-addcard", {},
+    return createElement("card-addtoken", {},
         <>
             <header>
                 <section>
-                    <a href="/cards/" className={"cards-link"}>Cards </a>
+                    <a href="/tokens/" className={"tokens-link"}>Tokens </a>
                     <a>&#8250;</a>
-                    <a> New Card</a>
+                    <a> New Token</a>
                 </section>
 
                 <section>
@@ -86,7 +85,7 @@ export function Addcard() {
                                 className={"button-check"}
                             />)}
                     </a>
-                    <a href="/cards/">
+                    <a href="/tokens/">
                         < X size={40} className={'button-close'} />
                     </a>
                 </section>
@@ -98,50 +97,41 @@ export function Addcard() {
                 <div className={"start"}>
 
                     <section>
-                        <label>forename</label>
+                        <label>username</label>
                         <input
                             type="text"
                             required
-                            name="holderForename"
-                            value={addcard.holderForename}
+                            name="serviceOrUserName"
+                            value={addtoken.serviceOrUserName}
                             onChange={handleChange}
                         />
                     </section>
 
                     <section>
-                        <label>surname</label>
+                        <label>password</label>
                         <input
                             type="text"
                             required
-                            name="holderSurname"
-                            value={addcard.holderSurname}
+                            name="serviceOrUserPassword"
+                            value={addtoken.serviceOrUserPassword}
                             onChange={handleChange}
                         />
                     </section>
 
-                    <section>
-                        <label>expiry date</label>
-                        <input
-                            type="Date"
-                            required
-                            name="expiringDate"
-                            onChange={handleChange}
-                            className={'expiringdate'}
-                        />
-                    </section>
+
 
                 </div>
 
                 <div className={"end"}>
 
                     <section>
-                        <label>card number</label>
+                        <label>token number</label>
                         <input
                             required
                             className="number"
                             type="text"
-                            name="virtualCardNumber"
-                            value={addcard.virtualCardNumber}
+                            name="tokenNumber"
+                            value={addtoken.tokenNumber}
                             onChange={handleChange}
                         />
                     </section>

@@ -82,7 +82,7 @@ export function VirtualCards() {
             <header>
 
                 <a>Cards</a>
-                <a title="addcard" href='/cards/add'>
+                <a title="newcard" href='/cards/add'>
                     <Plus size={38} className={"button-plus"} />
                 </a>
 

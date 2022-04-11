@@ -39,7 +39,7 @@ export function Inspect() {
       <header>
 
         <section>
-          <a href='/users/'>Users &#62;</a>
+          <a href='/users/' className={"users-link"}>Users &#8250;</a>
           <a>{user.label}</a>
         </section>
 

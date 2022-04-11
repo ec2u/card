@@ -1,4 +1,4 @@
-card-adduser {
+card-addtoken {
   width: 95%;
   display: grid;
   align-items: stretch;
@@ -7,7 +7,7 @@ card-adduser {
     width: 100%;
     margin: 2em 0em;
     display: flex;
-    /* flex-wrap: wrap; */
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
 
@@ -22,7 +22,7 @@ card-adduser {
       color: black;
       font-size: 1.4em;
     }
-    & .users-link:hover {
+    & .tokens-link:hover {
       color: orange;
       transform: translateX(-3px);
     }
@@ -54,10 +54,6 @@ card-adduser {
         padding: 0.2em;
         border-radius: 0.3em;
         font-size: 0.9em;
-      }
-      & .checkbox {
-        height: 1.6em;
-        width: 1.6em;
       }
     }
   }
@@ -96,14 +92,5 @@ card-adduser {
   }
   100% {
     transform: translate3d(-50%, -50%, 0) rotate(360deg);
-  }
-}
-
-@media screen and (max-width: 500px) {
-  form {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
   }
 }

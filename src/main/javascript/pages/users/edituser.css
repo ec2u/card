@@ -22,6 +22,10 @@ card-edituser {
       color: black;
       font-size: 1.4em;
     }
+    & .users-link:hover {
+      color: orange;
+      transform: translateX(-3px);
+    }
   }
   & form {
     width: 100%;
@@ -66,6 +70,9 @@ card-edituser {
   & .check-button:hover {
     transform: translateY(-3px);
     color: green;
+  }
+  & .trash-button {
+    cursor: pointer;
   }
   & .trash-button:hover {
     color: red;

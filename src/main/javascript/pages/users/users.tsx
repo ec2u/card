@@ -98,7 +98,7 @@ export function CardUsers() {
       <header>
 
         <a> Users </a>
-        <a href='/users/add' title="add">
+        <a href='/users/add' title="nwe user">
           <Plus size={40} className={"button-plus"} />
         </a>
 
@@ -139,7 +139,12 @@ export function CardUsers() {
                     <td>{user.forename}</td>
                     <td>{user.surname}</td>
                     <td>{user.email}</td>
-                    <td><a href={`${user.id}`} title={"inspect"}><ChevronRight color="black" size={40} /></a></td>
+                    <td>
+                      <a href={`${user.id}`} title={"inspect"}
+                      >
+                        <ChevronRight size={40} className={"button-arrow"} />
+                      </a>
+                    </td>
 
                   </tr>
                 );

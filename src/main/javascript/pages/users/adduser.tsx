@@ -58,7 +58,8 @@ export function Adduser() {
     <>
       <header>
         <section>
-          <a>Add user</a>
+          <a href="/cards/" className={"users-link"} >Users &#8250;</a>
+          <a>New user</a>
         </section>
 
         <section>

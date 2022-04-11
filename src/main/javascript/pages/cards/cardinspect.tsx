@@ -39,7 +39,7 @@ export function CardInspect() {
         <>
             <header>
                 <section>
-                    <a href="/cards/">Cards &#62;</a>
+                    <a href="/cards/" className={"cards-link"}>Cards &#8250;</a>
                     <a>{card.label}</a>
                 </section>
 
