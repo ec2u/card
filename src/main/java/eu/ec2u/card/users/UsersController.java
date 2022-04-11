@@ -78,6 +78,22 @@ public final class UsersController {
     }
 
 
+    @PostMapping("filters")
+    @JsonView(Container.class)
+    ResponseEntity<Users> post(
+
+            @AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
+            @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
+            @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
+            @Valid @RequestBody final String surnamePrefix
+
+    ) {
+
+        return ok().body(users.searchBySurnamePrefix(surnamePrefix, PageRequest.of(page, size, Sort.by("surname"))));
+
+    }
+
+
     @GetMapping("{id}")
     @JsonView(Resource.class)
     ResponseEntity<User> get(

@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class CardSerializer extends StdSerializer<CardTransfer> {
 
-	public CardSerializer(Class<CardTransfer> t) {
+	public CardSerializer(final Class<CardTransfer> t) {
 
 		super(t);
 
@@ -15,7 +15,7 @@ public class CardSerializer extends StdSerializer<CardTransfer> {
 
 	@Override
 	public void serialize(
-			CardTransfer card, JsonGenerator generator, SerializerProvider provider) throws IOException {
+			final CardTransfer card, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
 
 		generator.writeStartObject();
 		generator.writeStringField("europeanStudentCardNumber", card.getEuropeanStudentCardNumber());

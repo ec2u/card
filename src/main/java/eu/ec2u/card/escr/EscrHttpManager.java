@@ -23,7 +23,7 @@ public class EscrHttpManager {
 
 		try {
 			output = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
-		} catch (IOException | InterruptedException e) {
+		} catch (final IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 
@@ -44,7 +44,7 @@ public class EscrHttpManager {
 
 		try {
 			output = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
-		} catch (IOException | InterruptedException e) {
+		} catch (final IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 
@@ -65,7 +65,7 @@ public class EscrHttpManager {
 
 		try {
 			output = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
-		} catch (IOException | InterruptedException e) {
+		} catch (final IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 
@@ -86,7 +86,7 @@ public class EscrHttpManager {
 
 		try {
 			output = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
-		} catch (IOException | InterruptedException e) {
+		} catch (final IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 

@@ -16,18 +16,18 @@ public class CardDeserializer extends StdDeserializer<CardTransfer> {
 
 	}
 
-	public CardDeserializer(Class<?> t) {
+	public CardDeserializer(final Class<?> t) {
 
 		super(t);
 
 	}
 
 	@Override
-	public CardTransfer deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+	public CardTransfer deserialize(final JsonParser parser, final DeserializationContext context) throws IOException {
 
-		JsonNode cardNode = parser.getCodec().readTree(parser);
+		final JsonNode cardNode = parser.getCodec().readTree(parser);
 
-		DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		final DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 		return new CardTransfer(
 				cardNode.get("europeanStudentCardNumber").textValue(),
