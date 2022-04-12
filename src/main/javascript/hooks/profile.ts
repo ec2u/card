@@ -152,7 +152,7 @@ export function CardProfile({
 
 
     function login() {
-        location.replace(`/saml/sso?target=${encodeURIComponent(location.href)}`);
+        location.replace(`/saml/sso?target=${encodeURIComponent(location.href)}&hei=${"unipv.it"}`); // !!! select from profile
     }
 
     function logout() {

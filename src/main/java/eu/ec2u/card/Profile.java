@@ -47,8 +47,8 @@ import java.util.List;
     @Setter
     public static final class User {
 
-        private String esi;
-        private String hei;
+        private String esi; // the user European Student Identifier
+        private String hei; // the SCHAC code of the user home institution
 
     }
 
@@ -79,7 +79,18 @@ import java.util.List;
         private String iso;
         private String country;
 
-        private String key; // the vault id of the HEI ESC Router API key
+        private IdP idp;
+        private String esc; // the vault id of the HEI ESC Router API key
+
+    }
+
+    @Getter
+    @Setter
+    public static final class IdP {
+
+        private String eid;
+        private String sso;
+        private String crt;
 
     }
 

@@ -17,7 +17,7 @@
 package eu.ec2u.card;
 
 import eu.ec2u.card.Profile.HEI;
-import eu.ec2u.card.services.Fetcher;
+import eu.ec2u.card.services.Fetcher.ESC;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -29,7 +29,7 @@ public final class Setup {
     private String version;
     private LocalDateTime instant;
 
-    private Fetcher.ESC esc;
+    private ESC esc;
 
     private Map<String, HEI> tenants;
 

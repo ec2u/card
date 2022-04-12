@@ -24,7 +24,7 @@ import com.onelogin.saml2.settings.Saml2Settings;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import eu.ec2u.card.Work;
-import eu.ec2u.card.services.Settings;
+import eu.ec2u.card.services.SAML;
 
 import java.io.IOException;
 import java.util.*;
@@ -38,58 +38,61 @@ public final class SSO implements HttpHandler {
     private static final SamlMessageFactory samlMessageFactory=new SamlMessageFactory() { };
 
 
-    @Inject private Settings settings;
+    @Inject private SAML saml;
 
 
     @Override public void handle(final HttpExchange exchange) throws IOException {
 
         if ( exchange.getRequestMethod().equals("GET") ) {
 
-            final Saml2Settings settings=this.settings.get();
-
-
             final Map<String, List<String>> xxx=Optional.ofNullable(exchange.getRequestURI().getQuery())
                     .map(Work::parameters)
                     .orElse(Map.of());
 
-
-            final String sso=settings.getIdpSingleSignOnServiceUrl().toString();
+            final String hei=xxx.getOrDefault("hei", List.of()).stream().findFirst().orElse("");
             final String target=xxx.getOrDefault("target", List.of()).stream().findFirst().orElse("/");
 
-            final AuthnRequest authnRequest=samlMessageFactory.createAuthnRequest(settings,
-                    new AuthnRequestParams(false, false, true)
-            );
+
+            if ( hei.isEmpty() ) {
+
+                exchange.sendResponseHeaders(400, -1);
+
+            } else {
+
+                final Saml2Settings settings=saml.settings(hei);
+
+                final String sso=settings.getIdpSingleSignOnServiceUrl().toString();
+
+                final AuthnRequest authnRequest=samlMessageFactory.createAuthnRequest(settings,
+                        new AuthnRequestParams(false, false, true)
+                );
 
 
-            final Map<String, List<String>> parameters=Map.ofEntries(
-                    entry("SAMLRequest", List.of(authnRequest.getEncodedAuthnRequest())),
-                    entry("RelayState", List.of(target))
-            );
+                final Map<String, List<String>> parameters=Map.ofEntries(
+                        entry("SAMLRequest", List.of(authnRequest.getEncodedAuthnRequest())),
+                        entry("RelayState", List.of(target+"?"+hei))
+                );
 
-            //if ( settings.getAuthnRequestsSigned() ) {
-            //    final String sigAlg=settings.getSignatureAlgorithm();
-            //    final String signature=this.buildRequestSignature(samlRequest, relayState, sigAlg);
-            //
-            //    parameters.put("SigAlg", sigAlg);
-            //    parameters.put("Signature", signature);
-            //}
+                //if ( settings.getAuthnRequestsSigned() ) {
+                //    final String sigAlg=settings.getSignatureAlgorithm();
+                //    final String signature=this.buildRequestSignature(samlRequest, relayState, sigAlg);
+                //
+                //    parameters.put("SigAlg", sigAlg);
+                //    parameters.put("Signature", signature);
+                //}
 
-            // !!! replay attack?
+                exchange.getResponseHeaders().set("Location",
+                        sso+(sso.contains("?") ? "&" : "?")+query(parameters)
+                );
 
-            //lastRequestId=authnRequest.getId();
-            //lastRequestIssueInstant=authnRequest.getIssueInstant();
-            //lastRequest=authnRequest.getAuthnRequestXml();
+                exchange.sendResponseHeaders(302, -1);
 
-            exchange.getResponseHeaders().set("Location",
-                    sso+(sso.contains("?") ? "&" : "?")+query(parameters)
-            );
-
-            exchange.sendResponseHeaders(302, -1);
-
+            }
 
         } else {
 
             exchange.sendResponseHeaders(405, -1);
+
         }
 
     }

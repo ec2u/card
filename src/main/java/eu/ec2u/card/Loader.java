@@ -27,6 +27,9 @@ import java.util.Objects;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * Shared service loader.
+ */
 final class Loader extends AbstractModule {
 
     @Provides @Inject Setup setup(final Codec codec) throws IOException, ParseException {
@@ -38,7 +41,7 @@ final class Loader extends AbstractModule {
                 final Reader reader=new InputStreamReader(input, UTF_8)
         ) {
 
-            return codec.decode(reader, Setup.class);
+            return codec.decode(reader, Setup.class);  // !!! verify all values
 
         }
 

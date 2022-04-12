@@ -49,11 +49,11 @@ public final class Fetcher {
             throw new NullPointerException("null esi");
         }
 
-        final String uni="unipv.it"; // !!! from user
+        final String hei=user.getHei(); // !!! from user
 
-        final HEI tenant=setup.getTenants().get(uni); // !!! handle missing elements
+        final HEI tenant=setup.getTenants().get(hei); // !!! handle missing elements
 
-        final String key=tenant.getKey();
+        final String key=tenant.getEsc();
 
         final HttpRequest request=HttpRequest.newBuilder().GET()
                 .uri(URI.create(format("%s/v1/students/%s", setup.getEsc().getApi(), user.getEsi())))
@@ -132,7 +132,7 @@ public final class Fetcher {
         private String api;
 
         /**
-         * The base URL for the ESC Testing service.
+         * The base URL for the ESC Test service.
          */
         private String tst;
 

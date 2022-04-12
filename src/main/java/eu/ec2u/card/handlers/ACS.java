@@ -40,7 +40,7 @@ public final class ACS implements HttpHandler {
     private static final SamlMessageFactory samlMessageFactory=new SamlMessageFactory() { };
 
 
-    @Inject private Settings settings;
+    @Inject private SAML saml;
     @Inject private Notary notary;
     @Inject private Codec codec;
 
@@ -63,13 +63,25 @@ public final class ACS implements HttpHandler {
                         query
                 );
 
-                final SamlResponse samlResponse=samlMessageFactory.createSamlResponse(settings.get(), http);
+
+                final String state=parameters
+                        .getOrDefault("RelayState", List.of())
+                        .stream()
+                        .findFirst()
+                        .orElse("/");
+
+                final int i=state.indexOf('?'); // !!! check/report
+
+                final String hei=state.substring(i+1);
+                final String target=state.substring(0, i);
+
+
+                final SamlResponse samlResponse=samlMessageFactory.createSamlResponse(saml.settings(hei), http);
 
                 //lastResponse = samlResponse.getSAMLResponseXml();
 
                 if ( samlResponse.isValid(null) ) {
 
-                    // !!! replay attack?
 
                     //nameid = samlResponse.getNameId();
                     //nameidFormat = samlResponse.getNameIdFormat();
@@ -79,13 +91,6 @@ public final class ACS implements HttpHandler {
                     //attributes = samlResponse.getAttributes();
                     //sessionIndex = samlResponse.getSessionIndex();
                     //sessionExpiration = samlResponse.getSessionNotOnOrAfter();
-
-                    // !!! replay attack?
-
-                    //lastMessageId = samlResponse.getId();
-                    //lastMessageIssueInstant = samlResponse.getResponseIssueInstant();
-                    //lastAssertionId = samlResponse.getAssertionId();
-                    //lastAssertionNotOnOrAfter = samlResponse.getAssertionNotOnOrAfter();
 
                     //LOGGER.debug("processResponse success --> " + samlResponseParameter);
 
@@ -97,14 +102,8 @@ public final class ACS implements HttpHandler {
 
                     final String token=notary.create(codec.encode(new StringWriter(), new Profile.User()
                             .setEsi(esi)
-                            .setHei("unipv.it") // !!!
+                            .setHei(hei) // !!!
                     ).toString());
-
-                    final String target=parameters
-                            .getOrDefault("RelayState", List.of())
-                            .stream()
-                            .findFirst()
-                            .orElse("/");
 
                     exchange.getResponseHeaders().set("Location", format("%s?%s", target, token));
 

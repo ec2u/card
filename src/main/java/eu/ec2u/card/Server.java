@@ -74,6 +74,7 @@ public final class Server {
             server.setExecutor(Executors.newCachedThreadPool());
 
             server.createContext("/", exchange -> {
+
                 try {
 
                     router.handle(exchange);
@@ -85,7 +86,12 @@ public final class Server {
                     exchange.sendResponseHeaders(500, -1);
 
                 }
-            });
+
+            })
+
+            //.getFilters().add(launcher)
+
+            ;
 
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {

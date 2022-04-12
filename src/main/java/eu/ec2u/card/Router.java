@@ -38,7 +38,7 @@ final class Router implements HttpHandler {
 
         switch ( path ) {
 
-            case "/saml/":
+            case "/saml":
 
                 meta.handle(exchange);
                 break;

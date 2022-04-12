@@ -20,7 +20,7 @@ import com.google.inject.Inject;
 import com.onelogin.saml2.settings.Saml2Settings;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import eu.ec2u.card.services.Settings;
+import eu.ec2u.card.services.SAML;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,14 +30,14 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class Meta implements HttpHandler {
 
-    @Inject private Settings settings;
+    @Inject private SAML saml;
 
 
     @Override public void handle(final HttpExchange exchange) throws IOException {
 
         if ( exchange.getRequestMethod().equals("GET") ) {
 
-            final Saml2Settings settings=this.settings.get();
+            final Saml2Settings settings=this.saml.settings(null);
 
             settings.setSPValidationOnly(true);
 

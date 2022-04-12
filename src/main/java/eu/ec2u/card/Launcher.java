@@ -32,6 +32,9 @@ import static java.lang.String.format;
 import static java.net.http.HttpClient.newHttpClient;
 import static java.util.Map.entry;
 
+/**
+ * SPA launcher.
+ */
 public final class Launcher extends Filter {
 
     private static final Map<String, String> Mimes=Map.ofEntries(
@@ -70,7 +73,7 @@ public final class Launcher extends Filter {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override public String description() {
-        return "SPA loader";
+        return "SPA launcher";
     }
 
     @Override public void doFilter(final HttpExchange exchange, final Chain chain) throws IOException {

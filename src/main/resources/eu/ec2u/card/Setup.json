@@ -11,7 +11,12 @@
             "name": "University of Pavia",
             "iso": "IT",
             "country": "Italy",
-            "key": "esc-key-pavia-sandbox"
+            "esc": "esc-key-pavia-sandbox",
+            "idp": {
+                "eid": "https://accounts.google.com/o/saml2?idpid=C010aus0d",
+                "sso": "https://accounts.google.com/o/saml2/idp?idpid=C010aus0d",
+                "crt": "-----BEGIN CERTIFICATE-----\nMIIDdDCCAlygAwIBAgIGAX7ty6xTMA0GCSqGSIb3DQEBCwUAMHsxFDASBgNVBAoTC0dvb2dsZSBJ\nbmMuMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MQ8wDQYDVQQDEwZHb29nbGUxGDAWBgNVBAsTD0dv\nb2dsZSBGb3IgV29yazELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWEwHhcNMjIwMjEy\nMTE1NzM0WhcNMjcwMjExMTE1NzM0WjB7MRQwEgYDVQQKEwtHb29nbGUgSW5jLjEWMBQGA1UEBxMN\nTW91bnRhaW4gVmlldzEPMA0GA1UEAxMGR29vZ2xlMRgwFgYDVQQLEw9Hb29nbGUgRm9yIFdvcmsx\nCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\nMIIBCgKCAQEAnhkuk3gi/Lo9D/BCZj1Z5GFzw4bC5++9LohaC/PFCY/5OFCVLcGCT7irvyxGbwDc\nR5MiMpxEmO2CsRTi1utltcl/T3xmX1QaJdHapSy5v4H1rue5z4PYBrIPMj5HcbIVJ9Vl02CmdKOz\nx9qpqsFLABg7xXKqSTyw+PA10m/nuLUhC/EZC9i5NW92mJrhvib2bOymBXPaJv4fSIWvpi8wNeGN\nYX1P8sGvOSzVZKrIF4P7UGjN6ZcDmW04gdKWIELyeHSNNQbdGRImsPz3xreadrP2ovFDaLYvZXa+\norhE+NorfkHHrPAxQv3qbWzGkUNS8gtpcyYsnqHMPiDUNeHIawIDAQABMA0GCSqGSIb3DQEBCwUA\nA4IBAQA/dvHL/dQds2hVzHYbDbB19go7uS9+RbJupKPMUCW5g5FH116TIHFcTPCDxyDDsMZmS+eX\nxMLI6HESZEdjIb9nOW2KGGX6u1Tzs9Hf9oK7kgfpemtGk3WSki606taBe9QnO1AcWukM602jNRX9\nY+Qcmt6w0V47YoQD9VOuEle+K1KHaz3PTJj7dp3KFIYpQdxm0gUrTmB4041tmHT7I3FA2DHSs85a\niX1s5odwSuro3LThF2hnh5uHOq75mhZEQH7TQLhckiRulQfWeN9vUz29NJIXmNPmuEF84OgjeJtk\nzz/xwBRwGngp9kewJo/i+5Ft8Z1PHqNHBrXJz9Ee1vG2\n-----END CERTIFICATE-----\n"
+            }
         }
     }
 }
