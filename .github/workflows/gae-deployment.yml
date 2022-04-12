@@ -1,0 +1,38 @@
+name: gae-deployment
+
+on:
+
+  push:
+
+    branches: [ 'main', 'next' ]
+
+jobs:
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up java environment
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: temurin
+          cache: maven
+
+      - name: Authenticate with GCP
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Deploy GAE version
+        run: >
+          GOOGLE_APPLICATION_CREDENTIALS='${{ steps.auth.outputs.credentials_file_path }}'
+          mvn --batch-mode --update-snapshots
+          -Drevision=${{ github.ref_name }}
+          deploy
