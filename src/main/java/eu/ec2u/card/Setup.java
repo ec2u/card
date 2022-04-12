@@ -17,9 +17,9 @@
 package eu.ec2u.card;
 
 import eu.ec2u.card.Profile.HEI;
+import eu.ec2u.card.services.Fetcher;
 import lombok.Getter;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -29,22 +29,8 @@ public final class Setup {
     private String version;
     private LocalDateTime instant;
 
-    private URI sso;
-    private String jwt;
-
-    private ESC esc;
+    private Fetcher.ESC esc;
 
     private Map<String, HEI> tenants;
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Getter
-    public static final class ESC {
-
-        private String api;
-        private String tst;
-
-    }
 
 }

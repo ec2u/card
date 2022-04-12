@@ -68,6 +68,8 @@ public final class Fetcher {
 
             // !!! network error handling / return null on 404
 
+            //
+
             try (
                     final InputStream input=response.body();
                     final Reader reader=new InputStreamReader(input, UTF_8)
@@ -78,12 +80,12 @@ public final class Fetcher {
                 // !!! assert required fields
                 // !!! assert student.getPicInstitutionCode() == tenant.pic
 
-                return student.cards.stream()
+                return student.getCards().stream()
 
                         .map(card -> new Card()
 
-                                .setCode(card.europeanStudentCardNumber)
-                                .setTest(format("%s/%s", setup.getEsc().getTst(), card.europeanStudentCardNumber))
+                                .setCode(card.getEuropeanStudentCardNumber())
+                                .setTest(format("%s/%s", setup.getEsc().getTst(), card.getEuropeanStudentCardNumber()))
 
                                 .setExpiry(student.getExpiryDate().toLocalDate())
 
@@ -120,6 +122,21 @@ public final class Fetcher {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Getter
+    public static final class ESC {
+
+        /**
+         * The base URL for the ESC Router service.
+         */
+        private String api;
+
+        /**
+         * The base URL for the ESC Testing service.
+         */
+        private String tst;
+
+    }
 
     @Getter
     private static final class ESCStudent {

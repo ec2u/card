@@ -18,10 +18,7 @@ package eu.ec2u.card;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
-import eu.ec2u.card.handlers.Loader;
-import eu.ec2u.card.handlers.Router;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -47,13 +44,13 @@ public final class Server {
 
 
     public static void main(final String... args) {
-        Guice.createInjector(new Services()).getInstance(Server.class).start();
+        Guice.createInjector(new Loader()).getInstance(Server.class).start();
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Inject private Loader loader;
+    @Inject private Launcher launcher;
     @Inject private Router router;
     @Inject private Logger logger;
 
@@ -76,7 +73,7 @@ public final class Server {
 
             server.setExecutor(Executors.newCachedThreadPool());
 
-            final HttpContext context=server.createContext("/", exchange -> {
+            server.createContext("/", exchange -> {
                 try {
 
                     router.handle(exchange);
@@ -85,10 +82,10 @@ public final class Server {
 
                     logger.log(SEVERE, "unhandled exception", e);
 
+                    exchange.sendResponseHeaders(500, -1);
+
                 }
             });
-
-            context.getFilters().add(loader);
 
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {

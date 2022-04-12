@@ -116,7 +116,7 @@ export function CardCard() {
 
             : !profile.user ? <div>
 
-                    <span>Log in to access your ESC cards</span>
+                    <span>Log in to access your ESC&nbsp;cards</span>
 
                 </div>
 

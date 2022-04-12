@@ -29,12 +29,17 @@ const Context=createContext<[undefined | Profile, (action?: null) => void]>([und
 
 export interface Profile {
 
-    readonly manager: string;
-    readonly version: string;
-    readonly instant: string;
+    readonly info: Info;
 
     readonly user?: User;
     readonly cards?: Card[];
+
+}
+
+export interface Info {
+
+    readonly version: string;
+    readonly instant: string;
 
 }
 
@@ -82,7 +87,6 @@ export function CardProfile({
 }) {
 
     const [profile, setProfile]=useStorage<undefined | Profile>(localStorage, "profile", undefined);
-    const [gateway, setGateway]=useStorage<undefined | string>(localStorage, "gateway", undefined);
 
 
     useEffect(() => {
@@ -99,55 +103,48 @@ export function CardProfile({
 
         if ( !profile || token ) {
 
-            fetch("/", {
+            fetch("/v1/", {
 
                 headers: {
                     Accept: "application/json",
-                    ...(token ? { Authorization: `Bearer "${token}"` } : {})
+                    ...(token ? { Authorization: `Bearer ${token}` } : {})
                 }
 
-            }).then(response => {
+            }).then(response => response.json().then((profile: Profile) => {
 
-                response.json().then((profile: Profile) => { // encode card.test URL into a QR data url
+                if ( response.ok ) {
 
-                    if ( response.ok ) {
+                    if ( profile.cards ) { // encode card.test URL into a QR data url
 
-                        if ( profile.cards ) {
+                        Promise.all(profile.cards.map(card => {
 
-                            Promise.all(profile.cards.map(card => {
+                            return QRCode.toDataURL(card.test, {
 
-                                return QRCode.toDataURL(card.test, {
+                                errorCorrectionLevel: "M",
+                                margin: 0
 
-                                    errorCorrectionLevel: "M",
-                                    margin: 0
+                            }).then(test => ({ ...card, test }));
 
-                                }).then(test => ({ ...card, test }));
-
-                            })).then(cards => setProfile({ ...profile, cards }));
-
-                        } else {
-
-                            setProfile(profile);
-
-                        }
-
-                    } else if ( response.status === 401 ) {
-
-                        setGateway((response.headers.get("WWW-Authenticate") ?? "")
-                            .match(/Bearer\s+realm\s*=\s*"(.*)"/)?.[1]
-                        );
-
-                        setProfile(profile);
+                        })).then(cards => setProfile({ ...profile, cards }));
 
                     } else {
 
-                        // !!! notify
+                        setProfile(profile);
 
                     }
 
-                });
+                } else if ( response.status === 401 ) {
 
-            });
+                    setProfile(profile);
+
+                } else {
+
+                    // !!! notify
+
+                }
+
+
+            }));
 
         }
 
@@ -155,16 +152,11 @@ export function CardProfile({
 
 
     function login() {
-        if ( gateway ) {
-            setProfile(undefined);
-            location.replace(`${gateway}?target=${encodeURIComponent(location.href)}`);
-        }
+        location.replace(`/saml/sso?target=${encodeURIComponent(location.href)}`);
     }
 
     function logout() {
-        if ( profile ) {
-            setProfile({ ...profile, user: undefined, cards: undefined });
-        }
+        setProfile(profile?.info ? { info: profile.info } : undefined);
     }
 
 

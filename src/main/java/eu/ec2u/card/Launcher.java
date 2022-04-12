@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.ec2u.card.handlers;
+package eu.ec2u.card;
 
 import com.sun.net.httpserver.*;
 
@@ -32,7 +32,7 @@ import static java.lang.String.format;
 import static java.net.http.HttpClient.newHttpClient;
 import static java.util.Map.entry;
 
-public final class Loader extends Filter {
+public final class Launcher extends Filter {
 
     private static final Map<String, String> Mimes=Map.ofEntries(
             entry("html", "text/html"),
@@ -103,7 +103,7 @@ public final class Loader extends Filter {
         final String path=exchange.getRequestURI().normalize().getPath(); // normalize to prevent tree walking
         final String type=path.substring(path.lastIndexOf('.')+1);
 
-        final URL asset=Loader.class.getResource(format("/static%s", path));
+        final URL asset=Launcher.class.getResource(format("/static%s", path));
 
         if ( asset == null ) {
 

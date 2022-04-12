@@ -26,15 +26,22 @@ import java.util.List;
 @Getter
 @Setter public final class Profile {
 
-    private String manager;
-    private String version;
-    private LocalDateTime instant;
+    private Info info;
 
     private User user;
     private List<Card> cards;
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Getter
+    @Setter
+    public static final class Info {
+
+        private String version;
+        private LocalDateTime instant;
+
+    }
 
     @Getter
     @Setter

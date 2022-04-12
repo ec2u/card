@@ -20,19 +20,19 @@ import com.google.inject.Inject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import eu.ec2u.card.Profile;
+import eu.ec2u.card.Profile.Info;
 import eu.ec2u.card.Setup;
-import eu.ec2u.card.services.Codec;
-import eu.ec2u.card.services.Fetcher;
+import eu.ec2u.card.services.*;
 
 import java.io.*;
-import java.util.List;
+import java.text.ParseException;
 import java.util.Optional;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public final class Router implements HttpHandler {
+public final class V1 implements HttpHandler {
 
     private static final Pattern BearerPattern=Pattern.compile("\\s*Bearer\\s*(?<token>\\S*)\\s*");
 
@@ -41,40 +41,51 @@ public final class Router implements HttpHandler {
 
     @Inject private Setup setup;
     @Inject private Codec codec;
+    @Inject private Notary notary;
     @Inject private Fetcher fetcher;
 
 
     @Override public void handle(final HttpExchange exchange) throws IOException {
 
-        if ( !exchange.getRequestURI().getPath().equals("/") ) {
+        if ( exchange.getRequestMethod().equals("GET") ) {
 
-            exchange.sendResponseHeaders(404, -1);
+            final Profile profile=new Profile()
 
-        } else if ( !exchange.getRequestMethod().equals("GET") ) {
-
-            exchange.sendResponseHeaders(405, -1);
-
-        } else {
-
-            final Profile data=new Profile()
-                    .setVersion(setup.getVersion())
-                    .setInstant(setup.getInstant());
+                    .setInfo(new Info()
+                            .setVersion(setup.getVersion())
+                            .setInstant(setup.getInstant())
+                    );
 
             final int status=Optional.ofNullable(exchange.getRequestHeaders().getFirst("Authorization"))
 
-                    .map(token -> { // !!!
-                        return new Profile.User()
-                                .setEsi("urn:schac:personalUniqueCode:int:esi:unipv.it:999001")
-                                .setHei("unipv.it");
+                    .map(BearerPattern::matcher)
+                    .filter(Matcher::find)
+                    .map(matcher -> matcher.group("token"))
+
+                    .flatMap(token -> notary.verify(token))
+
+                    .map(token -> {
+
+                        try {
+
+                            return codec.decode(new StringReader(token), Profile.User.class);
+
+                        } catch ( final IOException e ) {
+
+                            throw new UncheckedIOException(e);
+
+                        } catch ( final ParseException e ) {
+
+                            return null;
+                        }
+
                     })
 
                     .map(user -> {
 
-                        final List<Profile.Card> cards=fetcher.fetch(user);// !!! error handling
-
-                        data
+                        profile
                                 .setUser(user)
-                                .setCards(cards);
+                                .setCards(fetcher.fetch(user));  // !!! error handling
 
                         return 200;
 
@@ -83,7 +94,7 @@ public final class Router implements HttpHandler {
                     .orElseGet(() -> {
 
                         exchange.getResponseHeaders().set(
-                                "WWW-Authenticate", format("Bearer realm=\"%s\"", setup.getSso())
+                                "WWW-Authenticate", "Bearer realm=\"card.ec2u.eu"+"\""
                         );
 
                         return 401;
@@ -100,9 +111,14 @@ public final class Router implements HttpHandler {
                     final Writer writer=new OutputStreamWriter(output, UTF_8)
             ) {
 
-                codec.encode(writer, data);
+                codec.encode(writer, profile);
 
             }
+
+
+        } else {
+
+            exchange.sendResponseHeaders(405, -1);
 
         }
 

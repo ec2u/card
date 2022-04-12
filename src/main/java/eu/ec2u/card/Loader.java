@@ -17,16 +17,17 @@
 package eu.ec2u.card;
 
 import com.google.inject.*;
-import eu.ec2u.card.services.Codec;
+import eu.ec2u.card.services.*;
 
 import java.io.*;
 import java.text.ParseException;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-final class Services extends AbstractModule {
+final class Loader extends AbstractModule {
 
     @Provides @Inject Setup setup(final Codec codec) throws IOException, ParseException {
 
@@ -41,6 +42,13 @@ final class Services extends AbstractModule {
 
         }
 
+    }
+
+    @Provides @Inject public Notary notary(final Vault vault) {
+        return new Notary(vault.get("jwt-key")
+                .map(key -> key.getBytes(UTF_8))
+                .orElseThrow(() -> new NoSuchElementException(format("undefined <%s> key", "key-jwt")))
+        );
     }
 
 }
