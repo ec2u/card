@@ -1,7 +1,7 @@
 /.idea/
 /.vscode/
 
-/target/
+/dist/
 /node_modules/
 
 *.iml
