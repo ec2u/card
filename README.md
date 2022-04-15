@@ -1,5 +1,3 @@
-[![gae-deployment](https://github.com/ec2u/card/actions/workflows/gae-deployment.yml/badge.svg)](https://github.com/ec2u/card/actions/workflows/gae-deployment.yml)
-
 # EC2U Virtual Card
 
 The EC2U Virtual Card is a lightweight mobile-based academic identification card built on top of two mature and 

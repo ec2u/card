@@ -16,7 +16,7 @@ If you just want some help, start a [discussion](discussions) and describe your 
 
 # Suggesting Features
 
-If you think you have a good idea about improving or extending @ec2u/node, feel free to open
-an [issue](issues), using the dedicated template.
+If you think you have a good idea about improving or extending @ec2u/card, feel free to open an [issue](issues), using
+the dedicated template.
 
 Again search open suggestions and, if something is found, just add any additional details in the comments.

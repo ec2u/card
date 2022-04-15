@@ -19,8 +19,8 @@ import {resolve} from "path";
 import reactRefresh from "@vitejs/plugin-react-refresh";
 import postcssNesting from "postcss-nesting";
 
-const src=resolve(process.env.src || "src/main/javascript/");
-const out=resolve(process.env.out || "target/static/");
+const src=resolve(process.env.src || "code/javascript/");
+const out=resolve(process.env.out || "dist/static/");
 
 export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 

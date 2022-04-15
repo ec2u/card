@@ -37,7 +37,7 @@ html {
 
 }
 
-h1, h2, header {
+h1, h2, h3, header {
 
     font-family: "Poppins", "Helvetica Neue", "Arial", sans-serif;
     font-weight: 400;
@@ -46,13 +46,42 @@ h1, h2, header {
 
 }
 
-code {
+code, code[class*=language-], pre[class*=language-] {
 
     font-family: "Courier Prime", "Courier New", "Courier", monospace;
     font-weight: 400;
     font-size: 0.9em;
 
 }
+
+
+/* Roboto
+
+html {
+
+    font-family: "Roboto", "Helvetica Neue", "Arial", sans-serif;
+    font-weight: 300;
+    font-size: var(--ec2u--font-size);
+
+    line-height: 1.3;
+
+}
+
+header, footer, nav, h1, h2, h3, dt, th, a, strong, small {
+    font-family: "Roboto Condensed", Helvetica, Arial, sans-serif;
+}
+
+h1, h2, h3 {
+    font-weight: 400;
+}
+
+code, code[class*=language-], pre[class*=language-] {
+    font-family: "Roboto Mono", monospace;
+    line-height: inherit;
+    letter-spacing: -0.01em;
+}
+
+*/
 
 
 /**** Defaults ********************************************************************************************************/
@@ -71,6 +100,10 @@ code {
     color: inherit;
     background-color: inherit;
 
+    &:first-child {
+        margin-top: 0;
+    }
+
 }
 
 html {
@@ -83,13 +116,8 @@ html {
 
 h1, h2 {
 
-    &:not(:first-child) {
-        margin-top: 1em;
-    }
-
-    &:not(:last-child) {
-        margin-bottom: 0.5em;
-    }
+    margin-top: 1em;
+    margin-bottom: 0.5em;
 
 }
 
@@ -107,16 +135,18 @@ h2 {
 }
 
 h3 {
-    font-size: 1.1em;
+    font-size: 1em;
 }
 
 
 /**** Lists **********************************************************************************************************/
 
 ul,
-ol {
+ol,
+dl {
 
-    margin-bottom: 0.5em;
+    margin-top: 1em;
+    margin-bottom: 1em;
 
     & > li {
         margin-top: 0.25em;
@@ -133,6 +163,17 @@ ul {
         margin-left: 1.25em;
     }
 
+    & > li.task-list-item {
+
+        list-style: none;
+        margin-left: 0;
+
+        & > input {
+            margin-right: 0.25em;
+        }
+
+    }
+
 }
 
 ol {
@@ -142,6 +183,29 @@ ol {
         padding-left: 0.5em;
         margin-left: 1.5em;
     }
+
+}
+
+
+dl {
+
+    & > dt {
+
+        font-weight: 700;
+        font-size: 95%;
+        color: #333;
+
+        &:not(:first-child) {
+            margin-top: 0.75em;
+        }
+
+    }
+
+    & > dd {
+        margin-top: 0.5em;
+        margin-left: 1.5em;
+    }
+
 
 }
 
@@ -157,10 +221,19 @@ table {
     margin-top: 1em;
     margin-bottom: 1.5em;
 
+    font-size: 95%;
+
+
+    & tr:nth-child(odd) > td {
+        background-color: #F8F8F8;
+    }
+
     & th, & td {
 
-        padding-top: 0.25em;
-        padding-bottom: 0.25em;
+        padding: 0.5em 0.5em;
+        border-bottom-style: solid;
+        vertical-align: baseline;
+        text-align: start;
 
         &:not(:first-child) {
             padding-left: 0.5em;
@@ -170,14 +243,14 @@ table {
             padding-right: 0.5em;
         }
 
-        text-align: start;
-        vertical-align: text-top;
+        &:last-child {
+            width: 100%;
+        }
 
     }
 
     & th {
-        border-bottom-style: solid;
-        white-space: nowrap;
+        white-space: pre;
         font-size: 90%;
         font-weight: 700;
         color: #CCC;
@@ -218,6 +291,10 @@ pre {
         display: block;
         padding: 0.5em 0.75em;
         margin-bottom: 1em;
+        border-radius: 0.5em;
+        white-space: pre;
+        font-size: 85%;
+        background-color: #EEE;
     }
 
 }
@@ -227,6 +304,32 @@ hr {
     margin-top: 1em;
     margin-bottom: 1em;
     border-bottom-style: solid;
+}
+
+img:not([alt~=emoji]) {
+
+    display: block;
+    max-width: 100%;
+    height: auto;
+    padding: 1.5em;
+
+    &[src$='#left'] {
+        float: left;
+        max-width: 33%;
+        margin: 0 1.5em 1.5em 0;
+    }
+
+    &[src$='#right'] {
+        float: right;
+        max-width: 33%;
+        margin: 0 0 1.5em 1.5em;
+    }
+
+    &[src$='#center'] {
+        max-width: 66%;
+        margin: auto;
+    }
+
 }
 
 
@@ -243,6 +346,13 @@ a, a:visited {
 
     color: #567;
 
+    &[href^='http']::after {
+        content: '⌝';
+        display: inline-block;
+        margin-left: 0.1em;
+        text-decoration-line: none;
+    }
+
 }
 
 em {
@@ -257,10 +367,16 @@ dfn {
     white-space: nowrap;
 }
 
+abbr {
+    text-transform: none;
+    white-space: pre;
+}
+
 code {
     padding: 0.2em 0.5em 0.1em;
     border-radius: 0.25em;
-    white-space: pre;
+    white-space: nowrap;
+    font-size: 90%;
     background-color: #F0F0F0;
 }
 

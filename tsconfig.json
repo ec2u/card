@@ -3,8 +3,8 @@
 
 {
     "compilerOptions": {
-        "baseUrl": "src/main/javascript",
-        "outDir": "target/static/",
+        "baseUrl": "code/javascript",
+        "outDir": "dist/static/",
         "paths": {
             "@ec2u/card/*": [
                 "*"
@@ -27,6 +27,6 @@
         "preserveSymlinks": true
     },
     "include": [
-        "src/main/javascript"
+        "code/javascript"
     ]
 }
