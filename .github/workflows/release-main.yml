@@ -1,5 +1,4 @@
-name: ghp-publishing
-
+name: release-main
 on:
 
   push:
@@ -8,7 +7,7 @@ on:
 
 jobs:
 
-  deploy:
+  publish:
 
     runs-on: ubuntu-latest
 
