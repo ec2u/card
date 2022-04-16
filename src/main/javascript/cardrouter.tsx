@@ -4,7 +4,7 @@ import "./index.css";
 
 import { CardUser } from "./pages/user/user";
 import { CardUsers } from "./pages/users/users";
-import { Cardsidebar } from "./views/sidebar";
+import { CardSidebar } from "./views/sidebar";
 import { Inspect } from "./pages/users/userinspect";
 import { Adduser } from "./pages/users/adduser";
 import { Edituser } from "./pages/users/edituser";
@@ -25,7 +25,7 @@ export function CardRoutes() {
   return (
     <div>
       <BrowserRouter>
-        <Cardsidebar
+        <CardSidebar
           onCollapse={(sidebar: boolean) => {
             setSidebar(sidebar);
           }}
