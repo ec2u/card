@@ -16,25 +16,30 @@ interface Card {
 
 export function Addcard() {
     const [addcard, setAddcard] = useState({} as Card);
-    const [disable, setDisable] = useState<Boolean>(false)
-    const [loading, setLoading] = useState<Boolean>(false)
+    const [disable, setDisable] = useState<Boolean>(false);
+    const [loading, setLoading] = useState<Boolean>(false);
+
+
     const navigate = useNavigate();
 
-    const userdata = {
+
+
+    let userData = {
         holderForename: addcard.holderForename,
         expiringDate: addcard.expiringDate,
         holderSurname: addcard.holderSurname,
         virtualCardNumber: addcard.virtualCardNumber,
     };
 
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
 
         const value = e.target.value
 
-        if (!addcard.holderForename) { setDisable(true) }
-
-
-        else {
+        if (value.length < 1) {
+            setDisable(true)
+        } else {
             setDisable(false)
         }
 
@@ -42,7 +47,9 @@ export function Addcard() {
             ...addcard,
             [e.target.name]: value,
         }));
+
     };
+
 
     const handleSubmit = async () => {
         if (disable) {
@@ -56,12 +63,14 @@ export function Addcard() {
                     Accept: "application/json",
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(userdata),
+                body: JSON.stringify(userData),
             })
-                .then((response) => response.json())
-                .catch(error => console.warn('error:', error));
+                .then(() => {
+                    setLoading(false)
+                    navigate('/cards/');
 
-            navigate('/cards/');
+                })
+                .catch(error => console.warn('error:', error));
         }
     }
 
@@ -84,6 +93,7 @@ export function Addcard() {
                                 size={38}
                                 color={disable ? 'lightgray' : 'black'}
                                 className={"button-check"}
+
                             />)}
                     </a>
                     <a href="/cards/">
@@ -100,6 +110,7 @@ export function Addcard() {
                     <section>
                         <label>forename</label>
                         <input
+                            className={"input"}
                             type="text"
                             required
                             name="holderForename"
@@ -111,6 +122,7 @@ export function Addcard() {
                     <section>
                         <label>surname</label>
                         <input
+                            className={"input"}
                             type="text"
                             required
                             name="holderSurname"
@@ -122,11 +134,12 @@ export function Addcard() {
                     <section>
                         <label>expiry date</label>
                         <input
+                            className={"input"}
                             type="Date"
                             required
                             name="expiringDate"
                             onChange={handleChange}
-                            className={'expiringdate'}
+                        // className={'expiringdate'}
                         />
                     </section>
 
@@ -137,8 +150,9 @@ export function Addcard() {
                     <section>
                         <label>card number</label>
                         <input
+                            className={"input"}
                             required
-                            className="number"
+                            // className="number"
                             type="text"
                             name="virtualCardNumber"
                             value={addcard.virtualCardNumber}

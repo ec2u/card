@@ -64,9 +64,10 @@ export function CardTokens() {
 
             <input
                 ref={inputRef}
-                type="text"
+                autoFocus
+                type="search"
                 value={search}
-                placeholder="search by surname"
+                placeholder="search..."
                 onChange={handleInput}
 
 
@@ -121,12 +122,12 @@ export function CardTokens() {
                     </tr>
 
                 </thead>
+                <caption><hr /></caption>
 
-                <hr />
 
                 {loading ?
 
-                    (<div className="spinner"></div>
+                    (<caption className="spinner"></caption>
 
                     ) : (
 

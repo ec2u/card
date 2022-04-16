@@ -80,7 +80,6 @@ export function Editcard() {
             })
                 .then((response) => response.json())
                 .catch(error => console.warn('error:', error))
-            setLoading(false)
             navigate(`${updatecard.id}`)
         }
 
@@ -123,7 +122,8 @@ export function Editcard() {
 
 
 
-    const handleonFocus = () => {
+    const handleonFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.target.select();
         setClicked(true)
     }
 

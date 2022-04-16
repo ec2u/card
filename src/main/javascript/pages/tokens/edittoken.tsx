@@ -121,7 +121,8 @@ export function Edittoken() {
 
 
 
-    const handleonFocus = () => {
+    const handleonFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.target.select();
         setClicked(true)
     }
 

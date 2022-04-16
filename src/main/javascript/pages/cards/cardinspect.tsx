@@ -17,18 +17,24 @@ interface Card {
 
 export function CardInspect() {
     const [card, setCard] = useState<Card>({} as Card);
+    const [loading, setLoading] = useState<Boolean>(false)
     const { id } = useParams();
 
     useEffect(() => {
-        fetch(`/cards/${id}`, {
-            headers: {
-                Accept: "application/json",
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => setCard(data))
-            .catch(error => console.warn('error:', error))
+        setLoading(true)
+        const fetchData = async () => {
+            await fetch(`/cards/${id}`, {
+                headers: {
+                    Accept: "application/json",
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => setCard(data))
+                .catch(error => console.warn('error:', error))
+            setLoading(false)
+        }
 
+        fetchData();
 
     }, [])
 
@@ -47,33 +53,41 @@ export function CardInspect() {
                     <Edit size={38} className="button-edit" />
                 </a>
             </header>
-            <form>
-                <div className={"start"}>
-                    <section>
-                        <label>forename</label>
-                        <span>{card.holderForename}</span>
-                    </section>
 
-                    <section>
-                        <label>surname</label>
-                        <span>{card.holderSurname}</span>
-                    </section>
+            {loading ? (
+                <div className="spinner"></div>
+            ) : (
 
-                    <section>
-                        <label>expiry date</label>
-                        <span>{card.expiringDate}</span>
-                    </section>
+                <form>
+                    <div className={"start"}>
+                        <section>
+                            <label>forename</label>
+                            <span>{card.holderForename}</span>
+                        </section >
+
+                        <section>
+                            <label>surname</label>
+                            <span>{card.holderSurname}</span>
+                        </section>
+
+                        <section>
+                            <label>expiry date</label>
+                            <span>{card.expiringDate}</span>
+                        </section>
 
 
-                </div>
+                    </div >
 
-                <div>
-                    <section>
-                        <label>card number</label>
-                        <span>{card.virtualCardNumber}</span>
-                    </section>
-                </div>
-            </form>
+                    <div>
+                        <section>
+                            <label>card number</label>
+                            <span>{card.virtualCardNumber}</span>
+                        </section>
+                    </div>
+                </form >
+
+            )
+            }
         </>
     );
 

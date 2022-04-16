@@ -21,14 +21,17 @@ export function TokenInspect() {
 
     useEffect(() => {
         setLoading(true)
-        fetch(`/tokens/${id}`, {
-            headers: {
-                Accept: "application/json",
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => setToken(data));
-        setLoading(false)
+        const fetchData = async () => {
+            await fetch(`/tokens/${id}`, {
+                headers: {
+                    Accept: "application/json",
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => setToken(data));
+            setLoading(false)
+        }
+        fetchData();
     }, []);
 
 
@@ -48,32 +51,35 @@ export function TokenInspect() {
 
 
             </header>
+            {loading ? (
+                <div className={"spinner"}></div>
+            ) :
+                (<form>
 
-            <form>
+                    <div className={"start"}>
 
-                <div className={"start"}>
+                        <section>
+                            <label>username</label>
+                            <span>{token.serviceOrUserName}</span>
+                        </section >
 
-                    <section>
-                        <label>username</label>
-                        <span>{token.serviceOrUserName}</span>
-                    </section>
-
-                    <section>
-                        <label>password</label>
-                        <span>{token.serviceOrUserPassword} </span>
-                    </section>
+                        <section>
+                            <label>password</label>
+                            <span>{token.serviceOrUserPassword} </span>
+                        </section>
 
 
-                </div>
+                    </div >
 
-                <div className={"end"}>
-                    <section>
-                        <label> token number</label>
-                        <span>{token.tokenNumber}</span>
-                    </section>
-                </div>
+                    <div className={"end"}>
+                        <section>
+                            <label> token number</label>
+                            <span>{token.tokenNumber}</span>
+                        </section>
+                    </div>
 
-            </form>
+                </form >)}
+
 
         </>
     );

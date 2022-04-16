@@ -1,4 +1,4 @@
-import { setDefaultResultOrder } from 'dns';
+
 import { ChevronRight, Plus, Search, X } from 'lucide-react';
 import React, { createElement, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom';
@@ -57,15 +57,16 @@ export function VirtualCards() {
 
             <input
                 ref={inputRef}
-                type="text"
+                type="search"
+                autoFocus
                 value={search}
-                placeholder="search by surname"
+                placeholder="search..."
                 onChange={(e) => setSearch(e.target.value)}
 
             />
-            <X size={20} color="black"
+            {/* <X size={20} color="black"
                 onClick={() => setClicked(false)}
-            />
+            /> */}
         </div>
 
     let SearchIcon =
@@ -101,10 +102,10 @@ export function VirtualCards() {
                         </th>
                     </tr>
                 </thead>
+                <caption>  <hr />
+                </caption>
 
-                <hr />
-
-                {loading ? (<div className={'spinner'}></div>) : (
+                {loading ? (<caption className={'spinner'}></caption>) : (
                     <tbody>
                         {cards.filter(card => card.holderSurname.toLowerCase().includes(search.toLowerCase())).map((card) => {
                             return (
