@@ -5,7 +5,7 @@ card-users {
 
   & header {
     width: 100%;
-    margin: 2em 0em;
+    margin: 1.3em 0em;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -47,7 +47,7 @@ card-users {
       background: rgb(236, 233, 233);
     }
     & hr {
-      height: 0px;
+      height: 1px;
       width: 99%;
     }
     & .button-arrow {
@@ -78,8 +78,6 @@ card-users {
 
 .search-box {
   position: fixed;
-  display: flex;
-  align-items: center;
   top: 5%;
   left: 40%;
   transition: 0.2s ease-all;
@@ -89,6 +87,7 @@ card-users {
     width: 22em;
     border: 1px solid gray;
     box-shadow: 0 0 7px black;
+    border-radius: 30px;
   }
   & input:focus {
     border: none;
@@ -96,12 +95,7 @@ card-users {
   }
   & .close-button {
     position: absolute;
-    right: -13px;
-    top: -12px;
     cursor: pointer;
-  }
-  & .close-button:hover {
-    color: red;
   }
 }
 

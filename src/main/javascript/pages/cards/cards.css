@@ -4,10 +4,10 @@ card-cards {
   text-align: left;
 
   & header {
-    margin: 2em 0em;
+    margin: 1.3em 0em;
     display: flex;
-    /* flex-wrap: wrap; */
-    /* align-items: center; */
+    flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
     & a {
       color: black;
@@ -35,7 +35,6 @@ card-cards {
     }
     & th {
       color: rgb(161, 157, 157);
-      /* text-align: left; */
     }
     & td {
       text-align: left;
@@ -64,23 +63,6 @@ card-cards {
     }
   }
 }
-
-.spinner::before {
-  animation: 1.5s linear infinite spinner;
-  animation-play-state: inherit;
-  border: solid 5px lightgray;
-  border-bottom-color: gray;
-  border-radius: 50%;
-  content: "";
-  height: 3em;
-  width: 3em;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate3d(-50%, -50%, 0);
-  will-change: transform;
-}
-
 .search-box {
   position: fixed;
   top: 5%;
@@ -97,6 +79,31 @@ card-cards {
     border: none;
     box-shadow: 0 0 100px 1000px rgba(0, 0, 0, 0.3);
   }
+  & .close-button {
+    position: absolute;
+    right: -13px;
+    top: -12px;
+    cursor: pointer;
+  }
+  & .close-button:hover {
+    color: red;
+  }
+}
+
+.spinner::before {
+  animation: 1.5s linear infinite spinner;
+  animation-play-state: inherit;
+  border: solid 5px lightgray;
+  border-bottom-color: gray;
+  border-radius: 50%;
+  content: "";
+  height: 3em;
+  width: 3em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform;
 }
 
 @keyframes spinner {

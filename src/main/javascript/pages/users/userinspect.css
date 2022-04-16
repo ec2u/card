@@ -4,7 +4,7 @@ card-inspectuser {
   align-items: stretch;
 
   & header {
-    margin: 2em 0em;
+    margin: 1.3em 0em;
     width: 100%;
     display: flex;
     flex-wrap: wrap;
@@ -27,6 +27,22 @@ card-inspectuser {
       transform: translateX(-3px);
     }
   }
+  & .spinner::before {
+    animation: 1.5s linear infinite spinner;
+    animation-play-state: inherit;
+    border: solid 5px lightgray;
+    border-bottom-color: gray;
+    border-radius: 50%;
+    content: "";
+    height: 3em;
+    width: 3em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    will-change: transform;
+  }
+
   & form {
     width: 100%;
     display: flex;
@@ -83,5 +99,14 @@ card-inspectuser {
       display: flex;
       flex-direction: column;
     }
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: translate3d(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
   }
 }
