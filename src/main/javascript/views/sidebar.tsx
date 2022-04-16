@@ -6,7 +6,7 @@ import "./sidebar.css";
 
 
 
-export const Cardsidebar = (props: any) => {
+export const CarSidebar = (props: any) => {
 
 
   const [sidebar, setSidebar] = useState<boolean>(false);
