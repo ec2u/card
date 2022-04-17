@@ -12,13 +12,13 @@ interface Adduser {
 }
 
 
-export function Adduser() {
+export function AddUser() {
   const [adduser, setAdduser] = useState({} as Adduser);
   const [disable, setDisable] = useState<Boolean>(false);
   const [loading, setLoading] = useState<Boolean>(false);
   const navigate = useNavigate();
 
-  const userdata = {
+  const userData = {
     admin: adduser.admin,
     forename: adduser.forename,
     surname: adduser.surname,
@@ -55,7 +55,7 @@ export function Adduser() {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(userdata),
+        body: JSON.stringify(userData),
       })
         .then(() => {
           setLoading(false)

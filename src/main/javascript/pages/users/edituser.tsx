@@ -17,7 +17,7 @@ interface User {
 
 
 
-export function Edituser() {
+export function EditUser() {
   const [updateuser, setUpdateuser] = useState<User>({
     admin: false,
     label: '',
@@ -136,96 +136,97 @@ export function Edituser() {
 
 
 
-  return createElement('card-edituser', {}, <>
+  return createElement('card-edituser', {},
+    <>
 
-    <header>
+      <header>
 
-      <section>
-        <a href="/users/" className={"users-link"}>Users &#8250;</a>
-        <a href={`${updateuser.id}`}>{updateuser.label}</a>
-      </section>
-
-      <section>
-        <a>{clicked ? showCheck : showTrash}</a>
-        <a href={`${updateuser.id}`} title='Close'>
-          <X size={46} className={"close-button"} />
-        </a>
-      </section>
-
-
-    </header>
-
-    <form >
-
-      <div className={'start'} >
         <section>
-          <label>forename</label>
-          <input
-            required
-            type='text'
-            name="forename"
-            className="forename"
-            value={updateuser.forename}
-            onChange={handleChange}
-            onFocus={handleonFocus}
-          />
+          <a href="/users/" className={"users-link"}>Users &#8250;</a>
+          <a href={`${updateuser.id}`}>{updateuser.label}</a>
         </section>
 
         <section>
-          <label>surname</label>
-          <input
-            required
-            type='text'
-            name="surname"
-            className="surname"
-            value={updateuser.surname}
-            onChange={handleChange}
-            onFocus={handleonFocus}
-          />
+          <a>{clicked ? showCheck : showTrash}</a>
+          <a href={`${updateuser.id}`} title='Close'>
+            <X size={46} className={"close-button"} />
+          </a>
         </section>
 
-        <section>
-          <label>email</label>
-          <input
-            required
-            type='email'
-            className="email"
-            name="email"
-            value={updateuser.email}
-            onChange={handleChange}
-            onFocus={handleonFocus}
+
+      </header>
+
+      <form >
+
+        <div className={'start'} >
+          <section>
+            <label>forename</label>
+            <input
+              required
+              type='text'
+              name="forename"
+              className="forename"
+              value={updateuser.forename}
+              onChange={handleChange}
+              onFocus={handleonFocus}
+            />
+          </section>
+
+          <section>
+            <label>surname</label>
+            <input
+              required
+              type='text'
+              name="surname"
+              className="surname"
+              value={updateuser.surname}
+              onChange={handleChange}
+              onFocus={handleonFocus}
+            />
+          </section>
+
+          <section>
+            <label>email</label>
+            <input
+              required
+              type='email'
+              className="email"
+              name="email"
+              value={updateuser.email}
+              onChange={handleChange}
+              onFocus={handleonFocus}
+            />
+          </section>
+
+        </div>
+
+        <div className={"end"}>
+          <section>
+            <label className="label-admin"> admin</label>
+            <input
+              className="checkbox"
+              name='admin'
+              type="checkbox"
+              checked={updateuser.admin}
+              onChange={handleChange}
+              onFocus={handleonFocus}
+            />
+          </section>
+        </div>
+
+
+      </form>
+
+      {
+        dialog && (
+          <Deletedialog
+            handleyes={() => handleDelete(updateuser.id)}
+            handleno={Showpopup}
           />
-        </section>
+        )
+      }
 
-      </div>
-
-      <div className={"end"}>
-        <section>
-          <label className="label-admin"> admin</label>
-          <input
-            className="checkbox"
-            name='admin'
-            type="checkbox"
-            checked={updateuser.admin}
-            onChange={handleChange}
-            onFocus={handleonFocus}
-          />
-        </section>
-      </div>
-
-
-    </form>
-
-    {
-      dialog && (
-        <Deletedialog
-          handleyes={() => handleDelete(updateuser.id)}
-          handleno={Showpopup}
-        />
-      )
-    }
-
-  </>
+    </>
   );
 
 

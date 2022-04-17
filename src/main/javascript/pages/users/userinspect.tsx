@@ -14,7 +14,7 @@ interface User {
 
 
 
-export function Inspect() {
+export function InspectUser() {
   const [user, setUser] = useState<User>({} as User);
   const [loading, setLoading] = useState<Boolean>(false)
   const { id } = useParams();

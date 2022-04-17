@@ -14,13 +14,13 @@ interface Token {
 }
 
 
-export function Addtoken() {
+export function AddToken() {
     const [addtoken, setAddtoken] = useState({} as Token);
     const [disable, setDisable] = useState<Boolean>(false)
     const [loading, setLoading] = useState<Boolean>(false)
     const navigate = useNavigate();
 
-    const tokendata = {
+    const tokenData = {
         serviceOrUserName: addtoken.serviceOrUserName,
         serviceOrUserPassword: addtoken.serviceOrUserPassword,
         tokenNumber: addtoken.tokenNumber,
@@ -55,12 +55,13 @@ export function Addtoken() {
                     Accept: "application/json",
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(tokendata),
+                body: JSON.stringify(tokenData),
             })
-                .then((response) => response.json())
-                .catch(error => console.warn('error:', error));
-
-            navigate('/tokens/');
+                .then(() => {
+                    setLoading(false)
+                    navigate('/tokens/');
+                })
+                .catch(error => console.warn('error:', error))
         }
     }
 
