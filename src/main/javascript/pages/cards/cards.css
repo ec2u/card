@@ -2,11 +2,9 @@ card-cards {
   width: 95.3%;
   display: grid;
   text-align: left;
-  /* align-items: stretch; */
 
   & header {
-    width: 100%;
-    margin: 2em 0em;
+    margin: 1.3em 0em;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -24,6 +22,7 @@ card-cards {
     width: 100%;
     border-collapse: collapse;
     display: grid;
+
     overflow: auto;
 
     & tr {
@@ -36,7 +35,6 @@ card-cards {
     }
     & th {
       color: rgb(161, 157, 157);
-      text-align: left;
     }
     & td {
       text-align: left;
@@ -44,14 +42,51 @@ card-cards {
     & .button-arrow {
       color: black;
     }
+    & .button-arrow:hover {
+      color: orange;
+      transform: translateX(3px);
+    }
+    & .button-search {
+      cursor: pointer;
+    }
+    & .button-search:hover {
+      color: black;
+      transform: translateY(-4px);
+    }
 
     & tr:nth-child(even) {
       background: rgb(236, 233, 233);
     }
     & hr {
-      height: 1px;
+      height: 0px;
       width: 99%;
     }
+  }
+}
+.search-box {
+  position: fixed;
+  top: 5%;
+  left: 40%;
+  transition: 0.2s ease-all;
+
+  & input {
+    padding: 0.6em;
+    width: 22em;
+    border: 1px solid gray;
+    box-shadow: 0 0 7px black;
+  }
+  & input:focus {
+    border: none;
+    box-shadow: 0 0 100px 1000px rgba(0, 0, 0, 0.3);
+  }
+  & .close-button {
+    position: absolute;
+    right: -13px;
+    top: -12px;
+    cursor: pointer;
+  }
+  & .close-button:hover {
+    color: red;
   }
 }
 
@@ -69,24 +104,6 @@ card-cards {
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
   will-change: transform;
-}
-
-.search-box {
-  position: fixed;
-  top: 5%;
-  left: 40%;
-  transition: 0.2s ease-all;
-
-  & input {
-    padding: 0.6em;
-    width: 22em;
-    border: 1px solid gray;
-    box-shadow: 0 0 7px black;
-  }
-  & input:focus {
-    border: none;
-    box-shadow: 0 0 100px 1000px rgba(0, 0, 0, 0.3);
-  }
 }
 
 @keyframes spinner {

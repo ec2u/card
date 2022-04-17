@@ -4,13 +4,12 @@ import { useParams } from "react-router-dom";
 import "./userinspect.css";
 
 interface User {
-  admin: boolean;
-
-  forename: string;
-  surname: string;
-  email: string;
-  id: any;
-  label: string;
+  readonly admin: boolean;
+  readonly forename: string;
+  readonly surname: string;
+  readonly email: string;
+  readonly id: any;
+  readonly label: string;
 }
 
 
@@ -23,14 +22,17 @@ export function Inspect() {
 
   useEffect(() => {
     setLoading(true)
-    fetch(`/users/${id}`, {
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setUser(data));
-    setLoading(false)
+    const fetchData = async () => {
+      await fetch(`/users/${id}`, {
+        headers: {
+          Accept: "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => setUser(data));
+      setLoading(false)
+    }
+    fetchData();
   }, []);
 
 
@@ -39,7 +41,7 @@ export function Inspect() {
       <header>
 
         <section>
-          <a href='/users/'>Users &#62;</a>
+          <a href='/users/' className={"users-link"}>Users &#8250;</a>
           <a>{user.label}</a>
         </section>
 
@@ -47,41 +49,48 @@ export function Inspect() {
           <Edit size={38} className="button-edit" />
         </a>
 
-
-
       </header>
 
-      <form>
+      {loading ? (
+        <div className={"spinner"}></div>
+      ) :
+        (
 
-        <div className={"start"}>
+          <form>
 
-          <section>
-            <label>forename</label>
-            <span>{user.forename}</span>
-          </section>
+            <div className={"start"}>
 
-          <section>
-            <label>surname</label>
-            <span>{user.surname} </span>
-          </section>
+              <section>
+                <label>forename</label>
+                <span>{user.forename}</span>
+              </section >
 
-          <section>
-            <label> email</label>
-            <span>{user.email}</span>
-          </section>
-        </div>
+              <section>
+                <label>surname</label>
+                <span>{user.surname} </span>
+              </section>
 
-        <div className={"end"}>
-          <section>
-            <label>admin</label>
-            <input className="checkbox"
-              type="checkbox"
-              checked={user.admin}
-              disabled />
-          </section>
-        </div>
+              <section>
+                <label> email</label>
+                <span>{user.email}</span>
+              </section>
+            </div >
 
-      </form>
+            <div className={"end"}>
+              <section>
+                <label>admin</label>
+                <input className="checkbox"
+                  type="checkbox"
+                  checked={user.admin}
+                  disabled />
+              </section>
+            </div>
+
+          </form >
+
+        )}
+
+
 
     </>
   );

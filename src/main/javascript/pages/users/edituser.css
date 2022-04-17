@@ -5,7 +5,7 @@ card-edituser {
 
   & header {
     width: 100%;
-    margin: 2em 0em;
+    margin: 1.3em 0em;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -21,6 +21,10 @@ card-edituser {
       text-decoration: none;
       color: black;
       font-size: 1.4em;
+    }
+    & .users-link:hover {
+      color: orange;
+      transform: translateX(-3px);
     }
   }
   & form {
@@ -66,6 +70,9 @@ card-edituser {
   & .check-button:hover {
     transform: translateY(-3px);
     color: green;
+  }
+  & .trash-button {
+    cursor: pointer;
   }
   & .trash-button:hover {
     color: red;

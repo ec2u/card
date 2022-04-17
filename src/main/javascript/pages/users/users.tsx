@@ -1,5 +1,6 @@
 import { ChevronRight, Plus, Search, X } from "lucide-react";
 import React, { createElement, useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import './users.css';
 
 
@@ -38,19 +39,15 @@ export function CardUsers() {
       })
         .then((response) => response.json())
         .then((data) => setUsers(data.contains))
-        .catch((error) => console.warn(error))
+        .catch((error) => console.error(error))
       setLoading(false)
     }
     fetchData();
   }, []);
 
 
-  const handleInput = (e: any) => {
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
-
-    if (e.keyCode === 27) {
-      setClicked(false)
-    }
 
   }
 
@@ -64,9 +61,10 @@ export function CardUsers() {
 
       <input
         ref={inputRef}
+        autoFocus
         type="text"
         value={search}
-        placeholder="search by surname"
+        placeholder="search..."
         onChange={handleInput}
 
 
@@ -81,7 +79,7 @@ export function CardUsers() {
 
 
   let SearchIcon =
-    <div>
+    <div title={"search"}>
       <Search size={28}
         onClick={() => setClicked(true)}
 
@@ -98,7 +96,7 @@ export function CardUsers() {
       <header>
 
         <a> Users </a>
-        <a href='/users/add' title="add">
+        <a href='/users/add' title="nwe user">
           <Plus size={40} className={"button-plus"} />
         </a>
 
@@ -122,11 +120,13 @@ export function CardUsers() {
 
         </thead>
 
-        <hr />
+        <caption >
+          <hr />
+        </caption>
 
         {loading ?
 
-          (<div className="spinner"></div>
+          (<caption className="spinner"></caption>
 
           ) : (
 
@@ -139,7 +139,12 @@ export function CardUsers() {
                     <td>{user.forename}</td>
                     <td>{user.surname}</td>
                     <td>{user.email}</td>
-                    <td><a href={`${user.id}`}><ChevronRight color="black" size={40} /></a></td>
+                    <td>
+                      <Link to={`${user.id}`} title={"inspect"}
+                      >
+                        <ChevronRight size={40} className={"button-arrow"} />
+                      </Link>
+                    </td>
 
                   </tr>
                 );

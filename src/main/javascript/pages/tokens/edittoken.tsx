@@ -2,19 +2,18 @@ import { Check, Trash2, X } from "lucide-react";
 import React, { createElement, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Deletedialog } from "../users/deletedialog";
-import './editcard.css'
+import './edittoken.css'
 
-interface User {
-    holderForename: string;
-    holderSurname: string;
-    expiringDate: Date;
-    virtualCardNumber: number;
-    label: string;
-    id: any;
+interface Token {
+    readonly label: string;
+    readonly serviceOrUserName: string;
+    readonly serviceOrUserPassword: string;
+    readonly id: number;
+    readonly tokenNumber: number;
 }
 
-export function Editcard() {
-    const [updatecard, setUpdatecard] = useState<User>({} as User);
+export function Edittoken() {
+    const [updatetoken, setUpdatetoken] = useState<Token>({} as Token);
     const [dialog, setDialog] = useState<Boolean>(false);
     const [clicked, setClicked] = useState<Boolean>(false);
     const [disable, setDisable] = useState<Boolean>(false);
@@ -24,13 +23,13 @@ export function Editcard() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`/cards/${id}`, {
+        fetch(`/tokens/${id}`, {
             headers: {
                 Accept: "application/json",
             },
         })
             .then((response) => response.json())
-            .then((data) => setUpdatecard(data));
+            .then((data) => setUpdatetoken(data));
     }, []);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,19 +41,18 @@ export function Editcard() {
             setDisable(false)
         }
 
-        setUpdatecard((updatecard) => ({
-            ...updatecard,
+        setUpdatetoken((updatetoken) => ({
+            ...updatetoken,
             [event.target.name]: event.target.value,
         }));
     };
 
-    const userdata = {
-        virtualCardNumber: updatecard.virtualCardNumber,
-        holderForename: updatecard.holderForename,
-        holderSurname: updatecard.holderSurname,
-        expiringDate: updatecard.expiringDate,
-        id: updatecard.id,
-        label: updatecard.label
+    const tokendata = {
+        serviceOrUserName: updatetoken.serviceOrUserName,
+        serviceOrUserPassword: updatetoken.serviceOrUserPassword,
+        tokenNumber: updatetoken.tokenNumber,
+        id: updatetoken.id,
+        label: updatetoken.label
     };
 
 
@@ -70,17 +68,18 @@ export function Editcard() {
         else {
 
             setLoading(true)
-            fetch(`/cards/${id}`, {
+            fetch(`/tokens/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-type": "application/json",
                     Accept: "application/json",
                 },
-                body: JSON.stringify(userdata),
+                body: JSON.stringify(tokendata),
             })
                 .then((response) => response.json())
                 .catch(error => console.warn('error:', error))
-            navigate(`${updatecard.id}`)
+            setLoading(false)
+            navigate(`${updatetoken.id}`)
         }
 
     };
@@ -90,7 +89,7 @@ export function Editcard() {
         fetch(`${id}`, {
             method: "DELETE",
         })
-            .then(data => navigate('/cards/'))
+            .then(data => navigate('/tokens/'))
     };
 
 
@@ -128,17 +127,17 @@ export function Editcard() {
     }
 
 
-    return createElement("card-editcard", {},
+    return createElement("card-edittoken", {},
         <>
             <header>
 
                 <section>
-                    <a href='/cards/' className={"cards-link"}> Cards &#8250;</a>
-                    <a href={`${updatecard.id}`}>{updatecard.label} </a>
+                    <a href='/tokens/' className={"tokens-link"}> Tokens &#8250;</a>
+                    <a href={`${updatetoken.id}`}>{updatetoken.label} </a>
                 </section>
                 <section>
                     <a> {clicked ? showCheck : showTrash}</a>
-                    <a href={`${updatecard.id}`} title='Close'>
+                    <a href={`${updatetoken.id}`} title='Close'>
                         <X size={44} className={"close-button"} />
                     </a>
                 </section>
@@ -150,55 +149,45 @@ export function Editcard() {
                 <div className={"start"}>
 
                     <section>
-                        <label>forename</label>
+                        <label>username</label>
                         <input
                             required
                             type='text'
-                            name="holderForename"
-                            className="forename"
-                            value={updatecard.holderForename}
+                            name="serviceOrUserName"
+                            className="username"
+                            value={updatetoken.serviceOrUserName}
                             onChange={handleChange}
                             onFocus={handleonFocus}
                         />
                     </section>
 
                     <section>
-                        <label>surname</label>
+                        <label>password</label>
                         <input
                             required
                             type='text'
-                            name="holderSurname"
-                            className="surname"
-                            value={updatecard.holderSurname}
+                            name="serviceOrUserPassword"
+                            className="password"
+                            value={updatetoken.serviceOrUserPassword}
                             onChange={handleChange}
                             onFocus={handleonFocus}
                         />
                     </section>
 
-                    <section>
-                        <label>expiry date</label>
-                        <input
-                            required
-                            type='date'
-                            className="date"
-                            name="expiringDate"
-                            value={updatecard.expiringDate}
-                            onChange={handleChange}
-                            onFocus={handleonFocus}
-                        />
-                    </section>
+
 
                 </div>
 
                 <div>
 
                     <section>
-                        <label>card number</label>
-                        <input className="number"
+                        <label>token number</label>
+                        <input
                             required
-                            name='virtualCardNumber'
-                            type="text"
-                            value={updatecard.virtualCardNumber}
+                            type='text'
+                            className="tokennumber"
+                            name="tokenNumber"
+                            value={updatetoken.tokenNumber}
                             onChange={handleChange}
                             onFocus={handleonFocus}
                         />
@@ -210,7 +199,7 @@ export function Editcard() {
 
             {dialog && (
                 <Deletedialog
-                    handleyes={() => handleDelete(updatecard.id)}
+                    handleyes={() => handleDelete(updatetoken.id)}
                     handleno={Showpopup}
                 />
             )}

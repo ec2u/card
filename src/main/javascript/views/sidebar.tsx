@@ -5,8 +5,8 @@ import logo from "../index.svg";
 import "./sidebar.css";
 
 
-3
-export const Cardsidebar = (props: any) => {
+
+export const CardSidebar = (props: any) => {
 
 
   const [sidebar, setSidebar] = useState<boolean>(false);

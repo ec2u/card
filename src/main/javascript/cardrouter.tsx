@@ -4,7 +4,7 @@ import "./index.css";
 
 import { CardUser } from "./pages/user/user";
 import { CardUsers } from "./pages/users/users";
-import { Cardsidebar } from "./views/sidebar";
+import { CardSidebar } from "./views/sidebar";
 import { Inspect } from "./pages/users/userinspect";
 import { Adduser } from "./pages/users/adduser";
 import { Edituser } from "./pages/users/edituser";
@@ -12,6 +12,11 @@ import { VirtualCards } from "./pages/cards/cards";
 import { CardInspect } from "./pages/cards/cardinspect";
 import { Editcard } from "./pages/cards/editcard";
 import { Addcard } from "./pages/cards/addcard";
+import { CardTokens } from "./pages/tokens/tokens";
+import { TokenInspect } from "./pages/tokens/inspecttoken";
+import { Edittoken } from "./pages/tokens/edittoken";
+import { Addtoken } from "./pages/tokens/addtoken";
+
 
 
 export function CardRoutes() {
@@ -20,7 +25,7 @@ export function CardRoutes() {
   return (
     <div>
       <BrowserRouter>
-        <Cardsidebar
+        <CardSidebar
           onCollapse={(sidebar: boolean) => {
             setSidebar(sidebar);
           }}
@@ -44,7 +49,10 @@ export function CardRoutes() {
 
 
 
-            {/*<Route path="/tokens/" element={<Tokens/>}/>*/}
+            <Route path="/tokens/" element={<CardTokens />} />
+            <Route path="/tokens/:id/" element={<TokenInspect />} />
+            <Route path="/edit/tokens/:id/" element={<Edittoken />} />
+            <Route path="/tokens/add" element={<Addtoken />} />
           </Routes>
         </div>
       </BrowserRouter>

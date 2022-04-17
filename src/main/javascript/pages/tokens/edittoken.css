@@ -1,4 +1,4 @@
-card-addcard {
+card-edittoken {
   width: 95%;
   display: grid;
   align-items: stretch;
@@ -13,38 +13,38 @@ card-addcard {
 
     & section {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      flex-flow: wrap;
       gap: 0.5em;
-    }
-    & a {
-      text-decoration: none;
-      color: black;
-      font-size: 1.4em;
-    }
-    & .cards-link:hover {
-      color: orange;
-      transform: translateX(-3px);
+
+      & a {
+        text-decoration: none;
+        color: black;
+        font-size: 1.4em;
+      }
+      & .tokens-link:hover {
+        color: orange;
+        transform: translateX(-3px);
+      }
     }
   }
   & form {
     width: 100%;
     display: flex;
-    text-align: left;
     justify-content: space-between;
+    text-align: left;
     overflow: auto;
 
     & .start {
       width: 50%;
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
+      flex-wrap: wrap;
     }
     & section {
       display: flex;
-      flex-flow: wrap;
       flex-direction: column;
-
+      flex-wrap: wrap;
       & label {
         color: rgb(161, 157, 157);
       }
@@ -55,17 +55,26 @@ card-addcard {
         border-radius: 0.3em;
         font-size: 0.9em;
       }
+      & input:required:invalid {
+        border: 2px solid red;
+      }
     }
   }
-  & .button-check {
+  & .check-button {
     cursor: pointer;
-    font-size: 20px;
   }
-  & .button-check:hover {
+  & .check-button:hover {
     color: green;
     transform: translateY(-3px);
   }
-  & .button-close:hover {
+  & .close-button:hover {
+    color: red;
+    transform: translateY(-3px);
+  }
+  & .trash-button {
+    cursor: pointer;
+  }
+  & .trash-button:hover {
     color: red;
     transform: translateY(-3px);
   }

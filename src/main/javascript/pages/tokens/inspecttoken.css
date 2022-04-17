@@ -1,4 +1,4 @@
-card-inspectuser {
+card-inspecttoken {
   width: 95%;
   display: grid;
   align-items: stretch;
@@ -22,7 +22,7 @@ card-inspectuser {
       color: black;
       font-size: 1.4em;
     }
-    & .users-link:hover {
+    & .tokens-link:hover {
       color: orange;
       transform: translateX(-3px);
     }
@@ -42,7 +42,6 @@ card-inspectuser {
     transform: translate3d(-50%, -50%, 0);
     will-change: transform;
   }
-
   & form {
     width: 100%;
     display: flex;
@@ -51,7 +50,7 @@ card-inspectuser {
     overflow-x: auto;
 
     & .start {
-      width: 60%;
+      width: 30%;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;

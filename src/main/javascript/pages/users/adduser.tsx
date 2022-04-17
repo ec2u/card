@@ -25,31 +25,45 @@ export function Adduser() {
     email: adduser.email,
   };
 
-
-  const handleSubmit = async () => {
-    setLoading(true)
-    await fetch("/users/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userdata),
-    })
-      .then((response) => response.json())
-      .catch(error => console.warn('error:', error));
-    navigate('/users')
-
-  };
-
-
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
+
+
+    if (value === "") {
+      setDisable(true)
+    }
+    else {
+      setDisable(false)
+    }
+
     setAdduser((adduser) => ({
       ...adduser,
       [e.target.name]: value,
-    }));
+    }))
+  }
+
+  const handleSubmit = async () => {
+
+    if (disable) {
+
+    } else {
+      setLoading(true)
+      await fetch("/users/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userdata),
+      })
+        .then(() => {
+          setLoading(false)
+          navigate('/users')
+        })
+        .catch(error => console.error('error:', error));
+    }
+
   };
 
 
@@ -58,7 +72,8 @@ export function Adduser() {
     <>
       <header>
         <section>
-          <a>Add user</a>
+          <a href="/cards/" className={"users-link"} >Users &#8250;</a>
+          <a>New user</a>
         </section>
 
         <section>

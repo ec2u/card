@@ -1,4 +1,4 @@
-card-addcard {
+card-addtoken {
   width: 95%;
   display: grid;
   align-items: stretch;
@@ -22,7 +22,7 @@ card-addcard {
       color: black;
       font-size: 1.4em;
     }
-    & .cards-link:hover {
+    & .tokens-link:hover {
       color: orange;
       transform: translateX(-3px);
     }
@@ -59,7 +59,6 @@ card-addcard {
   }
   & .button-check {
     cursor: pointer;
-    font-size: 20px;
   }
   & .button-check:hover {
     color: green;

@@ -1,4 +1,4 @@
-import { setDefaultResultOrder } from 'dns';
+
 import { ChevronRight, Plus, Search, X } from 'lucide-react';
 import React, { createElement, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom';
@@ -57,21 +57,22 @@ export function VirtualCards() {
 
             <input
                 ref={inputRef}
-                type="text"
+                type="search"
+                autoFocus
                 value={search}
-                placeholder="search by surname"
+                placeholder="search..."
                 onChange={(e) => setSearch(e.target.value)}
 
             />
-            <X size={20} color="black"
+            {/* <X size={20} color="black"
                 onClick={() => setClicked(false)}
-            />
+            /> */}
         </div>
 
     let SearchIcon =
-        <div>
-            <Search size={28} color="black"
-                className='button-search'
+        <div title={"search"}>
+            <Search size={28}
+                className={'button-search'}
                 onClick={() => setClicked(true)}
                 onBlur={() => setClicked(false)}
             />
@@ -82,7 +83,7 @@ export function VirtualCards() {
             <header>
 
                 <a>Cards</a>
-                <a title="addcard" href='/cards/add'>
+                <a title="newcard" href='/cards/add'>
                     <Plus size={38} className={"button-plus"} />
                 </a>
 
@@ -101,10 +102,10 @@ export function VirtualCards() {
                         </th>
                     </tr>
                 </thead>
+                <caption>  <hr />
+                </caption>
 
-                <hr />
-
-                {loading ? (<div className='spinner'></div>) : (
+                {loading ? (<caption className={'spinner'}></caption>) : (
                     <tbody>
                         {cards.filter(card => card.holderSurname.toLowerCase().includes(search.toLowerCase())).map((card) => {
                             return (
@@ -115,7 +116,7 @@ export function VirtualCards() {
                                     <td>{card.virtualCardNumber}</td>
 
                                     <td>
-                                        <Link to={`${card.id}`}>
+                                        <Link to={`${card.id}`} title="inspect">
                                             <ChevronRight size={40}
                                                 className={"button-arrow"} />
                                         </Link>
