@@ -14,7 +14,7 @@ interface Card {
 }
 
 
-export function Addcard() {
+export function AddCard() {
     const [addcard, setAddcard] = useState({} as Card);
     const [disable, setDisable] = useState<Boolean>(false);
     const [loading, setLoading] = useState<Boolean>(false);

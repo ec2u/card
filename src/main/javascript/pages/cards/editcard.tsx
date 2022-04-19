@@ -13,7 +13,7 @@ interface User {
     id: any;
 }
 
-export function Editcard() {
+export function EditCard() {
     const [updatecard, setUpdatecard] = useState<User>({} as User);
     const [dialog, setDialog] = useState<Boolean>(false);
     const [clicked, setClicked] = useState<Boolean>(false);
@@ -59,18 +59,14 @@ export function Editcard() {
 
 
 
-    const handleEdit = () => {
-
-
+    const handleEdit = async () => {
         if (disable) {
 
-
         }
-
         else {
 
             setLoading(true)
-            fetch(`/cards/${id}`, {
+            await fetch(`/cards/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-type": "application/json",
@@ -78,9 +74,11 @@ export function Editcard() {
                 },
                 body: JSON.stringify(userdata),
             })
-                .then((response) => response.json())
-                .catch(error => console.warn('error:', error))
-            navigate(`${updatecard.id}`)
+                .then(() => {
+                    setLoading(false)
+                    navigate(`${updatecard.id}`)
+                })
+                .catch(error => console.error('error:', error))
         }
 
     };
@@ -102,13 +100,13 @@ export function Editcard() {
 
     let showCheck =
 
-        < a title='Update' >
+        <div title='Update' >
             {loading ? (<div className={"spinner"}></div>) :
                 (<Check size={40} className={'check-button'}
                     onClick={handleEdit}
                     color={disable ? 'lightgray' : 'black'}
                 />)}
-        </a >
+        </div >
 
 
     let showTrash =

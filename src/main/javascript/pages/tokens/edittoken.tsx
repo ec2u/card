@@ -12,7 +12,7 @@ interface Token {
     readonly tokenNumber: number;
 }
 
-export function Edittoken() {
+export function EditToken() {
     const [updatetoken, setUpdatetoken] = useState<Token>({} as Token);
     const [dialog, setDialog] = useState<Boolean>(false);
     const [clicked, setClicked] = useState<Boolean>(false);
@@ -47,7 +47,7 @@ export function Edittoken() {
         }));
     };
 
-    const tokendata = {
+    const tokenData = {
         serviceOrUserName: updatetoken.serviceOrUserName,
         serviceOrUserPassword: updatetoken.serviceOrUserPassword,
         tokenNumber: updatetoken.tokenNumber,
@@ -74,12 +74,14 @@ export function Edittoken() {
                     "Content-type": "application/json",
                     Accept: "application/json",
                 },
-                body: JSON.stringify(tokendata),
+                body: JSON.stringify(tokenData),
             })
-                .then((response) => response.json())
+                .then(() => {
+                    setLoading(false)
+                    navigate(`${updatetoken.id}`)
+                })
                 .catch(error => console.warn('error:', error))
-            setLoading(false)
-            navigate(`${updatetoken.id}`)
+
         }
 
     };
@@ -101,13 +103,13 @@ export function Edittoken() {
 
     let showCheck =
 
-        < a title='Update' >
+        < div title='Update' >
             {loading ? (<div className={"spinner"}></div>) :
                 (<Check size={40} className={'check-button'}
                     onClick={handleEdit}
                     color={disable ? 'lightgray' : 'black'}
                 />)}
-        </a >
+        </div >
 
 
     let showTrash =
