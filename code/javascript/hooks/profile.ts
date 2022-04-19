@@ -20,7 +20,11 @@ import QRCode from "qrcode";
 import { createContext, createElement, ReactNode, useContext, useEffect } from "react";
 
 
-const JWTPattern=/^(?:[-\w]+\.){2}[-\w]+$/;
+const api="/profile";
+const sso="/saml/sso";
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const Context=createContext<[undefined | Profile, (action?: null) => void]>([undefined, () => {}]);
 
@@ -29,17 +33,8 @@ const Context=createContext<[undefined | Profile, (action?: null) => void]>([und
 
 export interface Profile {
 
-    readonly info: Info;
-
     readonly user?: User;
     readonly cards?: Card[];
-
-}
-
-export interface Info {
-
-    readonly version: string;
-    readonly instant: string;
 
 }
 
@@ -76,6 +71,7 @@ export interface Card {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 export function CardProfile({
 
     children
@@ -91,51 +87,42 @@ export function CardProfile({
 
     useEffect(() => {
 
-        // look in the query string for an auth token forwarded by the SSO gateway
+        if ( !profile ) {
 
-        const token=[location.search.substring(1)].filter(query => query.match(JWTPattern))[0];
+            fetch(api, {
 
-        queueMicrotask(() => { // clear the query string
+                headers: { Accept: "application/json" }
 
-            history.replaceState(history.state, "", location.href.replace(/\?[^#]*/, ""));
-
-        });
-
-        if ( !profile || token ) {
-
-            fetch("/v1/", {
-
-                headers: {
-                    Accept: "application/json",
-                    ...(token ? { Authorization: `Bearer ${token}` } : {})
-                }
-
-            }).then(response => response.json().then((profile: Profile) => {
+            }).then(response => {
 
                 if ( response.ok ) {
 
-                    if ( profile.cards ) { // encode card.test URL into a QR data url
+                    response.json().then((profile: Profile) => {
 
-                        Promise.all(profile.cards.map(card => {
+                        if ( profile.cards ) { // encode card.test URL into a QR data url
 
-                            return QRCode.toDataURL(card.test, {
+                            Promise.all(profile.cards.map(card => {
 
-                                errorCorrectionLevel: "M",
-                                margin: 0
+                                return QRCode.toDataURL(card.test, {
 
-                            }).then(test => ({ ...card, test }));
+                                    errorCorrectionLevel: "M",
+                                    margin: 0
 
-                        })).then(cards => setProfile({ ...profile, cards }));
+                                }).then(test => ({ ...card, test }));
 
-                    } else {
+                            })).then(cards => setProfile({ ...profile, cards }));
 
-                        setProfile(profile);
+                        } else {
 
-                    }
+                            setProfile(profile);
+
+                        }
+
+                    });
 
                 } else if ( response.status === 401 ) {
 
-                    setProfile(profile);
+                    setProfile({});
 
                 } else {
 
@@ -143,8 +130,7 @@ export function CardProfile({
 
                 }
 
-
-            }));
+            });
 
         }
 
@@ -152,11 +138,11 @@ export function CardProfile({
 
 
     function login() {
-        location.replace(`/saml/sso?target=${encodeURIComponent(location.href)}&hei=${"unipv.it"}`); // !!! select from profile
+        location.replace(`${sso}?target=${encodeURIComponent(location.href)}&hei=${"unipv.it"}`); // !!! select from profile
     }
 
     function logout() {
-        setProfile(profile?.info ? { info: profile.info } : undefined);
+        setProfile(undefined);
     }
 
 

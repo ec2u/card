@@ -3,13 +3,13 @@
         "api": "https://…",
         "tst": "https://…"
     },
-    "tenants": [
-        {
+    "tenants": {
+        "unipv.it": {
             "pic": 1234567890,
             "schac": "unipv.it",
             "home": "https://www.unipv.it/",
             "logo": "data:…",
             "esc-key": "1234567890"
         }
-    ]
+    }
 }

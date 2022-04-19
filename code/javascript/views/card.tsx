@@ -46,6 +46,7 @@ export function CardCard() {
     const [profile, setProfile]=useProfile();
     const [index, setIndex]=useState(0); // the index of the current profile card
 
+    const card=useRef<HTMLElement>(null);
     const data=useRef<HTMLDListElement>(null);
 
 
@@ -70,6 +71,8 @@ export function CardCard() {
     useEffect(() => {
 
         fit();
+
+        card.current?.scroll(0, 0); // ;( hide controls
 
     });
 
@@ -99,7 +102,11 @@ export function CardCard() {
     }
 
 
-    return createElement("card-card", {}, <>
+    return createElement("card-card", {
+
+        ref: card
+
+    }, <>
 
         <nav>
 

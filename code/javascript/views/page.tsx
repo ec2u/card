@@ -20,7 +20,7 @@ import { headingRank } from "hast-util-heading-rank";
 import { toString } from "hast-util-to-string";
 import "highlight.js/styles/github.css";
 import { Menu, RefreshCw, X } from "lucide-react";
-import React, { createElement, useEffect, useRef, useState } from "react";
+import React, { createElement, useEffect, useState } from "react";
 import ReactMarkdown, { uriTransformer } from "react-markdown";
 import { NavLink, useLocation } from "react-router-dom";
 import rehypeHighlight from "rehype-highlight";
@@ -61,14 +61,15 @@ const page=Object.freeze({
 
 export function CardPage() {
 
+    const location=useLocation();
     const [menu, setMenu]=useState(false);
 
     const [status, setStatus]=useState<number>();
     const [content, setContent]=useState<string>();
 
 
-    const path=useLocation().pathname;
-    const main=useRef<HTMLElement>(null);
+    const path=location.pathname;
+    const hash=location.hash;
 
 
     useEffect(() => {
@@ -87,18 +88,18 @@ export function CardPage() {
 
                 }))
 
+                .then(() => {
+
+                    document.getElementById(hash.substring(1))?.scrollIntoView(); // scroll to anchor
+
+                })
+
                 .catch(() => {});
 
         }
 
     }, [path]);
 
-
-    useEffect(() => {
-
-        main.current?.scroll(0, 0);
-
-    });
 
 
     return createElement("card-page", {
@@ -154,7 +155,7 @@ export function CardPage() {
 
         </nav>
 
-        <main ref={main} {...(!menu ? { className: "active" } : {})}>
+        <main {...(!menu ? { className: "active" } : {})}>
 
             <header>{content ? content.match(/^title:\s*(.*)$/m)?.[1]
                 : status === undefined ? <RefreshCw/>
