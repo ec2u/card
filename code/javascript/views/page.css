@@ -49,10 +49,12 @@ card-page {
 
         & > footer {
 
+            margin-top: auto;
+
             padding-top: 2.5em;
             padding-bottom: 0.5em;
 
-            font-size: 0.75em;
+            font-size: 0.9em;
             color: #CCC;
 
         }
@@ -173,10 +175,6 @@ card-page {
 
             }
 
-        }
-
-        & > section {
-            flex-grow: 1;
         }
 
     }

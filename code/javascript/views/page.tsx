@@ -37,7 +37,7 @@ import "./page.css";
  */
 const page=Object.freeze({
 
-    home: "https://www.ec2u.eu/",
+    home: "https://www.ec2u.eu/", // !!!
 
     /**
      * The URL of the page icon as read from the `<link rel="icon">` HTML head tag.
@@ -52,7 +52,9 @@ const page=Object.freeze({
     /**
      * The page copyright as read from the `<meta name="copyright">` HTML head tag.
      */
-    copy: (document.querySelector("meta[name=copyright]") as HTMLMetaElement)?.content || ""
+    copy: (document.querySelector("meta[name=copyright]") as HTMLMetaElement)?.content || "",
+
+    meta: `v${import.meta.env.card_version}+${import.meta.env.card_instant.substring(0, 10).replace(/-/g, "")}`
 
 });
 
@@ -133,8 +135,6 @@ export function CardPage() {
                 <NavLink to={"/privacy"}>Privacy</NavLink>
                 <NavLink to={"/contacts"}>Contacts</NavLink>
 
-                {/*{<footer>{meta}</footer>}*/}
-
 
             </section>
 
@@ -152,6 +152,8 @@ export function CardPage() {
                 }</ReactMarkdown>
 
             }</section>
+
+            <footer>{page.meta}</footer>
 
         </nav>
 
