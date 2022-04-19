@@ -76,14 +76,14 @@ export function CardPage() {
         setStatus(undefined);
         setContent(undefined);
 
-        if ( path.match(/^\/([-.\w]+\/)*([-.\w]*)$/) ) { // path is route
+        if ( path.match(/^\/([-\w]+\/)*([-\w]*)$/) ) { // path is route
 
             fetch(`${path}${path.endsWith("/") ? "index.md" : ".md"}`)
 
                 .then(response => response.text().then(content => {
 
                     setStatus(response.status);
-                    setContent(content);
+                    setContent(response.ok ? content : undefined);
 
                 }))
 
