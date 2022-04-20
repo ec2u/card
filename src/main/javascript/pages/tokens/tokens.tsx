@@ -56,36 +56,10 @@ export function CardTokens() {
 
     const inputRef = useRef<HTMLInputElement>(null);
 
-    let searchInput =
-        <div className={"search-box"}
-            onSubmit={(e) => inputRef.current?.blur()
-            }
-        >
-
-            <input
-                ref={inputRef}
-                autoFocus
-                type="search"
-                value={search}
-                placeholder="search..."
-                onChange={handleInput}
-
-
-            />
-            <X size={28}
-                className={"close-button"}
-                onClick={() => setClicked(false)}
-            />
-
-        </div>
-
-
-
     let SearchIcon =
         <div title={"search"}>
             <Search size={28}
                 onClick={() => setClicked(true)}
-
                 className={"search-button"}
             />
         </div>
@@ -105,7 +79,7 @@ export function CardTokens() {
 
             </header>
 
-            <table>
+            <table onBlur={() => setClicked(false)}>
 
                 <thead>
 
@@ -115,7 +89,7 @@ export function CardTokens() {
                         <th>password</th>
                         <th>token number</th>
                         <th>
-                            {clicked ? searchInput : SearchIcon}
+                            {SearchIcon}
 
                         </th>
 
@@ -123,7 +97,18 @@ export function CardTokens() {
 
                 </thead>
                 <caption><hr /></caption>
-
+                <caption>
+                    {clicked ? (
+                        <div className={"search-fields"}>
+                            <input />
+                            <input />
+                            <X size={28}
+                                className={"close-button"}
+                                onClick={() => setClicked(false)}
+                            />
+                        </div>
+                    ) : ("")}
+                </caption>
 
                 {loading ?
 

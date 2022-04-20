@@ -29,7 +29,6 @@ export function CardUsers() {
 
   useEffect(() => {
 
-
     setLoading(true)
     const fetchData = async () => {
       await fetch("/users/", {
@@ -103,30 +102,45 @@ export function CardUsers() {
       </header>
 
       <table>
-
         <thead>
-
           <tr>
 
             <th>forename</th>
             <th>surname</th>
             <th>email</th>
             <th>
-              {clicked ? searchInput : SearchIcon}
-
+              {SearchIcon}
             </th>
 
           </tr>
-
         </thead>
 
-        <caption >
-          <hr />
+        <caption > <hr /> </caption>
+
+        <caption>
+
+          {/* when search fields are active... */}
+          {clicked ? (
+            <div className={"search-fields"}>
+              <input />
+              <input />
+              <X size={28}
+                className={"close-button"}
+                onClick={() => setClicked(false)}
+              />
+            </div>
+          ) : ("")}
+
         </caption>
 
         {loading ?
 
-          (<caption className="spinner"></caption>
+          (
+            <>
+              <caption className="spinner"></caption>
+              {error}
+            </>
+
 
           ) : (
 
