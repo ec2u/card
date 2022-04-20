@@ -45,7 +45,8 @@ public class EscrLinker {
 				}
 
 			} catch (final JsonProcessingException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
+				studentsList.clear();
 			}
 
 		});
@@ -142,7 +143,8 @@ public class EscrLinker {
 				}
 
 			} catch (final JsonProcessingException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
+				cardsList.clear();
 			}
 
 		});
