@@ -2,11 +2,14 @@ package eu.ec2u.card.cards;
 
 import eu.ec2u.card.cards.Cards.Card;
 import eu.ec2u.card.cards.Cards.CardData;
+import eu.ec2u.card.users.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -62,6 +65,32 @@ public class CardsService {
 				})
 				.map(CardData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+	}
+
+	Cards searchBySurnamePrefixAlternative(final String surnamePrefix) {
+
+		final Cards cards = new Cards();
+
+		final List<Card> cardList = new ArrayList<>();
+
+		cards.setPath(Cards.Id);
+
+		this.cards.findAll().forEach(cardData -> {
+
+			Card card = cardData.transfer();
+
+			if (card.getHolderSurname().startsWith(surnamePrefix)) {
+
+				cardList.add(card);
+
+            }
+
+		});
+
+		cards.setContains(cardList);
+
+		return cards;
+
 	}
 
 }

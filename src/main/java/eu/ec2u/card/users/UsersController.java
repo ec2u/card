@@ -8,13 +8,16 @@ package eu.ec2u.card.users;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.ec2u.card.Tool.Container;
 import eu.ec2u.card.Tool.Resource;
+import static eu.ec2u.card.ToolConfiguration.ContainerSize;
 import eu.ec2u.card.ToolSecurity.Profile;
+import static eu.ec2u.card.events.Events.Action.*;
 import eu.ec2u.card.events.EventsService;
 import eu.ec2u.card.users.Users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import static org.springframework.http.ResponseEntity.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-
-import static eu.ec2u.card.ToolConfiguration.ContainerSize;
-import static eu.ec2u.card.events.Events.Action.*;
-import static org.springframework.http.ResponseEntity.*;
 
 @RestController
 @RequestMapping(Users.Id)
@@ -58,7 +57,6 @@ public final class UsersController {
 
     }
 
-
     @PostMapping("")
     ResponseEntity<Void> post(
 
@@ -77,23 +75,6 @@ public final class UsersController {
 
     }
 
-
-    @PostMapping("filters")
-    @JsonView(Container.class)
-    ResponseEntity<Users> post(
-
-            @AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
-            @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-            @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
-            @Valid @RequestBody final String surnamePrefix
-
-    ) {
-
-        return ok().body(users.searchBySurnamePrefix(surnamePrefix, PageRequest.of(page, size, Sort.by("surname"))));
-
-    }
-
-
     @GetMapping("{id}")
     @JsonView(Resource.class)
     ResponseEntity<User> get(
@@ -108,6 +89,17 @@ public final class UsersController {
         //}
 
         return ok().body(users.relate(id));
+
+    }
+
+    @GetMapping("/filters")
+    ResponseEntity<Users> searchBySurnamePrefix(
+
+            @RequestParam(value="surnamePrefix") String surnamePrefix
+
+    ) {
+
+        return ok().body(users.searchBySurnamePrefixAlternative(surnamePrefix));
 
     }
 

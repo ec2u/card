@@ -1,6 +1,7 @@
 package eu.ec2u.card.escr;
 
 import lombok.NoArgsConstructor;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -23,7 +24,7 @@ public class EscrHttpManager {
 
 		try {
 			output = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
-		} catch (IOException | InterruptedException e) {
+		} catch (final IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 
@@ -31,9 +32,7 @@ public class EscrHttpManager {
 
 	}
 
-	public String httpPoster(final String uri, final String jsonString) {
-
-		String output = "";
+	public void httpPoster(final String uri, final String jsonString) {
 
 		final HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(uri))
@@ -43,18 +42,14 @@ public class EscrHttpManager {
 				.build();
 
 		try {
-			output = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
-		} catch (IOException | InterruptedException e) {
+			HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
+		} catch (final IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		return output;
-
 	}
 
-	public String httpPutter(final String uri, final String jsonString) {
-
-		String output = "";
+	public void httpPutter(final String uri, final String jsonString) {
 
 		final HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(uri))
@@ -64,18 +59,14 @@ public class EscrHttpManager {
 				.build();
 
 		try {
-			output = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
-		} catch (IOException | InterruptedException e) {
+			HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
+		} catch (final IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		return output;
-
 	}
 
-	public String httpDeleter(final String uri) {
-
-		String output = "";
+	public void httpDeleter(final String uri) {
 
 		final HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(uri))
@@ -85,12 +76,10 @@ public class EscrHttpManager {
 				.build();
 
 		try {
-			output = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
-		} catch (IOException | InterruptedException e) {
+			HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
+		} catch (final IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
-
-		return output;
 
 	}
 

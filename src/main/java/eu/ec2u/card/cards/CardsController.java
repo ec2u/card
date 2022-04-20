@@ -7,6 +7,7 @@ import eu.ec2u.card.ToolSecurity;
 import eu.ec2u.card.ToolSecurity.Profile;
 import eu.ec2u.card.cards.Cards.Card;
 import eu.ec2u.card.events.EventsService;
+import eu.ec2u.card.users.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -65,6 +66,16 @@ public final class CardsController {
 
 	) {
 		return ok().body(cards.relate(id));
+	}
+
+	@GetMapping("/filters")
+	ResponseEntity<Cards> searchBySurnamePrefix(
+
+			@RequestParam(value="surnamePrefix") String surnamePrefix
+	) {
+
+		return ok().body(cards.searchBySurnamePrefixAlternative(surnamePrefix));
+
 	}
 
 	@PutMapping("{id}")
