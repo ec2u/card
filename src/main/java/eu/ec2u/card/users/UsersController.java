@@ -57,7 +57,6 @@ public final class UsersController {
 
     }
 
-
     @PostMapping("")
     ResponseEntity<Void> post(
 
@@ -93,30 +92,14 @@ public final class UsersController {
 
     }
 
-    @RequestMapping(path = "SurnameFilter/{surnamePrefix}")
-    @JsonView(Resource.class)
-    ResponseEntity<Users> searchUserBySurname(
+    @GetMapping("/filters")
+    ResponseEntity<Users> searchBySurnamePrefix(
 
-            @AuthenticationPrincipal final Profile profile,
-            @PathVariable("surnamePrefix") final String surnamePrefix
+            @RequestParam(value="surnamePrefix") String surnamePrefix
 
     ) {
 
-        return ok().body(users.searchBySurnamePrefix(surnamePrefix));
-
-    }
-
-    @PostMapping("/filters")
-    @JsonView(Container.class)
-    ResponseEntity<Users> searchUserBySurnameWithPost(
-
-            @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-            @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
-            @Valid @RequestBody final String surnamePrefix
-
-    ) {
-
-        return ok().body(users.searchBySurnamePrefix(surnamePrefix, PageRequest.of(page, size, Sort.by("surname"))));
+        return ok().body(users.searchBySurnamePrefixAlternative(surnamePrefix));
 
     }
 

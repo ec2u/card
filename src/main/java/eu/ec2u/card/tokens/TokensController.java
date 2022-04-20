@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import eu.ec2u.card.Tool.Container;
 import eu.ec2u.card.Tool.Resource;
 import eu.ec2u.card.ToolSecurity.Profile;
+import eu.ec2u.card.cards.Cards;
 import eu.ec2u.card.events.EventsService;
 import eu.ec2u.card.tokens.Tokens.Token;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,16 @@ public final class TokensController {
 	) {
 
 		return ok().body(tokens.relate(tokenNumber));
+
+	}
+
+	@GetMapping("/filters")
+	ResponseEntity<Tokens> searchBySurnamePrefix(
+
+			@RequestParam(value="userNamePrefix") String userNamePrefix
+	) {
+
+		return ok().body(tokens.searchByUserNamePrefixAlternative(userNamePrefix));
 
 	}
 

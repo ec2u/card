@@ -2,11 +2,14 @@ package eu.ec2u.card.tokens;
 
 import eu.ec2u.card.tokens.Tokens.Token;
 import eu.ec2u.card.tokens.Tokens.TokenData;
+import org.opensaml.soap.wsaddressing.To;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -67,6 +70,32 @@ public class TokensService {
 				})
 				.map(TokenData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+	}
+
+	Tokens searchByUserNamePrefixAlternative(final String userNamePrefix) {
+
+		final Tokens tokens = new Tokens();
+
+		final List<Token> tokenList = new ArrayList<>();
+
+		tokens.setPath(Tokens.Id);
+
+		this.tokens.findAll().forEach(tokenData -> {
+
+			Token token = tokenData.transfer();
+
+			if (token.getServiceOrUserName().startsWith(userNamePrefix)) {
+
+				tokenList.add(token);
+
+			}
+
+		});
+
+		tokens.setContains(tokenList);
+
+		return tokens;
+
 	}
 
 }

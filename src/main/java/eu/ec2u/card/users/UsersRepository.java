@@ -14,4 +14,6 @@ public interface UsersRepository extends DatastoreRepository<UserData, Long> {
 
 	List<UserData> findBySurnameStartingWith(String surnamePrefix);
 
+	List<UserData> findBySurnameContaining(String surnamePrefix);
+
 }
