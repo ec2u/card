@@ -57,6 +57,11 @@ card-users {
       color: orange;
       transform: translateX(3px);
     }
+    & .search-fields {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1em;
+    }
   }
 }
 

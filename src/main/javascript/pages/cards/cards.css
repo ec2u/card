@@ -48,6 +48,7 @@ card-cards {
     }
     & .button-search {
       cursor: pointer;
+      transition: 0.2s ease-all;
     }
     & .button-search:hover {
       color: black;
@@ -62,8 +63,41 @@ card-cards {
       width: 99%;
     }
   }
+  & .search-fields {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+    & .search-label {
+      width: 17rem;
+      font-size: 1em;
+      border: 1px solid black;
+      border-radius: 5px;
+    }
+    & .search-date {
+      border: 1px solid black;
+      border-radius: 5px;
+      font-size: 1em;
+      margin-left: 6em;
+      width: 7rem;
+    }
+    & .search-number {
+      border: 1px solid black;
+      border-radius: 5px;
+      font-size: 1em;
+      margin-left: 4.4em;
+      width: 6rem;
+      margin-right: 29.5em;
+    }
+    & .close-button {
+      cursor: pointer;
+    }
+    & .close-button:hover {
+      color: red;
+      transform: translateY(-3px);
+    }
+  }
 }
-.search-box {
+/* .search-box {
   position: fixed;
   top: 5%;
   left: 40%;
@@ -88,7 +122,7 @@ card-cards {
   & .close-button:hover {
     color: red;
   }
-}
+} */
 
 .spinner::before {
   animation: 1.5s linear infinite spinner;
