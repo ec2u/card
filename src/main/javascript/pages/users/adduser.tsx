@@ -83,7 +83,8 @@ export function AddUser() {
             ) : (
 
               <Check onClick={handleSubmit} size={42}
-                className="button-check" />
+                className="button-check"
+                color={disable ? 'lightgray' : 'black'} />
             )}
           </a>
           <a href="/users/" title="close">
