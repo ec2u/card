@@ -21,10 +21,10 @@ import static org.springframework.http.ResponseEntity.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(Users.Id)
@@ -93,13 +93,18 @@ public final class UsersController {
     }
 
     @GetMapping("/filters")
-    ResponseEntity<Users> searchBySurnamePrefix(
+    @JsonView(Container.class)
+    ResponseEntity<Users> search(
 
-            @RequestParam(value="surnamePrefix") String surnamePrefix
+            @RequestParam(value="surnamePrefix") Optional<String> surnamePrefix,
+            @RequestParam(value="forenamePrefix") Optional<String> forenamePrefix,
+            @RequestParam(value="emailPrefix") Optional<String> emailPrefix,
+            @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
+            @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
 
     ) {
 
-        return ok().body(users.searchBySurnamePrefixAlternative(surnamePrefix));
+        return ok().body(users.search(forenamePrefix, surnamePrefix, emailPrefix, PageRequest.of(page, size)));
 
     }
 

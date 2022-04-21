@@ -2,16 +2,12 @@ package eu.ec2u.card.cards;
 
 import eu.ec2u.card.cards.Cards.Card;
 import eu.ec2u.card.cards.Cards.CardData;
-import eu.ec2u.card.users.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import javax.swing.text.html.Option;
+import java.util.*;
 
 @Service
 public class CardsService {
@@ -67,27 +63,27 @@ public class CardsService {
 				.orElseThrow(NoSuchElementException::new);
 	}
 
-	Cards searchBySurnamePrefixAlternative(final String surnamePrefix) {
+	Cards search(
+
+			final Optional<String> forenamePrefix,
+			final Optional<String> surnamePrefix,
+			final Optional<String> expiryDate,
+			final Optional<Long> cardNumber,
+			final Pageable slice
+
+	) {
 
 		final Cards cards = new Cards();
 
-		final List<Card> cardList = new ArrayList<>();
-
 		cards.setPath(Cards.Id);
 
-		this.cards.findAll().forEach(cardData -> {
-
-			Card card = cardData.transfer();
-
-			if (card.getHolderSurname().startsWith(surnamePrefix)) {
-
-				cardList.add(card);
-
-            }
-
-		});
-
-		cards.setContains(cardList);
+		cards.setContains(this.cards.findAll(slice)
+				.map(CardData::transfer)
+				.filter(card -> Objects.equals(card.getVirtualCardNumber(), cardNumber.orElse(card.getVirtualCardNumber())))
+				.filter(card -> card.getHolderSurname().startsWith(surnamePrefix.orElse(card.getHolderSurname())))
+				.filter(card -> card.getHolderForename().startsWith(forenamePrefix.orElse(card.getHolderForename())))
+				.filter(card -> card.getExpiringDate().toString().equals(expiryDate.orElse(card.getExpiringDate().toString())))
+				.toList());
 
 		return cards;
 

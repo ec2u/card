@@ -7,7 +7,6 @@ import eu.ec2u.card.ToolSecurity;
 import eu.ec2u.card.ToolSecurity.Profile;
 import eu.ec2u.card.cards.Cards.Card;
 import eu.ec2u.card.events.EventsService;
-import eu.ec2u.card.users.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -15,15 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-
 import static eu.ec2u.card.ToolConfiguration.ContainerSize;
 import static eu.ec2u.card.events.Events.Action.*;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(Cards.Id)
@@ -69,12 +67,19 @@ public final class CardsController {
 	}
 
 	@GetMapping("/filters")
-	ResponseEntity<Cards> searchBySurnamePrefix(
+	@JsonView(Container.class)
+	ResponseEntity<Cards> search(
 
-			@RequestParam(value="surnamePrefix") String surnamePrefix
+			@RequestParam(value="forenamePrefix") Optional<String> forenamePrefix,
+			@RequestParam(value = "surnamePrefix") Optional<String> surnamePrefix,
+			@RequestParam(value = "expiryDate") Optional<String> expiryDate,
+			@RequestParam(value = "cardNumber") Optional<Long> cardNumber,
+			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
+			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
+
 	) {
 
-		return ok().body(cards.searchBySurnamePrefixAlternative(surnamePrefix));
+		return ok().body(cards.search(forenamePrefix, surnamePrefix, expiryDate, cardNumber, PageRequest.of(page, size)));
 
 	}
 

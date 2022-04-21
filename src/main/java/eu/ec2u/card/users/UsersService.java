@@ -79,57 +79,25 @@ public class UsersService {
 
     }
 
-    Users searchBySurnamePrefix(final String surnamePrefix, final Pageable slice) {
+    Users search(
+
+            final Optional<String> forenamePrefix,
+            final Optional<String> surnamePrefix,
+            final Optional<String> emailPrefix,
+            final Pageable slice
+
+    ) {
 
         final Users users = new Users();
 
         users.setPath(Users.Id);
 
-        users.setContains(this.users.findBySurnameStartingWith(surnamePrefix, slice)
-                .stream()
+        users.setContains(this.users.findAll(slice)
                 .map(UserData::transfer)
-                .collect(Collectors.toList()) );
-
-        return users;
-
-    }
-
-    Users searchBySurnamePrefix(final String surnamePrefix) {
-
-        final Users users = new Users();
-
-        users.setPath(Users.Id);
-
-        users.setContains(this.users.findBySurnameStartingWith(surnamePrefix)
-                .stream()
-                .map(UserData::transfer)
-                .collect(Collectors.toList()) );
-
-        return users;
-
-    }
-
-    Users searchBySurnamePrefixAlternative(final String surnamePrefix) {
-
-        final Users users = new Users();
-
-        final List<User> userList = new ArrayList<>();
-
-        users.setPath(Users.Id);
-
-        this.users.findAll().forEach(userData -> {
-
-            User user = userData.transfer();
-
-            if (user.getSurname().startsWith(surnamePrefix)) {
-
-               userList.add(user);
-
-            }
-
-        });
-
-        users.setContains(userList);
+                .filter(user -> user.getSurname().startsWith(surnamePrefix.orElse(user.getSurname())))
+                .filter(user -> user.getForename().startsWith(forenamePrefix.orElse(user.getForename())))
+                .filter(user -> user.getEmail().startsWith(emailPrefix.orElse(user.getEmail())))
+                .toList());
 
         return users;
 
