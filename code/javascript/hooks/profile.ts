@@ -24,8 +24,6 @@ const api="/profile";
 const sso="/saml/sso";
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 const Context=createContext<[undefined | Profile, (action?: null) => void]>([undefined, () => {}]);
 
 
@@ -41,7 +39,9 @@ export interface Profile {
 export interface User {
 
     readonly esi: string;
-    readonly uni: string;
+    readonly name: string;
+    readonly email: string;
+    readonly schac: string;
 
 }
 
