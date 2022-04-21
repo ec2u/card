@@ -8,12 +8,20 @@ interface Token {
     readonly label: string;
     readonly serviceOrUserName: string;
     readonly serviceOrUserPassword: string;
-    readonly id: number;
+    readonly id: number | string;
     readonly tokenNumber: number;
 }
 
 export function EditToken() {
-    const [updatetoken, setUpdatetoken] = useState<Token>({} as Token);
+    const [updatetoken, setUpdatetoken] = useState<Token>({
+        label: "",
+        serviceOrUserName: "",
+        serviceOrUserPassword: "",
+        id: "",
+        tokenNumber: 0,
+
+
+    } as Token);
     const [dialog, setDialog] = useState<Boolean>(false);
     const [clicked, setClicked] = useState<Boolean>(false);
     const [disable, setDisable] = useState<Boolean>(false);
@@ -35,7 +43,9 @@ export function EditToken() {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
 
-        if (value === "") { setDisable(true) }
+        if (value === "" || updatetoken.serviceOrUserName === "" ||
+            updatetoken.serviceOrUserPassword === "" ||
+            updatetoken.tokenNumber === 0) { setDisable(true) }
 
         else {
             setDisable(false)
@@ -134,7 +144,7 @@ export function EditToken() {
             <header>
 
                 <section>
-                    <a href='/tokens/' className={"tokens-link"}> Tokens &#8250;</a>
+                    <a href='/tokens/' className={"tokens-link"} title="Tokens"> Tokens &#8250;</a>
                     <a href={`${updatetoken.id}`}>{updatetoken.label} </a>
                 </section>
                 <section>

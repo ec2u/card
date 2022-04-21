@@ -6,14 +6,11 @@ card-inspectcard {
     width: 100%;
     margin: 1.3em 0em;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+
     justify-content: space-between;
 
     & section {
       display: flex;
-      flex-wrap: wrap;
-      align-items: start;
       gap: 0.5em;
     }
     & a {

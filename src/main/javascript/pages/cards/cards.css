@@ -6,8 +6,7 @@ card-cards {
   & header {
     margin: 1.3em 0em;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-wrap: no-wrap;
     justify-content: space-between;
     & a {
       color: black;
@@ -48,6 +47,7 @@ card-cards {
     }
     & .button-search {
       cursor: pointer;
+      transition: 0.2s ease-all;
     }
     & .button-search:hover {
       color: black;
@@ -62,31 +62,33 @@ card-cards {
       width: 99%;
     }
   }
-}
-.search-box {
-  position: fixed;
-  top: 5%;
-  left: 40%;
-  transition: 0.2s ease-all;
+  & .search-fields {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1em;
 
-  & input {
-    padding: 0.6em;
-    width: 22em;
-    border: 1px solid gray;
-    box-shadow: 0 0 7px black;
-  }
-  & input:focus {
-    border: none;
-    box-shadow: 0 0 100px 1000px rgba(0, 0, 0, 0.3);
-  }
-  & .close-button {
-    position: absolute;
-    right: -13px;
-    top: -12px;
-    cursor: pointer;
-  }
-  & .close-button:hover {
-    color: red;
+    & input {
+      font-size: 0.8em;
+      border: 1px solid black;
+      border-radius: 5px;
+    }
+
+    & .search-label {
+      margin-left: 5px;
+      margin-right: 8em;
+      width: 20em;
+    }
+    & .search-date {
+      margin-right: 8em;
+      width: 7em;
+    }
+    & .search-number {
+      width: 5em;
+    }
+    & .close-button:hover {
+      color: red;
+      transform: translateY(-4px);
+    }
   }
 }
 

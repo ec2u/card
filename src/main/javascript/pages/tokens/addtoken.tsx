@@ -15,8 +15,13 @@ interface Token {
 
 
 export function AddToken() {
-    const [addtoken, setAddtoken] = useState({} as Token);
-    const [disable, setDisable] = useState<Boolean>(false)
+    const [addtoken, setAddtoken] = useState({
+        serviceOrUserName: "",
+        serviceOrUserPassword: "",
+        id: "",
+        tokenNumber: 0,
+    } as Token);
+    const [disable, setDisable] = useState<Boolean>(true)
     const [loading, setLoading] = useState<Boolean>(false)
     const navigate = useNavigate();
 
@@ -30,10 +35,13 @@ export function AddToken() {
 
         const value = e.target.value
 
-        if (!addtoken.serviceOrUserName) { setDisable(true) }
+        if (addtoken.serviceOrUserName === "" ||
+            addtoken.serviceOrUserPassword === "" ||
+            addtoken.tokenNumber ||
+            value === "") {
 
-
-        else {
+            setDisable(true)
+        } else {
             setDisable(false)
         }
 
@@ -66,18 +74,17 @@ export function AddToken() {
     }
 
 
-
     return createElement("card-addtoken", {},
         <>
             <header>
                 <section>
-                    <a href="/tokens/" className={"tokens-link"}>Tokens </a>
+                    <a href="/tokens/" className={"tokens-link"} title="Tokens">Tokens </a>
                     <a>&#8250;</a>
                     <a> New Token</a>
                 </section>
 
                 <section>
-                    <a >
+                    <a title="Save">
                         {loading ? (<div className={"spinner"}></div>
                         ) : (
                             <Check onClick={handleSubmit}
@@ -86,7 +93,7 @@ export function AddToken() {
                                 className={"button-check"}
                             />)}
                     </a>
-                    <a href="/tokens/">
+                    <a href="/tokens/" title="Close">
                         < X size={40} className={'button-close'} />
                     </a>
                 </section>

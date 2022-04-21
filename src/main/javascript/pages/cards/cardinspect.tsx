@@ -45,11 +45,11 @@ export function CardInspect() {
         <>
             <header>
                 <section>
-                    <a href="/cards/" className={"cards-link"}>Cards &#8250;</a>
+                    <a href="/cards/" className={"cards-link"} title="Cards">Cards &#8250;</a>
                     <a>{card.label}</a>
                 </section>
 
-                <a href={`/edit${card.id}`}>
+                <a href={`/edit${card.id}`} title="Edit">
                     <Edit size={38} className="button-edit" />
                 </a>
             </header>

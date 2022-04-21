@@ -7,8 +7,7 @@ card-users {
     width: 100%;
     margin: 1.3em 0em;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-wrap: no-wrap;
     justify-content: space-between;
     & a {
       color: black;
@@ -27,7 +26,7 @@ card-users {
 
     & tr {
       display: grid;
-      grid-template-columns: 250px 210px 5fr 0fr;
+      grid-template-columns: 220px 210px 5fr 0fr;
       text-align: left;
       padding: 0.1em;
       align-items: center;
@@ -56,6 +55,30 @@ card-users {
     & .button-arrow:hover {
       color: orange;
       transform: translateX(3px);
+    }
+    & .search-fields {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1em;
+
+      & input {
+        font-size: 0.8em;
+        border: 1px solid black;
+        border-radius: 5px;
+      }
+      & .search-label {
+        width: 17em;
+        margin-left: 3px;
+        margin-right: 5.5em;
+      }
+      & .search-email {
+        width: 10em;
+      }
+      & .close-button:hover {
+        color: red;
+        transform: translateY(-4px);
+      }
     }
   }
 }

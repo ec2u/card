@@ -68,7 +68,11 @@ export function EditUser() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
 
-    if (value === "") { setDisable(true) }
+    if (value === "" || updateuser.forename === "" ||
+      updateuser.surname === "" || updateuser.email === ""
+    ) {
+      setDisable(true)
+    }
 
     else {
       setDisable(false)
@@ -142,7 +146,7 @@ export function EditUser() {
       <header>
 
         <section>
-          <a href="/users/" className={"users-link"}>Users &#8250;</a>
+          <a href="/users/" className={"users-link"} title="Users">Users &#8250;</a>
           <a href={`${updateuser.id}`}>{updateuser.label}</a>
         </section>
 

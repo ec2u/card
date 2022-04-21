@@ -15,14 +15,18 @@ interface Card {
 
 
 export function AddCard() {
-    const [addcard, setAddcard] = useState({} as Card);
-    const [disable, setDisable] = useState<Boolean>(false);
+    const [addcard, setAddcard] = useState({
+        holderForename: "",
+        holderSurname: "",
+        id: "",
+        virtualCardNumber: 0,
+        expiringDate: new Date()
+    } as Card);
+
+    const [disable, setDisable] = useState<Boolean>(true);
     const [loading, setLoading] = useState<Boolean>(false);
 
-
     const navigate = useNavigate();
-
-
 
     let userData = {
         holderForename: addcard.holderForename,
@@ -37,8 +41,10 @@ export function AddCard() {
 
         const value = e.target.value
 
-        if (value.length < 1) {
+        if (addcard.holderForename === "" || addcard.holderSurname === ""
+            || addcard.virtualCardNumber === 0 || value === "") {
             setDisable(true)
+
         } else {
             setDisable(false)
         }
@@ -80,13 +86,13 @@ export function AddCard() {
         <>
             <header>
                 <section>
-                    <a href="/cards/" className={"cards-link"}>Cards </a>
+                    <a href="/cards/" className={"cards-link"} title="Cards">Cards </a>
                     <a>&#8250;</a>
                     <a> New Card</a>
                 </section>
 
                 <section>
-                    <a >
+                    <a title="Save">
                         {loading ? (<div className={"spinner"}></div>
                         ) : (
                             <Check onClick={handleSubmit}
@@ -96,7 +102,7 @@ export function AddCard() {
 
                             />)}
                     </a>
-                    <a href="/cards/">
+                    <a href="/cards/" title="Close">
                         < X size={40} className={'button-close'} />
                     </a>
                 </section>
@@ -135,7 +141,7 @@ export function AddCard() {
                         <label>expiry date</label>
                         <input
                             className={"input"}
-                            type="Date"
+                            type="date"
                             required
                             name="expiringDate"
                             onChange={handleChange}

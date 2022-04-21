@@ -41,11 +41,11 @@ export function InspectUser() {
       <header>
 
         <section>
-          <a href='/users/' className={"users-link"}>Users &#8250;</a>
+          <a href='/users/' className={"users-link"} title="Users">Users &#8250;</a>
           <a>{user.label}</a>
         </section>
 
-        <a href={`/edit${user.id}`}>
+        <a href={`/edit${user.id}`} title="Edit">
           <Edit size={38} className="button-edit" />
         </a>
 

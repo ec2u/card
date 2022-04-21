@@ -27,9 +27,9 @@ body {
 .header:visible {
   transform: translateX(60%) scale(1);
 }
-.delete {
+/* .delete {
   position: fixed;
-}
+} */
 /* .close {
   margin-bottom: 55%;
   font-size: 20px;
@@ -40,13 +40,14 @@ body {
   display: flex;
   align-items: center;
   & span {
-    font-size: 1em;
+    margin-right: 1em;
+    font-size: 1.5em;
   }
 }
 
 .trash {
   color: red;
-  margin-right: 2px;
+  margin-right: 1em;
 }
 .data-header {
   font-size: 33px;
@@ -54,25 +55,26 @@ body {
 .button {
   margin-top: 40px;
   display: flex;
-  justify-content: space-around;
   align-items: center;
 }
 
 .yes {
-  font-size: 18px;
+  font-size: 25px;
   padding: 10px;
   border-radius: 10px;
   border: 1px solid black;
   cursor: pointer;
   transition: 0.7s;
   background: lightgray;
+  margin-right: 4em;
 }
 .yes:hover {
   background: green;
+  transform: translateY(-5px);
 }
 
 .no {
-  font-size: 18px;
+  font-size: 25px;
   padding: 10px;
   border-radius: 10px;
   border: 1px solid black;
@@ -83,4 +85,5 @@ body {
 
 .no:hover {
   background: red;
+  transform: translateY(-5px);
 }

@@ -29,7 +29,6 @@ export function CardUsers() {
 
   useEffect(() => {
 
-
     setLoading(true)
     const fetchData = async () => {
       await fetch("/users/", {
@@ -52,30 +51,6 @@ export function CardUsers() {
   }
 
   const inputRef = useRef<HTMLInputElement>(null);
-
-  let searchInput =
-    <div className={"search-box"}
-      onSubmit={(e) => inputRef.current?.blur()
-      }
-    >
-
-      <input
-        ref={inputRef}
-        autoFocus
-        type="text"
-        value={search}
-        placeholder="search..."
-        onChange={handleInput}
-
-
-      />
-      <X size={28}
-        className={"close-button"}
-        onClick={() => setClicked(false)}
-      />
-
-    </div>
-
 
 
   let SearchIcon =
@@ -103,30 +78,61 @@ export function CardUsers() {
       </header>
 
       <table>
-
         <thead>
-
           <tr>
 
             <th>forename</th>
             <th>surname</th>
             <th>email</th>
             <th>
-              {clicked ? searchInput : SearchIcon}
-
+              {SearchIcon}
             </th>
 
           </tr>
-
         </thead>
 
-        <caption >
-          <hr />
+        <caption > <hr /> </caption>
+
+        <caption>
+
+          {/* when search fields are active... */}
+
+          {clicked ? (
+
+            <div className={"search-fields"}>
+              <div className={"search-fields-start"}>
+                <input
+                  value={search}
+                  type="search"
+                  className={"search-label"}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <input
+                  type="search"
+                  className={"search-email"} />
+              </div>
+              <div title="Close">
+                <X size={28}
+                  className={"close-button"}
+                  onClick={() => setClicked(false)}
+                />
+              </div>
+            </div>
+
+
+
+          ) : ("")}
+
         </caption>
 
         {loading ?
 
-          (<caption className="spinner"></caption>
+          (
+            <>
+              <caption className="spinner"></caption>
+              {error}
+            </>
+
 
           ) : (
 

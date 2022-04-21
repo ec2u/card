@@ -40,11 +40,11 @@ export function TokenInspect() {
             <header>
 
                 <section>
-                    <a href='/tokens/' className={"tokens-link"}>Tokens &#8250;</a>
+                    <a href='/tokens/' className={"tokens-link"} title="Tokens">Tokens &#8250;</a>
                     <a>{token.label}</a>
                 </section>
 
-                <a href={`/edit${token.id}`}>
+                <a href={`/edit${token.id}`} title="Edit">
                     <Edit size={38} className="button-edit" />
                 </a>
 

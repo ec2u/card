@@ -13,8 +13,13 @@ interface Adduser {
 
 
 export function AddUser() {
-  const [adduser, setAdduser] = useState({} as Adduser);
-  const [disable, setDisable] = useState<Boolean>(false);
+  const [adduser, setAdduser] = useState({
+    admin: false,
+    forename: "",
+    surname: "",
+    email: ""
+  } as Adduser);
+  const [disable, setDisable] = useState<Boolean>(true);
   const [loading, setLoading] = useState<Boolean>(false);
   const navigate = useNavigate();
 
@@ -30,7 +35,7 @@ export function AddUser() {
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
 
 
-    if (value === "") {
+    if (adduser.forename === "" || adduser.surname === "" || adduser.email === "" || value === "") {
       setDisable(true)
     }
     else {
@@ -72,7 +77,7 @@ export function AddUser() {
     <>
       <header>
         <section>
-          <a href="/cards/" className={"users-link"} >Users &#8250;</a>
+          <a href="/cards/" className={"users-link"} title="Users">Users &#8250;</a>
           <a>New user</a>
         </section>
 
@@ -129,6 +134,8 @@ export function AddUser() {
               value={adduser.email}
               onChange={handleChange}
               className={'email'}
+
+
             />
           </section>
 

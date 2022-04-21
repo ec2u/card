@@ -7,14 +7,10 @@ card-inspecttoken {
     margin: 1.3em 0em;
     width: 100%;
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
-    align-items: center;
 
     & section {
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
       gap: 0.5em;
     }
     & a {
