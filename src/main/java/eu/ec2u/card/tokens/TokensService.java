@@ -2,18 +2,14 @@ package eu.ec2u.card.tokens;
 
 import eu.ec2u.card.tokens.Tokens.Token;
 import eu.ec2u.card.tokens.Tokens.TokenData;
-import org.opensaml.soap.wsaddressing.To;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
+@SuppressWarnings("ALL")
 public class TokensService {
 
 	@Autowired private TokensRepository tokens;
@@ -72,27 +68,25 @@ public class TokensService {
 				.orElseThrow(NoSuchElementException::new);
 	}
 
-	Tokens searchByUserNamePrefixAlternative(final String userNamePrefix) {
+	Tokens search(
+
+			final Optional<String> usernamePrefix,
+			final Optional<Long> tokenNumber,
+			final Pageable slice
+
+	) {
 
 		final Tokens tokens = new Tokens();
 
-		final List<Token> tokenList = new ArrayList<>();
-
 		tokens.setPath(Tokens.Id);
 
-		this.tokens.findAll().forEach(tokenData -> {
+		List<Token> tokenList = new ArrayList<>();
 
-			Token token = tokenData.transfer();
-
-			if (token.getServiceOrUserName().startsWith(userNamePrefix)) {
-
-				tokenList.add(token);
-
-			}
-
-		});
-
-		tokens.setContains(tokenList);
+		tokens.setContains(this.tokens.findAll(slice)
+				.map(TokenData::transfer)
+				.filter(token -> token.getTokenNumber() == tokenNumber.orElse(token.getTokenNumber()))
+				.filter(token -> token.getServiceOrUserName().startsWith(usernamePrefix.orElse(token.getServiceOrUserName())))
+				.toList());
 
 		return tokens;
 
