@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import eu.ec2u.card.Tool.Container;
 import eu.ec2u.card.Tool.Resource;
 import eu.ec2u.card.ToolSecurity.Profile;
-import eu.ec2u.card.cards.Cards;
 import eu.ec2u.card.events.EventsService;
 import eu.ec2u.card.tokens.Tokens.Token;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-
 import static eu.ec2u.card.ToolConfiguration.ContainerSize;
 import static eu.ec2u.card.events.Events.Action.*;
 import static org.springframework.http.ResponseEntity.*;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(Tokens.Id)
@@ -71,12 +69,17 @@ public final class TokensController {
 	}
 
 	@GetMapping("/filters")
-	ResponseEntity<Tokens> searchBySurnamePrefix(
+	@JsonView(Container.class)
+	ResponseEntity<Tokens> search(
 
-			@RequestParam(value="userNamePrefix") String userNamePrefix
+			@RequestParam(value= "usernamePrefix") Optional<String> usernamePrefix,
+			@RequestParam(value="tokenNumber") Optional<Long> tokenNumber,
+			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
+			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
+
 	) {
 
-		return ok().body(tokens.searchByUserNamePrefixAlternative(userNamePrefix));
+		return ok().body(tokens.search(usernamePrefix, tokenNumber, PageRequest.of(page, size)));
 
 	}
 
