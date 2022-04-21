@@ -89,6 +89,9 @@ card-cards {
       color: red;
       transform: translateY(-4px);
     }
+    & .button-search {
+      margin-left: 30px;
+    }
   }
 }
 
