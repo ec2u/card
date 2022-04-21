@@ -24,10 +24,10 @@ export function VirtualCards() {
 
 
 
-    const fetchData = async (search: string) => {
+    const fetchData = async (searchdata: string) => {
         setLoading(true)
 
-        await fetch('/cards/', {
+        await fetch('/cards/' + searchdata, {
             headers: {
                 Accept: 'application/json',
             }
@@ -47,6 +47,14 @@ export function VirtualCards() {
         fetchData("");
     }, [])
 
+
+    const searchSubmit = () => {
+        if (search === "") {
+            fetchData("");
+        } else {
+            fetchData("filters?surnamePrefix=" + search);
+        }
+    }
     const inputRef = useRef<HTMLInputElement>(null);
 
 
@@ -95,7 +103,6 @@ export function VirtualCards() {
                                     className={"search-label"}
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-
                                 />
                                 <input
                                     type="date"
@@ -105,8 +112,12 @@ export function VirtualCards() {
                                     className={"search-number"}
                                 />
                             </div>
-                            <div title="Close">
-                                <X size={30} color="black"
+                            <div >
+                                <Search size={28}
+                                    className={'button-search'}
+                                    onClick={searchSubmit}
+                                />
+                                <X size={30}
                                     onClick={() => setClicked(false)}
                                     className={"close-button"}
                                 />
@@ -119,7 +130,7 @@ export function VirtualCards() {
                 {loading ? (<caption className={'spinner'}></caption>) : (
                     <tbody>
 
-                        {cards.filter(card => card.label.toLowerCase().includes(search.toLowerCase())).map((card) => {
+                        {cards.map((card) => {
                             return (
                                 <tr key={card.id} >
                                     <td>{card.holderForename}</td>

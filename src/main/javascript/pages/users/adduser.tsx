@@ -14,13 +14,13 @@ interface Adduser {
 
 export function AddUser() {
   const [adduser, setAdduser] = useState({
-    admin: false,
     forename: "",
     surname: "",
     email: ""
   } as Adduser);
   const [disable, setDisable] = useState<Boolean>(true);
   const [loading, setLoading] = useState<Boolean>(false);
+  const [emailerror, setEmailError] = useState<string>("");
   const navigate = useNavigate();
 
   const userData = {
@@ -30,12 +30,28 @@ export function AddUser() {
     email: adduser.email,
   };
 
+
+  const validateEmail = (e: string) => {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(e)) {
+      setEmailError("Valid Email")
+      return true;
+    } else {
+      setEmailError("invalid Email")
+      return false
+    }
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
 
 
-    if (adduser.forename === "" || adduser.surname === "" || adduser.email === "" || value === "") {
+    if (adduser.forename === "" ||
+      adduser.surname === "" ||
+      ((e.target.name == "email") && !validateEmail(value.toString())) ||
+      ((e.target.name != "email") && !validateEmail(adduser.email)) ||
+      value === ""
+    ) {
       setDisable(true)
     }
     else {
@@ -47,6 +63,7 @@ export function AddUser() {
       [e.target.name]: value,
     }))
   }
+
 
   const handleSubmit = async () => {
 
@@ -70,6 +87,7 @@ export function AddUser() {
     }
 
   };
+
 
 
 
@@ -135,8 +153,8 @@ export function AddUser() {
               onChange={handleChange}
               className={'email'}
 
-
             />
+            <span>{emailerror}</span>
           </section>
 
         </div>
