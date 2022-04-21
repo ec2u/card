@@ -92,20 +92,34 @@ export function CardTokens() {
                             {SearchIcon}
 
                         </th>
-
                     </tr>
-
                 </thead>
+
                 <caption><hr /></caption>
+
                 <caption>
                     {clicked ? (
                         <div className={"search-fields"}>
-                            <input />
-                            <input />
-                            <X size={28}
-                                className={"close-button"}
-                                onClick={() => setClicked(false)}
-                            />
+                            <div className={"search-fields-start"}>
+                                <input
+                                    type="search"
+                                    className={"search-username"}
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                                <input
+                                    type="search"
+                                    className={"search-token"}
+                                />
+                            </div>
+
+                            <div title="Close">
+                                <X size={28}
+                                    className={"close-button"}
+                                    onClick={() => setClicked(false)}
+                                />
+                            </div>
+
                         </div>
                     ) : ("")}
                 </caption>

@@ -52,30 +52,6 @@ export function CardUsers() {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  let searchInput =
-    <div className={"search-box"}
-      onSubmit={(e) => inputRef.current?.blur()
-      }
-    >
-
-      <input
-        ref={inputRef}
-        autoFocus
-        type="text"
-        value={search}
-        placeholder="search..."
-        onChange={handleInput}
-
-
-      />
-      <X size={28}
-        className={"close-button"}
-        onClick={() => setClicked(false)}
-      />
-
-    </div>
-
-
 
   let SearchIcon =
     <div title={"search"}>
@@ -120,15 +96,31 @@ export function CardUsers() {
         <caption>
 
           {/* when search fields are active... */}
+
           {clicked ? (
+
             <div className={"search-fields"}>
-              <input />
-              <input />
-              <X size={28}
-                className={"close-button"}
-                onClick={() => setClicked(false)}
-              />
+              <div className={"search-fields-start"}>
+                <input
+                  value={search}
+                  type="search"
+                  className={"search-label"}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <input
+                  type="search"
+                  className={"search-email"} />
+              </div>
+              <div title="Close">
+                <X size={28}
+                  className={"close-button"}
+                  onClick={() => setClicked(false)}
+                />
+              </div>
             </div>
+
+
+
           ) : ("")}
 
         </caption>

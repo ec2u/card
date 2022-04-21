@@ -2,6 +2,7 @@ import { Check, Trash2, X } from "lucide-react";
 import React, { createElement, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Deletedialog } from "../users/deletedialog";
+import { AddCard } from "./addcard";
 import './editcard.css'
 
 interface User {
@@ -14,7 +15,14 @@ interface User {
 }
 
 export function EditCard() {
-    const [updatecard, setUpdatecard] = useState<User>({} as User);
+    const [updatecard, setUpdatecard] = useState<User>({
+        holderForename: "",
+        holderSurname: "",
+        virtualCardNumber: 0,
+        expiringDate: new Date()
+
+    } as User);
+
     const [dialog, setDialog] = useState<Boolean>(false);
     const [clicked, setClicked] = useState<Boolean>(false);
     const [disable, setDisable] = useState<Boolean>(false);
@@ -24,19 +32,28 @@ export function EditCard() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`/cards/${id}`, {
-            headers: {
-                Accept: "application/json",
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => setUpdatecard(data));
+        const fetchData = async () => {
+            await fetch(`/cards/${id}`, {
+                headers: {
+                    Accept: "application/json",
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => setUpdatecard(data));
+        }
+        fetchData()
     }, []);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
 
-        if (value === "") { setDisable(true) }
+        if (updatecard.holderForename === "" || value === "" ||
+            updatecard.holderSurname === "" ||
+            updatecard.expiringDate === null ||
+            updatecard.virtualCardNumber === 0
+        ) {
+            setDisable(true)
+        }
 
         else {
             setDisable(false)
@@ -131,7 +148,7 @@ export function EditCard() {
             <header>
 
                 <section>
-                    <a href='/cards/' className={"cards-link"}> Cards &#8250;</a>
+                    <a href='/cards/' className={"cards-link"} title="Cards"> Cards &#8250;</a>
                     <a href={`${updatecard.id}`}>{updatecard.label} </a>
                 </section>
                 <section>

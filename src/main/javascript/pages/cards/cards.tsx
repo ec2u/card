@@ -20,55 +20,34 @@ export function VirtualCards() {
     const [loading, setLoading] = useState<Boolean>(false);
     const [error, setError] = useState<any>(null);
     const [clicked, setClicked] = useState<Boolean>(false);
-    const [search, setSearch] = useState<string>("")
+    const [search, setSearch] = useState<string>("");
 
 
+
+    const fetchData = async (search: string) => {
+        setLoading(true)
+
+        await fetch('/cards/', {
+            headers: {
+                Accept: 'application/json',
+            }
+        })
+            .then(response => response.json())
+            .then(data => setCards(data.contains))
+            .catch((error) => setError(error))
+
+        // error handle
+        // .catch((error) => setError(error))
+
+        setLoading(false)
+    }
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true)
-            
-            let path = '/cards/filter/'
 
-            await fetch('/cards/', {
-                headers: {
-                    Accept: 'application/json',
-                }
-            })
-                .then(response => response.json())
-                .then(data => setCards(data.contains))
-                .catch((error) => setError(error))
-
-            // error handle
-            // .catch((error) => setError(error))
-
-            setLoading(false)
-        }
-        fetchData();
+        fetchData("");
     }, [])
 
-
-
-
     const inputRef = useRef<HTMLInputElement>(null);
-
-    // let searchInput =
-    //     <div className={"search-box"}
-    //         onSubmit={(e) => inputRef.current?.blur()
-    //         }
-    //     >
-
-    //         <input
-    //             ref={inputRef}
-    //             type="search"
-    //             autoFocus
-    //             value={search}
-    //             placeholder="search..."
-    //             onChange={(e) => setSearch(e.target.value)}
-
-    //         />
-
-    //     </div>
 
 
     let SearchIcon =
@@ -109,30 +88,37 @@ export function VirtualCards() {
                 <caption>  <hr /> </caption>
                 <caption >
                     {clicked ? (
-                        <div className={"search-fields"}><input
-                            type="search"
-                            className={"search-label"}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                            <input
-                                type="date"
-                                className={"search-date"}
-                            />
-                            <input
-                                className={"search-number"}
-                            />
-                            <X size={30} color="black"
-                                onClick={() => setClicked(false)}
-                                className={"close-button"}
-                            />
-                        </div>) : ("")}
+                        <div className={"search-fields"}>
+                            <div className={"search-fields-start"}>
+                                <input
+                                    type="search"
+                                    className={"search-label"}
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+
+                                />
+                                <input
+                                    type="date"
+                                    className={"search-date"}
+                                />
+                                <input
+                                    className={"search-number"}
+                                />
+                            </div>
+                            <div title="Close">
+                                <X size={30} color="black"
+                                    onClick={() => setClicked(false)}
+                                    className={"close-button"}
+                                />
+                            </div>
+                        </div>
+                    ) : ("")}
 
                 </caption>
 
                 {loading ? (<caption className={'spinner'}></caption>) : (
                     <tbody>
-                        {/* {cards.filter(card => card.expiringDate.includes(search))} */}
+
                         {cards.filter(card => card.label.toLowerCase().includes(search.toLowerCase())).map((card) => {
                             return (
                                 <tr key={card.id} >
