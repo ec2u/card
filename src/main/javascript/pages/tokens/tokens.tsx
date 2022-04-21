@@ -56,35 +56,10 @@ export function CardTokens() {
 
     const inputRef = useRef<HTMLInputElement>(null);
 
-    let searchInput =
-        <div className={"search-box"}
-            onSubmit={(e) => inputRef.current?.blur()
-            }
-        >
-
-            <input
-                ref={inputRef}
-                type="text"
-                value={search}
-                placeholder="search by surname"
-                onChange={handleInput}
-
-
-            />
-            <X size={28}
-                className={"close-button"}
-                onClick={() => setClicked(false)}
-            />
-
-        </div>
-
-
-
     let SearchIcon =
         <div title={"search"}>
             <Search size={28}
                 onClick={() => setClicked(true)}
-
                 className={"search-button"}
             />
         </div>
@@ -104,7 +79,7 @@ export function CardTokens() {
 
             </header>
 
-            <table>
+            <table onBlur={() => setClicked(false)}>
 
                 <thead>
 
@@ -114,19 +89,44 @@ export function CardTokens() {
                         <th>password</th>
                         <th>token number</th>
                         <th>
-                            {clicked ? searchInput : SearchIcon}
+                            {SearchIcon}
 
                         </th>
-
                     </tr>
-
                 </thead>
 
-                <hr />
+                <caption><hr /></caption>
+
+                <caption>
+                    {clicked ? (
+                        <div className={"search-fields"}>
+                            <div className={"search-fields-start"}>
+                                <input
+                                    type="search"
+                                    className={"search-username"}
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                                <input
+                                    type="search"
+                                    className={"search-token"}
+                                />
+                            </div>
+
+                            <div title="Close">
+                                <X size={28}
+                                    className={"close-button"}
+                                    onClick={() => setClicked(false)}
+                                />
+                            </div>
+
+                        </div>
+                    ) : ("")}
+                </caption>
 
                 {loading ?
 
-                    (<div className="spinner"></div>
+                    (<caption className="spinner"></caption>
 
                     ) : (
 

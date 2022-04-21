@@ -4,18 +4,18 @@ import "./index.css";
 
 import { CardUser } from "./pages/user/user";
 import { CardUsers } from "./pages/users/users";
-import { Cardsidebar } from "./views/sidebar";
-import { Inspect } from "./pages/users/userinspect";
-import { Adduser } from "./pages/users/adduser";
-import { Edituser } from "./pages/users/edituser";
+import { CardSidebar } from "./views/sidebar";
+import { InspectUser } from "./pages/users/userinspect";
+import { AddUser } from "./pages/users/adduser";
+import { EditUser } from "./pages/users/edituser";
 import { VirtualCards } from "./pages/cards/cards";
 import { CardInspect } from "./pages/cards/cardinspect";
-import { Editcard } from "./pages/cards/editcard";
-import { Addcard } from "./pages/cards/addcard";
+import { EditCard } from "./pages/cards/editcard";
+import { AddCard } from "./pages/cards/addcard";
 import { CardTokens } from "./pages/tokens/tokens";
 import { TokenInspect } from "./pages/tokens/inspecttoken";
-import { Edittoken } from "./pages/tokens/edittoken";
-import { Addtoken } from "./pages/tokens/addtoken";
+import { EditToken } from "./pages/tokens/edittoken";
+import { AddToken } from "./pages/tokens/addtoken";
 
 
 
@@ -25,7 +25,7 @@ export function CardRoutes() {
   return (
     <div>
       <BrowserRouter>
-        <Cardsidebar
+        <CardSidebar
           onCollapse={(sidebar: boolean) => {
             setSidebar(sidebar);
           }}
@@ -36,23 +36,23 @@ export function CardRoutes() {
 
             <Route path="/user/" element={<CardUser />} />
             <Route path="/users/" element={<CardUsers />} />
-            <Route path="/users/:id/" element={<Inspect />} />
-            <Route path="/edit/users/:id/" element={<Edituser />} />
-            <Route path="/users/add" element={<Adduser />} />
+            <Route path="/users/:id/" element={<InspectUser />} />
+            <Route path="/edit/users/:id/" element={<EditUser />} />
+            <Route path="/users/add" element={<AddUser />} />
 
 
 
             <Route path="/cards/" element={<VirtualCards />} />
             <Route path="/cards/:id/" element={<CardInspect />} />
-            <Route path="/edit/cards/:id/" element={<Editcard />} />
-            <Route path="/cards/add" element={<Addcard />} />
+            <Route path="/edit/cards/:id/" element={<EditCard />} />
+            <Route path="/cards/add" element={<AddCard />} />
 
 
 
             <Route path="/tokens/" element={<CardTokens />} />
             <Route path="/tokens/:id/" element={<TokenInspect />} />
-            <Route path="/edit/tokens/:id/" element={<Edittoken />} />
-            <Route path="/tokens/add" element={<Addtoken />} />
+            <Route path="/edit/tokens/:id/" element={<EditToken />} />
+            <Route path="/tokens/add" element={<AddToken />} />
           </Routes>
         </div>
       </BrowserRouter>

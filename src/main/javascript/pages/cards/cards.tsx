@@ -1,4 +1,4 @@
-import { setDefaultResultOrder } from 'dns';
+
 import { ChevronRight, Plus, Search, X } from 'lucide-react';
 import React, { createElement, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom';
@@ -6,16 +6,13 @@ import './cards.css';
 
 
 interface Card {
-
+    label: string;
     holderForename: string;
     holderSurname: string;
     expiringDate: Date;
     virtualCardNumber: number;
     id: any;
-
-
 }
-
 
 export function VirtualCards() {
 
@@ -23,57 +20,49 @@ export function VirtualCards() {
     const [loading, setLoading] = useState<Boolean>(false);
     const [error, setError] = useState<any>(null);
     const [clicked, setClicked] = useState<Boolean>(false);
-    const [search, setSearch] = useState<string>("")
+    const [search, setSearch] = useState<string>("");
 
+
+
+    const fetchData = async (searchdata: string) => {
+        setLoading(true)
+
+        await fetch('/cards/' + searchdata, {
+            headers: {
+                Accept: 'application/json',
+            }
+        })
+            .then(response => response.json())
+            .then(data => setCards(data.contains))
+            .catch((error) => setError(error))
+
+        // error handle
+        // .catch((error) => setError(error))
+
+        setLoading(false)
+    }
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true)
-            await fetch('/cards/', {
-                headers: {
-                    Accept: 'application/json',
-                }
-            })
-                .then(response => response.json())
-                .then(data => setCards(data.contains))
-                .catch((error) => console.warn("Error:", error))
 
-            // error handle
-            // .catch((error) => setError(error))
-
-            setLoading(false)
-        }
-        fetchData();
+        fetchData("");
     }, [])
 
 
+    const searchSubmit = () => {
+        if (search === "") {
+            fetchData("");
+        } else {
+            fetchData("filters?surnamePrefix=" + search);
+        }
+    }
     const inputRef = useRef<HTMLInputElement>(null);
 
-    let searchInput =
-        <div className={"search-box"}
-            onSubmit={(e) => inputRef.current?.blur()
-            }
-        >
-
-            <input
-                ref={inputRef}
-                type="text"
-                value={search}
-                placeholder="search by surname"
-                onChange={(e) => setSearch(e.target.value)}
-
-            />
-            <X size={20} color="black"
-                onClick={() => setClicked(false)}
-            />
-        </div>
 
     let SearchIcon =
-        <div title={"search"}>
-            <Search size={28}
+        <div title={"search"} className={"search-icon"}>
+            <Search size={28} color="gray"
                 className={'button-search'}
                 onClick={() => setClicked(true)}
-                onBlur={() => setClicked(false)}
             />
         </div>
 
@@ -83,12 +72,13 @@ export function VirtualCards() {
 
                 <a>Cards</a>
                 <a title="newcard" href='/cards/add'>
-                    <Plus size={38} className={"button-plus"} />
+                    <Plus size={38} className={"button-plus"}
+                    />
                 </a>
 
             </header>
 
-            <table>
+            <table onBlur={() => setClicked(false)}>
                 <thead>
                     <tr>
                         <th>forename</th>
@@ -96,17 +86,51 @@ export function VirtualCards() {
                         <th>expiry date</th>
                         <th>card number</th>
                         <th>
-                            {clicked ? searchInput : SearchIcon}
+                            {SearchIcon}
+
 
                         </th>
                     </tr>
                 </thead>
 
-                <hr />
+                <caption>  <hr /> </caption>
+                <caption >
+                    {clicked ? (
+                        <div className={"search-fields"}>
+                            <div className={"search-fields-start"}>
+                                <input
+                                    type="search"
+                                    className={"search-label"}
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                                <input
+                                    type="date"
+                                    className={"search-date"}
+                                />
+                                <input
+                                    className={"search-number"}
+                                />
+                            </div>
+                            <div >
+                                <Search size={28}
+                                    className={'button-search'}
+                                    onClick={searchSubmit}
+                                />
+                                <X size={30}
+                                    onClick={() => setClicked(false)}
+                                    className={"close-button"}
+                                />
+                            </div>
+                        </div>
+                    ) : ("")}
 
-                {loading ? (<div className={'spinner'}></div>) : (
+                </caption>
+
+                {loading ? (<caption className={'spinner'}></caption>) : (
                     <tbody>
-                        {cards.filter(card => card.holderSurname.toLowerCase().includes(search.toLowerCase())).map((card) => {
+
+                        {cards.map((card) => {
                             return (
                                 <tr key={card.id} >
                                     <td>{card.holderForename}</td>
@@ -117,7 +141,8 @@ export function VirtualCards() {
                                     <td>
                                         <Link to={`${card.id}`} title="inspect">
                                             <ChevronRight size={40}
-                                                className={"button-arrow"} />
+                                                className={"button-arrow"}
+                                            />
                                         </Link>
                                     </td>
                                 </tr>

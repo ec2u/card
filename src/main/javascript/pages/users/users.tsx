@@ -1,5 +1,6 @@
 import { ChevronRight, Plus, Search, X } from "lucide-react";
 import React, { createElement, useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import './users.css';
 
 
@@ -28,7 +29,6 @@ export function CardUsers() {
 
   useEffect(() => {
 
-
     setLoading(true)
     const fetchData = async () => {
       await fetch("/users/", {
@@ -38,46 +38,19 @@ export function CardUsers() {
       })
         .then((response) => response.json())
         .then((data) => setUsers(data.contains))
-        .catch((error) => console.warn(error))
+        .catch((error) => console.error(error))
       setLoading(false)
     }
     fetchData();
   }, []);
 
 
-  const handleInput = (e: any) => {
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
-
-    if (e.keyCode === 27) {
-      setClicked(false)
-    }
 
   }
 
   const inputRef = useRef<HTMLInputElement>(null);
-
-  let searchInput =
-    <div className={"search-box"}
-      onSubmit={(e) => inputRef.current?.blur()
-      }
-    >
-
-      <input
-        ref={inputRef}
-        type="text"
-        value={search}
-        placeholder="search by surname"
-        onChange={handleInput}
-
-
-      />
-      <X size={28}
-        className={"close-button"}
-        onClick={() => setClicked(false)}
-      />
-
-    </div>
-
 
 
   let SearchIcon =
@@ -105,28 +78,61 @@ export function CardUsers() {
       </header>
 
       <table>
-
         <thead>
-
           <tr>
 
             <th>forename</th>
             <th>surname</th>
             <th>email</th>
             <th>
-              {clicked ? searchInput : SearchIcon}
-
+              {SearchIcon}
             </th>
 
           </tr>
-
         </thead>
 
-        <hr />
+        <caption > <hr /> </caption>
+
+        <caption>
+
+          {/* when search fields are active... */}
+
+          {clicked ? (
+
+            <div className={"search-fields"}>
+              <div className={"search-fields-start"}>
+                <input
+                  value={search}
+                  type="search"
+                  className={"search-label"}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <input
+                  type="search"
+                  className={"search-email"} />
+              </div>
+              <div title="Close">
+                <X size={28}
+                  className={"close-button"}
+                  onClick={() => setClicked(false)}
+                />
+              </div>
+            </div>
+
+
+
+          ) : ("")}
+
+        </caption>
 
         {loading ?
 
-          (<div className="spinner"></div>
+          (
+            <>
+              <caption className="spinner"></caption>
+              {error}
+            </>
+
 
           ) : (
 
@@ -140,10 +146,10 @@ export function CardUsers() {
                     <td>{user.surname}</td>
                     <td>{user.email}</td>
                     <td>
-                      <a href={`${user.id}`} title={"inspect"}
+                      <Link to={`${user.id}`} title={"inspect"}
                       >
                         <ChevronRight size={40} className={"button-arrow"} />
-                      </a>
+                      </Link>
                     </td>
 
                   </tr>

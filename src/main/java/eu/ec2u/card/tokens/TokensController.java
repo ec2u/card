@@ -13,14 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-
 import static eu.ec2u.card.ToolConfiguration.ContainerSize;
 import static eu.ec2u.card.events.Events.Action.*;
 import static org.springframework.http.ResponseEntity.*;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(Tokens.Id)
@@ -66,6 +65,21 @@ public final class TokensController {
 	) {
 
 		return ok().body(tokens.relate(tokenNumber));
+
+	}
+
+	@GetMapping("/filters")
+	@JsonView(Container.class)
+	ResponseEntity<Tokens> search(
+
+			@RequestParam(value= "usernamePrefix") Optional<String> usernamePrefix,
+			@RequestParam(value="tokenNumber") Optional<Long> tokenNumber,
+			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
+			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
+
+	) {
+
+		return ok().body(tokens.search(usernamePrefix, tokenNumber, PageRequest.of(page, size)));
 
 	}
 

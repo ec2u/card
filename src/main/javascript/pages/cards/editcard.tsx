@@ -2,6 +2,7 @@ import { Check, Trash2, X } from "lucide-react";
 import React, { createElement, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Deletedialog } from "../users/deletedialog";
+import { AddCard } from "./addcard";
 import './editcard.css'
 
 interface User {
@@ -13,8 +14,15 @@ interface User {
     id: any;
 }
 
-export function Editcard() {
-    const [updatecard, setUpdatecard] = useState<User>({} as User);
+export function EditCard() {
+    const [updatecard, setUpdatecard] = useState<User>({
+        holderForename: "",
+        holderSurname: "",
+        virtualCardNumber: 0,
+        expiringDate: new Date()
+
+    } as User);
+
     const [dialog, setDialog] = useState<Boolean>(false);
     const [clicked, setClicked] = useState<Boolean>(false);
     const [disable, setDisable] = useState<Boolean>(false);
@@ -24,19 +32,28 @@ export function Editcard() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`/cards/${id}`, {
-            headers: {
-                Accept: "application/json",
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => setUpdatecard(data));
+        const fetchData = async () => {
+            await fetch(`/cards/${id}`, {
+                headers: {
+                    Accept: "application/json",
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => setUpdatecard(data));
+        }
+        fetchData()
     }, []);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
 
-        if (value === "") { setDisable(true) }
+        if (updatecard.holderForename === "" || value === "" ||
+            updatecard.holderSurname === "" ||
+            updatecard.expiringDate === null ||
+            updatecard.virtualCardNumber === 0
+        ) {
+            setDisable(true)
+        }
 
         else {
             setDisable(false)
@@ -59,18 +76,14 @@ export function Editcard() {
 
 
 
-    const handleEdit = () => {
-
-
+    const handleEdit = async () => {
         if (disable) {
 
-
         }
-
         else {
 
             setLoading(true)
-            fetch(`/cards/${id}`, {
+            await fetch(`/cards/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-type": "application/json",
@@ -78,10 +91,11 @@ export function Editcard() {
                 },
                 body: JSON.stringify(userdata),
             })
-                .then((response) => response.json())
-                .catch(error => console.warn('error:', error))
-            setLoading(false)
-            navigate(`${updatecard.id}`)
+                .then(() => {
+                    setLoading(false)
+                    navigate(`${updatecard.id}`)
+                })
+                .catch(error => console.error('error:', error))
         }
 
     };
@@ -103,13 +117,13 @@ export function Editcard() {
 
     let showCheck =
 
-        < a title='Update' >
+        <div title='Update' >
             {loading ? (<div className={"spinner"}></div>) :
                 (<Check size={40} className={'check-button'}
                     onClick={handleEdit}
                     color={disable ? 'lightgray' : 'black'}
                 />)}
-        </a >
+        </div >
 
 
     let showTrash =
@@ -123,7 +137,8 @@ export function Editcard() {
 
 
 
-    const handleonFocus = () => {
+    const handleonFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.target.select();
         setClicked(true)
     }
 
@@ -133,7 +148,7 @@ export function Editcard() {
             <header>
 
                 <section>
-                    <a href='/cards/' className={"cards-link"}> Cards &#8250;</a>
+                    <a href='/cards/' className={"cards-link"} title="Cards"> Cards &#8250;</a>
                     <a href={`${updatecard.id}`}>{updatecard.label} </a>
                 </section>
                 <section>

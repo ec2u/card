@@ -5,10 +5,9 @@ card-tokens {
 
   & header {
     width: 100%;
-    margin: 2em 0em;
+    margin: 1.3em 0em;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-wrap: no-wrap;
     justify-content: space-between;
     & a {
       color: black;
@@ -56,6 +55,30 @@ card-tokens {
     & .button-arrow:hover {
       color: orange;
       transform: translateX(3px);
+    }
+    & .search-fields {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1em;
+
+      & input {
+        font-size: 0.8em;
+        border: 1px solid black;
+        border-radius: 5px;
+      }
+      & .search-username {
+        width: 20em;
+        margin-left: 3px;
+        margin-right: 4em;
+      }
+      & .search-token {
+        width: 8em;
+      }
+      & .close-button:hover {
+        color: red;
+        transform: translateY(-4px);
+      }
     }
   }
 }

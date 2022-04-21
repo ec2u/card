@@ -12,13 +12,18 @@ interface Adduser {
 }
 
 
-export function Adduser() {
-  const [adduser, setAdduser] = useState({} as Adduser);
-  const [disable, setDisable] = useState<Boolean>(false);
+export function AddUser() {
+  const [adduser, setAdduser] = useState({
+    forename: "",
+    surname: "",
+    email: ""
+  } as Adduser);
+  const [disable, setDisable] = useState<Boolean>(true);
   const [loading, setLoading] = useState<Boolean>(false);
+  const [emailerror, setEmailError] = useState<string>("");
   const navigate = useNavigate();
 
-  const userdata = {
+  const userData = {
     admin: adduser.admin,
     forename: adduser.forename,
     surname: adduser.surname,
@@ -26,31 +31,63 @@ export function Adduser() {
   };
 
 
-  const handleSubmit = async () => {
-    setLoading(true)
-    await fetch("/users/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userdata),
-    })
-      .then((response) => response.json())
-      .catch(error => console.warn('error:', error));
-    navigate('/users')
-
-  };
-
-
+  const validateEmail = (e: string) => {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(e)) {
+      setEmailError("Valid Email")
+      return true;
+    } else {
+      setEmailError("invalid Email")
+      return false
+    }
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
+
+
+    if (adduser.forename === "" ||
+      adduser.surname === "" ||
+      ((e.target.name == "email") && !validateEmail(value.toString())) ||
+      ((e.target.name != "email") && !validateEmail(adduser.email)) ||
+      value === ""
+    ) {
+      setDisable(true)
+    }
+    else {
+      setDisable(false)
+    }
+
     setAdduser((adduser) => ({
       ...adduser,
       [e.target.name]: value,
-    }));
+    }))
+  }
+
+
+  const handleSubmit = async () => {
+
+    if (disable) {
+
+    } else {
+      setLoading(true)
+      await fetch("/users/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      })
+        .then(() => {
+          setLoading(false)
+          navigate('/users')
+        })
+        .catch(error => console.error('error:', error));
+    }
+
   };
+
 
 
 
@@ -58,7 +95,7 @@ export function Adduser() {
     <>
       <header>
         <section>
-          <a href="/cards/" className={"users-link"} >Users &#8250;</a>
+          <a href="/cards/" className={"users-link"} title="Users">Users &#8250;</a>
           <a>New user</a>
         </section>
 
@@ -69,7 +106,8 @@ export function Adduser() {
             ) : (
 
               <Check onClick={handleSubmit} size={42}
-                className="button-check" />
+                className="button-check"
+                color={disable ? 'lightgray' : 'black'} />
             )}
           </a>
           <a href="/users/" title="close">
@@ -114,7 +152,9 @@ export function Adduser() {
               value={adduser.email}
               onChange={handleChange}
               className={'email'}
+
             />
+            <span>{emailerror}</span>
           </section>
 
         </div>

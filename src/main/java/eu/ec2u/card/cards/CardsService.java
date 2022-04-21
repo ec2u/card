@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import javax.swing.text.html.Option;
+import java.util.*;
 
 @Service
 public class CardsService {
@@ -62,6 +61,32 @@ public class CardsService {
 				})
 				.map(CardData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+	}
+
+	Cards search(
+
+			final Optional<String> forenamePrefix,
+			final Optional<String> surnamePrefix,
+			final Optional<String> expiryDate,
+			final Optional<Long> cardNumber,
+			final Pageable slice
+
+	) {
+
+		final Cards cards = new Cards();
+
+		cards.setPath(Cards.Id);
+
+		cards.setContains(this.cards.findAll(slice)
+				.map(CardData::transfer)
+				.filter(card -> Objects.equals(card.getVirtualCardNumber(), cardNumber.orElse(card.getVirtualCardNumber())))
+				.filter(card -> card.getHolderSurname().startsWith(surnamePrefix.orElse(card.getHolderSurname())))
+				.filter(card -> card.getHolderForename().startsWith(forenamePrefix.orElse(card.getHolderForename())))
+				.filter(card -> card.getExpiringDate().toString().equals(expiryDate.orElse(card.getExpiringDate().toString())))
+				.toList());
+
+		return cards;
+
 	}
 
 }

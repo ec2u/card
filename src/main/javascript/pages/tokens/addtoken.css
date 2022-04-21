@@ -5,16 +5,13 @@ card-addtoken {
 
   & header {
     width: 100%;
-    margin: 2em 0em;
+    margin: 1.3em 0em;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-wrap: no-wrap;
     justify-content: space-between;
 
     & section {
       display: flex;
-      align-items: center;
-      flex-flow: wrap;
       gap: 0.5em;
     }
     & a {

@@ -14,13 +14,18 @@ interface Token {
 }
 
 
-export function Addtoken() {
-    const [addtoken, setAddtoken] = useState({} as Token);
-    const [disable, setDisable] = useState<Boolean>(false)
+export function AddToken() {
+    const [addtoken, setAddtoken] = useState({
+        serviceOrUserName: "",
+        serviceOrUserPassword: "",
+        id: "",
+        tokenNumber: 0,
+    } as Token);
+    const [disable, setDisable] = useState<Boolean>(true)
     const [loading, setLoading] = useState<Boolean>(false)
     const navigate = useNavigate();
 
-    const tokendata = {
+    const tokenData = {
         serviceOrUserName: addtoken.serviceOrUserName,
         serviceOrUserPassword: addtoken.serviceOrUserPassword,
         tokenNumber: addtoken.tokenNumber,
@@ -30,10 +35,13 @@ export function Addtoken() {
 
         const value = e.target.value
 
-        if (!addtoken.serviceOrUserName) { setDisable(true) }
+        if (addtoken.serviceOrUserName === "" ||
+            addtoken.serviceOrUserPassword === "" ||
+            addtoken.tokenNumber ||
+            value === "") {
 
-
-        else {
+            setDisable(true)
+        } else {
             setDisable(false)
         }
 
@@ -55,28 +63,28 @@ export function Addtoken() {
                     Accept: "application/json",
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(tokendata),
+                body: JSON.stringify(tokenData),
             })
-                .then((response) => response.json())
-                .catch(error => console.warn('error:', error));
-
-            navigate('/tokens/');
+                .then(() => {
+                    setLoading(false)
+                    navigate('/tokens/');
+                })
+                .catch(error => console.warn('error:', error))
         }
     }
-
 
 
     return createElement("card-addtoken", {},
         <>
             <header>
                 <section>
-                    <a href="/tokens/" className={"tokens-link"}>Tokens </a>
+                    <a href="/tokens/" className={"tokens-link"} title="Tokens">Tokens </a>
                     <a>&#8250;</a>
                     <a> New Token</a>
                 </section>
 
                 <section>
-                    <a >
+                    <a title="Save">
                         {loading ? (<div className={"spinner"}></div>
                         ) : (
                             <Check onClick={handleSubmit}
@@ -85,7 +93,7 @@ export function Addtoken() {
                                 className={"button-check"}
                             />)}
                     </a>
-                    <a href="/tokens/">
+                    <a href="/tokens/" title="Close">
                         < X size={40} className={'button-close'} />
                     </a>
                 </section>

@@ -6,7 +6,7 @@ import "./sidebar.css";
 
 
 
-export const Cardsidebar = (props: any) => {
+export const CardSidebar = (props: any) => {
 
 
   const [sidebar, setSidebar] = useState<boolean>(false);
@@ -29,19 +29,19 @@ export const Cardsidebar = (props: any) => {
           <span> EC2U Card</span>
         </div>
         <div className="items">
-          <Link to="/cards/" className="items-logo">
+          <Link to="/cards/" className="items-logo" title="Cards">
             <Contact size={60} />
             <span> Cards</span>
           </Link>
         </div>
         <div className="items">
-          <Link to="/users/" className="items-logo">
+          <Link to="/users/" className="items-logo" title="Users">
             <Users size={60} />
             <span> Users </span>
           </Link>
         </div>
         <div className="items">
-          <Link to="/tokens/" className="items-logo">
+          <Link to="/tokens/" className="items-logo" title="Tokens">
             <Key size={60} />
             <span> Tokens  </span>
           </Link>

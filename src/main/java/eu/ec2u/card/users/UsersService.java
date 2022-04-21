@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -78,16 +79,25 @@ public class UsersService {
 
     }
 
-    Users searchBySurnamePrefix(final String surnamePrefix, final Pageable slice) {
+    Users search(
+
+            final Optional<String> forenamePrefix,
+            final Optional<String> surnamePrefix,
+            final Optional<String> emailPrefix,
+            final Pageable slice
+
+    ) {
 
         final Users users = new Users();
 
         users.setPath(Users.Id);
 
-        users.setContains(this.users.findBySurnameStartingWith(surnamePrefix, slice)
-                .stream()
+        users.setContains(this.users.findAll(slice)
                 .map(UserData::transfer)
-                .collect(Collectors.toList()) );
+                .filter(user -> user.getSurname().startsWith(surnamePrefix.orElse(user.getSurname())))
+                .filter(user -> user.getForename().startsWith(forenamePrefix.orElse(user.getForename())))
+                .filter(user -> user.getEmail().startsWith(emailPrefix.orElse(user.getEmail())))
+                .toList());
 
         return users;
 
