@@ -6,8 +6,7 @@ card-cards {
   & header {
     margin: 1.3em 0em;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-wrap: no-wrap;
     justify-content: space-between;
     & a {
       color: black;
@@ -65,64 +64,33 @@ card-cards {
   }
   & .search-fields {
     display: flex;
-    align-items: center;
+    justify-content: space-between;
     margin-bottom: 1em;
-    & .search-label {
-      width: 17rem;
-      font-size: 1em;
+
+    & input {
+      font-size: 0.8em;
       border: 1px solid black;
       border-radius: 5px;
+    }
+
+    & .search-label {
+      margin-left: 5px;
+      margin-right: 8em;
+      width: 20em;
     }
     & .search-date {
-      border: 1px solid black;
-      border-radius: 5px;
-      font-size: 1em;
-      margin-left: 6em;
-      width: 7rem;
+      margin-right: 8em;
+      width: 7em;
     }
     & .search-number {
-      border: 1px solid black;
-      border-radius: 5px;
-      font-size: 1em;
-      margin-left: 4.4em;
-      width: 6rem;
-      margin-right: 29.5em;
-    }
-    & .close-button {
-      cursor: pointer;
+      width: 5em;
     }
     & .close-button:hover {
       color: red;
-      transform: translateY(-3px);
+      transform: translateY(-4px);
     }
   }
 }
-/* .search-box {
-  position: fixed;
-  top: 5%;
-  left: 40%;
-  transition: 0.2s ease-all;
-
-  & input {
-    padding: 0.6em;
-    width: 22em;
-    border: 1px solid gray;
-    box-shadow: 0 0 7px black;
-  }
-  & input:focus {
-    border: none;
-    box-shadow: 0 0 100px 1000px rgba(0, 0, 0, 0.3);
-  }
-  & .close-button {
-    position: absolute;
-    right: -13px;
-    top: -12px;
-    cursor: pointer;
-  }
-  & .close-button:hover {
-    color: red;
-  }
-} */
 
 .spinner::before {
   animation: 1.5s linear infinite spinner;
