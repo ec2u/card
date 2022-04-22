@@ -30,12 +30,14 @@ card-edittoken {
     justify-content: space-between;
     text-align: left;
     overflow: auto;
+    grid-row-gap: 1em;
 
     & .start {
       width: 50%;
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
+      grid-row-gap: 1em;
     }
     & section {
       display: flex;
@@ -50,10 +52,27 @@ card-edittoken {
         padding: 0.2em;
         border-radius: 0.3em;
         font-size: 0.9em;
+        box-shadow: 0 0 5px 5px lightgray;
+      }
+      & input:focus {
+        outline: 2px solid gray;
+        box-shadow: 0 0 2px 4px lightgray;
       }
       & input:required:invalid {
         border: 2px solid red;
       }
+    }
+    & .username {
+      width: 10em;
+      margin-left: 5px;
+    }
+    & .password {
+      width: 10em;
+      margin-left: 5px;
+    }
+    & .token-number {
+      width: 6em;
+      margin-left: 5px;
     }
   }
   & .check-button {

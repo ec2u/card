@@ -7,10 +7,12 @@ card-addcard {
     width: 100%;
     margin: 1.3em 0em;
     display: flex;
+    flex-wrap: no-wrap;
     justify-content: space-between;
 
     & section {
       display: flex;
+      flex-wrap: no-wrpa;
       gap: 0.5em;
     }
     & a {
@@ -29,12 +31,14 @@ card-addcard {
     text-align: left;
     justify-content: space-between;
     overflow: auto;
+    grid-row-gap: 1em;
 
     & .start {
       width: 50%;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      grid-row-gap: 1em;
     }
     & section {
       display: flex;
@@ -50,7 +54,34 @@ card-addcard {
         padding: 0.2em;
         border-radius: 0.3em;
         font-size: 0.9em;
+        box-shadow: 0 0 5px 5px lightgray;
       }
+      & input:focus {
+        outline: 2px solid gray;
+        box-shadow: 0 0 2px 4px lightgray;
+      }
+      & input:required:valid:not([value="0"]) {
+        border: 3px solid green;
+      }
+      & input:required:invalid:not() {
+        border: 1px solid red;
+      }
+    }
+    & .forename {
+      width: 9rem;
+      margin-left: 5px;
+    }
+    & .surname {
+      width: 9rem;
+      margin-left: 5px;
+    }
+    & .card-number {
+      width: 5rem;
+      margin-left: 5px;
+    }
+    & .expiry-date {
+      border: 1px solid lightgray;
+      margin-left: 5px;
     }
   }
   & .button-check {

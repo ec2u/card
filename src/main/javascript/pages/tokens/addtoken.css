@@ -30,12 +30,14 @@ card-addtoken {
     text-align: left;
     justify-content: space-between;
     overflow: auto;
+    grid-row-gap: 1em;
 
     & .start {
       width: 50%;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      grid-row-gap: 1em;
     }
     & section {
       display: flex;
@@ -51,7 +53,30 @@ card-addtoken {
         padding: 0.2em;
         border-radius: 0.3em;
         font-size: 0.9em;
+        box-shadow: 0 0 5px 5px lightgray;
       }
+      & input:focus {
+        outline: 2px solid gray;
+        box-shadow: 0 0 2px 4px lightgray;
+      }
+      & input:required:valid:not([value="0"]) {
+        border: 3px solid green;
+      }
+      & input:required:invalid:not([value=""]) {
+        border: 1px solid red;
+      }
+    }
+    & .username {
+      width: 10em;
+      margin-left: 5px;
+    }
+    & .password {
+      width: 10em;
+      margin-left: 5px;
+    }
+    & .number {
+      width: 6em;
+      margin-left: 5px;
     }
   }
   & .button-check {

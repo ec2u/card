@@ -6,7 +6,6 @@ card-inspectcard {
     width: 100%;
     margin: 1.3em 0em;
     display: flex;
-
     justify-content: space-between;
 
     & section {
@@ -43,7 +42,7 @@ card-inspectcard {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-
+    grid-row-gap: 1em;
     overflow: auto;
 
     & .start {
@@ -51,6 +50,7 @@ card-inspectcard {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      grid-row-gap: 1em;
     }
 
     & section {

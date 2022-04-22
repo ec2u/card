@@ -7,12 +7,10 @@ card-edituser {
     width: 100%;
     margin: 1.3em 0em;
     display: flex;
-    
     justify-content: space-between;
 
     & section {
       display: flex;
-      
       gap: 0.5em;
     }
     & a {
@@ -31,12 +29,14 @@ card-edituser {
     justify-content: space-between;
     text-align: left;
     overflow: auto;
+    grid-row-gap: 1em;
 
     & .start {
       width: 50%;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      grid-row-gap: 1em;
     }
 
     & section {
@@ -52,9 +52,26 @@ card-edituser {
         padding: 0.2em;
         border-radius: 0.3em;
         font-size: 0.9em;
+        box-shadow: 0 0 5px 5px lightgray;
+      }
+      & input:focus {
+        outline: 2px solid gray;
+        box-shadow: 0 0 2px 4px lightgray;
       }
       & input:required:invalid {
         border: 2px solid red;
+      }
+      & .forename {
+        width: 10em;
+        margin-left: 5px;
+      }
+      & .surname {
+        width: 10em;
+        margin-left: 5px;
+      }
+      & .email {
+        width: 12em;
+        margin-left: 5px;
       }
       & .checkbox {
         height: 1.6em;

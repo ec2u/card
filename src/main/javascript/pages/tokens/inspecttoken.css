@@ -43,13 +43,14 @@ card-inspecttoken {
     display: flex;
     justify-content: space-between;
     text-align: left;
-    overflow-x: auto;
-
+    overflow: auto;
+    grid-row-gap: 1em;
     & .start {
       width: 30%;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      grid-row-gap: 1em;
     }
     & section {
       display: flex;

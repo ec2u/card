@@ -30,12 +30,14 @@ card-editcard {
     justify-content: space-between;
     text-align: left;
     overflow: auto;
+    grid-row-gap: 1em;
 
     & .start {
       width: 50%;
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
+      grid-row-gap: 1em;
     }
     & section {
       display: flex;
@@ -50,10 +52,27 @@ card-editcard {
         padding: 0.2em;
         border-radius: 0.3em;
         font-size: 0.9em;
+        box-shadow: 0 0 5px 5px lightgray;
       }
       & input:required:invalid {
         border: 2px solid red;
       }
+    }
+    & .forename {
+      width: 10em;
+      margin-left: 5px;
+    }
+    & .surname {
+      width: 10em;
+      margin-left: 5px;
+    }
+    & .expiry-date {
+      border: 1px solid lightgray;
+      margin-left: 5px;
+    }
+    & .card-number {
+      width: 5em;
+      margin-left: 5px;
     }
   }
   & .check-button {

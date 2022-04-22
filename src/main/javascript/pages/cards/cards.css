@@ -71,6 +71,11 @@ card-cards {
       font-size: 0.8em;
       border: 1px solid black;
       border-radius: 5px;
+      box-shadow: 0 0 5px 5px lightgray;
+    }
+    & input:focus {
+      outline: 2px solid gray;
+      box-shadow: 0 0 2px 4px lightgray;
     }
 
     & .search-label {
@@ -81,6 +86,7 @@ card-cards {
     & .search-date {
       margin-right: 8em;
       width: 7em;
+      border: 1px solid lightgray;
     }
     & .search-number {
       width: 5em;
