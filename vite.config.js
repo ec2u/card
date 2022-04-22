@@ -64,6 +64,10 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 
     server: {
 
+        host: "localhost",
+        port: 3000,
+        strictPort: true,
+
         proxy: {
             "^/profile|/saml/.*$": {
                 target: "https://card.ec2u.eu/",
