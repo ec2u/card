@@ -21,6 +21,7 @@ export function VirtualCards() {
     const [error, setError] = useState<any>(null);
     const [clicked, setClicked] = useState<Boolean>(false);
     const [search, setSearch] = useState<string>("");
+    const [timer, setTimer] = useState<number>(0);
 
 
 
@@ -44,8 +45,12 @@ export function VirtualCards() {
 
     useEffect(() => {
 
-        fetchData("");
-    }, [])
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            searchSubmit();
+        }, 1000);
+        setTimer(timerID)
+    }, [search])
 
 
     const searchSubmit = () => {
@@ -56,6 +61,11 @@ export function VirtualCards() {
         }
     }
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const handleSearchLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value)
+
+    }
 
 
     let SearchIcon =
@@ -102,7 +112,7 @@ export function VirtualCards() {
                                     type="search"
                                     className={"search-label"}
                                     value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
+                                    onChange={handleSearchLabelChange}
                                 />
                                 <input
                                     type="date"
@@ -113,10 +123,10 @@ export function VirtualCards() {
                                 />
                             </div>
                             <div >
-                                <Search size={28}
+                                {/* <Search size={28}
                                     className={'button-search'}
                                     onClick={searchSubmit}
-                                />
+                                /> */}
                                 <X size={30}
                                     onClick={() => setClicked(false)}
                                     className={"close-button"}
@@ -128,7 +138,7 @@ export function VirtualCards() {
                 </caption>
 
                 {loading ? (<caption className={'spinner'}></caption>) : (
-                    <tbody>
+                    <tbody >
 
                         {cards.map((card) => {
                             return (

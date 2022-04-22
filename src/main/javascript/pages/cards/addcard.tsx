@@ -25,6 +25,8 @@ export function AddCard() {
 
     const [disable, setDisable] = useState<Boolean>(true);
     const [loading, setLoading] = useState<Boolean>(false);
+    const [apiErrors, setapiErrors] = useState<any>([]);
+    const [numberError, setNumberError] = useState<string>("");
 
     const navigate = useNavigate();
 
@@ -35,9 +37,17 @@ export function AddCard() {
         virtualCardNumber: addcard.virtualCardNumber,
     };
 
+    const validateNumber = (e: any) => {
+        const value = e.target.value
+        setAddcard((addcard) => ({
+            ...addcard,
+            [e.target.name]: value,
+        }));
+
+
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
 
         const value = e.target.value
 
@@ -73,12 +83,13 @@ export function AddCard() {
             })
                 .then(() => {
                     setLoading(false)
-                    navigate('/cards/');
 
                 })
-                .catch(error => console.warn('error:', error));
+                .catch((error) => setapiErrors(error));
         }
+        console.log(apiErrors)
     }
+
 
 
 
@@ -116,7 +127,8 @@ export function AddCard() {
                     <section>
                         <label>forename</label>
                         <input
-                            className={"input"}
+                            className={"forename"}
+
                             type="text"
                             required
                             name="holderForename"
@@ -128,7 +140,8 @@ export function AddCard() {
                     <section>
                         <label>surname</label>
                         <input
-                            className={"input"}
+                            className={"surname"}
+
                             type="text"
                             required
                             name="holderSurname"
@@ -140,7 +153,7 @@ export function AddCard() {
                     <section>
                         <label>expiry date</label>
                         <input
-                            className={"input"}
+                            className={"expiry-date"}
                             type="date"
                             required
                             name="expiringDate"
@@ -156,14 +169,15 @@ export function AddCard() {
                     <section>
                         <label>card number</label>
                         <input
-                            className={"input"}
+                            className={"card-number"}
                             required
                             // className="number"
                             type="text"
                             name="virtualCardNumber"
                             value={addcard.virtualCardNumber}
-                            onChange={handleChange}
+                            onChange={validateNumber}
                         />
+                        <span>{numberError}</span>
                     </section>
 
                 </div>

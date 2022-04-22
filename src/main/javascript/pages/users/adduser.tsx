@@ -41,6 +41,7 @@ export function AddUser() {
     }
   }
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
@@ -129,6 +130,7 @@ export function AddUser() {
               name="forename"
               value={adduser.forename}
               onChange={handleChange}
+              className={"forename"}
             />
           </section>
 
@@ -140,6 +142,7 @@ export function AddUser() {
               name="surname"
               value={adduser.surname}
               onChange={handleChange}
+              className={"surname"}
             />
           </section>
 
@@ -152,6 +155,7 @@ export function AddUser() {
               value={adduser.email}
               onChange={handleChange}
               className={'email'}
+
 
             />
             <span>{emailerror}</span>

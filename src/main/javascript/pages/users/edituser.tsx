@@ -169,7 +169,7 @@ export function EditUser() {
               required
               type='text'
               name="forename"
-              className="forename"
+              className={"forename"}
               value={updateuser.forename}
               onChange={handleChange}
               onFocus={handleonFocus}
@@ -182,7 +182,7 @@ export function EditUser() {
               required
               type='text'
               name="surname"
-              className="surname"
+              className={"surname"}
               value={updateuser.surname}
               onChange={handleChange}
               onFocus={handleonFocus}
@@ -194,7 +194,7 @@ export function EditUser() {
             <input
               required
               type='email'
-              className="email"
+              className={"email"}
               name="email"
               value={updateuser.email}
               onChange={handleChange}
@@ -208,7 +208,7 @@ export function EditUser() {
           <section>
             <label className="label-admin"> admin</label>
             <input
-              className="checkbox"
+              className={"checkbox"}
               name='admin'
               type="checkbox"
               checked={updateuser.admin}

@@ -8,7 +8,7 @@ interface Token {
     readonly label: string;
     readonly serviceOrUserName: string;
     readonly serviceOrUserPassword: string;
-    readonly id: number | string;
+    readonly id: number;
     readonly tokenNumber: number;
 }
 
@@ -17,10 +17,7 @@ export function EditToken() {
         label: "",
         serviceOrUserName: "",
         serviceOrUserPassword: "",
-        id: "",
         tokenNumber: 0,
-
-
     } as Token);
     const [dialog, setDialog] = useState<Boolean>(false);
     const [clicked, setClicked] = useState<Boolean>(false);
@@ -166,7 +163,7 @@ export function EditToken() {
                             required
                             type='text'
                             name="serviceOrUserName"
-                            className="username"
+                            className={"username"}
                             value={updatetoken.serviceOrUserName}
                             onChange={handleChange}
                             onFocus={handleonFocus}
@@ -179,7 +176,7 @@ export function EditToken() {
                             required
                             type='text'
                             name="serviceOrUserPassword"
-                            className="password"
+                            className={"password"}
                             value={updatetoken.serviceOrUserPassword}
                             onChange={handleChange}
                             onFocus={handleonFocus}
@@ -197,7 +194,7 @@ export function EditToken() {
                         <input
                             required
                             type='text'
-                            className="tokennumber"
+                            className={"token-number"}
                             name="tokenNumber"
                             value={updatetoken.tokenNumber}
                             onChange={handleChange}

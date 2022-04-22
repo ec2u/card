@@ -44,7 +44,7 @@ export function CardRoutes() {
 
             <Route path="/cards/" element={<VirtualCards />} />
             <Route path="/cards/:id/" element={<CardInspect />} />
-            <Route path="/edit/cards/:id/" element={<EditCard />} />
+            <Route path="/cards/:id/edit" element={<EditCard />} />
             <Route path="/cards/add" element={<AddCard />} />
 
 

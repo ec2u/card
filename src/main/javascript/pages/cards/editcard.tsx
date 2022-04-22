@@ -170,7 +170,7 @@ export function EditCard() {
                             required
                             type='text'
                             name="holderForename"
-                            className="forename"
+                            className={"forename"}
                             value={updatecard.holderForename}
                             onChange={handleChange}
                             onFocus={handleonFocus}
@@ -183,7 +183,7 @@ export function EditCard() {
                             required
                             type='text'
                             name="holderSurname"
-                            className="surname"
+                            className={"surname"}
                             value={updatecard.holderSurname}
                             onChange={handleChange}
                             onFocus={handleonFocus}
@@ -195,7 +195,7 @@ export function EditCard() {
                         <input
                             required
                             type='date'
-                            className="date"
+                            className={"expiry-date"}
                             name="expiringDate"
                             value={updatecard.expiringDate}
                             onChange={handleChange}
@@ -209,7 +209,7 @@ export function EditCard() {
 
                     <section>
                         <label>card number</label>
-                        <input className="number"
+                        <input className={"card-number"}
                             required
                             name='virtualCardNumber'
                             type="text"

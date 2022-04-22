@@ -112,6 +112,7 @@ export function AddToken() {
                             name="serviceOrUserName"
                             value={addtoken.serviceOrUserName}
                             onChange={handleChange}
+                            className={"username"}
                         />
                     </section>
 
@@ -123,6 +124,7 @@ export function AddToken() {
                             name="serviceOrUserPassword"
                             value={addtoken.serviceOrUserPassword}
                             onChange={handleChange}
+                            className={"password"}
                         />
                     </section>
 
