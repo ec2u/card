@@ -21,7 +21,8 @@ use Firebase\JWT\Key;
 use Firebase\JWT\SignatureInvalidException;
 
 $target = $_REQUEST['target'];
-$found = array_search($target, $config['whitelist']);
+$found = array_search_partial($config['whitelist'], $target);
+
 if ($found === false)
 {
         #header('WWW-Authenticate: Basic realm="My Realm"');
@@ -32,16 +33,18 @@ if ($found === false)
 
 if (isset($_SERVER['mail'])) $uid = $_SERVER['mail'];
 if (isset($_SERVER["schacPersonalUniqueCode"])) $esi = $_SERVER["schacPersonalUniqueCode"];
+if (isset($_SERVER["schacHomeOrganisation"])) $organization=$_SERVER["schacHomeOrganisation"];
 //"urn:schac:personalUniqueCode:int:esi:unipv.it:296679";
 
 // TODO: ridurre il time interval
 $payload = array(
 	"exp" => intval(microtime(true))+60,
-	"sub" => json_encode(array("esi" => $esi, "uid" => $uid))
+	"sub" => json_encode(array("esi" => $esi, "uid" => $uid, "hei" => $organization))
 );
 
 $jwt = JWT::encode($payload, $config['jwt-key'], 'HS256');
-$location = "Location: $target?$jwt";
+#$location = "Location: $target?$jwt";
+$location = "Location: $target";
 header($location);
 
 /*try {
@@ -51,5 +54,19 @@ catch (SignatureInvalidException $e)
 {
 	echo "Impossibile decodificare";
 }*/
+
+function array_search_partial($arr, $keyword)
+{
+	foreach($arr as $index => $string) {
+		if (startsWith($keyword, $string))
+			return $index;
+	}
+	return FALSE;
+}
+
+function startsWith( $haystack, $needle ) {
+     $length = strlen( $needle );
+     return substr( $haystack, 0, $length ) === $needle;
+}
 
 ?>
