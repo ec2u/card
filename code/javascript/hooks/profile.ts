@@ -138,7 +138,15 @@ export function CardProfile({
 
 
     function login() {
-        location.replace(`${sso}?target=${encodeURIComponent(location.href)}&hei=${"unipv.it"}`); // !!! select from profile
+        try {
+
+            setProfile(undefined);
+
+        } finally {
+
+            location.replace(`${sso}?target=${encodeURIComponent(location.href)}`);
+
+        }
     }
 
     function logout() {
