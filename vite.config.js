@@ -23,8 +23,6 @@ const env=resolve("code/environment/");
 const src=resolve("code/javascript/");
 const out=resolve("dist/static/");
 
-console.log(process.env);
-
 process.env.card_version=process.env.npm_package_version;
 process.env.card_instant=new Date().toISOString();
 

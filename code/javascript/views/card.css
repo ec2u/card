@@ -47,6 +47,11 @@ card-card {
             background-position: 0 0;
             background-size: contain;
             background-repeat: no-repeat;
+
+            &::after {
+                display: none !important;
+            }
+
         }
 
         & > .menu {
