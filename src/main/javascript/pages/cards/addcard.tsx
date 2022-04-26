@@ -49,17 +49,22 @@ export function AddCard() {
         }
 
     }
-    const disableDates = () => {
+    let disableDates = () => {
         var today, dd, mm, yyyy;
         today = new Date();
         dd = today.getDate() + 1;
         mm = today.getMonth() + 1;
         yyyy = today.getFullYear();
-        return (
-            yyyy + "_" + mm + "_" + dd
-        )
+
+        if (mm < 10)
+            mm = '0' + mm.toString();
+        if (dd < 10)
+            dd = '0' + dd.toString();
+
+        return yyyy + "-" + mm + "-" + dd
 
     }
+    console.log(disableDates())
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         const value = e.target.value
@@ -176,7 +181,9 @@ export function AddCard() {
                             onChange={handleChange}
                             min={disableDates()}
                         />
+
                     </section>
+
 
                 </div>
 
