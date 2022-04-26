@@ -12,6 +12,7 @@ card-inspecttoken {
     & section {
       display: flex;
       gap: 0.5em;
+      grid-row-gap: 0px;
     }
     & a {
       text-decoration: none;
@@ -60,7 +61,7 @@ card-inspecttoken {
         color: rgb(161, 157, 157);
       }
       & span {
-        margin-top: 1em;
+        margin-top: 0.5em;
         font-size: 0.9em;
       }
       & .checkbox {

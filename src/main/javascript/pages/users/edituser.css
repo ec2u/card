@@ -47,7 +47,7 @@ card-edituser {
         color: rgb(161, 157, 157);
       }
       & input {
-        margin-top: 1em;
+        margin-top: 0.5em;
         border: 1px solid black;
         padding: 0.2em;
         border-radius: 0.3em;

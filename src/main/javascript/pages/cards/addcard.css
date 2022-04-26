@@ -2,6 +2,7 @@ card-addcard {
   width: 95%;
   display: grid;
   align-items: stretch;
+  overflow: auto;
 
   & header {
     width: 100%;
@@ -12,8 +13,9 @@ card-addcard {
 
     & section {
       display: flex;
-      flex-wrap: no-wrpa;
+      flex-wrap: no-wrap;
       gap: 0.5em;
+      grid-row-gap: 0px;
     }
     & a {
       text-decoration: none;
@@ -21,7 +23,7 @@ card-addcard {
       font-size: 1.4em;
     }
     & .cards-link:hover {
-      color: orange;
+      color: gray;
       transform: translateX(-3px);
     }
   }
@@ -30,7 +32,7 @@ card-addcard {
     display: flex;
     text-align: left;
     justify-content: space-between;
-    overflow: auto;
+    overflow-y: auto;
     grid-row-gap: 1em;
 
     & .start {
@@ -49,7 +51,7 @@ card-addcard {
         color: rgb(161, 157, 157);
       }
       & input {
-        margin-top: 1em;
+        margin-top: 0.5em;
         border: 1px solid black;
         padding: 0.2em;
         border-radius: 0.3em;
@@ -63,7 +65,8 @@ card-addcard {
       & input:required:valid:not([value="0"]) {
         border: 3px solid green;
       }
-      & input:required:invalid:not() {
+
+      & input:required:invalid:not([value=""]) {
         border: 1px solid red;
       }
     }
