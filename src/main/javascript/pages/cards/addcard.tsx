@@ -37,22 +37,38 @@ export function AddCard() {
         virtualCardNumber: addcard.virtualCardNumber,
     };
 
-    const validateNumber = (e: any) => {
-        const value = e.target.value
-        setAddcard((addcard) => ({
-            ...addcard,
-            [e.target.name]: value,
-        }));
 
+    const validateNumber = (e: number) => {
+
+        if (/^\d+$/.test(String(e).toLowerCase())) {
+            setNumberError("Valid number")
+            return true;
+        } else {
+            setNumberError("invalid number")
+            return (false)
+        }
 
     }
+    const disableDates = () => {
+        var today, dd, mm, yyyy;
+        today = new Date();
+        dd = today.getDate() + 1;
+        mm = today.getMonth() + 1;
+        yyyy = today.getFullYear();
+        return (
+            yyyy + "_" + mm + "_" + dd
+        )
 
+    }
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         const value = e.target.value
 
-        if (addcard.holderForename === "" || addcard.holderSurname === ""
-            || addcard.virtualCardNumber === 0 || value === "") {
+        if (addcard.holderForename === "" || addcard.holderSurname === "" ||
+            addcard.virtualCardNumber === 0 ||
+            value === "" ||
+            ((e.target.name = "virtualCardNumber") && !validateNumber(addcard.virtualCardNumber))
+        ) {
             setDisable(true)
 
         } else {
@@ -81,24 +97,26 @@ export function AddCard() {
                 },
                 body: JSON.stringify(userData),
             })
-                .then(() => {
+                .then((response) => {
                     setLoading(false)
-
+                    if (response.ok) {
+                        navigate("/cards/")
+                    } else {
+                        setapiErrors(response.statusText);
+                        console.warn(response.statusText);
+                    }
                 })
-                .catch((error) => setapiErrors(error));
+                .catch(error => console.warn("error:", error))
         }
         console.log(apiErrors)
     }
-
-
 
 
     return createElement("card-addcard", {},
         <>
             <header>
                 <section>
-                    <a href="/cards/" className={"cards-link"} title="Cards">Cards </a>
-                    <a>&#8250;</a>
+                    <a href="/cards/" className={"cards-link"} title="Cards">Cards &#8250;</a>
                     <a> New Card</a>
                 </section>
 
@@ -119,7 +137,7 @@ export function AddCard() {
                 </section>
 
             </header>
-
+            <span>{apiErrors}</span>
             <form>
 
                 <div className={"start"}>
@@ -128,7 +146,6 @@ export function AddCard() {
                         <label>forename</label>
                         <input
                             className={"forename"}
-
                             type="text"
                             required
                             name="holderForename"
@@ -141,7 +158,6 @@ export function AddCard() {
                         <label>surname</label>
                         <input
                             className={"surname"}
-
                             type="text"
                             required
                             name="holderSurname"
@@ -158,7 +174,7 @@ export function AddCard() {
                             required
                             name="expiringDate"
                             onChange={handleChange}
-                        // className={'expiringdate'}
+                            min={disableDates()}
                         />
                     </section>
 
@@ -171,11 +187,11 @@ export function AddCard() {
                         <input
                             className={"card-number"}
                             required
-                            // className="number"
                             type="text"
                             name="virtualCardNumber"
                             value={addcard.virtualCardNumber}
-                            onChange={validateNumber}
+                            onChange={handleChange}
+                            pattern="[0-9]*"
                         />
                         <span>{numberError}</span>
                     </section>

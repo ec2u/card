@@ -49,9 +49,10 @@ export function AddUser() {
 
     if (adduser.forename === "" ||
       adduser.surname === "" ||
+      value === "" ||
       ((e.target.name == "email") && !validateEmail(value.toString())) ||
-      ((e.target.name != "email") && !validateEmail(adduser.email)) ||
-      value === ""
+      ((e.target.name != "email") && !validateEmail(adduser.email))
+
     ) {
       setDisable(true)
     }

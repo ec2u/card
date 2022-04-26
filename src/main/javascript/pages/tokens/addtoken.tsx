@@ -23,6 +23,7 @@ export function AddToken() {
     } as Token);
     const [disable, setDisable] = useState<Boolean>(true)
     const [loading, setLoading] = useState<Boolean>(false)
+    const [numberError, setNumberError] = useState<string>("");
     const navigate = useNavigate();
 
     const tokenData = {
@@ -31,13 +32,27 @@ export function AddToken() {
         tokenNumber: addtoken.tokenNumber,
     };
 
+    const validateNumber = (e: number) => {
+
+        if (/^\d+$/.test(String(e).toLowerCase())) {
+            setNumberError("Valid number")
+            return true;
+        } else {
+            setNumberError("invalid number")
+            return (false)
+        }
+
+    }
+
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         const value = e.target.value
 
         if (addtoken.serviceOrUserName === "" ||
             addtoken.serviceOrUserPassword === "" ||
-            addtoken.tokenNumber ||
+            addtoken.tokenNumber === 0 ||
+            ((e.target.name = "tokenNumber") && !validateNumber(addtoken.tokenNumber)) ||
             value === "") {
 
             setDisable(true)
@@ -78,8 +93,7 @@ export function AddToken() {
         <>
             <header>
                 <section>
-                    <a href="/tokens/" className={"tokens-link"} title="Tokens">Tokens </a>
-                    <a>&#8250;</a>
+                    <a href="/tokens/" className={"tokens-link"} title="Tokens">Tokens &#8250;</a>
                     <a> New Token</a>
                 </section>
 
@@ -143,7 +157,9 @@ export function AddToken() {
                             name="tokenNumber"
                             value={addtoken.tokenNumber}
                             onChange={handleChange}
+                            pattern="[0-9]*"
                         />
+                        <span>{numberError}</span>
                     </section>
 
                 </div>
