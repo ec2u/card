@@ -79,17 +79,13 @@ card-cards {
 
     & .search-label {
       margin-left: 5px;
-      margin-right: 6em;
-      width: 8em;
+      margin-right: 8em;
+      width: 20em;
     }
     & .search-date {
-      margin-right: 10em;
-      width: 5em;
+      margin-right: 8em;
+      width: 7em;
       border: 1px solid lightgray;
-    }
-    & .search-surname {
-      width: 5em;
-      margin-right: 9em;
     }
     & .search-number {
       width: 5em;
