@@ -73,7 +73,7 @@ export function VirtualCards() {
             />
         </div>
 
-    return createElement('card-cards', {}, 
+    return createElement('card-cards', {},
         <>
             <header>
 
@@ -109,8 +109,6 @@ export function VirtualCards() {
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
-                                <input
-                                    className={"search-surname"} />
                                 <input
                                     type="date"
                                     className={"search-date"}
