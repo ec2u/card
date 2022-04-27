@@ -21,7 +21,7 @@ export function EditToken() {
     } as Token);
     const [dialog, setDialog] = useState<Boolean>(false);
     const [clicked, setClicked] = useState<Boolean>(false);
-    const [disable, setDisable] = useState<Boolean>(false);
+    const [disable, setDisable] = useState<Boolean>(true);
     const [loading, setLoading] = useState<Boolean>(false);
 
     const { id } = useParams();
