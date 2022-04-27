@@ -4,7 +4,7 @@ card-cards {
   text-align: left;
 
   & header {
-    margin: 1.3em 0em;
+    margin: 1.4em 0em;
     display: flex;
     flex-wrap: no-wrap;
     justify-content: space-between;
