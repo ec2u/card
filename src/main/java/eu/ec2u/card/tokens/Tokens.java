@@ -61,6 +61,7 @@ public class Tokens extends Container<Token> {
 		private long tokenNumber;
 
 		private String serviceOrUserName;
+		private String serviceOrUserNameLowerCase;
 
 		private String serviceOrUserPassword;
 
@@ -89,6 +90,7 @@ public class Tokens extends Container<Token> {
 			tokenNumber = token.getTokenNumber();
 
 			serviceOrUserName = token.getServiceOrUserName();
+			serviceOrUserNameLowerCase = token.getServiceOrUserName().toLowerCase();
 
 			serviceOrUserPassword = token.getServiceOrUserPassword();
 

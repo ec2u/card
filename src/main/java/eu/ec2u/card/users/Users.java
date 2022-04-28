@@ -70,6 +70,9 @@ public class Users extends Container<User> {
         private String forename;
         private String surname;
 
+        private String forenameLowerCase;
+        private String surnameLowerCase;
+
         private String email;
 
 
@@ -98,6 +101,9 @@ public class Users extends Container<User> {
 
             forename=user.getForename();
             surname=user.getSurname();
+
+            forenameLowerCase = user.getForename().toLowerCase();
+            surnameLowerCase = user.getSurname().toLowerCase();
 
             email=user.getEmail();
 

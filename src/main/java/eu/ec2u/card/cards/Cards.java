@@ -66,6 +66,10 @@ public class Cards extends Container<Card> {
 
 		private String holderForename;
 		private String holderSurname;
+
+		private String holderForenameLowerCase;
+		private String holderSurnameLowerCase;
+
 		private LocalDate expiringDate;
 		private Long virtualCardNumber;
 
@@ -91,6 +95,9 @@ public class Cards extends Container<Card> {
 			holderSurname = card.getHolderSurname();
 			expiringDate = card.getExpiringDate();
 			virtualCardNumber = card.getVirtualCardNumber();
+
+			holderForenameLowerCase = card.getHolderForename().toLowerCase();
+			holderSurnameLowerCase = card.getHolderSurname().toLowerCase();
 
 			return this;
 		}

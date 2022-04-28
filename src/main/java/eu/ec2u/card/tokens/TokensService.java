@@ -9,10 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
-@SuppressWarnings("ALL")
 public class TokensService {
 
-	@Autowired private TokensRepository tokens;
+	@Autowired private TokensRepository tokensRepository;
 
 
 	Tokens browse(final Pageable slice) {
@@ -21,7 +20,7 @@ public class TokensService {
 
 		tokens.setPath(Tokens.Id);
 
-		tokens.setContains(this.tokens.findAll(slice)
+		tokens.setContains(this.tokensRepository.findAll(slice)
 				.map(Tokens.TokenData::transfer)
 				.getContent()
 		);
@@ -32,40 +31,48 @@ public class TokensService {
 
 	@Transactional
 	Token create(final Token token) {
+
 		return Optional.of(new Tokens.TokenData())
 				.map(data -> data.transfer(token))
-				.map(data -> tokens.save(data))
+				.map(data -> tokensRepository.save(data))
 				.map(Tokens.TokenData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+
 	}
 
 	Token relate(final long tokenNumber) {
-		return tokens.findById(tokenNumber)
+
+		return tokensRepository.findById(tokenNumber)
 				.map(TokenData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+
 	}
 
 	@Transactional
 	Token update(final long tokenNumber, final Token token) {
-		return tokens.findById(tokenNumber)
+
+		return tokensRepository.findById(tokenNumber)
 				.map(data -> data.transfer(token))
-				.map(data -> tokens.save(data))
+				.map(data -> tokensRepository.save(data))
 				.map(TokenData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+
 	}
 
 	@Transactional
 	Token delete(final long tokenNumber) {
-		return tokens.findById(tokenNumber)
+
+		return tokensRepository.findById(tokenNumber)
 				.map(data -> {
 
-					tokens.delete(data);
+					tokensRepository.delete(data);
 
 					return data;
 
 				})
 				.map(TokenData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+
 	}
 
 	Tokens search(
@@ -80,13 +87,30 @@ public class TokensService {
 
 		tokens.setPath(Tokens.Id);
 
+		HashSet<TokenData> tokenDataSet = new HashSet<TokenData>();
 		List<Token> tokenList = new ArrayList<>();
 
-		tokens.setContains(this.tokens.findAll(slice)
-				.map(TokenData::transfer)
-				.filter(token -> token.getTokenNumber() == tokenNumber.orElse(token.getTokenNumber()))
-				.filter(token -> token.getServiceOrUserName().startsWith(usernamePrefix.orElse(token.getServiceOrUserName())))
-				.toList());
+		usernamePrefix.ifPresent(username -> tokenDataSet.addAll(this.tokensRepository.findByServiceOrUserName(
+				username.toLowerCase(),
+				username.toLowerCase() + "\ufffd",
+				slice
+		)));
+
+		tokenNumber.ifPresent(number -> tokenDataSet.addAll(this.tokensRepository.findByTokenNumber(
+				number,
+				slice
+		)));
+
+		if(usernamePrefix.isEmpty() && tokenNumber.isEmpty()) {
+
+			tokenDataSet.addAll(this.tokensRepository.findAllTokenData(slice));
+
+		}
+
+		tokenDataSet.forEach(tokenData -> tokenList.add(tokenData.transfer()));
+		tokenList.sort(Comparator.comparing(token -> token.getServiceOrUserName().toLowerCase()));
+
+		tokens.setContains(tokenList);
 
 		return tokens;
 

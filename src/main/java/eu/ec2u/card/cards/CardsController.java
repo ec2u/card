@@ -22,6 +22,7 @@ import static eu.ec2u.card.events.Events.Action.*;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping(Cards.Id)
@@ -37,12 +38,35 @@ public final class CardsController {
 	@JsonView(Container.class)
 	ResponseEntity<Cards> get(
 
-			@AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
+//			@AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
+			@RequestParam(value="forenamePrefix") Optional<String> forenamePrefix,
+			@RequestParam(value = "surnamePrefix") Optional<String> surnamePrefix,
+			@RequestParam(value = "expiryDate") Optional<String> expiryDate,
+			@RequestParam(value = "cardNumber") Optional<Long> cardNumber,
 			@Valid @RequestParam(required = false, defaultValue = "0") @Min(0) final int page,
 			@Valid @RequestParam(required = false, defaultValue = "25") @Min(1) @Max(ContainerSize) final int size
 
 	) {
-		return ok().body(cards.browse(PageRequest.of(page, size, Sort.by("holderSurname"))));
+
+		return ok().body(cards.search(forenamePrefix, surnamePrefix, expiryDate, cardNumber, PageRequest.of(page, size, Sort.by("holderSurnameLowerCase"))));
+
+	}
+
+	@GetMapping("/filters")
+	@JsonView(Container.class)
+	ResponseEntity<Cards> search(
+
+			@RequestParam(value="forenamePrefix") Optional<String> forenamePrefix,
+			@RequestParam(value = "surnamePrefix") Optional<String> surnamePrefix,
+			@RequestParam(value = "expiryDate") Optional<String> expiryDate,
+			@RequestParam(value = "cardNumber") Optional<Long> cardNumber,
+			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
+			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
+
+	) {
+
+		return ok().body(cards.search(forenamePrefix, surnamePrefix, expiryDate, cardNumber, PageRequest.of(page, size, Sort.by("holderSurnameLowerCase"))));
+
 	}
 
 	@PostMapping("")
@@ -66,23 +90,6 @@ public final class CardsController {
 		return ok().body(cards.relate(id));
 	}
 
-	@GetMapping("/filters")
-	@JsonView(Container.class)
-	ResponseEntity<Cards> search(
-
-			@RequestParam(value="forenamePrefix") Optional<String> forenamePrefix,
-			@RequestParam(value = "surnamePrefix") Optional<String> surnamePrefix,
-			@RequestParam(value = "expiryDate") Optional<String> expiryDate,
-			@RequestParam(value = "cardNumber") Optional<Long> cardNumber,
-			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
-
-	) {
-
-		return ok().body(cards.search(forenamePrefix, surnamePrefix, expiryDate, cardNumber, PageRequest.of(page, size)));
-
-	}
-
 	@PutMapping("{id}")
 	ResponseEntity<Void> put(
 
@@ -103,6 +110,12 @@ public final class CardsController {
 	) {
 
 		return noContent().location(events.trace(profile, delete, cards.delete(id))).build();
+	}
+
+	private boolean isForenamePrefixValid(String forenamePrefix) {
+
+		return Pattern.compile("^[a-zA-Z]+$").matcher(forenamePrefix).matches();
+
 	}
 
 }

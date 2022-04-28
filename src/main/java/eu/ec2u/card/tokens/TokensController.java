@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -20,6 +19,7 @@ import static eu.ec2u.card.ToolConfiguration.ContainerSize;
 import static eu.ec2u.card.events.Events.Action.*;
 import static org.springframework.http.ResponseEntity.*;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping(Tokens.Id)
@@ -33,13 +33,30 @@ public final class TokensController {
 	@JsonView(Container.class)
 	ResponseEntity<Tokens> get(
 
-			@AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
+//			@AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
+			@RequestParam(value="usernamePrefix") Optional<String> usernamePrefix,
+			@RequestParam(value="tokenNumber") Optional<Long> tokenNumber,
 			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
 			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
 
 	) {
 
-		return ok().body(tokens.browse(PageRequest.of(page, size, Sort.by("serviceOrUserName"))));
+		return ok().body(tokens.search(usernamePrefix, tokenNumber, PageRequest.of(page, size, Sort.by("serviceOrUserNameLowerCase"))));
+
+	}
+
+	@GetMapping("/filters")
+	@JsonView(Container.class)
+	ResponseEntity<Tokens> search(
+
+			@RequestParam(value= "usernamePrefix") Optional<String> usernamePrefix,
+			@RequestParam(value="tokenNumber") Optional<Long> tokenNumber,
+			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
+			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
+
+	) {
+
+		return ok().body(tokens.search(usernamePrefix, tokenNumber, PageRequest.of(page, size, Sort.by("serviceOrUserNameLowerCase"))));
 
 	}
 
@@ -68,21 +85,6 @@ public final class TokensController {
 
 	}
 
-	@GetMapping("/filters")
-	@JsonView(Container.class)
-	ResponseEntity<Tokens> search(
-
-			@RequestParam(value= "usernamePrefix") Optional<String> usernamePrefix,
-			@RequestParam(value="tokenNumber") Optional<Long> tokenNumber,
-			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
-
-	) {
-
-		return ok().body(tokens.search(usernamePrefix, tokenNumber, PageRequest.of(page, size)));
-
-	}
-
 	@PutMapping("{tokenNumber}")
 	ResponseEntity<Void> put(
 
@@ -105,6 +107,18 @@ public final class TokensController {
 	) {
 
 		return noContent().location(events.trace(profile, delete, tokens.delete(tokenNumber))).build();
+
+	}
+
+	private boolean isUsernamePrefixValid(String usernamePrefix) {
+
+		return Pattern.compile("^[a-zA-Z]+$").matcher(usernamePrefix).matches();
+
+	}
+
+	private boolean isTokenNumberValid(String tokenNumber) {
+
+		return Pattern.compile("^[0-9]+$").matcher(tokenNumber).matches();
 
 	}
 
