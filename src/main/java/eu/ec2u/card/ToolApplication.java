@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -18,6 +19,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -148,4 +150,62 @@ public class ToolApplication implements WebMvcConfigurer {
 
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @ExceptionHandler(WrongGetArgumentsException.class)
+    public ResponseEntity<String> handle(final WrongGetArgumentsException e) {
+
+        return ResponseEntity.badRequest().body(e.getMessage());
+
+    }
+
+    public static final class WrongGetArgumentsException extends IllegalArgumentException {
+
+        public WrongGetArgumentsException(String errorMessage) {
+
+            super(errorMessage);
+
+        }
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @ExceptionHandler(WrongPostArgumentsException.class)
+    public ResponseEntity<String> handle(final WrongPostArgumentsException e) {
+
+        return ResponseEntity.badRequest().body(e.getMessage());
+
+    }
+
+    public static final class WrongPostArgumentsException extends IllegalArgumentException {
+
+        public WrongPostArgumentsException(String errorMessage) {
+
+            super(errorMessage);
+
+        }
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @ExceptionHandler(WrongPutArgumentsException.class)
+    public ResponseEntity<String> handle(final WrongPutArgumentsException e) {
+
+        return ResponseEntity.badRequest().body(e.getMessage());
+
+    }
+
+    public static final class WrongPutArgumentsException extends IllegalArgumentException {
+
+        public WrongPutArgumentsException(String errorMessage) {
+
+            super(errorMessage);
+
+        }
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
 }
