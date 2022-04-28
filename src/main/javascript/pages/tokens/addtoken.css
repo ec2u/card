@@ -5,7 +5,7 @@ card-addtoken {
 
   & header {
     width: 100%;
-    margin: 1.3em 0em;
+    margin: 1.4em 0em;
     display: flex;
     flex-wrap: no-wrap;
     justify-content: space-between;
@@ -21,8 +21,8 @@ card-addtoken {
       font-size: 1.4em;
     }
     & .tokens-link:hover {
-      color: orange;
-      transform: translateX(-3px);
+      color: gray;
+      transform: translateY(-3px);
     }
   }
   & form {

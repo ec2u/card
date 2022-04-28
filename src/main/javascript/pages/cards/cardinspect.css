@@ -4,7 +4,7 @@ card-inspectcard {
 
   & header {
     width: 100%;
-    margin: 1.3em 0em;
+    margin: 1.4em 0em;
     display: flex;
     justify-content: space-between;
     grid-row-gap: 0px;
@@ -20,8 +20,8 @@ card-inspectcard {
       font-size: 1.4em;
     }
     & .cards-link:hover {
-      color: orange;
-      transform: translateX(-3px);
+      color: gray;
+      transform: translateY(-3px);
     }
   }
   & .spinner::before {

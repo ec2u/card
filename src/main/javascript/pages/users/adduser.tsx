@@ -16,7 +16,8 @@ export function AddUser() {
   const [adduser, setAdduser] = useState({
     forename: "",
     surname: "",
-    email: ""
+    email: "",
+    admin: false
   } as Adduser);
   const [disable, setDisable] = useState<Boolean>(true);
   const [loading, setLoading] = useState<Boolean>(false);
@@ -32,7 +33,7 @@ export function AddUser() {
 
 
   const validateEmail = (e: string) => {
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(e)) {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$/.test(e)) {
       setEmailError("Valid Email")
       return true;
     } else {

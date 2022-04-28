@@ -2,9 +2,10 @@ card-cards {
   width: 95.3%;
   display: grid;
   text-align: left;
+  overflow: auto;
 
   & header {
-    margin: 1.3em 0em;
+    margin: 1.4em 0em;
     display: flex;
     flex-wrap: no-wrap;
     justify-content: space-between;

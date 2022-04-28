@@ -6,7 +6,7 @@ card-addcard {
 
   & header {
     width: 100%;
-    margin: 1.3em 0em;
+    margin: 1.4em 0em;
     display: flex;
     flex-wrap: no-wrap;
     justify-content: space-between;
@@ -24,7 +24,7 @@ card-addcard {
     }
     & .cards-link:hover {
       color: gray;
-      transform: translateX(-3px);
+      transform: translateY(-3px);
     }
   }
   & form {

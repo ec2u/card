@@ -4,7 +4,7 @@ card-inspectuser {
   align-items: stretch;
 
   & header {
-    margin: 1.3em 0em;
+    margin: 1.4em 0em;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -19,8 +19,8 @@ card-inspectuser {
       font-size: 1.4em;
     }
     & .users-link:hover {
-      color: orange;
-      transform: translateX(-3px);
+      color: gray;
+      transform: translateY(-3px);
     }
   }
   & .spinner::before {

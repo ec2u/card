@@ -2,7 +2,6 @@ import { Check, Trash2, X } from "lucide-react";
 import React, { createElement, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Deletedialog } from "../users/deletedialog";
-import { AddCard } from "./addcard";
 import './editcard.css'
 
 interface User {
@@ -25,7 +24,7 @@ export function EditCard() {
 
     const [dialog, setDialog] = useState<Boolean>(false);
     const [clicked, setClicked] = useState<Boolean>(false);
-    const [disable, setDisable] = useState<Boolean>(false);
+    const [disable, setDisable] = useState<Boolean>(true);
     const [loading, setLoading] = useState<Boolean>(false);
 
     const { id } = useParams();
@@ -51,6 +50,7 @@ export function EditCard() {
             updatecard.holderSurname === "" ||
             updatecard.expiringDate === null ||
             updatecard.virtualCardNumber === 0
+
         ) {
             setDisable(true)
         }

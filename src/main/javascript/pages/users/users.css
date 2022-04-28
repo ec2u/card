@@ -1,11 +1,12 @@
 card-users {
   width: 95.3%;
+  height: 100%;
   display: grid;
   align-items: stretch;
 
   & header {
     width: 100%;
-    margin: 1.3em 0em;
+    margin: 1.4em 0em;
     display: flex;
     flex-wrap: no-wrap;
     justify-content: space-between;
@@ -23,6 +24,8 @@ card-users {
     border-collapse: collapse;
     display: grid;
     overflow-x: auto;
+    overflow-y: auto;
+    height: 100%;
 
     & tr {
       display: grid;
