@@ -53,17 +53,16 @@ public class Tokens extends Container<Token> {
 		@Override
 		protected Optional<String> getLabel() {
 			return Optional.of(this)
-					.filter(data -> data.serviceOrUserName != null)
-					.filter(data -> data.serviceOrUserPassword != null)
-					.map(data -> format("%s %s", data.serviceOrUserName, data.serviceOrUserPassword));
+					.filter(data -> data.username != null)
+					.filter(data -> data.password != null)
+					.map(data -> format("%s %s", data.username, data.password));
 		}
 
 		private long tokenNumber;
 
-		private String serviceOrUserName;
-		private String serviceOrUserNameLowerCase;
+		private String username;
 
-		private String serviceOrUserPassword;
+		private String password;
 
 
 
@@ -75,9 +74,9 @@ public class Tokens extends Container<Token> {
 
 			token.setTokenNumber(tokenNumber);
 
-			token.setServiceOrUserName(serviceOrUserName);
+			token.setServiceOrUserName(username);
 
-			token.setServiceOrUserPassword(serviceOrUserPassword);
+			token.setServiceOrUserPassword(password);
 
 			return token;
 
@@ -89,10 +88,9 @@ public class Tokens extends Container<Token> {
 
 			tokenNumber = token.getTokenNumber();
 
-			serviceOrUserName = token.getServiceOrUserName();
-			serviceOrUserNameLowerCase = token.getServiceOrUserName().toLowerCase();
+			username = token.getServiceOrUserName();
 
-			serviceOrUserPassword = token.getServiceOrUserPassword();
+			password = token.getServiceOrUserPassword();
 
 			return this;
 
