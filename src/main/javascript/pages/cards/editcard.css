@@ -21,8 +21,8 @@ card-editcard {
         font-size: 1.4em;
       }
       & .cards-link:hover {
-        color: orange;
-        transform: translateX(-3px);
+        color: gray;
+        transform: translateY(-3px);
       }
     }
   }

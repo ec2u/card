@@ -1,5 +1,6 @@
 card-users {
   width: 95.3%;
+  height: 100%;
   display: grid;
   align-items: stretch;
 
@@ -23,6 +24,8 @@ card-users {
     border-collapse: collapse;
     display: grid;
     overflow-x: auto;
+    overflow-y: auto;
+    height: 100%;
 
     & tr {
       display: grid;

@@ -19,8 +19,8 @@ card-edituser {
       font-size: 1.4em;
     }
     & .users-link:hover {
-      color: orange;
-      transform: translateX(-3px);
+      color: gray;
+      transform: translateY(-3px);
     }
   }
   & form {

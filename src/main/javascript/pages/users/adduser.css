@@ -2,6 +2,7 @@ card-adduser {
   width: 95%;
   display: grid;
   align-items: stretch;
+  overflow: auto;
 
   & header {
     width: 100%;
@@ -19,8 +20,8 @@ card-adduser {
       font-size: 1.4em;
     }
     & .users-link:hover {
-      color: orange;
-      transform: translateX(-3px);
+      color: gray;
+      transform: translateY(-3px);
     }
   }
   & form {

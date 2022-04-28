@@ -21,8 +21,8 @@ card-addtoken {
       font-size: 1.4em;
     }
     & .tokens-link:hover {
-      color: orange;
-      transform: translateX(-3px);
+      color: gray;
+      transform: translateY(-3px);
     }
   }
   & form {

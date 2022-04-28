@@ -2,6 +2,7 @@ card-cards {
   width: 95.3%;
   display: grid;
   text-align: left;
+  overflow: auto;
 
   & header {
     margin: 1.4em 0em;

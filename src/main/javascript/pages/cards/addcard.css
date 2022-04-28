@@ -24,7 +24,7 @@ card-addcard {
     }
     & .cards-link:hover {
       color: gray;
-      transform: translateX(-3px);
+      transform: translateY(-3px);
     }
   }
   & form {
