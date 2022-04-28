@@ -20,8 +20,9 @@ import QRCode from "qrcode";
 import { createContext, createElement, ReactNode, useContext, useEffect } from "react";
 
 
-const api="/profile";
-const sso="/saml/sso";
+const API="/profile";
+const Login="/Shibboleth.sso/Login";
+const Logout="/Shibboleth.sso/Logout?return={}";
 
 
 const Context=createContext<[undefined | Profile, (action?: null) => void]>([undefined, () => {}]);
@@ -89,7 +90,7 @@ export function CardProfile({
 
         if ( !profile ) {
 
-            fetch(api, {
+            fetch(API, {
 
                 headers: { Accept: "application/json" }
 
@@ -144,13 +145,21 @@ export function CardProfile({
 
         } finally {
 
-            location.replace(`${sso}?target=${encodeURIComponent(location.href)}`);
+            location.replace(`${Login}`); // !!! ?target=${encodeURIComponent(location.href)}
 
         }
     }
 
     function logout() {
-        setProfile(undefined);
+        try {
+
+            setProfile(undefined);
+
+        } finally {
+
+            location.replace(`${Logout}?target=${encodeURIComponent(location.href)}`);
+
+        }
     }
 
 

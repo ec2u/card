@@ -21,7 +21,7 @@ import postcssNesting from "postcss-nesting";
 
 const env=resolve("code/environment/");
 const src=resolve("code/javascript/");
-const out=resolve("dist/static/");
+const out=resolve("code/static/");
 
 process.env.card_version=process.env.npm_package_version;
 process.env.card_instant=new Date().toISOString();
@@ -64,14 +64,16 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 
     server: {
 
-        host: "localhost",
+        https: true,
+        host: "127.0.0.1",
         port: 3000,
         strictPort: true,
 
         proxy: {
-            "^/profile|/saml/.*$": {
+            "^/profile|/Shibboleth.sso/.*$": {
                 target: "https://card.ec2u.eu/",
-                changeOrigin: true
+                changeOrigin: true,
+                cookieDomainRewrite: "127.0.0.1:3000"
             }
         }
 
