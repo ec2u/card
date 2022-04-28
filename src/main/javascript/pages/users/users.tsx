@@ -18,46 +18,68 @@ export function CardUsers() {
   const [loading, setLoading] = useState<Boolean>(false);
   const [error, setError] = useState<any>(null);
   const [search, setSearch] = useState<string>("");
+  const [searchEmail, setSearchEmail] = useState<string>("")
   const [clicked, setClicked] = useState<Boolean>(false);
+  const [timer, setTimer] = useState<number>(0);
 
 
-  function useKey(key: number, cb: any) {
+  const fetchData = async (searchData: any) => {
+    setLoading(true)
 
-    const callbackRef = useRef(cb);
+    await fetch(`/users/` + searchData, {
+      headers: {
+        Accept: "application/json",
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => setUsers(data.contains))
+      .catch((error) => console.error(error))
+    setLoading(false)
   }
 
 
   useEffect(() => {
+    let number = clicked ? 1000 : 1
+    clearTimeout(timer)
+    let timerID = window.setTimeout(() => {
+      searchSubmit();
+    }, number);
+    setTimer(timerID)
+  }, [search]);
 
-    setLoading(true)
-    const fetchData = async () => {
-      await fetch("/users/", {
-        headers: {
-          Accept: "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => setUsers(data.contains))
-        .catch((error) => console.error(error))
-      setLoading(false)
+  useEffect(() => {
+    let number = clicked ? 1000 : 1
+    clearTimeout(timer)
+    let timerID = window.setTimeout(() => {
+      searchEmailSubmit();
+    }, number);
+    setTimer(timerID)
+  }, [searchEmail]);
+
+
+  const searchSubmit = () => {
+    if (search === "") {
+      fetchData("");
+    } else {
+      fetchData("filters?surnamePrefix=" + search);
+
     }
-    fetchData();
-  }, []);
-
-
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value)
-
   }
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const searchEmailSubmit = () => {
+    if (searchEmail === "") {
+      fetchData("");
+    } else {
+      fetchData("filters?emailPrefix=" + searchEmail)
+    }
+  }
+
 
 
   let SearchIcon =
     <div title={"search"}>
       <Search size={28}
         onClick={() => setClicked(true)}
-
         className={"search-button"}
       />
     </div>
@@ -109,12 +131,18 @@ export function CardUsers() {
                 />
                 <input
                   type="search"
-                  className={"search-email"} />
+                  className={"search-email"}
+                  value={searchEmail}
+                  onChange={(e) => setSearchEmail(e.target.value)} />
               </div>
               <div title="Close">
                 <X size={28}
                   className={"close-button"}
-                  onClick={() => setClicked(false)}
+                  onClick={() => {
+                    setClicked(false);
+                    setSearch("")
+                    setSearchEmail("")
+                  }}
                 />
               </div>
             </div>
@@ -130,14 +158,14 @@ export function CardUsers() {
           (
             <>
               <caption className="spinner"></caption>
-              {error}
+
             </>
 
 
           ) : (
 
             <tbody>
-              {users.filter(user => user.surname.toLowerCase().includes(search.toLowerCase())).map((user) => {
+              {users.map((user) => {
 
                 return (
                   <tr key={user.id} >
@@ -164,5 +192,3 @@ export function CardUsers() {
   );
 
 }
-
-
