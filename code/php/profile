@@ -1,3 +1,77 @@
 <?php
+/*
+ * Copyright © 2020-2022 EC2U Alliance
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+if (!isset($_SERVER['REMOTE_USER']) || $_SERVER['REMOTE_USER'] == "") {
+
     header("HTTP/1.1 401 Unauthorized");
+
+} else {
+
+    if (isset($_SERVER["schacPersonalUniqueCode"])) $esi = $_SERVER["schacPersonalUniqueCode"];
+    if (isset($_SERVER['cn'])) $name = $_SERVER['cn'];
+    if (isset($_SERVER['mail'])) $email = $_SERVER['mail'];
+    if (isset($_SERVER["schacHomeOrganisation"])) $schac = $_SERVER["schacHomeOrganisation"];
+
+    $user = array(
+        'esi' => $esi,
+        'name' => $name,
+        'email' => $email,
+        'schac' => $schac
+    );
+
+    if (!isset($esi)) {
+
+        header("HTTP/1.1 200 OK");
+        header('Content-Type: application/json');
+
+        echo json_encode(array(
+            'user' => $user,
+            'cards' => array(
+                array(
+                    'code' => "fc3a1f80-93fb-103a-9b31-000999893752",
+                    "test" => "http://pp.esc.gg/fc3a1f80-93fb-103a-9b31-000999893752",
+                    "expiry" => "2023-03-18",
+                    "esi" => "urn:schac:personalUniqueCode:int:esi:unipv.it:999001",
+                    "level" => 8,
+                    "name" => "Alessandro Bollini",
+                    "photo" => null,
+                    "hei" => array(
+                        "pic" => 999893752,
+                        "name" => "University of Pavia",
+                        "iso" => "IT",
+                        "country" => "Italy"
+                    )
+                )
+            )
+        ));
+
+    } else {
+
+        # !!! retrieve cards from ESC
+
+        header("HTTP/1.1 200 OK");
+        header('Content-Type: application/json');
+
+        echo json_encode(array(
+            'user' => $user
+        ));
+
+    }
+
+}
+
 ?>
