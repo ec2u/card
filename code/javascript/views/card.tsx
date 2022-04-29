@@ -129,7 +129,7 @@ export function CardCard() {
 
                 : !profile.cards?.length ? <div>
 
-                        <span>Your eduGAIN profile isn't associated with an ESC card</span>
+                        <span>Your eduGAIN profile isn't associated with an ESC&nbsp;card</span>
                         <span>Contact your local mobility office to get&nbsp;one</span>
 
                     </div>

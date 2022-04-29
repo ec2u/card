@@ -70,10 +70,9 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
         strictPort: true,
 
         proxy: {
-            "^/profile|/Shibboleth.sso/.*$": {
+            "^/profile|/saml/.*$|/Shibboleth.sso/.*$": {
                 target: "https://card.ec2u.eu/",
-                changeOrigin: true,
-                cookieDomainRewrite: "127.0.0.1:3000"
+                changeOrigin: true
             }
         }
 
