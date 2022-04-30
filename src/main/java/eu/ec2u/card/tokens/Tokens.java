@@ -31,12 +31,12 @@ public class Tokens extends Container<Token> {
 		@NotNull
 		@Size(max=LineSize)
 		@Pattern(regexp=LinePattern)
-		private String serviceOrUserName;
+		private String username;
 
 		@NotNull
 		@Size(max=LineSize)
 		@Pattern(regexp=LinePattern)
-		private String serviceOrUserPassword;
+		private String password;
 
 	}
 
@@ -74,9 +74,9 @@ public class Tokens extends Container<Token> {
 
 			token.setTokenNumber(tokenNumber);
 
-			token.setServiceOrUserName(username);
+			token.setUsername(username);
 
-			token.setServiceOrUserPassword(password);
+			token.setPassword(password);
 
 			return token;
 
@@ -88,9 +88,9 @@ public class Tokens extends Container<Token> {
 
 			tokenNumber = token.getTokenNumber();
 
-			username = token.getServiceOrUserName();
+			username = token.getUsername();
 
-			password = token.getServiceOrUserPassword();
+			password = token.getPassword();
 
 			return this;
 

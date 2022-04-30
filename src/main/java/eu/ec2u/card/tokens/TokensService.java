@@ -108,7 +108,7 @@ public class TokensService {
 		}
 
 		tokenDataSet.forEach(tokenData -> tokenList.add(tokenData.transfer()));
-		tokenList.sort(Comparator.comparing(token -> token.getServiceOrUserName().toLowerCase()));
+		tokenList.sort(Comparator.comparing(token -> token.getUsername().toLowerCase()));
 
 		tokens.setContains(tokenList);
 

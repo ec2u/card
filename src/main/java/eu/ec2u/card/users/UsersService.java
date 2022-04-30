@@ -1,5 +1,6 @@
 package eu.ec2u.card.users;
 
+import com.google.cloud.datastore.*;
 import eu.ec2u.card.ToolApplication;
 import eu.ec2u.card.users.Users.User;
 import eu.ec2u.card.users.Users.UserData;
@@ -112,44 +113,62 @@ public class UsersService {
 
         users.setPath(Users.Id);
 
-        HashSet<UserData> userDataSet = new HashSet<UserData>();
         List<User> userList = new ArrayList<>();
 
-        String errorMessage = GetArgumentsErrorMessageGenerator(
-                forenamePrefix.orElse(""),
-                surnamePrefix.orElse(""),
-                emailPrefix.orElse(""));
+        String label = forenamePrefix.orElse("").toLowerCase() + surnamePrefix.orElse("").toLowerCase();
 
-        if (!errorMessage.equals("")) {
+        Query<Entity> query;
 
-            throw new ToolApplication.WrongGetArgumentsException(errorMessage);
+        if ((forenamePrefix.isPresent() || surnamePrefix.isPresent()) && emailPrefix.isPresent())  {
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setFilter(StructuredQuery.CompositeFilter.and(
+
+                            StructuredQuery.PropertyFilter.ge("label", label),
+                            StructuredQuery.PropertyFilter.lt("label", label + "\ufffd"),
+                            StructuredQuery.PropertyFilter.ge("email", emailPrefix.get()),
+                            StructuredQuery.PropertyFilter.lt("email", emailPrefix.get() + "\ufffd")
+
+                    ))
+                    .setOrderBy(StructuredQuery.OrderBy.asc("label"))
+                    .build();
+
+        } else if (forenamePrefix.isEmpty() && surnamePrefix.isEmpty() && emailPrefix.isPresent()) {
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setFilter(StructuredQuery.CompositeFilter.and(
+
+                            StructuredQuery.PropertyFilter.ge("email", emailPrefix.get()),
+                            StructuredQuery.PropertyFilter.lt("email", emailPrefix.get() + "\ufffd")
+
+                    ))
+                    .setOrderBy(StructuredQuery.OrderBy.asc("label"))
+                    .build();
+
+        } else {
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setOrderBy(StructuredQuery.OrderBy.asc("label"))
+                    .build();
 
         }
 
-        forenamePrefix.ifPresent(forename -> userDataSet.addAll(this.usersRepository.findByForename(
-                forename.toLowerCase(),
-                forename.toLowerCase() + "\ufffd",
-                slice
-        )));
 
-        surnamePrefix.ifPresent(surname -> userDataSet.addAll(this.usersRepository.findBySurname(
-                surname.toLowerCase(),
-                surname.toLowerCase() + "\ufffd",
-                slice)));
+        QueryResults<Entity> results = usersRepository.run(query);
 
-        emailPrefix.ifPresent(email -> userDataSet.addAll(this.usersRepository.findByEmail(
-                email,
-                email + "\ufffd",
-                slice)));
 
-        if(forenamePrefix.isEmpty() && surnamePrefix.isEmpty() && emailPrefix.isEmpty()) {
-
-            userDataSet.addAll(this.usersRepository.findAllUserData(slice));
-
-        }
-
-        userDataSet.forEach(userData -> userList.add(userData.transfer()));
-        userList.sort(Comparator.comparing(user -> user.getSurname().toLowerCase()));
+//
+//        if(forenamePrefix.isEmpty() && surnamePrefix.isEmpty() && emailPrefix.isEmpty()) {
+//
+//            userDataSet.addAll(this.usersRepository.findAllUserData(slice));
+//
+//        }
+//
+//        userDataSet.forEach(userData -> userList.add(userData.transfer()));
+//        userList.sort(Comparator.comparing(user -> user.getSurname().toLowerCase()));
 
         users.setContains(userList);
 

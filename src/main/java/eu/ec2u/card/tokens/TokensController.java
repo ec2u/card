@@ -34,14 +34,14 @@ public final class TokensController {
 	ResponseEntity<Tokens> get(
 
 //			@AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
-			@RequestParam(value="usernamePrefix") Optional<String> usernamePrefix,
+			@RequestParam(value= "username") Optional<String> username,
 			@RequestParam(value="tokenNumber") Optional<Long> tokenNumber,
 			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
 			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
 
 	) {
 
-		return ok().body(tokens.search(usernamePrefix, tokenNumber, PageRequest.of(page, size, Sort.by("serviceOrUserNameLowerCase"))));
+		return ok().body(tokens.search(username, tokenNumber, PageRequest.of(page, size)));
 
 	}
 
@@ -49,14 +49,14 @@ public final class TokensController {
 	@JsonView(Container.class)
 	ResponseEntity<Tokens> search(
 
-			@RequestParam(value= "usernamePrefix") Optional<String> usernamePrefix,
+			@RequestParam(value= "username") Optional<String> username,
 			@RequestParam(value="tokenNumber") Optional<Long> tokenNumber,
 			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
 			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
 
 	) {
 
-		return ok().body(tokens.search(usernamePrefix, tokenNumber, PageRequest.of(page, size, Sort.by("serviceOrUserNameLowerCase"))));
+		return ok().body(tokens.search(username, tokenNumber, PageRequest.of(page, size)));
 
 	}
 

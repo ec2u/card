@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -39,8 +38,8 @@ public final class CardsController {
 	ResponseEntity<Cards> get(
 
 //			@AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
-			@RequestParam(value="forenamePrefix") Optional<String> forenamePrefix,
-			@RequestParam(value = "surnamePrefix") Optional<String> surnamePrefix,
+			@RequestParam(value= "forename") Optional<String> forename,
+			@RequestParam(value = "surname") Optional<String> surname,
 			@RequestParam(value = "expiryDate") Optional<String> expiryDate,
 			@RequestParam(value = "cardNumber") Optional<Long> cardNumber,
 			@Valid @RequestParam(required = false, defaultValue = "0") @Min(0) final int page,
@@ -48,7 +47,7 @@ public final class CardsController {
 
 	) {
 
-		return ok().body(cards.search(forenamePrefix, surnamePrefix, expiryDate, cardNumber, PageRequest.of(page, size, Sort.by("holderSurnameLowerCase"))));
+		return ok().body(cards.search(forename, surname, expiryDate, cardNumber, PageRequest.of(page, size)));
 
 	}
 
@@ -56,8 +55,8 @@ public final class CardsController {
 	@JsonView(Container.class)
 	ResponseEntity<Cards> search(
 
-			@RequestParam(value="forenamePrefix") Optional<String> forenamePrefix,
-			@RequestParam(value = "surnamePrefix") Optional<String> surnamePrefix,
+			@RequestParam(value= "forename") Optional<String> forename,
+			@RequestParam(value = "surname") Optional<String> surname,
 			@RequestParam(value = "expiryDate") Optional<String> expiryDate,
 			@RequestParam(value = "cardNumber") Optional<Long> cardNumber,
 			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
@@ -65,7 +64,7 @@ public final class CardsController {
 
 	) {
 
-		return ok().body(cards.search(forenamePrefix, surnamePrefix, expiryDate, cardNumber, PageRequest.of(page, size, Sort.by("holderSurnameLowerCase"))));
+		return ok().body(cards.search(forename, surname, expiryDate, cardNumber, PageRequest.of(page, size)));
 
 	}
 
