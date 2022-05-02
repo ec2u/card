@@ -1,7 +1,12 @@
 package eu.ec2u.card.cards;
 
+import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.Query;
+import com.google.cloud.datastore.StructuredQuery;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import eu.ec2u.card.cards.Cards.Card;
 import eu.ec2u.card.cards.Cards.CardData;
+import eu.ec2u.card.users.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,21 +18,82 @@ import java.util.*;
 @Service
 public class CardsService {
 
-	@Autowired
-	private CardsRepository cardsRepository;
+	@Autowired private CardsRepository cardsRepository;
+	@Autowired private DatastoreTemplate datastoreTemplate;
 
-	Cards browse(final Pageable slice) {
+	@SuppressWarnings("ALL")
+	Cards browse(
+
+			final Optional<String> label,
+			final Optional<String> expiringDate,
+			final Optional<Long> virtualCardNumber,
+			final Pageable slice
+
+	) {
 
 		final Cards cards = new Cards();
-
 		cards.setPath(Cards.Id);
 
-		cards.setContains(this.cardsRepository.findAll(slice)
-				.map(CardData::transfer)
-				.getContent()
-		);
+		Query<Entity> query;
+
+		if (virtualCardNumber.isPresent()) {
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Card")
+					.setFilter(StructuredQuery.PropertyFilter.eq("virtualCardNumber", virtualCardNumber.get()))
+					.setLimit(slice.getPageSize())
+					.build();
+
+        } else if (label.isPresent() && expiringDate.isPresent()) {
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Card")
+					.setFilter(StructuredQuery.CompositeFilter.and(
+							StructuredQuery.PropertyFilter.ge("label", label.get().toLowerCase()),
+							StructuredQuery.PropertyFilter.lt("label", label.get().toLowerCase() + "\ufffd"),
+							StructuredQuery.PropertyFilter.eq("expiringDate", expiringDate.get())
+					))
+					.setLimit(slice.getPageSize())
+					.build();
+
+		} else if (label.isEmpty() && expiringDate.isPresent()) {
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Card")
+					.setFilter(StructuredQuery.PropertyFilter.eq("expiringDate", expiringDate.get()))
+					.setLimit(slice.getPageSize())
+					.build();
+
+		} else if (label.isPresent()) {
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Card")
+					.setFilter(StructuredQuery.CompositeFilter.and(
+							StructuredQuery.PropertyFilter.ge("label", label.get().toLowerCase()),
+							StructuredQuery.PropertyFilter.lt("label", label.get().toLowerCase() + "\ufffd")
+					))
+					.setLimit(slice.getPageSize())
+					.build();
+
+		} else {
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Card")
+					.setLimit(slice.getPageSize())
+					.build();
+
+		}
+
+		List<Card> cardList = new ArrayList<>();
+
+		this.datastoreTemplate.query(query, CardData.class)
+				.toList()
+				.forEach(cardData -> cardList.add(cardData.transfer()));
+
+		cards.setContains(cardList);
 
 		return cards;
+
 	}
 
 	@Transactional
@@ -62,61 +128,6 @@ public class CardsService {
 				})
 				.map(CardData::transfer)
 				.orElseThrow(NoSuchElementException::new);
-	}
-
-	Cards search(
-
-			final Optional<String> forenamePrefix,
-			final Optional<String> surnamePrefix,
-			final Optional<String> expiryDate,
-			final Optional<Long> cardNumber,
-			final Pageable slice
-
-	) {
-
-		final Cards cards = new Cards();
-
-		cards.setPath(Cards.Id);
-
-		HashSet<CardData> cardDataSet = new HashSet<CardData>();
-		List<Card> cardList = new ArrayList<>();
-
-		forenamePrefix.ifPresent(forename -> cardDataSet.addAll(this.cardsRepository.findByHolderForename(
-				forename.toLowerCase(),
-				forename.toLowerCase() + "\ufffd",
-				slice
-		)));
-
-		surnamePrefix.ifPresent(surname -> cardDataSet.addAll(this.cardsRepository.findByHolderSurname(
-				surname.toLowerCase(),
-				surname.toLowerCase() + "\ufffd",
-				slice
-		)));
-
-		expiryDate.ifPresent(date -> cardDataSet.addAll(this.cardsRepository.findByExpiryDate(
-				LocalDate.parse(date),
-				slice
-		)));
-
-		cardNumber.ifPresent(number -> cardDataSet.addAll(this.cardsRepository.findByVirtualCardNumber(
-				number,
-				slice
-		)));
-
-		if(forenamePrefix.isEmpty() && surnamePrefix.isEmpty() &&
-				expiryDate.isEmpty() && cardNumber.isEmpty()) {
-
-			cardDataSet.addAll(this.cardsRepository.findAllCardData(slice));
-
-		}
-
-		cardDataSet.forEach(cardData -> cardList.add(cardData.transfer()));
-		cardList.sort(Comparator.comparing(card -> card.getHolderSurname().toLowerCase()));
-
-		cards.setContains(cardList);
-
-		return cards;
-
 	}
 
 }

@@ -1,6 +1,7 @@
 package eu.ec2u.card.users;
 
 import com.google.cloud.datastore.*;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import eu.ec2u.card.ToolApplication;
 import eu.ec2u.card.users.Users.User;
 import eu.ec2u.card.users.Users.UserData;
@@ -16,17 +17,73 @@ import java.util.regex.Pattern;
 public class UsersService {
 
     @Autowired private UsersRepository usersRepository;
+    @Autowired private DatastoreTemplate datastoreTemplate;
 
-    Users browse(final Pageable slice) {
+    @SuppressWarnings("ALL")
+    Users browse(
+
+            final Optional<String> label,
+            final Optional<String> email,
+            final Pageable slice
+
+    ) {
 
         final Users users = new Users();
-
         users.setPath(Users.Id);
 
-        users.setContains(this.usersRepository.findAll(slice)
-                .map(UserData::transfer)
-                .getContent()
-        );
+        Query<Entity> query;
+
+        if (label.isPresent() && email.isPresent()) {
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setFilter(StructuredQuery.CompositeFilter.and(
+                            StructuredQuery.PropertyFilter.ge("label", label.get().toLowerCase()),
+                            StructuredQuery.PropertyFilter.lt("label", label.get().toLowerCase() + "\ufffd"),
+                            StructuredQuery.PropertyFilter.ge("email", email.get()),
+                            StructuredQuery.PropertyFilter.lt("email", email.get() + "\ufffd")
+                    ))
+                    .setLimit(slice.getPageSize())
+                    .build();
+
+        } else if (label.isEmpty() && email.isPresent()) {
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setFilter(StructuredQuery.CompositeFilter.and(
+                            StructuredQuery.PropertyFilter.ge("email", email.get()),
+                            StructuredQuery.PropertyFilter.lt("email", email.get() + "\ufffd")
+                    ))
+                    .setLimit(slice.getPageSize())
+                    .build();
+
+        } else if (label.isPresent()) {
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setFilter(StructuredQuery.CompositeFilter.and(
+                            StructuredQuery.PropertyFilter.ge("label", label.get().toLowerCase()),
+                            StructuredQuery.PropertyFilter.lt("label", label.get().toLowerCase() + "\ufffd")
+                    ))
+                    .setLimit(slice.getPageSize())
+                    .build();
+
+        } else {
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setLimit(slice.getPageSize())
+                    .build();
+
+        }
+
+        List<User> userList = new ArrayList<>();
+
+        this.datastoreTemplate.query(query, UserData.class)
+                .toList()
+                .forEach(userData -> userList.add(userData.transfer()));
+
+        users.setContains(userList);
 
         return users;
 
@@ -100,113 +157,7 @@ public class UsersService {
 
     }
 
-    Users search(
-
-            final Optional<String> forenamePrefix,
-            final Optional<String> surnamePrefix,
-            final Optional<String> emailPrefix,
-            final Pageable slice
-
-    ) {
-        
-        final Users users = new Users();
-
-        users.setPath(Users.Id);
-
-        List<User> userList = new ArrayList<>();
-
-        String label = forenamePrefix.orElse("").toLowerCase() + surnamePrefix.orElse("").toLowerCase();
-
-        Query<Entity> query;
-
-        if ((forenamePrefix.isPresent() || surnamePrefix.isPresent()) && emailPrefix.isPresent())  {
-
-            query = Query.newEntityQueryBuilder()
-                    .setKind("User")
-                    .setFilter(StructuredQuery.CompositeFilter.and(
-
-                            StructuredQuery.PropertyFilter.ge("label", label),
-                            StructuredQuery.PropertyFilter.lt("label", label + "\ufffd"),
-                            StructuredQuery.PropertyFilter.ge("email", emailPrefix.get()),
-                            StructuredQuery.PropertyFilter.lt("email", emailPrefix.get() + "\ufffd")
-
-                    ))
-                    .setOrderBy(StructuredQuery.OrderBy.asc("label"))
-                    .build();
-
-        } else if (forenamePrefix.isEmpty() && surnamePrefix.isEmpty() && emailPrefix.isPresent()) {
-
-            query = Query.newEntityQueryBuilder()
-                    .setKind("User")
-                    .setFilter(StructuredQuery.CompositeFilter.and(
-
-                            StructuredQuery.PropertyFilter.ge("email", emailPrefix.get()),
-                            StructuredQuery.PropertyFilter.lt("email", emailPrefix.get() + "\ufffd")
-
-                    ))
-                    .setOrderBy(StructuredQuery.OrderBy.asc("label"))
-                    .build();
-
-        } else {
-
-            query = Query.newEntityQueryBuilder()
-                    .setKind("User")
-                    .setOrderBy(StructuredQuery.OrderBy.asc("label"))
-                    .build();
-
-        }
-
-
-        QueryResults<Entity> results = usersRepository.run(query);
-
-
-//
-//        if(forenamePrefix.isEmpty() && surnamePrefix.isEmpty() && emailPrefix.isEmpty()) {
-//
-//            userDataSet.addAll(this.usersRepository.findAllUserData(slice));
-//
-//        }
-//
-//        userDataSet.forEach(userData -> userList.add(userData.transfer()));
-//        userList.sort(Comparator.comparing(user -> user.getSurname().toLowerCase()));
-
-        users.setContains(userList);
-
-        return users;
-
-    }
-
-    private String GetArgumentsErrorMessageGenerator(
-
-            String forenamePrefix,
-            String surnamePrefix,
-            String emailPrefix
-
-    ) {
-
-        String errorMessage = "";
-
-       if(!forenamePrefix.equals("") && !Pattern.compile("^[a-zA-Z]+$").matcher(forenamePrefix).matches()) {
-
-           errorMessage += "Forename prefix is not valid! Must follow ^[a-zA-Z]+$ regex pattern. \n";
-
-       };
-
-        if(!surnamePrefix.equals("") && !Pattern.compile("^[a-zA-Z]+$").matcher(surnamePrefix).matches()) {
-
-            errorMessage += "Surname prefix is not valid! Must follow ^[a-zA-Z]+$ regex pattern. \n";
-
-        };
-
-        if(!emailPrefix.equals("") && !Pattern.compile("^[a-z]+$").matcher(emailPrefix).matches()) {
-
-            errorMessage += "Email prefix is not valid! Must follow ^[a-z]+$ regex pattern. \n";
-
-        };
-
-        return errorMessage;
-
-    }
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private String PostAndPutArgumentsErrorMessageGenerator(
 

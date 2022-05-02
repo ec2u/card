@@ -1,7 +1,12 @@
 package eu.ec2u.card.tokens;
 
+import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.Query;
+import com.google.cloud.datastore.StructuredQuery;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import eu.ec2u.card.tokens.Tokens.Token;
 import eu.ec2u.card.tokens.Tokens.TokenData;
+import eu.ec2u.card.users.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,17 +18,54 @@ public class TokensService {
 
 	@Autowired private TokensRepository tokensRepository;
 
+	@Autowired private DatastoreTemplate datastoreTemplate;
 
-	Tokens browse(final Pageable slice) {
+	@SuppressWarnings("ALL")
+	Tokens browse(
+
+			final Optional<String> username,
+			final Optional<Long> tokenNumber,
+			final Pageable slice
+
+	) {
 
 		final Tokens tokens = new Tokens();
-
 		tokens.setPath(Tokens.Id);
 
-		tokens.setContains(this.tokensRepository.findAll(slice)
-				.map(Tokens.TokenData::transfer)
-				.getContent()
-		);
+		Query<Entity> query;
+
+		if (tokenNumber.isPresent()) {
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Token")
+					.setFilter(StructuredQuery.PropertyFilter.eq("tokenNumber", tokenNumber.get()))
+					.setLimit(slice.getPageSize())
+					.build();
+
+        } else if (username.isPresent()) {
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Token")
+					.setFilter(StructuredQuery.PropertyFilter.eq("usernamePrefix", username.get()))
+					.setLimit(slice.getPageSize())
+					.build();
+
+		} else {
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Token")
+					.setLimit(slice.getPageSize())
+					.build();
+
+		}
+
+		List<Token> tokenList = new ArrayList<>();
+
+		this.datastoreTemplate.query(query, TokenData.class)
+				.toList()
+				.forEach(tokenData -> tokenList.add(tokenData.transfer()));
+
+		tokens.setContains(tokenList);
 
 		return tokens;
 
@@ -72,47 +114,6 @@ public class TokensService {
 				})
 				.map(TokenData::transfer)
 				.orElseThrow(NoSuchElementException::new);
-
-	}
-
-	Tokens search(
-
-			final Optional<String> usernamePrefix,
-			final Optional<Long> tokenNumber,
-			final Pageable slice
-
-	) {
-
-		final Tokens tokens = new Tokens();
-
-		tokens.setPath(Tokens.Id);
-
-		HashSet<TokenData> tokenDataSet = new HashSet<TokenData>();
-		List<Token> tokenList = new ArrayList<>();
-
-		usernamePrefix.ifPresent(username -> tokenDataSet.addAll(this.tokensRepository.findByServiceOrUserName(
-				username.toLowerCase(),
-				username.toLowerCase() + "\ufffd",
-				slice
-		)));
-
-		tokenNumber.ifPresent(number -> tokenDataSet.addAll(this.tokensRepository.findByTokenNumber(
-				number,
-				slice
-		)));
-
-		if(usernamePrefix.isEmpty() && tokenNumber.isEmpty()) {
-
-			tokenDataSet.addAll(this.tokensRepository.findAllTokenData(slice));
-
-		}
-
-		tokenDataSet.forEach(tokenData -> tokenList.add(tokenData.transfer()));
-		tokenList.sort(Comparator.comparing(token -> token.getUsername().toLowerCase()));
-
-		tokens.setContains(tokenList);
-
-		return tokens;
 
 	}
 

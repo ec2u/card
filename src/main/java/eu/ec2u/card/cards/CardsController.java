@@ -27,48 +27,28 @@ import java.util.regex.Pattern;
 @RequestMapping(Cards.Id)
 public final class CardsController {
 
-	@Autowired
-	private CardsService cards;
+	@Autowired private CardsService cards;
 
-	@Autowired
-	private EventsService events;
+	@Autowired private EventsService events;
 
 	@GetMapping("")
 	@JsonView(Container.class)
 	ResponseEntity<Cards> get(
 
-//			@AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
-			@RequestParam(value= "forename") Optional<String> forename,
-			@RequestParam(value = "surname") Optional<String> surname,
-			@RequestParam(value = "expiryDate") Optional<String> expiryDate,
-			@RequestParam(value = "cardNumber") Optional<Long> cardNumber,
-			@Valid @RequestParam(required = false, defaultValue = "0") @Min(0) final int page,
-			@Valid @RequestParam(required = false, defaultValue = "25") @Min(1) @Max(ContainerSize) final int size
-
-	) {
-
-		return ok().body(cards.search(forename, surname, expiryDate, cardNumber, PageRequest.of(page, size)));
-
-	}
-
-	@GetMapping("/filters")
-	@JsonView(Container.class)
-	ResponseEntity<Cards> search(
-
-			@RequestParam(value= "forename") Optional<String> forename,
-			@RequestParam(value = "surname") Optional<String> surname,
-			@RequestParam(value = "expiryDate") Optional<String> expiryDate,
-			@RequestParam(value = "cardNumber") Optional<Long> cardNumber,
+			@RequestParam Optional<String> label,
+			@RequestParam Optional<String> expiringDate,
+			@RequestParam Optional<Long> virtualCardNumber,
 			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
 			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
 
+
 	) {
 
-		return ok().body(cards.search(forename, surname, expiryDate, cardNumber, PageRequest.of(page, size)));
+		return ok().body(cards.browse(label, expiringDate, virtualCardNumber, PageRequest.of(page, size, Sort.by("surname"))));
 
 	}
 
-	@PostMapping("")
+	@PostMapping("/")
 	ResponseEntity<Void> post(
 
 			@AuthenticationPrincipal final ToolSecurity.Profile profile,
@@ -78,7 +58,7 @@ public final class CardsController {
 		return noContent().location(events.trace(profile, create, cards.create(card))).build();
 	}
 
-	@GetMapping("{id}")
+	@GetMapping("/{id}")
 	@JsonView(Resource.class)
 	ResponseEntity<Card> get(
 
@@ -89,7 +69,7 @@ public final class CardsController {
 		return ok().body(cards.relate(id));
 	}
 
-	@PutMapping("{id}")
+	@PutMapping("/{id}")
 	ResponseEntity<Void> put(
 
 			@AuthenticationPrincipal final ToolSecurity.Profile profile,
@@ -100,7 +80,7 @@ public final class CardsController {
 		return noContent().location(events.trace(profile, update, cards.update(id, card))).build();
 	}
 
-	@DeleteMapping("{id}")
+	@DeleteMapping("/{id}")
 	ResponseEntity<Void> delete(
 
 			@AuthenticationPrincipal final Profile profile,

@@ -15,6 +15,7 @@ import eu.ec2u.card.events.EventsService;
 import eu.ec2u.card.users.Users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import static org.springframework.http.ResponseEntity.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,52 +30,25 @@ import java.util.Optional;
 public final class UsersController {
 
     @Autowired private UsersService users;
+
     @Autowired private EventsService events;
 
     @GetMapping("")
     @JsonView(Container.class)
     ResponseEntity<Users> get(
 
-//          @AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
-            @RequestParam(value= "forename") Optional<String> forename,
-            @RequestParam(value= "surname") Optional<String> surname,
-            @RequestParam(value= "email") Optional<String> email,
+            @RequestParam Optional<String> label,
+            @RequestParam Optional<String> email,
             @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
             @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
 
     ) {
 
-        //if ( !profile.isReader(Users.Path) ) {
-        //
-        //    return status(FORBIDDEN).build();
-        //
-        //} else {
-
-        return ok().body(users.search(forename, surname, email, PageRequest.of(page, size)));
-
-        //}
+        return ok().body(users.browse(label, email, PageRequest.of(page, size, Sort.by("surname"))));
 
     }
 
-    @GetMapping("/filters")
-    @JsonView(Container.class)
-    ResponseEntity<Users> search(
-
-            @RequestParam(value= "forename") Optional<String> forename,
-            @RequestParam(value= "surname") Optional<String> surname,
-            @RequestParam(value= "email") Optional<String> email,
-            @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-            @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
-
-    ) {
-
-            return ok().body(users.search(forename, surname, email, PageRequest.of(page, size)));
-
-    }
-
-//        throw new ToolApplication.WrongGetArgumentsException(errorMessage);
-
-    @PostMapping("")
+    @PostMapping("/")
     ResponseEntity<Void> post(
 
             @AuthenticationPrincipal final Profile profile,
@@ -92,7 +66,7 @@ public final class UsersController {
 
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     @JsonView(Resource.class)
     ResponseEntity<User> get(
 
@@ -109,7 +83,7 @@ public final class UsersController {
 
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     ResponseEntity<Void> put(
 
             @AuthenticationPrincipal final Profile profile,
@@ -128,7 +102,7 @@ public final class UsersController {
 
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     ResponseEntity<Void> delete(
 
             @AuthenticationPrincipal final Profile profile,

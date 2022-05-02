@@ -26,41 +26,25 @@ import java.util.regex.Pattern;
 public final class TokensController {
 
 	@Autowired private TokensService tokens;
-	@Autowired private EventsService events;
 
+	@Autowired private EventsService events;
 
 	@GetMapping("")
 	@JsonView(Container.class)
 	ResponseEntity<Tokens> get(
 
-//			@AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
-			@RequestParam(value= "username") Optional<String> username,
-			@RequestParam(value="tokenNumber") Optional<Long> tokenNumber,
+			@RequestParam Optional<String> username,
+			@RequestParam Optional<Long> tokenNumber,
 			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
 			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
 
 	) {
 
-		return ok().body(tokens.search(username, tokenNumber, PageRequest.of(page, size)));
+		return ok().body(tokens.browse(username, tokenNumber, PageRequest.of(page, size, Sort.by("username"))));
 
 	}
 
-	@GetMapping("/filters")
-	@JsonView(Container.class)
-	ResponseEntity<Tokens> search(
-
-			@RequestParam(value= "username") Optional<String> username,
-			@RequestParam(value="tokenNumber") Optional<Long> tokenNumber,
-			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
-
-	) {
-
-		return ok().body(tokens.search(username, tokenNumber, PageRequest.of(page, size)));
-
-	}
-
-	@PostMapping("")
+	@PostMapping("/")
 	ResponseEntity<Void> post(
 
 			@AuthenticationPrincipal final Profile profile,
@@ -72,7 +56,7 @@ public final class TokensController {
 
 	}
 
-	@GetMapping("{tokenNumber}")
+	@GetMapping("/{tokenNumber}")
 	@JsonView(Resource.class)
 	ResponseEntity<Token> get(
 
@@ -85,7 +69,7 @@ public final class TokensController {
 
 	}
 
-	@PutMapping("{tokenNumber}")
+	@PutMapping("/{tokenNumber}")
 	ResponseEntity<Void> put(
 
 			@AuthenticationPrincipal final Profile profile,
@@ -98,7 +82,7 @@ public final class TokensController {
 
 	}
 
-	@DeleteMapping("{tokenNumber}")
+	@DeleteMapping("/{tokenNumber}")
 	ResponseEntity<Void> delete(
 
 			@AuthenticationPrincipal final Profile profile,
