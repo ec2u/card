@@ -22,7 +22,7 @@ import static java.lang.String.format;
 @Setter
 public class Cards extends Container<Card> {
 
-	static final String Id = "/cards/";
+	static final String Id = "/cards";
 
 	@Getter
 	@Setter
@@ -46,6 +46,7 @@ public class Cards extends Container<Card> {
 
 	}
 
+	@SuppressWarnings("ALL")
 	@Entity(name = "Card")
 	static final class CardData extends ResourceData {
 
@@ -67,8 +68,7 @@ public class Cards extends Container<Card> {
 		private String holderForename;
 		private String holderSurname;
 
-		private String holderForenameLowerCase;
-		private String holderSurnameLowerCase;
+		private String label;
 
 		private LocalDate expiringDate;
 		private Long virtualCardNumber;
@@ -93,11 +93,13 @@ public class Cards extends Container<Card> {
 
 			holderForename = card.getHolderForename();
 			holderSurname = card.getHolderSurname();
+
+			label = card.getHolderForename().toLowerCase() +
+					" " +
+					card.getHolderSurname().toLowerCase();
+
 			expiringDate = card.getExpiringDate();
 			virtualCardNumber = card.getVirtualCardNumber();
-
-			holderForenameLowerCase = card.getHolderForename().toLowerCase();
-			holderSurnameLowerCase = card.getHolderSurname().toLowerCase();
 
 			return this;
 		}

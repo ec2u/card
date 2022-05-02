@@ -20,7 +20,7 @@ import static java.lang.String.format;
 @Setter
 public class Users extends Container<User> {
 
-    static final String Id="/users/";
+    static final String Id="/users";
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,8 +49,8 @@ public class Users extends Container<User> {
 
     }
 
-    @Entity(name="User")
     @SuppressWarnings("ALL")
+    @Entity(name="User")
     static final class UserData extends ResourceData {
 
         protected Optional<String> getPath() {
@@ -102,7 +102,9 @@ public class Users extends Container<User> {
             forename=user.getForename();
             surname=user.getSurname();
 
-            label = user.getForename().toLowerCase() + " " + user.getSurname().toLowerCase();
+            label = user.getForename().toLowerCase() +
+                    " " +
+                    user.getSurname().toLowerCase();
 
             email=user.getEmail();
 
