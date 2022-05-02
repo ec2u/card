@@ -34,7 +34,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - run: npm ci
-      - run: npm build
+      - run: npm run build
 
       - name: Log in to the registry
         uses: docker/login-action@v1
@@ -47,6 +47,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile
-          context: code
+          context: "{{defaultContext}}:code"
           push: true
           tags: ${{ github.repository }}:latest
