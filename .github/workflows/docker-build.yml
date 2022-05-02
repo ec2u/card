@@ -1,0 +1,42 @@
+name: Create and publish Docker image
+
+on:
+
+  push:
+
+    branches: [ 'release/*' ]
+
+env:
+
+  registry: ghcr.io
+  image: ${{ github.repository }}
+
+jobs:
+
+  build-and-push-image:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.registry }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile
+          context: code
+          push: true
+          tags: ${{ github.repository }}:latest
