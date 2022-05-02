@@ -173,19 +173,19 @@ public class UsersService {
 
             errorMessage += "Forename is not valid! Must follow ^[a-zA-Z]+$ regex pattern. \n";
 
-        };
+        }
 
         if(!surnamePrefix.equals("") && !Pattern.compile("^[a-zA-Z]+$").matcher(surnamePrefix).matches()) {
 
             errorMessage += "Surname is not valid! Must follow ^[a-zA-Z]+$ regex pattern. \n";
 
-        };
+        }
 
         if(!emailPrefix.equals("") && !Pattern.compile("^[a-z]+@[a-z]+\\.[a-z]+$").matcher(emailPrefix).matches()) {
 
             errorMessage += "Email is not valid! Must follow ^[a-z]+@[a-z]+\\.[a-z]+$ regex pattern. \n";
 
-        };
+        }
 
         return errorMessage;
 
