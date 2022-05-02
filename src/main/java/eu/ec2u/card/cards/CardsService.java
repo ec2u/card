@@ -1,24 +1,23 @@
 package eu.ec2u.card.cards;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import eu.ec2u.card.cards.Cards.Card;
 import eu.ec2u.card.cards.Cards.CardData;
-import eu.ec2u.card.users.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
 public class CardsService {
 
 	@Autowired private CardsRepository cardsRepository;
+
 	@Autowired private DatastoreTemplate datastoreTemplate;
 
 	@SuppressWarnings("ALL")
@@ -34,37 +33,9 @@ public class CardsService {
 		final Cards cards = new Cards();
 		cards.setPath(Cards.Id);
 
-		Query<Entity> query;
+		Query<Entity> query = null;
 
-		if (virtualCardNumber.isPresent()) {
-
-			query = Query.newEntityQueryBuilder()
-					.setKind("Card")
-					.setFilter(StructuredQuery.PropertyFilter.eq("virtualCardNumber", virtualCardNumber.get()))
-					.setLimit(slice.getPageSize())
-					.build();
-
-        } else if (label.isPresent() && expiringDate.isPresent()) {
-
-			query = Query.newEntityQueryBuilder()
-					.setKind("Card")
-					.setFilter(StructuredQuery.CompositeFilter.and(
-							StructuredQuery.PropertyFilter.ge("label", label.get().toLowerCase()),
-							StructuredQuery.PropertyFilter.lt("label", label.get().toLowerCase() + "\ufffd"),
-							StructuredQuery.PropertyFilter.eq("expiringDate", expiringDate.get())
-					))
-					.setLimit(slice.getPageSize())
-					.build();
-
-		} else if (label.isEmpty() && expiringDate.isPresent()) {
-
-			query = Query.newEntityQueryBuilder()
-					.setKind("Card")
-					.setFilter(StructuredQuery.PropertyFilter.eq("expiringDate", expiringDate.get()))
-					.setLimit(slice.getPageSize())
-					.build();
-
-		} else if (label.isPresent()) {
+		if (label.isPresent() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Card")
@@ -72,6 +43,24 @@ public class CardsService {
 							StructuredQuery.PropertyFilter.ge("label", label.get().toLowerCase()),
 							StructuredQuery.PropertyFilter.lt("label", label.get().toLowerCase() + "\ufffd")
 					))
+					.setLimit(slice.getPageSize())
+					.build();
+
+        } else if (label.isEmpty() && expiringDate.isPresent() && virtualCardNumber.isEmpty()) {
+
+			Timestamp expiringDateTimestamp = Timestamp.parseTimestamp(expiringDate.get());
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Card")
+					.setFilter(StructuredQuery.PropertyFilter.eq("expiringDate", expiringDateTimestamp))
+					.setLimit(slice.getPageSize())
+					.build();
+
+        } else if (label.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isPresent()) {
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Card")
+					.setFilter(StructuredQuery.PropertyFilter.eq("virtualCardNumber", virtualCardNumber.get()))
 					.setLimit(slice.getPageSize())
 					.build();
 

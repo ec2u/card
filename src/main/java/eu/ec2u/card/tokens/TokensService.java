@@ -6,7 +6,6 @@ import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import eu.ec2u.card.tokens.Tokens.Token;
 import eu.ec2u.card.tokens.Tokens.TokenData;
-import eu.ec2u.card.users.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,7 @@ public class TokensService {
 
 		Query<Entity> query;
 
-		if (tokenNumber.isPresent()) {
+		if (tokenNumber.isPresent() && username.isEmpty()) {
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Token")
@@ -42,11 +41,13 @@ public class TokensService {
 					.setLimit(slice.getPageSize())
 					.build();
 
-        } else if (username.isPresent()) {
+        } else if (tokenNumber.isEmpty() && username.isPresent()) {
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Token")
-					.setFilter(StructuredQuery.PropertyFilter.eq("usernamePrefix", username.get()))
+					.setFilter(StructuredQuery.CompositeFilter.and(
+									StructuredQuery.PropertyFilter.ge("usernameLowerCase", username.get().toLowerCase()),
+									StructuredQuery.PropertyFilter.lt("usernameLowerCase", username.get().toLowerCase() + "\ufffd")))
 					.setLimit(slice.getPageSize())
 					.build();
 

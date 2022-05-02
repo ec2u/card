@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -17,6 +16,7 @@ import java.util.regex.Pattern;
 public class UsersService {
 
     @Autowired private UsersRepository usersRepository;
+
     @Autowired private DatastoreTemplate datastoreTemplate;
 
     @SuppressWarnings("ALL")
@@ -33,15 +33,13 @@ public class UsersService {
 
         Query<Entity> query;
 
-        if (label.isPresent() && email.isPresent()) {
+        if (label.isPresent() && email.isEmpty()) {
 
             query = Query.newEntityQueryBuilder()
                     .setKind("User")
                     .setFilter(StructuredQuery.CompositeFilter.and(
                             StructuredQuery.PropertyFilter.ge("label", label.get().toLowerCase()),
-                            StructuredQuery.PropertyFilter.lt("label", label.get().toLowerCase() + "\ufffd"),
-                            StructuredQuery.PropertyFilter.ge("email", email.get()),
-                            StructuredQuery.PropertyFilter.lt("email", email.get() + "\ufffd")
+                            StructuredQuery.PropertyFilter.lt("label", label.get().toLowerCase() + "\ufffd")
                     ))
                     .setLimit(slice.getPageSize())
                     .build();
@@ -51,19 +49,8 @@ public class UsersService {
             query = Query.newEntityQueryBuilder()
                     .setKind("User")
                     .setFilter(StructuredQuery.CompositeFilter.and(
-                            StructuredQuery.PropertyFilter.ge("email", email.get()),
-                            StructuredQuery.PropertyFilter.lt("email", email.get() + "\ufffd")
-                    ))
-                    .setLimit(slice.getPageSize())
-                    .build();
-
-        } else if (label.isPresent()) {
-
-            query = Query.newEntityQueryBuilder()
-                    .setKind("User")
-                    .setFilter(StructuredQuery.CompositeFilter.and(
-                            StructuredQuery.PropertyFilter.ge("label", label.get().toLowerCase()),
-                            StructuredQuery.PropertyFilter.lt("label", label.get().toLowerCase() + "\ufffd")
+                            StructuredQuery.PropertyFilter.ge("email", email.get().toLowerCase()),
+                            StructuredQuery.PropertyFilter.lt("email", email.get().toLowerCase() + "\ufffd")
                     ))
                     .setLimit(slice.getPageSize())
                     .build();

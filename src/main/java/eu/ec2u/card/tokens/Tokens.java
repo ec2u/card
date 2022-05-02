@@ -5,11 +5,8 @@ import eu.ec2u.card.Tool.*;
 import eu.ec2u.card.tokens.Tokens.Token;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.Optional;
-
 import javax.validation.constraints.*;
-
 import static eu.ec2u.card.ToolConfiguration.LinePattern;
 import static eu.ec2u.card.ToolConfiguration.LineSize;
 
@@ -40,6 +37,7 @@ public class Tokens extends Container<Token> {
 
 	}
 
+	@SuppressWarnings("ALL")
 	@Entity(name="Token")
 	static final class TokenData extends ResourceData {
 
@@ -61,6 +59,7 @@ public class Tokens extends Container<Token> {
 		private long tokenNumber;
 
 		private String username;
+		private String usernameLowerCase;
 
 		private String password;
 
@@ -88,6 +87,7 @@ public class Tokens extends Container<Token> {
 			tokenNumber = token.getTokenNumber();
 
 			username = token.getUsername();
+			usernameLowerCase = token.getUsername().toLowerCase();
 
 			password = token.getPassword();
 

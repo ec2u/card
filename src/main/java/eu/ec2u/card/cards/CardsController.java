@@ -44,7 +44,7 @@ public final class CardsController {
 
 	) {
 
-		return ok().body(cards.browse(label, expiringDate, virtualCardNumber, PageRequest.of(page, size, Sort.by("surname"))));
+		return ok().body(cards.browse(label, expiringDate, virtualCardNumber, PageRequest.of(page, size, Sort.by("holderSurname"))));
 
 	}
 
