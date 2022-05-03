@@ -79,8 +79,8 @@ export function VirtualCards() {
                 </a>
 
             </header>
-            {/*  onBlur={() => setClicked(false)}*/}
-            <table  >
+            {/*  */}
+            <table onBlur={() => setClicked(false)}>
                 <thead>
                     <tr>
                         <th>forename</th>

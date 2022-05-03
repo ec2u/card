@@ -138,7 +138,7 @@ export function EditCard() {
         })
             .then(data => navigate('/cards/'))
     };
-
+    console.log(id)
 
     const Showpopup = () => {
         setDialog(!dialog);

@@ -39,7 +39,7 @@ export function AddUser() {
     } else {
       setEmailError("invalid Email")
       return false
-    }
+    } 
   }
 
 

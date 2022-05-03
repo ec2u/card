@@ -30,6 +30,7 @@ export function EditUser() {
   const [clicked, setClicked] = useState<Boolean>(false);
   const [disable, setDisable] = useState<Boolean>(true)
   const [loading, setLoading] = useState<Boolean>(false)
+  const [emailerror, setEmailError] = useState<string>("");
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -63,13 +64,26 @@ export function EditUser() {
     })
       .then(data => navigate('/users/'))
   };
+  console.log(id)
+
+  const validateEmail = (e: string) => {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$/.test(e)) {
+      setEmailError("Valid Email")
+      return true;
+    } else {
+      setEmailError("invalid Email")
+      return false
+    }
+  }
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
 
     if (value === "" || updateuser.forename === "" ||
-      updateuser.surname === "" || updateuser.email === ""
+      updateuser.surname === "" ||
+      ((e.target.name == "email") && !validateEmail(value.toString())) ||
+      ((e.target.name != "email") && !validateEmail(updateuser.email))
     ) {
       setDisable(true)
     }
@@ -200,6 +214,7 @@ export function EditUser() {
               onChange={handleChange}
               onFocus={handleonFocus}
             />
+            <span>{emailerror}</span>
           </section>
 
         </div>

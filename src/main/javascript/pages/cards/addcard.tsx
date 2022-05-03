@@ -1,4 +1,5 @@
 import { Check, X } from "lucide-react";
+import { listenerCount } from "process";
 import React, { createElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./addcard.css";
@@ -7,20 +8,37 @@ import "./addcard.css";
 interface Card {
     holderForename: string;
     holderSurname: string;
-    expiringDate: Date;
+    expiringDate: string;
     virtualCardNumber: number;
     id: number | string;
 
 }
 
+const newDate = () => {
+    var today, dd, mm, yyyy;
+    today = new Date();
+    dd = today.getDate() + 1;
+    mm = today.getMonth() + 1;
+    yyyy = today.getFullYear();
+
+    if (mm < 10)
+        mm = '0' + mm.toString();
+    if (dd < 10)
+        dd = '0' + dd.toString();
+
+    return yyyy + "-" + mm + "-" + dd
+}
+
 
 export function AddCard() {
+
+
     const [addcard, setAddcard] = useState({
         holderForename: "",
         holderSurname: "",
         id: "",
         virtualCardNumber: 0,
-        expiringDate: new Date()
+        expiringDate: newDate()
     } as Card);
 
     const [disable, setDisable] = useState<Boolean>(true);
@@ -64,7 +82,8 @@ export function AddCard() {
         return yyyy + "-" + mm + "-" + dd
 
     }
-    console.log(disableDates())
+
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         const value = e.target.value
@@ -72,7 +91,8 @@ export function AddCard() {
         if (addcard.holderForename === "" || addcard.holderSurname === "" ||
             addcard.virtualCardNumber === 0 ||
             value === "" ||
-            ((e.target.name = "virtualCardNumber") && !validateNumber(addcard.virtualCardNumber))
+            ((e.target.name = "virtualCardNumber") && !validateNumber(addcard.virtualCardNumber)) ||
+            addcard.expiringDate === null
         ) {
             setDisable(true)
 
@@ -108,12 +128,13 @@ export function AddCard() {
                         navigate("/cards/")
                     } else {
                         setapiErrors(response.statusText);
-                        console.warn(response.statusText);
+                        window.alert(response.status + "\n " + response.statusText)
+
                     }
                 })
                 .catch(error => console.warn("error:", error))
         }
-        console.log(apiErrors)
+
     }
 
 
@@ -176,6 +197,7 @@ export function AddCard() {
                         <input
                             className={"expiry-date"}
                             type="date"
+                            value={addcard.expiringDate}
                             required
                             name="expiringDate"
                             onChange={handleChange}

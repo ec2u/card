@@ -17,7 +17,7 @@ export function CardUsers() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<Boolean>(false);
   const [error, setError] = useState<any>(null);
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<any>();
   const [searchEmail, setSearchEmail] = useState<string>("")
   const [clicked, setClicked] = useState<Boolean>(false);
   const [timer, setTimer] = useState<number>(0);
@@ -39,39 +39,46 @@ export function CardUsers() {
 
 
   useEffect(() => {
-    let number = clicked ? 1000 : 1
-    clearTimeout(timer)
-    let timerID = window.setTimeout(() => {
-      searchSubmit();
-    }, number);
-    setTimer(timerID)
-  }, [search]);
-
-  useEffect(() => {
-    let number = clicked ? 1000 : 1
-    clearTimeout(timer)
-    let timerID = window.setTimeout(() => {
-      searchEmailSubmit();
-    }, number);
-    setTimer(timerID)
-  }, [searchEmail]);
+    fetchData("")
+  }, []);
 
 
-  const searchSubmit = () => {
-    if (search === "") {
+
+  const searchSubmit = (e: string) => {
+    if (e === "") {
       fetchData("");
     } else {
-      fetchData("?label=" + search);
+      fetchData("?label=" + e);
 
     }
   }
 
-  const searchEmailSubmit = () => {
-    if (searchEmail === "") {
+
+  const handleSearchLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value)
+    clearTimeout(timer)
+    let timerID = window.setTimeout(() => {
+      searchSubmit(e.target.value)
+    }, 1000);
+    setTimer(timerID)
+  }
+
+  const searchEmailSubmit = (e: string) => {
+    if (e === "") {
       fetchData("");
     } else {
-      fetchData("?email=" + searchEmail)
+      fetchData("?email=" + e)
     }
+  }
+
+  const handleSearchEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchEmail(e.target.value)
+    clearTimeout(timer)
+    let timerID = window.setTimeout(() => {
+      searchEmailSubmit(e.target.value)
+
+    }, 1000);
+    setTimer(timerID)
   }
 
 
@@ -99,7 +106,7 @@ export function CardUsers() {
 
       </header>
 
-      <table>
+      <table onBlur={() => setClicked(false)}>
         <thead>
           <tr>
 
@@ -127,21 +134,22 @@ export function CardUsers() {
                   value={search}
                   type="search"
                   className={"search-label"}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={handleSearchLabelChange}
                 />
                 <input
                   type="search"
                   className={"search-email"}
                   value={searchEmail}
-                  onChange={(e) => setSearchEmail(e.target.value)} />
+                  onChange={handleSearchEmailChange} />
               </div>
               <div title="Close">
                 <X size={28}
                   className={"close-button"}
-                  onClick={() => {
+                  onMouseDown={() => {
                     setClicked(false);
-                    setSearch("")
-                    setSearchEmail("")
+                    setSearch("");
+                    setSearchEmail("");
+                    fetchData("")
                   }}
                 />
               </div>
@@ -164,9 +172,9 @@ export function CardUsers() {
 
           ) : (
 
-            <tbody>
+            <tbody >
               {users.map((user) => {
-                console.log(user.id)
+
 
                 return (
 
