@@ -26,14 +26,14 @@ import javax.validation.constraints.Min;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(Users.Id)
+@RequestMapping("")
 public final class UsersController {
 
     @Autowired private UsersService users;
 
     @Autowired private EventsService events;
 
-    @GetMapping("")
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
     @JsonView(Container.class)
     ResponseEntity<Users> get(
 
@@ -48,7 +48,7 @@ public final class UsersController {
 
     }
 
-    @PostMapping("/")
+    @RequestMapping(value = "/users/", method = RequestMethod.POST)
     ResponseEntity<Void> post(
 
             @AuthenticationPrincipal final Profile profile,
@@ -66,7 +66,7 @@ public final class UsersController {
 
     }
 
-    @GetMapping("/{id}")
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
     @JsonView(Resource.class)
     ResponseEntity<User> get(
 
@@ -83,7 +83,7 @@ public final class UsersController {
 
     }
 
-    @PutMapping("/{id}")
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
     ResponseEntity<Void> put(
 
             @AuthenticationPrincipal final Profile profile,
@@ -102,7 +102,7 @@ public final class UsersController {
 
     }
 
-    @DeleteMapping("/{id}")
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
     ResponseEntity<Void> delete(
 
             @AuthenticationPrincipal final Profile profile,

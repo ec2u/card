@@ -16,7 +16,7 @@ import static java.lang.String.format;
 @Setter
 public class Tokens extends Container<Token> {
 
-	static final String Id="/tokens";
+	static final String Id="/tokens/";
 
 	@Getter
 	@Setter

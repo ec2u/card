@@ -21,7 +21,7 @@ import static java.lang.String.format;
 @Setter
 public class Cards extends Container<Card> {
 
-	static final String Id = "/cards";
+	static final String Id = "/cards/";
 
 	@Getter
 	@Setter

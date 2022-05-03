@@ -24,14 +24,14 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @RestController
-@RequestMapping(Cards.Id)
+@RequestMapping("")
 public final class CardsController {
 
 	@Autowired private CardsService cards;
 
 	@Autowired private EventsService events;
 
-	@GetMapping("")
+	@RequestMapping(value = "/cards", method = RequestMethod.GET)
 	@JsonView(Container.class)
 	ResponseEntity<Cards> get(
 
@@ -48,7 +48,7 @@ public final class CardsController {
 
 	}
 
-	@PostMapping("/")
+	@RequestMapping(value = "/cards/", method = RequestMethod.POST)
 	ResponseEntity<Void> post(
 
 			@AuthenticationPrincipal final ToolSecurity.Profile profile,
@@ -58,7 +58,7 @@ public final class CardsController {
 		return noContent().location(events.trace(profile, create, cards.create(card))).build();
 	}
 
-	@GetMapping("/{id}")
+	@RequestMapping(value = "/cards/{id}", method = RequestMethod.GET)
 	@JsonView(Resource.class)
 	ResponseEntity<Card> get(
 
@@ -69,7 +69,7 @@ public final class CardsController {
 		return ok().body(cards.relate(id));
 	}
 
-	@PutMapping("/{id}")
+	@RequestMapping(value = "/cards/{id}", method = RequestMethod.PUT)
 	ResponseEntity<Void> put(
 
 			@AuthenticationPrincipal final ToolSecurity.Profile profile,
@@ -80,7 +80,7 @@ public final class CardsController {
 		return noContent().location(events.trace(profile, update, cards.update(id, card))).build();
 	}
 
-	@DeleteMapping("/{id}")
+	@RequestMapping(value = "/cards/{id}", method = RequestMethod.DELETE)
 	ResponseEntity<Void> delete(
 
 			@AuthenticationPrincipal final Profile profile,
@@ -89,12 +89,6 @@ public final class CardsController {
 	) {
 
 		return noContent().location(events.trace(profile, delete, cards.delete(id))).build();
-	}
-
-	private boolean isForenamePrefixValid(String forenamePrefix) {
-
-		return Pattern.compile("^[a-zA-Z]+$").matcher(forenamePrefix).matches();
-
 	}
 
 }
