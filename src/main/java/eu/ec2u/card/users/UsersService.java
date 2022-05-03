@@ -28,10 +28,12 @@ public class UsersService {
 
     ) {
 
+        // Queries are designed to work with only one parameter at time!
+
         final Users users = new Users();
         users.setPath(Users.Id);
 
-        Query<Entity> query;
+        Query<Entity> query = null;
 
         if (label.isPresent() && email.isEmpty()) {
 
@@ -55,12 +57,17 @@ public class UsersService {
                     .setLimit(slice.getPageSize())
                     .build();
 
-        } else {
+        } else if (label.isEmpty() && email.isEmpty()) {
 
             query = Query.newEntityQueryBuilder()
                     .setKind("User")
                     .setLimit(slice.getPageSize())
                     .build();
+
+        } else {
+
+            throw new ToolApplication.WrongQueryArgumentsException(
+                    "Queries are designed to work with only one parameter at time!");
 
         }
 
@@ -79,12 +86,10 @@ public class UsersService {
     @Transactional
     User create(final User user) {
 
-        String errorMessage = PostAndPutArgumentsErrorMessageGenerator(
-                user.getForename(), user.getSurname(), user.getEmail());
+        if (!isEmailArgumentValid(user.getEmail())) {
 
-        if (!errorMessage.equals("")) {
-
-            throw new ToolApplication.WrongPostArgumentsException(errorMessage);
+            throw new ToolApplication.WrongPostArgumentsException(
+                    "Email argument is not valid, must follow ^[a-z]+@[a-z]+\\.[a-z]+$ regex pattern!");
 
         } else {
 
@@ -109,12 +114,10 @@ public class UsersService {
     @Transactional
     User update(final long id, final User user) {
 
-        String errorMessage = PostAndPutArgumentsErrorMessageGenerator(
-                user.getForename(), user.getSurname(), user.getEmail());
+        if (!isEmailArgumentValid(user.getEmail())) {
 
-        if (!errorMessage.equals("")) {
-
-            throw new ToolApplication.WrongPutArgumentsException(errorMessage);
+            throw new ToolApplication.WrongPostArgumentsException(
+                    "Email argument is not valid, must follow ^[a-z]+@[a-z]+\\.[a-z]+$ regex pattern!");
 
         } else {
 
@@ -146,35 +149,10 @@ public class UsersService {
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private String PostAndPutArgumentsErrorMessageGenerator(
+    @SuppressWarnings("ALL")
+    private boolean isEmailArgumentValid(final String email) {
 
-            String forenamePrefix,
-            String surnamePrefix,
-            String emailPrefix
-
-    ) {
-
-        String errorMessage = "";
-
-        if(!forenamePrefix.equals("") && !Pattern.compile("^[a-zA-Z]+$").matcher(forenamePrefix).matches()) {
-
-            errorMessage += "Forename is not valid! Must follow ^[a-zA-Z]+$ regex pattern. \n";
-
-        }
-
-        if(!surnamePrefix.equals("") && !Pattern.compile("^[a-zA-Z]+$").matcher(surnamePrefix).matches()) {
-
-            errorMessage += "Surname is not valid! Must follow ^[a-zA-Z]+$ regex pattern. \n";
-
-        }
-
-        if(!emailPrefix.equals("") && !Pattern.compile("^[a-z]+@[a-z]+\\.[a-z]+$").matcher(emailPrefix).matches()) {
-
-            errorMessage += "Email is not valid! Must follow ^[a-z]+@[a-z]+\\.[a-z]+$ regex pattern. \n";
-
-        }
-
-        return errorMessage;
+        return Pattern.compile("^[a-z]+@[a-z]+\\.[a-z]+$").matcher(email).matches();
 
     }
 

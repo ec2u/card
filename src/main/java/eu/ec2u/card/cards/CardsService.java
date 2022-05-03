@@ -5,6 +5,7 @@ import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import eu.ec2u.card.ToolApplication;
 import eu.ec2u.card.cards.Cards.Card;
 import eu.ec2u.card.cards.Cards.CardData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class CardsService {
 			final Pageable slice
 
 	) {
+
+		// Queries are designed to work with only one parameter at time!
 
 		final Cards cards = new Cards();
 		cards.setPath(Cards.Id);
@@ -64,12 +67,17 @@ public class CardsService {
 					.setLimit(slice.getPageSize())
 					.build();
 
-		} else {
+		} else if (label.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Card")
 					.setLimit(slice.getPageSize())
 					.build();
+
+		} else {
+
+			throw new ToolApplication.WrongQueryArgumentsException(
+					"Queries are designed to work with only one parameter at time!");
 
 		}
 
