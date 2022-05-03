@@ -21,6 +21,7 @@ export function CardUsers() {
   const [searchEmail, setSearchEmail] = useState<string>("")
   const [clicked, setClicked] = useState<Boolean>(false);
   const [timer, setTimer] = useState<number>(0);
+  const [disable, setDisable] = useState<Boolean>(true)
 
 
   const fetchData = async (searchData: any) => {
@@ -47,9 +48,10 @@ export function CardUsers() {
   const searchSubmit = (e: string) => {
     if (e === "") {
       fetchData("");
+      setDisable(true)
     } else {
       fetchData("?label=" + e);
-
+      setDisable(false)
     }
   }
 
@@ -66,8 +68,10 @@ export function CardUsers() {
   const searchEmailSubmit = (e: string) => {
     if (e === "") {
       fetchData("");
+      setDisable(true)
     } else {
       fetchData("?email=" + e)
+      setDisable(false)
     }
   }
 
@@ -86,11 +90,21 @@ export function CardUsers() {
   let SearchIcon =
     <div title={"search"}>
       <Search size={28}
-        onClick={() => setClicked(true)}
+        onClick={() => setClicked(!clicked)}
         className={"search-button"}
       />
     </div>
 
+  const handleSearch = () => {
+    if (disable) {
+
+    } else {
+      setClicked(false);
+      setSearch("");
+      setSearchEmail("");
+      fetchData("")
+    }
+  }
 
 
   return createElement('card-users', {},
@@ -109,7 +123,10 @@ export function CardUsers() {
       <table onBlur={() => setClicked(false)}>
         <thead>
           <tr>
-
+            <th> <input
+              type="checkbox"
+              className={"checkbox"}
+            /></th>
             <th>forename</th>
             <th>surname</th>
             <th>email</th>
@@ -133,8 +150,11 @@ export function CardUsers() {
                 <input
                   value={search}
                   type="search"
-                  className={"search-label"}
+                  className={"search-forename"}
                   onChange={handleSearchLabelChange}
+                />
+                <input
+                  className={"search-surname"}
                 />
                 <input
                   type="search"
@@ -145,12 +165,8 @@ export function CardUsers() {
               <div title="Close">
                 <X size={28}
                   className={"close-button"}
-                  onMouseDown={() => {
-                    setClicked(false);
-                    setSearch("");
-                    setSearchEmail("");
-                    fetchData("")
-                  }}
+                  color={disable ? 'lightgray' : 'black'}
+                  onMouseDown={handleSearch}
                 />
               </div>
             </div>
@@ -179,7 +195,10 @@ export function CardUsers() {
                 return (
 
                   <tr key={user.id} >
-
+                    <td><input className="checkbox"
+                      type="checkbox"
+                      checked={user.admin}
+                      disabled /> </td>
                     <td>{user.forename}</td>
                     <td>{user.surname}</td>
                     <td>{user.email}</td>
