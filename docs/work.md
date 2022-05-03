@@ -1,3 +1,1 @@
-docker build --tag ec2u/card .
-
-docker run -dit --name card -p 8080:80 ec2u/card
+docker build --tag ec2u/card . && docker run --rm -it --name card -p 8080:8080 ec2u/card
