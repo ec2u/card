@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import eu.ec2u.card.Tool.Container;
 import eu.ec2u.card.Tool.Resource;
 import eu.ec2u.card.ToolSecurity.Profile;
+import eu.ec2u.card.cards.Cards;
 import eu.ec2u.card.events.EventsService;
 import eu.ec2u.card.tokens.Tokens.Token;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +20,16 @@ import static eu.ec2u.card.ToolConfiguration.ContainerSize;
 import static eu.ec2u.card.events.Events.Action.*;
 import static org.springframework.http.ResponseEntity.*;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @RestController
-@RequestMapping(Tokens.Id)
+@RequestMapping("")
 public final class TokensController {
 
 	@Autowired private TokensService tokens;
 
 	@Autowired private EventsService events;
 
-	@GetMapping("")
+	@RequestMapping(value = "/tokens", method = RequestMethod.GET)
 	@JsonView(Container.class)
 	ResponseEntity<Tokens> get(
 
@@ -44,7 +44,7 @@ public final class TokensController {
 
 	}
 
-	@PostMapping("/")
+	@RequestMapping(value = "/tokens/", method = RequestMethod.POST)
 	ResponseEntity<Void> post(
 
 			@AuthenticationPrincipal final Profile profile,
@@ -56,7 +56,7 @@ public final class TokensController {
 
 	}
 
-	@GetMapping("/{tokenNumber}")
+	@RequestMapping(value = "/tokens/{tokenNumber}", method = RequestMethod.GET)
 	@JsonView(Resource.class)
 	ResponseEntity<Token> get(
 
@@ -69,7 +69,7 @@ public final class TokensController {
 
 	}
 
-	@PutMapping("/{tokenNumber}")
+	@RequestMapping(value = "/tokens/{tokenNumber}", method = RequestMethod.PUT)
 	ResponseEntity<Void> put(
 
 			@AuthenticationPrincipal final Profile profile,
@@ -82,7 +82,7 @@ public final class TokensController {
 
 	}
 
-	@DeleteMapping("/{tokenNumber}")
+	@RequestMapping(value = "/tokens/{tokenNumber}", method = RequestMethod.DELETE)
 	ResponseEntity<Void> delete(
 
 			@AuthenticationPrincipal final Profile profile,
@@ -91,18 +91,6 @@ public final class TokensController {
 	) {
 
 		return noContent().location(events.trace(profile, delete, tokens.delete(tokenNumber))).build();
-
-	}
-
-	private boolean isUsernamePrefixValid(String usernamePrefix) {
-
-		return Pattern.compile("^[a-zA-Z]+$").matcher(usernamePrefix).matches();
-
-	}
-
-	private boolean isTokenNumberValid(String tokenNumber) {
-
-		return Pattern.compile("^[0-9]+$").matcher(tokenNumber).matches();
 
 	}
 

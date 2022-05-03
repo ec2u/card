@@ -150,16 +150,16 @@ public class ToolApplication implements WebMvcConfigurer {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @ExceptionHandler(WrongGetArgumentsException.class)
-    public ResponseEntity<String> handle(final WrongGetArgumentsException e) {
+    @ExceptionHandler(WrongQueryArgumentsException.class)
+    public ResponseEntity<String> handle(final WrongQueryArgumentsException e) {
 
         return ResponseEntity.badRequest().body(e.getMessage());
 
     }
 
-    public static final class WrongGetArgumentsException extends IllegalArgumentException {
+    public static final class WrongQueryArgumentsException extends IllegalArgumentException {
 
-        public WrongGetArgumentsException(String errorMessage) {
+        public WrongQueryArgumentsException(String errorMessage) {
 
             super(errorMessage);
 

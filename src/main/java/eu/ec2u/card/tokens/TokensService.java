@@ -4,6 +4,7 @@ import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import eu.ec2u.card.ToolApplication;
 import eu.ec2u.card.tokens.Tokens.Token;
 import eu.ec2u.card.tokens.Tokens.TokenData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,12 @@ public class TokensService {
 
 	) {
 
+		// Queries are designed to work with only one parameter at time!
+
 		final Tokens tokens = new Tokens();
 		tokens.setPath(Tokens.Id);
 
-		Query<Entity> query;
+		Query<Entity> query = null;
 
 		if (tokenNumber.isPresent() && username.isEmpty()) {
 
@@ -51,12 +54,17 @@ public class TokensService {
 					.setLimit(slice.getPageSize())
 					.build();
 
-		} else {
+		} else if (tokenNumber.isEmpty() && username.isEmpty()) {
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Token")
 					.setLimit(slice.getPageSize())
 					.build();
+
+		} else {
+
+			throw new ToolApplication.WrongQueryArgumentsException(
+					"Queries are designed to work with only one parameter at time!");
 
 		}
 

@@ -20,7 +20,7 @@ import static java.lang.String.format;
 @Setter
 public class Users extends Container<User> {
 
-    static final String Id="/users";
+    static final String Id="/users/";
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
