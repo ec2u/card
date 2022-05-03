@@ -1,5 +1,5 @@
 
-import { ChevronRight, Plus, Search, X } from 'lucide-react';
+import { ChevronRight, Plus, Search, X, ChevronDown } from 'lucide-react';
 import React, { createElement, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './cards.css';
@@ -21,8 +21,11 @@ export function VirtualCards() {
     const [loading, setLoading] = useState<Boolean>(false);
     const [error, setError] = useState<any>(null);
     const [clicked, setClicked] = useState<Boolean>(false);
-    const [search, setSearch] = useState<any>("");
+    const [search, setSearch] = useState<string>("");
+    const [searchDate, setSearchDate] = useState<any>("");
+    const [searchNumber, setSearchNumber] = useState<string>("");
     const [timer, setTimer] = useState<number>(0);
+    const [disable, setDisable] = useState<Boolean>(true)
 
 
 
@@ -42,31 +45,83 @@ export function VirtualCards() {
     }
 
     useEffect(() => {
-        let number = clicked ? 1000 : 1
+        fetchData("")
+    }, [])
+
+
+    const searchForenameSubmit = (e: string) => {
+        if (e === "") {
+            fetchData("");
+            setDisable(true)
+        } else {
+            fetchData("?label=" + e);
+            setDisable(false)
+        }
+    }
+    const handleSearchForenameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value)
         clearTimeout(timer)
         let timerID = window.setTimeout(() => {
-            searchSubmit();
-        }, number);
+            searchForenameSubmit(e.target.value)
+        }, 1000);
         setTimer(timerID)
-    }, [search])
+    }
 
-
-    const searchSubmit = () => {
-        if (search === "") {
+    const searchDateSubmit = (e: any) => {
+        if (e === "") {
             fetchData("");
+            setDisable(true)
         } else {
-            fetchData("?label=" + search);
+            fetchData("?expiringDate=" + e);
+            setDisable(false)
         }
     }
 
+    const handleSearchDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchDate(e.target.value)
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            searchDateSubmit(e.target.value)
+        }, 1000);
+        setTimer(timerID)
+    }
+
+    const searchNumberSubmit = (e: any) => {
+        if (e === "") {
+            fetchData("");
+            setDisable(true)
+        } else {
+            fetchData("?virtualCardNumber=" + e);
+            setDisable(false)
+        }
+    }
+
+    const handleSearchNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchNumber(e.target.value)
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            searchNumberSubmit(e.target.value)
+        }, 1000);
+        setTimer(timerID)
+    }
 
     let SearchIcon =
         <div title={"search"} className={"search-icon"}>
             <Search size={28} color="gray"
                 className={'button-search'}
-                onClick={() => setClicked(true)}
+                onClick={() => setClicked(!clicked)}
             />
         </div>
+
+    const handleSearch = () => {
+        if (disable) {
+
+        } else {
+            setClicked(false);
+            setSearch("")
+            fetchData("")
+        }
+    }
 
     return createElement('card-cards', {},
         <>
@@ -83,7 +138,14 @@ export function VirtualCards() {
             <table onBlur={() => setClicked(false)}>
                 <thead>
                     <tr>
-                        <th>forename</th>
+                        <th>
+                            <a>forename</a>
+                            <a><ChevronDown
+
+                                className={"down-arrow"}
+                            /></a>
+
+                        </th>
                         <th>surname</th>
                         <th>expiry date</th>
                         <th>card number</th>
@@ -100,26 +162,32 @@ export function VirtualCards() {
                             <div className={"search-fields-start"}>
                                 <input
                                     type="search"
-                                    className={"search-label"}
+                                    className={"search-forename"}
                                     value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
+                                    onChange={handleSearchForenameChange}
                                 />
                                 <input
-                                    type="date"
+                                    className={"search-surname"}
+                                    type="search"
+                                />
+                                <input
+                                    type="search"
                                     className={"search-date"}
+                                    value={searchDate}
+                                    onChange={handleSearchDateChange}
                                 />
                                 <input
-                                    required
+                                    type="search"
                                     className={"search-number"}
+                                    value={searchNumber}
+                                    onChange={handleSearchNumberChange}
                                     pattern="[0-9]*"
                                 />
                             </div>
                             <div >
                                 <X size={30}
-                                    onClick={() => {
-                                        setClicked(false);
-                                        setSearch("")
-                                    }}
+                                    color={disable ? 'lightgray' : 'black'}
+                                    onMouseDown={handleSearch}
                                     className={"close-button"}
                                 />
                             </div>

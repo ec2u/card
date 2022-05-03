@@ -21,7 +21,7 @@ card-inspectcard {
     }
     & .cards-link:hover {
       color: gray;
-      transform: translateY(-3px);
+      
     }
   }
   & .spinner::before {
@@ -70,7 +70,7 @@ card-inspectcard {
   }
   & .button-edit:hover {
     color: green;
-    transform: translateY(-3px);
+  
   }
 }
 

@@ -15,7 +15,6 @@ card-cards {
     }
     & .button-plus:hover {
       color: green;
-      transform: translateY(-4px);
     }
   }
   & table {
@@ -38,12 +37,14 @@ card-cards {
     & td {
       text-align: left;
     }
+    & .down-arrow {
+      color: black;
+    }
     & .button-arrow {
       color: black;
     }
     & .button-arrow:hover {
       color: orange;
-      transform: translateX(3px);
     }
     & .button-search {
       cursor: pointer;
@@ -51,7 +52,6 @@ card-cards {
     }
     & .button-search:hover {
       color: black;
-      transform: translateY(-4px);
     }
 
     & tr:nth-child(even) {
@@ -71,20 +71,24 @@ card-cards {
       font-size: 0.8em;
       border: 1px solid black;
       border-radius: 5px;
-      box-shadow: 0 0 5px 5px lightgray;
     }
     & input:focus {
       outline: 2px solid gray;
-      box-shadow: 0 0 2px 4px lightgray;
+      box-shadow: 0 0 5px 5px lightgray;
     }
 
-    & .search-label {
+    & .search-forename {
       margin-left: 5px;
-      margin-right: 8em;
-      width: 20em;
+      margin-right: 5em;
+      width: 9em;
+    }
+    & .search-surname {
+      margin-left: 5px;
+      margin-right: 5em;
+      width: 9em;
     }
     & .search-date {
-      margin-right: 8em;
+      margin-right: 7.5em;
       width: 7em;
       border: 1px solid lightgray;
     }
@@ -96,7 +100,6 @@ card-cards {
     }
     & .close-button:hover {
       color: red;
-      transform: translateY(-4px);
     }
     & .button-search {
       margin-left: 30px;

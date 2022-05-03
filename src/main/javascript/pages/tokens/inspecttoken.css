@@ -21,7 +21,7 @@ card-inspecttoken {
     }
     & .tokens-link:hover {
       color: gray;
-      transform: translateY(-3px);
+      
     }
   }
   & .spinner::before {
@@ -73,7 +73,7 @@ card-inspecttoken {
   }
   & .button-edit:hover {
     color: green;
-    transform: translateY(-3px);
+    
   }
 }
 

@@ -22,7 +22,6 @@ card-editcard {
       }
       & .cards-link:hover {
         color: gray;
-        transform: translateY(-3px);
       }
     }
   }
@@ -54,10 +53,12 @@ card-editcard {
         padding: 0.2em;
         border-radius: 0.3em;
         font-size: 0.9em;
-        box-shadow: 0 0 5px 5px lightgray;
       }
       & input:required:invalid {
         border: 2px solid red;
+      }
+      & input:required:focus {
+        box-shadow: 0 0 5px 5px lightgray;
       }
     }
     & .forename {
@@ -82,18 +83,15 @@ card-editcard {
   }
   & .check-button:hover {
     color: green;
-    transform: translateY(-3px);
   }
   & .close-button:hover {
     color: red;
-    transform: translateY(-3px);
   }
   & .trash-button {
     cursor: pointer;
   }
   & .trash-button:hover {
     color: red;
-    transform: translateY(-3px);
   }
 }
 

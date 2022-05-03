@@ -22,7 +22,6 @@ card-addtoken {
     }
     & .tokens-link:hover {
       color: gray;
-      transform: translateY(-3px);
     }
   }
   & form {
@@ -54,7 +53,6 @@ card-addtoken {
         padding: 0.2em;
         border-radius: 0.3em;
         font-size: 0.9em;
-        box-shadow: 0 0 5px 5px lightgray;
       }
       & input:focus {
         outline: 2px solid gray;
@@ -63,7 +61,7 @@ card-addtoken {
       & input:required:valid:not([value="0"]) {
         border: 3px solid green;
       }
-      & input:required:invalid:not([value=""]) {
+      & input:required:invalid {
         border: 1px solid red;
       }
     }
@@ -85,11 +83,9 @@ card-addtoken {
   }
   & .button-check:hover {
     color: green;
-    transform: translateY(-3px);
   }
   & .button-close:hover {
     color: red;
-    transform: translateY(-3px);
   }
 }
 

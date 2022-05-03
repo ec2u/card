@@ -20,7 +20,6 @@ card-edituser {
     }
     & .users-link:hover {
       color: gray;
-      transform: translateY(-3px);
     }
   }
   & form {
@@ -52,11 +51,10 @@ card-edituser {
         padding: 0.2em;
         border-radius: 0.3em;
         font-size: 0.9em;
-        box-shadow: 0 0 5px 5px lightgray;
       }
       & input:focus {
         outline: 2px solid gray;
-        box-shadow: 0 0 2px 4px lightgray;
+        box-shadow: 0 0 5px 5px lightgray;
       }
       & input:required:invalid {
         border: 2px solid red;
@@ -83,7 +81,6 @@ card-edituser {
     cursor: pointer;
   }
   & .check-button:hover {
-    transform: translateY(-3px);
     color: green;
   }
   & .trash-button {
@@ -91,11 +88,9 @@ card-edituser {
   }
   & .trash-button:hover {
     color: red;
-    transform: translateY(-3px);
   }
   & .close-button:hover {
     color: red;
-    transform: translateY(-3px);
   }
 }
 

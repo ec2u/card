@@ -20,6 +20,7 @@ export function CardTokens() {
     const [searchNumber, setsearchNumber] = useState<any>();
     const [clicked, setClicked] = useState<Boolean>(false);
     const [timer, setTimer] = useState<number>(0);
+    const [disable, setDisable] = useState<Boolean>(true)
 
 
 
@@ -39,50 +40,68 @@ export function CardTokens() {
 
 
     useEffect(() => {
-        let number = clicked ? 1000 : 1
-        clearTimeout(timer)
-        let timerID = window.setTimeout(() => {
-            searchSubmit();
-        }, number);
-        setTimer(timerID)
-    }, [search]);
-
-    useEffect(() => {
-        let number = clicked ? 1000 : 1
-        clearTimeout(timer)
-        let timerID = window.setTimeout(() => {
-            numberSearch();
-        }, number);
-        setTimer(timerID)
-    }, [searchNumber]);
+        fetchData("")
+    }, []);
 
 
-    const searchSubmit = () => {
-        if (search === "") {
+
+    const searchSubmit = (e: string) => {
+        if (e === "") {
             fetchData("");
+            setDisable(true)
         } else {
-            fetchData("?username=" + search);
+            fetchData("?username=" + e);
+            setDisable(false)
         }
     }
 
+    const handleSearchUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value)
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            searchSubmit(e.target.value)
+        }, 1000);
+        setTimer(timerID)
+    }
 
-    const numberSearch = () => {
-        if (searchNumber === "") {
+    const hanldeSearchNumber = (e: string) => {
+        if (e === "") {
             fetchData("");
+            setDisable(true)
         } else {
-            fetchData("?tokenNumber=" + searchNumber)
+            fetchData("?tokenNumber=" + e);
+            setDisable(false)
         }
     }
+
+    const searchNumberSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setsearchNumber(e.target.value)
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            hanldeSearchNumber(e.target.value)
+        }, 1000);
+        setTimer(timerID)
+    }
+
 
     let SearchIcon =
         <div title={"search"}>
             <Search size={28}
-                onClick={() => setClicked(true)}
+                onClick={() => setClicked(!clicked)}
                 className={"search-button"}
             />
         </div>
 
+    const handleSearch = () => {
+        if (disable) {
 
+        } else {
+            setClicked(false);
+            setSearch("");
+            setsearchNumber("")
+            fetchData("")
+        }
+    }
 
     return createElement('card-tokens', {},
 
@@ -97,7 +116,7 @@ export function CardTokens() {
 
             </header>
 
-            <table>
+            <table onBlur={() => setClicked(false)}>
 
                 <thead>
 
@@ -123,24 +142,21 @@ export function CardTokens() {
                                     type="search"
                                     className={"search-username"}
                                     value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
+                                    onChange={handleSearchUsernameChange}
                                 />
                                 <input
                                     type="search"
                                     className={"search-token"}
                                     value={searchNumber}
-                                    onChange={(e) => setsearchNumber(e.target.value)}
+                                    onChange={searchNumberSubmit}
                                 />
                             </div>
 
                             <div title="Close">
                                 <X size={28}
+                                    color={disable ? 'lightgray' : 'black'}
                                     className={"close-button"}
-                                    onClick={() => {
-                                        setClicked(false);
-                                        setSearch("");
-                                        setsearchNumber("")
-                                    }}
+                                    onMouseDown={handleSearch}
                                 />
                             </div>
 

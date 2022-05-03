@@ -21,7 +21,6 @@ card-adduser {
     }
     & .users-link:hover {
       color: gray;
-      transform: translateY(-3px);
     }
   }
   & form {
@@ -53,16 +52,15 @@ card-adduser {
         padding: 0.2em;
         border-radius: 0.3em;
         font-size: 0.9em;
-        box-shadow: 0 0 5px 5px lightgray;
       }
       & input:focus {
         outline: 2px solid gray;
-        box-shadow: 0 0 2px 4px lightgray;
+        box-shadow: 0 0 5px 5px lightgray;
       }
       & input:required:valid {
         border: 3px solid green;
       }
-      & input:required:invalid:not([value=""]) {
+      & input:required:invalid {
         border: 1px solid red;
       }
       & .forename {
@@ -88,11 +86,9 @@ card-adduser {
   }
   & .button-check:hover {
     color: green;
-    transform: translateY(-3px);
   }
   & .button-close:hover {
     color: red;
-    transform: translateY(-3px);
   }
 }
 

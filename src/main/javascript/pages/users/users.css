@@ -16,7 +16,6 @@ card-users {
     }
     & .button-plus:hover {
       color: green;
-      transform: translateY(-4px);
     }
   }
   & table {
@@ -29,7 +28,7 @@ card-users {
 
     & tr {
       display: grid;
-      grid-template-columns: 220px 210px 5fr 0fr;
+      grid-template-columns: 80px 320px 320px 5fr 0fr;
       text-align: left;
       padding: 0.1em;
       align-items: center;
@@ -42,7 +41,10 @@ card-users {
     }
     & .search-button:hover {
       color: black;
-      transform: translateY(-4px);
+    }
+    & .checkbox {
+      height: 1.5em;
+      width: 1.5em;
     }
 
     & tr:nth-child(even) {
@@ -57,7 +59,6 @@ card-users {
     }
     & .button-arrow:hover {
       color: orange;
-      transform: translateX(3px);
     }
     & .search-fields {
       display: flex;
@@ -70,17 +71,25 @@ card-users {
         border: 1px solid black;
         border-radius: 5px;
       }
-      & .search-label {
-        width: 17em;
+      & input:focus {
+        outline: 2px solid gray;
+        box-shadow: 0 0 5px 5px lightgray;
+      }
+      & .search-forename {
+        width: 12em;
+        margin-left: 4.2em;
+        margin-right: 4.5em;
+      }
+      & .search-surname {
+        width: 12em;
         margin-left: 3px;
-        margin-right: 5.5em;
+        margin-right: 4.5em;
       }
       & .search-email {
-        width: 10em;
+        width: 15em;
       }
       & .close-button:hover {
         color: red;
-        transform: translateY(-4px);
       }
     }
   }
@@ -100,29 +109,6 @@ card-users {
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
   will-change: transform;
-}
-
-.search-box {
-  position: fixed;
-  top: 5%;
-  left: 40%;
-  transition: 0.2s ease-all;
-
-  & input {
-    padding: 0.6em;
-    width: 22em;
-    border: 1px solid gray;
-    box-shadow: 0 0 7px black;
-    border-radius: 30px;
-  }
-  & input:focus {
-    border: none;
-    box-shadow: 0 0 100px 1000px rgba(0, 0, 0, 0.3);
-  }
-  & .close-button {
-    position: absolute;
-    cursor: pointer;
-  }
 }
 
 @keyframes spinner {

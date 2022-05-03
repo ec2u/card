@@ -20,7 +20,7 @@ card-inspectuser {
     }
     & .users-link:hover {
       color: gray;
-      transform: translateY(-3px);
+      
     }
   }
   & .spinner::before {
@@ -74,7 +74,7 @@ card-inspectuser {
   }
   & .button-edit:hover {
     color: green;
-    transform: translateY(-3px);
+    
   }
 }
 
