@@ -61,7 +61,7 @@ export function CardUsers() {
     if (search === "") {
       fetchData("");
     } else {
-      fetchData("filters?surnamePrefix=" + search);
+      fetchData("?label=" + search);
 
     }
   }
@@ -70,7 +70,7 @@ export function CardUsers() {
     if (searchEmail === "") {
       fetchData("");
     } else {
-      fetchData("filters?emailPrefix=" + searchEmail)
+      fetchData("?email=" + searchEmail)
     }
   }
 
@@ -166,19 +166,23 @@ export function CardUsers() {
 
             <tbody>
               {users.map((user) => {
+                console.log(user.id)
 
                 return (
+
                   <tr key={user.id} >
 
                     <td>{user.forename}</td>
                     <td>{user.surname}</td>
                     <td>{user.email}</td>
                     <td>
-                      <Link to={`${user.id}`} title={"inspect"}
-                      >
+                      <Link to={`${user.id}`} title={"inspect"}>
+
                         <ChevronRight size={40} className={"button-arrow"} />
+
                       </Link>
                     </td>
+
 
                   </tr>
                 );

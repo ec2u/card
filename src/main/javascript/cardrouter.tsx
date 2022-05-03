@@ -36,22 +36,22 @@ export function CardRoutes() {
 
             <Route path="/user/" element={<CardUser />} />
             <Route path="/users/" element={<CardUsers />} />
-            <Route path="/users/:id/" element={<InspectUser />} />
-            <Route path="/edit/users/:id/" element={<EditUser />} />
+            <Route path="/users:id" element={<InspectUser />} />
+            <Route path="/edit/users:id/" element={<EditUser />} />
             <Route path="/users/add" element={<AddUser />} />
 
 
 
             <Route path="/cards/" element={<VirtualCards />} />
-            <Route path="/cards/:id/" element={<CardInspect />} />
-            <Route path="/cards/:id/edit" element={<EditCard />} />
+            <Route path="/cards:id/" element={<CardInspect />} />
+            <Route path="/cards:id/edit" element={<EditCard />} />
             <Route path="/cards/add" element={<AddCard />} />
 
 
 
             <Route path="/tokens/" element={<CardTokens />} />
-            <Route path="/tokens/:id/" element={<TokenInspect />} />
-            <Route path="/edit/tokens/:id/" element={<EditToken />} />
+            <Route path="/tokens:id/" element={<TokenInspect />} />
+            <Route path="/edit/tokens:id/" element={<EditToken />} />
             <Route path="/tokens/add" element={<AddToken />} />
           </Routes>
         </div>

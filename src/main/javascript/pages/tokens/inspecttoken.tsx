@@ -5,8 +5,8 @@ import "./inspecttoken.css";
 
 interface Token {
     readonly label: string;
-    readonly serviceOrUserName: string;
-    readonly serviceOrUserPassword: string;
+    readonly username: string;
+    readonly password: string;
     readonly id: number | string;
     readonly tokenNumber: number;
 }
@@ -60,12 +60,12 @@ export function TokenInspect() {
 
                         <section>
                             <label>username</label>
-                            <span>{token.serviceOrUserName}</span>
+                            <span>{token.username}</span>
                         </section >
 
                         <section>
                             <label>password</label>
-                            <span>{token.serviceOrUserPassword} </span>
+                            <span>{token.password} </span>
                         </section>
 
 

@@ -6,8 +6,8 @@ import './tokens.css';
 
 interface Token {
     readonly label: string;
-    readonly serviceOrUserName: string;
-    readonly serviceOrUserPassword: string;
+    readonly username: string;
+    readonly password: string;
     readonly id: number | string;
     readonly tokenNumber: number;
 }
@@ -17,44 +17,62 @@ export function CardTokens() {
     const [loading, setLoading] = useState<Boolean>(false);
     const [error, setError] = useState<any>(null);
     const [search, setSearch] = useState<string>("");
+    const [searchNumber, setsearchNumber] = useState<any>();
     const [clicked, setClicked] = useState<Boolean>(false);
+    const [timer, setTimer] = useState<number>(0);
 
 
-    function useKey(key: number, cb: any) {
 
-        const callbackRef = useRef(cb);
+    const fetchData = async (searchData: any) => {
+        setLoading(true)
+
+        await fetch("/tokens/" + searchData, {
+            headers: {
+                Accept: "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => setTokens(data.contains))
+            .catch((error) => setError(error))
+        setLoading(false)
     }
 
 
     useEffect(() => {
+        let number = clicked ? 1000 : 1
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            searchSubmit();
+        }, number);
+        setTimer(timerID)
+    }, [search]);
+
+    useEffect(() => {
+        let number = clicked ? 1000 : 1
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            numberSearch();
+        }, number);
+        setTimer(timerID)
+    }, [searchNumber]);
 
 
-        setLoading(true)
-        const fetchData = async () => {
-            await fetch("/tokens/", {
-                headers: {
-                    Accept: "application/json",
-                },
-            })
-                .then((response) => response.json())
-                .then((data) => setTokens(data.contains))
-                .catch((error) => console.warn(error))
-            setLoading(false)
+    const searchSubmit = () => {
+        if (search === "") {
+            fetchData("");
+        } else {
+            fetchData("?username=" + search);
         }
-        fetchData();
-    }, []);
-
-
-    const handleInput = (e: any) => {
-        setSearch(e.target.value)
-
-        if (e.keyCode === 27) {
-            setClicked(false)
-        }
-
     }
 
-    const inputRef = useRef<HTMLInputElement>(null);
+
+    const numberSearch = () => {
+        if (searchNumber === "") {
+            fetchData("");
+        } else {
+            fetchData("?tokenNumber=" + searchNumber)
+        }
+    }
 
     let SearchIcon =
         <div title={"search"}>
@@ -79,7 +97,7 @@ export function CardTokens() {
 
             </header>
 
-            <table onBlur={() => setClicked(false)}>
+            <table>
 
                 <thead>
 
@@ -110,13 +128,19 @@ export function CardTokens() {
                                 <input
                                     type="search"
                                     className={"search-token"}
+                                    value={searchNumber}
+                                    onChange={(e) => setsearchNumber(e.target.value)}
                                 />
                             </div>
 
                             <div title="Close">
                                 <X size={28}
                                     className={"close-button"}
-                                    onClick={() => setClicked(false)}
+                                    onClick={() => {
+                                        setClicked(false);
+                                        setSearch("");
+                                        setsearchNumber("")
+                                    }}
                                 />
                             </div>
 
@@ -131,13 +155,13 @@ export function CardTokens() {
                     ) : (
 
                         <tbody>
-                            {tokens.filter(token => token.serviceOrUserName.toLowerCase().includes(search.toLowerCase())).map((token) => {
+                            {tokens.map((token) => {
 
                                 return (
                                     <tr key={token.id} >
 
-                                        <td>{token.serviceOrUserName}</td>
-                                        <td>{token.serviceOrUserPassword}</td>
+                                        <td>{token.username}</td>
+                                        <td>{token.password}</td>
                                         <td>{token.tokenNumber}</td>
                                         <td>
                                             <a href={`${token.id}`} title={"inspect"}

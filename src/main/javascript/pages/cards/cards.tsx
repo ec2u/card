@@ -26,10 +26,10 @@ export function VirtualCards() {
 
 
 
-    const fetchData = async (searchdata: string) => {
+    const fetchData = async (searchData: any) => {
         setLoading(true)
 
-        await fetch(`/cards/` + searchdata, {
+        await fetch(`/cards/` + searchData, {
             headers: {
                 Accept: 'application/json',
             }
@@ -55,15 +55,10 @@ export function VirtualCards() {
         if (search === "") {
             fetchData("");
         } else {
-            fetchData("filters?surnamePrefix=" + search);
+            fetchData("?label=" + search);
         }
     }
-    const inputRef = useRef<HTMLInputElement>(null);
 
-    // const handleSearchLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     setSearch(e.target.value)
-
-    // }
 
     let SearchIcon =
         <div title={"search"} className={"search-icon"}>
@@ -114,7 +109,9 @@ export function VirtualCards() {
                                     className={"search-date"}
                                 />
                                 <input
+                                    required
                                     className={"search-number"}
+                                    pattern="[0-9]*"
                                 />
                             </div>
                             <div >

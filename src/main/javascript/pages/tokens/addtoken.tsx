@@ -6,8 +6,8 @@ import "./addtoken.css";
 
 interface Token {
     readonly label: string;
-    readonly serviceOrUserName: string;
-    readonly serviceOrUserPassword: string;
+    readonly username: string;
+    readonly password: string;
     readonly id: number | string;
     readonly tokenNumber: number;
 
@@ -16,8 +16,8 @@ interface Token {
 
 export function AddToken() {
     const [addtoken, setAddtoken] = useState({
-        serviceOrUserName: "",
-        serviceOrUserPassword: "",
+        username: "",
+        password: "",
         id: "",
         tokenNumber: 0,
     } as Token);
@@ -27,8 +27,8 @@ export function AddToken() {
     const navigate = useNavigate();
 
     const tokenData = {
-        serviceOrUserName: addtoken.serviceOrUserName,
-        serviceOrUserPassword: addtoken.serviceOrUserPassword,
+        username: addtoken.username,
+        password: addtoken.password,
         tokenNumber: addtoken.tokenNumber,
     };
 
@@ -49,8 +49,8 @@ export function AddToken() {
 
         const value = e.target.value
 
-        if (addtoken.serviceOrUserName === "" ||
-            addtoken.serviceOrUserPassword === "" ||
+        if (addtoken.username === "" ||
+            addtoken.password === "" ||
             addtoken.tokenNumber === 0 ||
             ((e.target.name = "tokenNumber") && !validateNumber(addtoken.tokenNumber)) ||
             value === "") {
@@ -123,8 +123,8 @@ export function AddToken() {
                         <input
                             type="text"
                             required
-                            name="serviceOrUserName"
-                            value={addtoken.serviceOrUserName}
+                            name="username"
+                            value={addtoken.username}
                             onChange={handleChange}
                             className={"username"}
                         />
@@ -135,8 +135,8 @@ export function AddToken() {
                         <input
                             type="text"
                             required
-                            name="serviceOrUserPassword"
-                            value={addtoken.serviceOrUserPassword}
+                            name="password"
+                            value={addtoken.password}
                             onChange={handleChange}
                             className={"password"}
                         />
