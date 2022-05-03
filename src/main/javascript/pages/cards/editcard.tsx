@@ -132,7 +132,7 @@ export function EditCard() {
     };
 
 
-    const handleDelete = () => {
+    const handleDelete = (id: number) => {
         fetch(`${id}`, {
             method: "DELETE",
         })
