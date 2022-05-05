@@ -17,11 +17,13 @@ export function CardUsers() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<Boolean>(false);
   const [error, setError] = useState<any>(null);
-  const [search, setSearch] = useState<any>();
+  const [searchForename, setSearchForename] = useState<string>();
+  const [searchSurname, setSearchSurname] = useState<string>();
   const [searchEmail, setSearchEmail] = useState<string>("")
   const [clicked, setClicked] = useState<Boolean>(false);
   const [timer, setTimer] = useState<number>(0);
   const [disable, setDisable] = useState<Boolean>(true)
+  const [sorting, setSorting] = useState<string>("desc")
 
 
   const fetchData = async (searchData: any) => {
@@ -50,17 +52,36 @@ export function CardUsers() {
       fetchData("");
       setDisable(true)
     } else {
-      fetchData("?label=" + e);
+      fetchData("?forename=" + e);
       setDisable(false)
     }
   }
 
 
-  const handleSearchLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value)
+  const handleSearchForenameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchForename(e.target.value)
     clearTimeout(timer)
     let timerID = window.setTimeout(() => {
       searchSubmit(e.target.value)
+    }, 1000);
+    setTimer(timerID)
+  }
+
+  const searchSubmitSurname = (e: string) => {
+    if (e === "") {
+      fetchData("");
+      setDisable(true)
+    } else {
+      fetchData("?surname=" + e);
+      setDisable(false)
+    }
+  }
+
+  const handleSearchSurnameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchSurname(e.target.value)
+    clearTimeout(timer)
+    let timerID = window.setTimeout(() => {
+      searchSubmitSurname(e.target.value)
     }, 1000);
     setTimer(timerID)
   }
@@ -85,7 +106,52 @@ export function CardUsers() {
     setTimer(timerID)
   }
 
+  const forenameSorting = () => {
 
+    if (sorting === "desc") {
+      setSorting("asc")
+    }
+    if (sorting === "asc") {
+      setSorting("desc")
+    }
+
+    fetchData("?sortingOrder=" + sorting + "&sortingProperty = forename")
+  }
+  const surnameSorting = () => {
+
+    if (sorting === "desc") {
+      setSorting("asc")
+    }
+    if (sorting === "asc") {
+      setSorting("desc")
+    }
+
+    fetchData("?sortingOrder=" + sorting + "&sortingProperty = surname")
+  }
+
+  const emailSorting = () => {
+
+    if (sorting === "desc") {
+      setSorting("asc")
+    }
+    if (sorting === "asc") {
+      setSorting("desc")
+    }
+
+    fetchData("?sortingOrder=" + sorting + "&sortingProperty = email")
+  }
+
+  const handleSearch = () => {
+    if (disable) {
+
+    } else {
+      setClicked(false);
+      setSearchForename("");
+      setSearchSurname("");
+      setSearchEmail("");
+      fetchData("")
+    }
+  }
 
   let SearchIcon =
     <div title={"search"}>
@@ -95,16 +161,7 @@ export function CardUsers() {
       />
     </div>
 
-  const handleSearch = () => {
-    if (disable) {
 
-    } else {
-      setClicked(false);
-      setSearch("");
-      setSearchEmail("");
-      fetchData("")
-    }
-  }
 
 
   return createElement('card-users', {},
@@ -127,9 +184,9 @@ export function CardUsers() {
               type="checkbox"
               className={"checkbox"}
             /></th>
-            <th>forename</th>
-            <th>surname</th>
-            <th>email</th>
+            <th onClick={forenameSorting}>forename</th>
+            <th onClick={surnameSorting}>surname</th>
+            <th onClick={emailSorting}>email</th>
             <th>
               {SearchIcon}
             </th>
@@ -148,13 +205,16 @@ export function CardUsers() {
             <div className={"search-fields"}>
               <div className={"search-fields-start"}>
                 <input
-                  value={search}
+                  value={searchForename}
                   type="search"
                   className={"search-forename"}
-                  onChange={handleSearchLabelChange}
+                  onChange={handleSearchForenameChange}
                 />
                 <input
                   className={"search-surname"}
+                  type="search"
+                  value={searchSurname}
+                  onChange={handleSearchSurnameChange}
                 />
                 <input
                   type="search"

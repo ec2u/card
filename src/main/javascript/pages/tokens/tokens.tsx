@@ -20,7 +20,8 @@ export function CardTokens() {
     const [searchNumber, setsearchNumber] = useState<any>();
     const [clicked, setClicked] = useState<Boolean>(false);
     const [timer, setTimer] = useState<number>(0);
-    const [disable, setDisable] = useState<Boolean>(true)
+    const [disable, setDisable] = useState<Boolean>(true);
+    const [sorting, setSorting] = useState<string>("asc")
 
 
 
@@ -83,6 +84,39 @@ export function CardTokens() {
         setTimer(timerID)
     }
 
+    const usernameSorting = () => {
+
+        if (sorting === "desc") {
+            setSorting("asc")
+        }
+        if (sorting === "asc") {
+            setSorting("desc")
+        }
+
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty = username")
+    }
+    const PasswordSorting = () => {
+
+        if (sorting === "desc") {
+            setSorting("asc")
+        }
+        if (sorting === "asc") {
+            setSorting("desc")
+        }
+
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty = password")
+    }
+    const tokenNumberSorting = () => {
+
+        if (sorting === "desc") {
+            setSorting("asc")
+        }
+        if (sorting === "asc") {
+            setSorting("desc")
+        }
+
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty = tokenNumber")
+    }
 
     let SearchIcon =
         <div title={"search"}>
@@ -122,9 +156,9 @@ export function CardTokens() {
 
                     <tr>
 
-                        <th>username</th>
-                        <th>password</th>
-                        <th>token number</th>
+                        <th onClick={usernameSorting}>username</th>
+                        <th onClick={PasswordSorting}>password</th>
+                        <th onClick={tokenNumberSorting}>token number</th>
                         <th>
                             {SearchIcon}
 

@@ -21,11 +21,15 @@ export function VirtualCards() {
     const [loading, setLoading] = useState<Boolean>(false);
     const [error, setError] = useState<any>(null);
     const [clicked, setClicked] = useState<Boolean>(false);
-    const [search, setSearch] = useState<string>("");
+    const [searchForename, setSearchForename] = useState<string>("");
+    const [searchSurname, setSearchSurname] = useState<string>("");
     const [searchDate, setSearchDate] = useState<any>("");
     const [searchNumber, setSearchNumber] = useState<string>("");
     const [timer, setTimer] = useState<number>(0);
     const [disable, setDisable] = useState<Boolean>(true)
+
+
+    const [sorting, setSorting] = useState<string>("asc")
 
 
 
@@ -54,12 +58,12 @@ export function VirtualCards() {
             fetchData("");
             setDisable(true)
         } else {
-            fetchData("?label=" + e);
+            fetchData("?forename=" + e);
             setDisable(false)
         }
     }
     const handleSearchForenameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value)
+        setSearchForename(e.target.value)
         clearTimeout(timer)
         let timerID = window.setTimeout(() => {
             searchForenameSubmit(e.target.value)
@@ -67,7 +71,25 @@ export function VirtualCards() {
         setTimer(timerID)
     }
 
-    const searchDateSubmit = (e: any) => {
+    const searchSurnameSubmit = (e: string) => {
+        if (e === "") {
+            fetchData("");
+            setDisable(true)
+        } else {
+            fetchData("?surname=" + e);
+            setDisable(false)
+        }
+    }
+    const handleSearchSurnameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchSurname(e.target.value)
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            searchSurnameSubmit(e.target.value)
+        }, 1000);
+        setTimer(timerID)
+    }
+
+    const searchDateSubmit = (e: string) => {
         if (e === "") {
             fetchData("");
             setDisable(true)
@@ -105,6 +127,55 @@ export function VirtualCards() {
         setTimer(timerID)
     }
 
+
+    const forenameSorting = () => {
+
+        if (sorting === "desc") {
+            setSorting("asc")
+        }
+        if (sorting === "asc") {
+            setSorting("desc")
+        }
+
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty = holderForename")
+    }
+
+    const surnameSorting = () => {
+
+        if (sorting === "desc") {
+            setSorting("asc")
+        }
+        if (sorting === "asc") {
+            setSorting("desc")
+        }
+
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty = holderSurname")
+    }
+    const expiryDateSorting = () => {
+
+        if (sorting === "desc") {
+            setSorting("asc")
+        }
+        if (sorting === "asc") {
+            setSorting("desc")
+        }
+
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty = expiringDate")
+    }
+
+    const cardNumberSorting = () => {
+
+        if (sorting === "desc") {
+            setSorting("asc")
+        }
+        if (sorting === "asc") {
+            setSorting("desc")
+        }
+
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty = virtualCardNumber ")
+    }
+
+
     let SearchIcon =
         <div title={"search"} className={"search-icon"}>
             <Search size={28} color="gray"
@@ -118,7 +189,9 @@ export function VirtualCards() {
 
         } else {
             setClicked(false);
-            setSearch("")
+            setSearchForename("");
+            setSearchSurname("");
+            setSearchNumber("")
             fetchData("")
         }
     }
@@ -134,21 +207,14 @@ export function VirtualCards() {
                 </a>
 
             </header>
-            {/*  */}
+
             <table onBlur={() => setClicked(false)}>
                 <thead>
                     <tr>
-                        <th>
-                            <a>forename</a>
-                            <a><ChevronDown
-
-                                className={"down-arrow"}
-                            /></a>
-
-                        </th>
-                        <th>surname</th>
-                        <th>expiry date</th>
-                        <th>card number</th>
+                        <th onClick={forenameSorting}>forename </th>
+                        <th onClick={surnameSorting}>surname</th>
+                        <th onClick={expiryDateSorting} >expiry date</th>
+                        <th onClick={cardNumberSorting}>card number</th>
                         <th>
                             {SearchIcon}
                         </th>
@@ -163,12 +229,15 @@ export function VirtualCards() {
                                 <input
                                     type="search"
                                     className={"search-forename"}
-                                    value={search}
+                                    value={searchForename}
                                     onChange={handleSearchForenameChange}
+
                                 />
                                 <input
                                     className={"search-surname"}
                                     type="search"
+                                    value={searchSurname}
+                                    onChange={handleSearchSurnameChange}
                                 />
                                 <input
                                     type="search"
