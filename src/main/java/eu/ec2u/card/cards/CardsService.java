@@ -24,10 +24,13 @@ public class CardsService {
 	@SuppressWarnings("ALL")
 	Cards browse(
 
-			final Optional<String> label,
+			final Optional<String> forename,
+			final Optional<String> surname,
 			final Optional<String> expiringDate,
 			final Optional<Long> virtualCardNumber,
-			final Pageable slice
+			final Pageable slice,
+			final Optional<String> sortingOrder,
+			final Optional<String> sortingProperty
 
 	) {
 
@@ -38,39 +41,62 @@ public class CardsService {
 
 		Query<Entity> query = null;
 
-		if (label.isPresent() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
+		if (forename.isPresent() && surname.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Card")
 					.setFilter(StructuredQuery.CompositeFilter.and(
-							StructuredQuery.PropertyFilter.ge("label", label.get().toLowerCase()),
-							StructuredQuery.PropertyFilter.lt("label", label.get().toLowerCase() + "\ufffd")
+							StructuredQuery.PropertyFilter.ge("holderForenameLowerCase", forename.get().toLowerCase()),
+							StructuredQuery.PropertyFilter.lt("holderForenameLowerCase", forename.get().toLowerCase() + "\ufffd")
 					))
+					.setOrderBy(sortingFromOptional(sortingOrder, "holderForenameLowerCase"))
 					.setLimit(slice.getPageSize())
 					.build();
 
-        } else if (label.isEmpty() && expiringDate.isPresent() && virtualCardNumber.isEmpty()) {
+        } else if (forename.isEmpty() && surname.isPresent() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Card")
+					.setFilter(StructuredQuery.CompositeFilter.and(
+							StructuredQuery.PropertyFilter.ge("holderSurnameLowerCase", surname.get().toLowerCase()),
+							StructuredQuery.PropertyFilter.lt("holderSurnameLowerCase", surname.get().toLowerCase() + "\ufffd")
+					))
+					.setOrderBy(sortingFromOptional(sortingOrder, "holderSurnameLowerCase"))
+					.setLimit(slice.getPageSize())
+					.build();
+
+        } else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isPresent() && virtualCardNumber.isEmpty()) {
 
 			Timestamp expiringDateTimestamp = Timestamp.parseTimestamp(expiringDate.get());
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Card")
-					.setFilter(StructuredQuery.PropertyFilter.eq("expiringDate", expiringDateTimestamp))
+					.setFilter(StructuredQuery.PropertyFilter.lt("expiringDate", expiringDateTimestamp))
+					.setOrderBy(sortingFromOptional(sortingOrder, "expiringDate"))
 					.setLimit(slice.getPageSize())
 					.build();
 
-        } else if (label.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isPresent()) {
+		} else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isPresent()) {
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Card")
 					.setFilter(StructuredQuery.PropertyFilter.eq("virtualCardNumber", virtualCardNumber.get()))
+					.setOrderBy(sortingFromOptional(sortingOrder, "virtualCardNumber"))
 					.setLimit(slice.getPageSize())
 					.build();
 
-		} else if (label.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
+		} else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
+
+			if (!isSortingPropertyValid(sortingProperty)) {
+
+				throw new ToolApplication.WrongQueryArgumentsException(
+						"Sorting property parameter incorrect. Must be forename, surname or email!");
+
+			}
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Card")
+					.setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("holderSurname").trim()))
 					.setLimit(slice.getPageSize())
 					.build();
 
@@ -95,36 +121,79 @@ public class CardsService {
 
 	@Transactional
 	Card create(final Card card) {
+
 		return Optional.of(new CardData())
 				.map(data -> data.transfer(card))
 				.map(data -> cardsRepository.save(data))
 				.map(CardData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+
 	}
 
 	Card relate(final long id) {
+
 		return cardsRepository.findById(id)
 				.map(CardData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+
 	}
 
 	@Transactional
 	Card update(final long id, final Card card) {
+
 		return cardsRepository.findById(id)
 				.map(data -> data.transfer(card))
 				.map(data -> cardsRepository.save(data))
 				.map(CardData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+
 	}
 
 	@Transactional
 	Card delete(final long id) {
+
 		return cardsRepository.findById(id).map(data -> {
 					cardsRepository.delete(data);
 					return data;
 				})
 				.map(CardData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	@SuppressWarnings("ALL")
+	private StructuredQuery.OrderBy sortingFromOptional(Optional<String> sortingOrder, String sortingProperty) {
+
+		if(sortingOrder.isPresent()) {
+
+			if (sortingOrder.get().trim().equalsIgnoreCase("asc")) {
+
+				return StructuredQuery.OrderBy.asc(sortingProperty);
+
+			} else if (sortingOrder.get().trim().equalsIgnoreCase("desc")) {
+
+				return StructuredQuery.OrderBy.desc(sortingProperty);
+
+			} else throw new ToolApplication.WrongQueryArgumentsException(
+					"Specified sorting order is invalid, must be asc or desc!");
+
+		} else {
+
+			return StructuredQuery.OrderBy.asc(sortingProperty);
+
+		}
+
+	}
+
+	private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
+
+		return sortingProperty.map(s -> s.trim().equalsIgnoreCase("holderForename") ||
+				s.trim().equalsIgnoreCase("holderSurname") ||
+				s.trim().equalsIgnoreCase("virtualCardNumber") ||
+				s.trim().equalsIgnoreCase("expiringDate")).orElse(true);
+
 	}
 
 }

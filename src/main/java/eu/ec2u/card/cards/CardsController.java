@@ -35,16 +35,26 @@ public final class CardsController {
 	@JsonView(Container.class)
 	ResponseEntity<Cards> get(
 
-			@RequestParam Optional<String> label,
+			@RequestParam Optional<String> forename,
+			@RequestParam Optional<String> surname,
 			@RequestParam Optional<String> expiringDate,
 			@RequestParam Optional<Long> virtualCardNumber,
 			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
-
+			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
+			@RequestParam Optional<String> sortingOrder,
+			@RequestParam Optional<String> sortingProperty
 
 	) {
 
-		return ok().body(cards.browse(label, expiringDate, virtualCardNumber, PageRequest.of(page, size, Sort.by("holderSurname"))));
+		return ok().body(cards.browse(
+				forename,
+				surname,
+				expiringDate,
+				virtualCardNumber,
+				PageRequest.of(page, size, Sort.by("holderSurname")),
+				sortingOrder,
+				sortingProperty
+		));
 
 	}
 

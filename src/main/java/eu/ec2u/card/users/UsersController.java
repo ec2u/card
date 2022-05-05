@@ -15,7 +15,6 @@ import eu.ec2u.card.events.EventsService;
 import eu.ec2u.card.users.Users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import static org.springframework.http.ResponseEntity.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,14 +36,24 @@ public final class UsersController {
     @JsonView(Container.class)
     ResponseEntity<Users> get(
 
-            @RequestParam Optional<String> label,
+            @RequestParam Optional<String> forename,
+            @RequestParam Optional<String> surname,
             @RequestParam Optional<String> email,
             @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-            @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
+            @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
+            @RequestParam Optional<String> sortingOrder,
+            @RequestParam Optional<String> sortingProperty
 
     ) {
 
-        return ok().body(users.browse(label, email, PageRequest.of(page, size, Sort.by("surname"))));
+        return ok().body(users.browse(
+                forename,
+                surname,
+                email,
+                PageRequest.of(page, size),
+                sortingOrder,
+                sortingProperty
+        ));
 
     }
 

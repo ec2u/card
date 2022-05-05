@@ -36,11 +36,19 @@ public final class TokensController {
 			@RequestParam Optional<String> username,
 			@RequestParam Optional<Long> tokenNumber,
 			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
+			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
+			@RequestParam Optional<String> sortingOrder,
+			@RequestParam Optional<String> sortingProperty
 
 	) {
 
-		return ok().body(tokens.browse(username, tokenNumber, PageRequest.of(page, size, Sort.by("username"))));
+		return ok().body(tokens.browse(
+				username,
+				tokenNumber,
+				PageRequest.of(page, size),
+				sortingOrder,
+				sortingProperty
+		));
 
 	}
 

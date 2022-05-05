@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
-import java.util.regex.Pattern;
 
 @Service
 public class UsersService {
@@ -22,9 +21,12 @@ public class UsersService {
     @SuppressWarnings("ALL")
     Users browse(
 
-            final Optional<String> label,
+            final Optional<String> forename,
+            final Optional<String> surname,
             final Optional<String> email,
-            final Pageable slice
+            final Pageable slice,
+            final Optional<String> sortingOrder,
+            final Optional<String> sortingProperty
 
     ) {
 
@@ -35,32 +37,54 @@ public class UsersService {
 
         Query<Entity> query = null;
 
-        if (label.isPresent() && email.isEmpty()) {
+        if (forename.isPresent() && surname.isEmpty() && email.isEmpty()) {
 
             query = Query.newEntityQueryBuilder()
                     .setKind("User")
                     .setFilter(StructuredQuery.CompositeFilter.and(
-                            StructuredQuery.PropertyFilter.ge("label", label.get().toLowerCase()),
-                            StructuredQuery.PropertyFilter.lt("label", label.get().toLowerCase() + "\ufffd")
+                            StructuredQuery.PropertyFilter.ge("forenameLowerCase", forename.get().trim().toLowerCase()),
+                            StructuredQuery.PropertyFilter.lt("forenameLowerCase", forename.get().trim().toLowerCase() + "\ufffd")
                     ))
+                    .setOrderBy(sortingFromOptional(sortingOrder, "forenameLowerCase"))
                     .setLimit(slice.getPageSize())
                     .build();
 
-        } else if (label.isEmpty() && email.isPresent()) {
+        } else if (forename.isEmpty() && surname.isPresent() && email.isEmpty()) {
 
             query = Query.newEntityQueryBuilder()
                     .setKind("User")
                     .setFilter(StructuredQuery.CompositeFilter.and(
-                            StructuredQuery.PropertyFilter.ge("email", email.get().toLowerCase()),
-                            StructuredQuery.PropertyFilter.lt("email", email.get().toLowerCase() + "\ufffd")
+                            StructuredQuery.PropertyFilter.ge("surnameLowerCase", surname.get().trim().toLowerCase()),
+                            StructuredQuery.PropertyFilter.lt("surnameLowerCase", surname.get().trim().toLowerCase() + "\ufffd")
                     ))
+                    .setOrderBy(sortingFromOptional(sortingOrder, "surnameLowerCase"))
                     .setLimit(slice.getPageSize())
                     .build();
 
-        } else if (label.isEmpty() && email.isEmpty()) {
+        } else if (forename.isEmpty() && surname.isEmpty() && email.isPresent()) {
 
             query = Query.newEntityQueryBuilder()
                     .setKind("User")
+                    .setFilter(StructuredQuery.CompositeFilter.and(
+                            StructuredQuery.PropertyFilter.ge("email", email.get().trim().toLowerCase()),
+                            StructuredQuery.PropertyFilter.lt("email", email.get().trim().toLowerCase() + "\ufffd")
+                    ))
+                    .setOrderBy(sortingFromOptional(sortingOrder, "email"))
+                    .setLimit(slice.getPageSize())
+                    .build();
+
+        } else if (forename.isEmpty() && surname.isEmpty() && email.isEmpty()) {
+
+            if (!isSortingPropertyValid(sortingProperty)) {
+
+                throw new ToolApplication.WrongQueryArgumentsException(
+                        "Sorting property parameter incorrect. Must be forename, surname or email!");
+
+            }
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("surname").trim()))
                     .setLimit(slice.getPageSize())
                     .build();
 
@@ -86,20 +110,11 @@ public class UsersService {
     @Transactional
     User create(final User user) {
 
-        if (!isEmailArgumentValid(user.getEmail())) {
-
-            throw new ToolApplication.WrongPostArgumentsException(
-                    "Email argument is not valid, must follow ^[a-z]+@[a-z]+\\.[a-z]+$ regex pattern!");
-
-        } else {
-
             return Optional.of(new UserData())
                     .map(data -> data.transfer(user))
                     .map(data -> usersRepository.save(data))
                     .map(UserData::transfer)
                     .orElseThrow(NoSuchElementException::new);
-
-        }
 
     }
 
@@ -114,20 +129,11 @@ public class UsersService {
     @Transactional
     User update(final long id, final User user) {
 
-        if (!isEmailArgumentValid(user.getEmail())) {
-
-            throw new ToolApplication.WrongPostArgumentsException(
-                    "Email argument is not valid, must follow ^[a-z]+@[a-z]+\\.[a-z]+$ regex pattern!");
-
-        } else {
-
             return usersRepository.findById(id)
                     .map(data -> data.transfer(user))
                     .map(data -> usersRepository.save(data))
                     .map(UserData::transfer)
                     .orElseThrow(NoSuchElementException::new);
-
-        }
 
     }
 
@@ -136,23 +142,44 @@ public class UsersService {
 
         return usersRepository.findById(id)
                 .map(data -> {
-
                     usersRepository.delete(data);
-
                     return data;
-
-                })
-                .map(UserData::transfer)
+                }).map(UserData::transfer)
                 .orElseThrow(NoSuchElementException::new);
 
     }
 
-   ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings("ALL")
-    private boolean isEmailArgumentValid(final String email) {
+    private StructuredQuery.OrderBy sortingFromOptional(Optional<String> sortingOrder, String sortingProperty) {
 
-        return Pattern.compile("^[a-z]+@[a-z]+\\.[a-z]+$").matcher(email).matches();
+        if(sortingOrder.isPresent()) {
+
+            if (sortingOrder.get().trim().equalsIgnoreCase("asc")) {
+
+                return StructuredQuery.OrderBy.asc(sortingProperty);
+
+            } else if (sortingOrder.get().trim().equalsIgnoreCase("desc")) {
+
+                return StructuredQuery.OrderBy.desc(sortingProperty);
+
+            } else throw new ToolApplication.WrongQueryArgumentsException(
+                    "Specified sorting order is invalid, must be asc or desc!");
+
+        } else {
+
+            return StructuredQuery.OrderBy.asc(sortingProperty);
+
+        }
+
+    }
+
+    private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
+
+        return sortingProperty.map(s -> s.trim().equalsIgnoreCase("forename") ||
+                s.trim().equalsIgnoreCase("surname") ||
+                s.trim().equalsIgnoreCase("email")).orElse(true);
 
     }
 
