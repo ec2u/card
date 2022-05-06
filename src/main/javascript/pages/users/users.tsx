@@ -115,7 +115,7 @@ export function CardUsers() {
       setSorting("desc")
     }
 
-    fetchData("?sortingOrder=" + sorting + "&sortingProperty = forename")
+    fetchData("?sortingOrder=" + sorting + "&sortingProperty = forenameLowerCase")
   }
   const surnameSorting = () => {
 
@@ -126,7 +126,7 @@ export function CardUsers() {
       setSorting("desc")
     }
 
-    fetchData("?sortingOrder=" + sorting + "&sortingProperty = surname")
+    fetchData("?sortingOrder=" + sorting + "&sortingProperty = surnameLowerCase")
   }
 
   const emailSorting = () => {
@@ -136,9 +136,9 @@ export function CardUsers() {
     }
     if (sorting === "asc") {
       setSorting("desc")
-    }
+    }                                                                                                                                 
 
-    fetchData("?sortingOrder=" + sorting + "&sortingProperty = email")
+    fetchData("?sortingOrder=" + sorting + "&sortingProperty = emailLowerCase")
   }
 
   const handleSearch = () => {

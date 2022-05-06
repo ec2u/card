@@ -137,7 +137,7 @@ export function VirtualCards() {
             setSorting("desc")
         }
 
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty = holderForename")
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty = holderForenameLowerCase")
     }
 
     const surnameSorting = () => {
@@ -149,7 +149,7 @@ export function VirtualCards() {
             setSorting("desc")
         }
 
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty = holderSurname")
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty = holderSurnameLowerCase")
     }
     const expiryDateSorting = () => {
 

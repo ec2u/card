@@ -93,7 +93,7 @@ export function CardTokens() {
             setSorting("desc")
         }
 
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty = username")
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty = usernameLowerCase")
     }
     const PasswordSorting = () => {
 
@@ -104,7 +104,7 @@ export function CardTokens() {
             setSorting("desc")
         }
 
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty = password")
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty = passwordLowerCase")
     }
     const tokenNumberSorting = () => {
 
