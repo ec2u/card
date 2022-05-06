@@ -9,7 +9,7 @@ interface Card {
     label: string;
     holderForename: string;
     holderSurname: string;
-    expiringDate: Date;
+    expiringDate: string;
     virtualCardNumber: number;
     id: any;
 }

@@ -9,7 +9,7 @@ interface Card {
     holderForename: string;
     holderSurname: string;
     expiringDate: string;
-    virtualCardNumber: number;
+    virtualCardNumber: any;
     id: number | string;
 
 }

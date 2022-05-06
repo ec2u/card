@@ -9,7 +9,7 @@ interface Token {
     readonly username: string;
     readonly password: string;
     readonly id: number | string;
-    readonly tokenNumber: number;
+    readonly tokenNumber: any;
 
 }
 
