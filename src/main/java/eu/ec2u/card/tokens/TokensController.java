@@ -34,7 +34,7 @@ public final class TokensController {
 	ResponseEntity<Tokens> get(
 
 			@RequestParam Optional<String> username,
-			@RequestParam Optional<Long> tokenNumber,
+			@RequestParam Optional<String> tokenNumber,
 			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
 			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
 			@RequestParam Optional<String> sortingOrder,

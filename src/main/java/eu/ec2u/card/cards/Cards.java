@@ -41,7 +41,7 @@ public class Cards extends Container<Card> {
 		private LocalDate expiringDate;
 
 		@NotNull
-		private Long virtualCardNumber;
+		private long virtualCardNumber;
 
 	}
 
@@ -70,8 +70,8 @@ public class Cards extends Container<Card> {
 		private String holderForenameLowerCase;
 		private String holderSurnameLowerCase;
 
-		private LocalDate expiringDate;
-		private Long virtualCardNumber;
+		private String expiringDate;
+		private String virtualCardNumber;
 
 		Card transfer() {
 
@@ -81,8 +81,8 @@ public class Cards extends Container<Card> {
 
 			card.setHolderForename(holderForename);
 			card.setHolderSurname(holderSurname);
-			card.setExpiringDate(expiringDate);
-			card.setVirtualCardNumber(virtualCardNumber);
+			card.setExpiringDate(LocalDate.parse(expiringDate));
+			card.setVirtualCardNumber(Long.parseLong(virtualCardNumber));
 
 			return card;
 		}
@@ -97,8 +97,8 @@ public class Cards extends Container<Card> {
 			holderForenameLowerCase = card.getHolderForename().toLowerCase();
 			holderSurnameLowerCase = card.getHolderSurname().toLowerCase();
 
-			expiringDate = card.getExpiringDate();
-			virtualCardNumber = card.getVirtualCardNumber();
+			expiringDate = card.getExpiringDate().toString();
+			virtualCardNumber = String.valueOf(card.getVirtualCardNumber());
 
 			return this;
 		}

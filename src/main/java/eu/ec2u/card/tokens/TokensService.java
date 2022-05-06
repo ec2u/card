@@ -24,7 +24,7 @@ public class TokensService {
 	Tokens browse(
 
 			final Optional<String> username,
-			final Optional<Long> tokenNumber,
+			final Optional<String> tokenNumber,
 			final Pageable slice,
 			final Optional<String> sortingOrder,
 			final Optional<String> sortingProperty
@@ -163,7 +163,6 @@ public class TokensService {
 	private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
 
 		return sortingProperty.map(s -> s.trim().equalsIgnoreCase("username") ||
-				s.trim().equalsIgnoreCase("password") ||
 				s.trim().equalsIgnoreCase("tokenNumber")).orElse(true);
 
 	}

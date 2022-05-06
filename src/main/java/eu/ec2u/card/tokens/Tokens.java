@@ -56,7 +56,7 @@ public class Tokens extends Container<Token> {
 					.map(data -> format("%s %s", data.username, data.password));
 		}
 
-		private long tokenNumber;
+		private String tokenNumber;
 
 		private String username;
 		private String usernameLowerCase;
@@ -70,7 +70,7 @@ public class Tokens extends Container<Token> {
 
 			transfer(token, this);
 
-			token.setTokenNumber(tokenNumber);
+			token.setTokenNumber(Long.parseLong(tokenNumber));
 
 			token.setUsername(username);
 
@@ -84,7 +84,7 @@ public class Tokens extends Container<Token> {
 
 			transfer(this, token);
 
-			tokenNumber = token.getTokenNumber();
+			tokenNumber = String.valueOf(token.getTokenNumber());
 
 			username = token.getUsername();
 			usernameLowerCase = token.getUsername().toLowerCase();
