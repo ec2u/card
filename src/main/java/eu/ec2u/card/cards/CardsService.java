@@ -27,7 +27,7 @@ public class CardsService {
 			final Optional<String> forename,
 			final Optional<String> surname,
 			final Optional<String> expiringDate,
-			final Optional<Long> virtualCardNumber,
+			final Optional<String> virtualCardNumber,
 			final Pageable slice,
 			final Optional<String> sortingOrder,
 			final Optional<String> sortingProperty
@@ -96,7 +96,7 @@ public class CardsService {
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Card")
-					.setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("holderSurname").trim()))
+					.setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("holderSurnameLowerCase").trim()))
 					.setLimit(slice.getPageSize())
 					.build();
 
@@ -189,8 +189,8 @@ public class CardsService {
 
 	private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
 
-		return sortingProperty.map(s -> s.trim().equalsIgnoreCase("holderForename") ||
-				s.trim().equalsIgnoreCase("holderSurname") ||
+		return sortingProperty.map(s -> s.trim().equalsIgnoreCase("holderForenameLowerCase") ||
+				s.trim().equalsIgnoreCase("holderSurnameLowerCase") ||
 				s.trim().equalsIgnoreCase("virtualCardNumber") ||
 				s.trim().equalsIgnoreCase("expiringDate")).orElse(true);
 

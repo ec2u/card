@@ -84,7 +84,7 @@ public class UsersService {
 
             query = Query.newEntityQueryBuilder()
                     .setKind("User")
-                    .setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("surname").trim()))
+                    .setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("surnameLowerCase").trim()))
                     .setLimit(slice.getPageSize())
                     .build();
 
@@ -177,8 +177,8 @@ public class UsersService {
 
     private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
 
-        return sortingProperty.map(s -> s.trim().equalsIgnoreCase("forename") ||
-                s.trim().equalsIgnoreCase("surname") ||
+        return sortingProperty.map(s -> s.trim().equalsIgnoreCase("forenameLowerCase") ||
+                s.trim().equalsIgnoreCase("surnameLowerCase") ||
                 s.trim().equalsIgnoreCase("email")).orElse(true);
 
     }
