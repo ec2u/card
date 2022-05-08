@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Service
 public class UsersService {
@@ -130,6 +131,14 @@ public class UsersService {
     @Transactional
     User create(final User user) {
 
+        final String usersFieldsValidatorResult = usersFieldsValidator(user);
+
+        if(!usersFieldsValidatorResult.isEmpty()) {
+
+            throw new ToolApplication.WrongPostArgumentsException(usersFieldsValidatorResult);
+
+        }
+
             return Optional.of(new UserData())
                     .map(data -> data.transfer(user))
                     .map(data -> usersRepository.save(data))
@@ -148,6 +157,14 @@ public class UsersService {
 
     @Transactional
     User update(final long id, final User user) {
+
+        final String usersFieldsValidatorResult = usersFieldsValidator(user);
+
+        if(!usersFieldsValidatorResult.isEmpty()) {
+
+            throw new ToolApplication.WrongPutArgumentsException(usersFieldsValidatorResult);
+
+        }
 
             return usersRepository.findById(id)
                     .map(data -> data.transfer(user))
@@ -172,7 +189,7 @@ public class UsersService {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings("ALL")
-    private StructuredQuery.OrderBy sortingFromOptional(Optional<String> sortingOrder, String sortingProperty) {
+    private final StructuredQuery.OrderBy sortingFromOptional(Optional<String> sortingOrder, String sortingProperty) {
 
         if(sortingOrder.isPresent()) {
 
@@ -200,6 +217,27 @@ public class UsersService {
         return sortingProperty.map(s -> s.trim().equalsIgnoreCase("forenameLowerCase") ||
                 s.trim().equalsIgnoreCase("surnameLowerCase") ||
                 s.trim().equalsIgnoreCase("email")).orElse(true);
+
+    }
+
+    private String usersFieldsValidator(final User user) {
+
+        final Pattern forenamePattern = Pattern.compile("^[a-zA-Z ]+$");
+        final Pattern surnamePattern = Pattern.compile("^[a-zA-Z ]+$");
+        final Pattern emailPattern = Pattern.compile("^[a-z0-9.]+@[a-z0-9.]+$");
+
+        String result = "";
+
+        if (!forenamePattern.matcher(user.getForename()).matches())
+            result += "The inserted forename is not valid, must contain only letters and blanks. \n";
+
+        if (!surnamePattern.matcher(user.getSurname()).matches())
+            result += "The inserted surname is not valid, must contain only letters and blanks. \n";
+
+        if (!emailPattern.matcher(user.getEmail()).matches())
+            result += "The inserted email is not valid, must be lower case, \n must contain @ and no blanks. \n";
+
+        return result;
 
     }
 

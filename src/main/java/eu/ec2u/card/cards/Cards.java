@@ -4,6 +4,7 @@ import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import eu.ec2u.card.Tool.Container;
 import eu.ec2u.card.Tool.Resource;
 import eu.ec2u.card.Tool.ResourceData;
+import eu.ec2u.card.ToolApplication;
 import eu.ec2u.card.cards.Cards.Card;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 import static eu.ec2u.card.ToolConfiguration.LinePattern;
@@ -81,7 +83,19 @@ public class Cards extends Container<Card> {
 
 			card.setHolderForename(holderForename);
 			card.setHolderSurname(holderSurname);
-			card.setExpiringDate(LocalDate.parse(expiringDate));
+
+			try {
+
+				card.setExpiringDate(LocalDate.parse(expiringDate));
+
+			} catch (DateTimeParseException e) {
+
+				throw new ToolApplication.WrongDateFormatException(
+						"The inserted date is not valid, must be in ISO yyyy-mm-dd format. \n"
+				);
+
+            }
+
 			card.setVirtualCardNumber(Long.parseLong(virtualCardNumber));
 
 			return card;

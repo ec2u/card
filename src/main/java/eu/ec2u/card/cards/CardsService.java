@@ -12,7 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Service
 public class CardsService {
@@ -134,6 +138,14 @@ public class CardsService {
 	@Transactional
 	Card create(final Card card) {
 
+		final String cardsFieldsValidatorResult = cardsFieldsValidator(card);
+
+		if(!cardsFieldsValidatorResult.isEmpty()) {
+
+			throw new ToolApplication.WrongPostArgumentsException(cardsFieldsValidatorResult);
+
+		}
+
 		return Optional.of(new CardData())
 				.map(data -> data.transfer(card))
 				.map(data -> cardsRepository.save(data))
@@ -152,6 +164,14 @@ public class CardsService {
 
 	@Transactional
 	Card update(final long id, final Card card) {
+
+		final String cardsFieldsValidatorResult = cardsFieldsValidator(card);
+
+		if(!cardsFieldsValidatorResult.isEmpty()) {
+
+			throw new ToolApplication.WrongPutArgumentsException(cardsFieldsValidatorResult);
+
+		}
 
 		return cardsRepository.findById(id)
 				.map(data -> data.transfer(card))
@@ -176,7 +196,7 @@ public class CardsService {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	@SuppressWarnings("ALL")
-	private StructuredQuery.OrderBy sortingFromOptional(Optional<String> sortingOrder, String sortingProperty) {
+	private final StructuredQuery.OrderBy sortingFromOptional(final Optional<String> sortingOrder, final String sortingProperty) {
 
 		if(sortingOrder.isPresent()) {
 
@@ -199,12 +219,36 @@ public class CardsService {
 
 	}
 
-	private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
+	private boolean isSortingPropertyValid(final Optional<String> sortingProperty) {
 
 		return sortingProperty.map(s -> s.trim().equalsIgnoreCase("holderForenameLowerCase") ||
 				s.trim().equalsIgnoreCase("holderSurnameLowerCase") ||
 				s.trim().equalsIgnoreCase("virtualCardNumber") ||
 				s.trim().equalsIgnoreCase("expiringDate")).orElse(true);
+
+	}
+
+	private String cardsFieldsValidator(final Card card) {
+
+		final Pattern holderForenamePattern = Pattern.compile("^[a-zA-Z ]+$");
+		final Pattern holderSurnamePattern = Pattern.compile("^[a-zA-Z ]+$");
+		final Pattern virtualCardNumberPattern = Pattern.compile("^[0-9]+$");
+
+		String result = "";
+
+		if (!holderForenamePattern.matcher(card.getHolderForename()).matches())
+			result += "The inserted holder forename is not valid, must contain only letters and blanks. \n";
+
+		if (!holderSurnamePattern.matcher(card.getHolderSurname()).matches())
+			result += "The inserted holder surname is not valid, must contain only letters and blanks. \n";
+
+		if (!virtualCardNumberPattern.matcher(Long.toString(card.getVirtualCardNumber())).matches())
+			result += "The inserted virtual card number is not valid, must contain only numbers without blanks. \n";
+
+		if (card.getExpiringDate().isBefore(LocalDate.now()))
+			result += "The inserted date must follow today's. \n";
+
+		return result;
 
 	}
 
