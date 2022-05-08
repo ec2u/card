@@ -22,6 +22,7 @@ export function AddUser() {
   const [disable, setDisable] = useState<Boolean>(true);
   const [loading, setLoading] = useState<Boolean>(false);
   const [emailerror, setEmailError] = useState<string>("");
+  const [apiErrors, setapiErrors] = useState<any>([]);
   const navigate = useNavigate();
 
   const userData = {
@@ -82,10 +83,17 @@ export function AddUser() {
         },
         body: JSON.stringify(userData),
       })
-        .then(() => {
+        .then((response) => {
           setLoading(false)
-          navigate('/users')
+          if (response.ok) {
+            navigate("/cards/")
+          } else {
+            setapiErrors(response.status + "\n" + response.statusText);
+            window.alert("Something Went Wrong. !!!" + "\n" + response.status + "\n" + response.statusText)
+
+          }
         })
+
         .catch(error => console.error('error:', error));
     }
 
@@ -119,7 +127,7 @@ export function AddUser() {
         </section>
 
       </header>
-
+      <span>{apiErrors} </span>
       <form>
 
         <div className={"start"}>
