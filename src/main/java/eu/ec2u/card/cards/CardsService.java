@@ -90,7 +90,8 @@ public class CardsService {
 			if (!isSortingPropertyValid(sortingProperty)) {
 
 				throw new ToolApplication.WrongQueryArgumentsException(
-						"Sorting property parameter incorrect. Must be forename, surname or email!");
+						"Sorting property parameter incorrect." +
+								" Must be holderForenameLowerCase, holderSurnameLowerCase, expiringDate or virtualCardNumber!");
 
 			}
 

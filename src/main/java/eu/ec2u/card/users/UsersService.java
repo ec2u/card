@@ -24,6 +24,7 @@ public class UsersService {
             final Optional<String> forename,
             final Optional<String> surname,
             final Optional<String> email,
+            final Optional<Boolean> isAdmin,
             final Pageable slice,
             final Optional<String> sortingOrder,
             final Optional<String> sortingProperty
@@ -37,7 +38,7 @@ public class UsersService {
 
         Query<Entity> query = null;
 
-        if (forename.isPresent() && surname.isEmpty() && email.isEmpty()) {
+        if (forename.isPresent() && surname.isEmpty() && email.isEmpty() && isAdmin.isEmpty()) {
 
             query = Query.newEntityQueryBuilder()
                     .setKind("User")
@@ -49,7 +50,7 @@ public class UsersService {
                     .setLimit(slice.getPageSize())
                     .build();
 
-        } else if (forename.isEmpty() && surname.isPresent() && email.isEmpty()) {
+        } else if (forename.isEmpty() && surname.isPresent() && email.isEmpty() && isAdmin.isEmpty()) {
 
             query = Query.newEntityQueryBuilder()
                     .setKind("User")
@@ -61,7 +62,7 @@ public class UsersService {
                     .setLimit(slice.getPageSize())
                     .build();
 
-        } else if (forename.isEmpty() && surname.isEmpty() && email.isPresent()) {
+        } else if (forename.isEmpty() && surname.isEmpty() && email.isPresent() && isAdmin.isEmpty()) {
 
             query = Query.newEntityQueryBuilder()
                     .setKind("User")
@@ -73,12 +74,20 @@ public class UsersService {
                     .setLimit(slice.getPageSize())
                     .build();
 
-        } else if (forename.isEmpty() && surname.isEmpty() && email.isEmpty()) {
+        } else if(forename.isEmpty() && surname.isEmpty() && email.isEmpty() && isAdmin.isPresent()) {
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setFilter(StructuredQuery.PropertyFilter.eq("admin", isAdmin.get()))
+                    .setLimit(slice.getPageSize())
+                    .build();
+
+        } else if (forename.isEmpty() && surname.isEmpty() && email.isEmpty() && isAdmin.isEmpty()) {
 
             if (!isSortingPropertyValid(sortingProperty)) {
 
                 throw new ToolApplication.WrongQueryArgumentsException(
-                        "Sorting property parameter incorrect. Must be forename, surname or email!");
+                        "Sorting property parameter incorrect. Must be forenameLowerCase, surnameLowerCase or email!");
 
             }
 

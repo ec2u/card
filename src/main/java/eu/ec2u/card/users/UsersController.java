@@ -39,6 +39,7 @@ public final class UsersController {
             @RequestParam Optional<String> forename,
             @RequestParam Optional<String> surname,
             @RequestParam Optional<String> email,
+            @RequestParam Optional<Boolean> isAdmin,
             @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
             @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
             @RequestParam Optional<String> sortingOrder,
@@ -50,6 +51,7 @@ public final class UsersController {
                 forename,
                 surname,
                 email,
+                isAdmin,
                 PageRequest.of(page, size),
                 sortingOrder,
                 sortingProperty
