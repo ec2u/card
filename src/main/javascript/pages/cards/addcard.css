@@ -26,6 +26,13 @@ card-addcard {
       color: gray;
     }
   }
+
+  & .error {
+    background: rgb(209, 93, 93);
+    color: black;
+    height: 50px;
+  }
+
   & form {
     width: 100%;
     display: flex;

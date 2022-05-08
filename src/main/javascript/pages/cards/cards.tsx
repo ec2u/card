@@ -9,9 +9,9 @@ interface Card {
     label: string;
     holderForename: string;
     holderSurname: string;
-    expiringDate: string;
+    expiringDate: Date;
     virtualCardNumber: number;
-    id: any;
+    id: number | string;
 }
 
 
@@ -28,9 +28,7 @@ export function VirtualCards() {
     const [timer, setTimer] = useState<number>(0);
     const [disable, setDisable] = useState<Boolean>(true)
 
-
-    const [sorting, setSorting] = useState<string>("asc")
-
+    const [sorting, setSorting] = useState<string>("desc")
 
 
     const fetchData = async (searchData: any) => {
@@ -132,48 +130,44 @@ export function VirtualCards() {
 
         if (sorting === "desc") {
             setSorting("asc")
-        }
-        if (sorting === "asc") {
+        } else {
             setSorting("desc")
         }
-
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty = holderForenameLowerCase")
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty=holderForenameLowerCase")
     }
 
     const surnameSorting = () => {
 
         if (sorting === "desc") {
             setSorting("asc")
-        }
-        if (sorting === "asc") {
+        } else {
             setSorting("desc")
         }
-
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty = holderSurnameLowerCase")
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty=holderSurnameLowerCase")
     }
+
     const expiryDateSorting = () => {
 
         if (sorting === "desc") {
             setSorting("asc")
-        }
-        if (sorting === "asc") {
+        } else {
             setSorting("desc")
         }
-
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty = expiringDate")
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty=expiringDate")
     }
 
-    const cardNumberSorting = () => {
+    const numberSorting = () => {
 
         if (sorting === "desc") {
             setSorting("asc")
-        }
-        if (sorting === "asc") {
+        } else {
             setSorting("desc")
         }
-
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty = virtualCardNumber ")
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty=virtualCardNumber")
     }
+
+
+
 
 
     let SearchIcon =
@@ -212,9 +206,9 @@ export function VirtualCards() {
                 <thead>
                     <tr>
                         <th onClick={forenameSorting}>forename </th>
-                        <th onClick={surnameSorting}>surname</th>
+                        <th onClick={surnameSorting} >surname</th>
                         <th onClick={expiryDateSorting} >expiry date</th>
-                        <th onClick={cardNumberSorting}>card number</th>
+                        <th onClick={numberSorting}>card number</th>
                         <th>
                             {SearchIcon}
                         </th>

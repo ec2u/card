@@ -9,7 +9,7 @@ interface Token {
     readonly username: string;
     readonly password: string;
     readonly id: number | string;
-    readonly tokenNumber: any;
+    readonly tokenNumber: number;
 }
 
 export function CardTokens() {
@@ -89,33 +89,23 @@ export function CardTokens() {
         if (sorting === "desc") {
             setSorting("asc")
         }
-        if (sorting === "asc") {
+        else {
             setSorting("desc")
         }
 
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty = usernameLowerCase")
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty=username")
     }
-    const PasswordSorting = () => {
 
-        if (sorting === "desc") {
-            setSorting("asc")
-        }
-        if (sorting === "asc") {
-            setSorting("desc")
-        }
-
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty = passwordLowerCase")
-    }
     const tokenNumberSorting = () => {
 
         if (sorting === "desc") {
             setSorting("asc")
         }
-        if (sorting === "asc") {
+        else {
             setSorting("desc")
         }
 
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty = tokenNumber")
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty=tokenNumber")
     }
 
     let SearchIcon =
@@ -157,7 +147,7 @@ export function CardTokens() {
                     <tr>
 
                         <th onClick={usernameSorting}>username</th>
-                        <th onClick={PasswordSorting}>password</th>
+                        <th >password</th>
                         <th onClick={tokenNumberSorting}>token number</th>
                         <th>
                             {SearchIcon}

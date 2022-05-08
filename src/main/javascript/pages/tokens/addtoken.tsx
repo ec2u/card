@@ -9,7 +9,7 @@ interface Token {
     readonly username: string;
     readonly password: string;
     readonly id: number | string;
-    readonly tokenNumber: any;
+    readonly tokenNumber: number;
 
 }
 
@@ -24,7 +24,10 @@ export function AddToken() {
     const [disable, setDisable] = useState<Boolean>(true)
     const [loading, setLoading] = useState<Boolean>(false)
     const [numberError, setNumberError] = useState<string>("");
+    const [apiErrors, setapiErrors] = useState<any>([]);
     const navigate = useNavigate();
+
+
 
     const tokenData = {
         username: addtoken.username,
@@ -80,9 +83,15 @@ export function AddToken() {
                 },
                 body: JSON.stringify(tokenData),
             })
-                .then(() => {
+                .then((response) => {
                     setLoading(false)
-                    navigate('/tokens/');
+                    if (response.ok) {
+                        navigate("/cards/")
+                    } else {
+                        setapiErrors(response.status + "\n" + response.statusText);
+                        window.alert("Something Went Wrong. !!!" + "\n" + response.status + "\n" + response.statusText)
+
+                    }
                 })
                 .catch(error => console.warn('error:', error))
         }
@@ -114,6 +123,7 @@ export function AddToken() {
 
             </header>
 
+            <span>{apiErrors}</span>
             <form>
 
                 <div className={"start"}>
