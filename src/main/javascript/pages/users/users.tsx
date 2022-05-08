@@ -24,7 +24,7 @@ export function CardUsers() {
   const [timer, setTimer] = useState<number>(0);
   const [disable, setDisable] = useState<Boolean>(true)
   const [sorting, setSorting] = useState<string>("desc");
-  const [adminSorting, setadminSorting] = useState<Boolean>(false);
+  const [adminSorting, setadminSorting] = useState<Boolean>(true);
 
 
   const fetchData = async (searchData: any) => {
