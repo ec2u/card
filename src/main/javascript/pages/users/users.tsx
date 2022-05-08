@@ -110,35 +110,32 @@ export function CardUsers() {
 
     if (sorting === "desc") {
       setSorting("asc")
-    }
-    if (sorting === "asc") {
+    } else {
       setSorting("desc")
     }
-
-    fetchData("?sortingOrder=" + sorting + "&sortingProperty = forenameLowerCase")
+    fetchData("?sortingOrder=" + sorting + "&sortingProperty=forenameLowerCase")
   }
   const surnameSorting = () => {
 
     if (sorting === "desc") {
       setSorting("asc")
-    }
-    if (sorting === "asc") {
+    } else {
       setSorting("desc")
     }
-
-    fetchData("?sortingOrder=" + sorting + "&sortingProperty = surnameLowerCase")
+    fetchData("?sortingOrder=" + sorting + "&sortingProperty=surnameLowerCase")
   }
+
 
   const emailSorting = () => {
 
     if (sorting === "desc") {
       setSorting("asc")
     }
-    if (sorting === "asc") {
+    else {
       setSorting("desc")
-    }                                                                                                                                 
+    }
 
-    fetchData("?sortingOrder=" + sorting + "&sortingProperty = emailLowerCase")
+    fetchData("?sortingOrder=" + sorting + "&sortingProperty=email")
   }
 
   const handleSearch = () => {
