@@ -23,7 +23,8 @@ export function CardUsers() {
   const [clicked, setClicked] = useState<Boolean>(false);
   const [timer, setTimer] = useState<number>(0);
   const [disable, setDisable] = useState<Boolean>(true)
-  const [sorting, setSorting] = useState<string>("desc")
+  const [sorting, setSorting] = useState<string>("desc");
+  const [adminSorting, setadminSorting] = useState<Boolean>(false);
 
 
   const fetchData = async (searchData: any) => {
@@ -138,6 +139,15 @@ export function CardUsers() {
     fetchData("?sortingOrder=" + sorting + "&sortingProperty=email")
   }
 
+  const adminsorting = () => {
+    if (adminSorting === false) {
+      setadminSorting(true)
+    } else {
+      setadminSorting(false)
+    }
+    fetchData("?isAdmin=" + adminSorting)
+  }
+
   const handleSearch = () => {
     if (disable) {
 
@@ -177,10 +187,11 @@ export function CardUsers() {
       <table onBlur={() => setClicked(false)}>
         <thead>
           <tr>
-            <th> <input
-              type="checkbox"
-              className={"checkbox"}
-            /></th>
+            <th onClick={adminsorting}>
+              <input
+                type="checkbox"
+                className={"checkbox"}
+              /></th>
             <th onClick={forenameSorting}>forename</th>
             <th onClick={surnameSorting}>surname</th>
             <th onClick={emailSorting}>email</th>
