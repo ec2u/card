@@ -33,6 +33,7 @@ card-cards {
     }
     & th {
       color: rgb(161, 157, 157);
+      cursor: pointer;
     }
     & td {
       text-align: left;
