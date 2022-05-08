@@ -87,19 +87,30 @@ public class CardsService {
 
 		} else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
 
-			if (!isSortingPropertyValid(sortingProperty)) {
+			if(sortingProperty.isEmpty() && sortingOrder.isEmpty()) {
 
-				throw new ToolApplication.WrongQueryArgumentsException(
-						"Sorting property parameter incorrect." +
-								" Must be holderForenameLowerCase, holderSurnameLowerCase, expiringDate or virtualCardNumber!");
+				query = Query.newEntityQueryBuilder()
+						.setKind("Card")
+						.setLimit(slice.getPageSize())
+						.build();
+
+			} else {
+
+				if (!isSortingPropertyValid(sortingProperty)) {
+
+					throw new ToolApplication.WrongQueryArgumentsException(
+							"Sorting property parameter incorrect." +
+									" Must be holderForenameLowerCase, holderSurnameLowerCase, expiringDate or virtualCardNumber!");
+
+				}
+
+				query = Query.newEntityQueryBuilder()
+						.setKind("Card")
+						.setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("holderSurnameLowerCase").trim()))
+						.setLimit(slice.getPageSize())
+						.build();
 
 			}
-
-			query = Query.newEntityQueryBuilder()
-					.setKind("Card")
-					.setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("holderSurnameLowerCase").trim()))
-					.setLimit(slice.getPageSize())
-					.build();
 
 		} else {
 

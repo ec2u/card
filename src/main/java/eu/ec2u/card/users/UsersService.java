@@ -84,18 +84,29 @@ public class UsersService {
 
         } else if (forename.isEmpty() && surname.isEmpty() && email.isEmpty() && isAdmin.isEmpty()) {
 
-            if (!isSortingPropertyValid(sortingProperty)) {
+            if (sortingProperty.isEmpty() && sortingOrder.isEmpty()) {
 
-                throw new ToolApplication.WrongQueryArgumentsException(
-                        "Sorting property parameter incorrect. Must be forenameLowerCase, surnameLowerCase or email!");
+                query = Query.newEntityQueryBuilder()
+                        .setKind("User")
+                        .setLimit(slice.getPageSize())
+                        .build();
+
+            } else {
+
+                if (!isSortingPropertyValid(sortingProperty)) {
+
+                    throw new ToolApplication.WrongQueryArgumentsException(
+                            "Sorting property parameter incorrect. Must be forenameLowerCase, surnameLowerCase or email!");
+
+                }
+
+                query = Query.newEntityQueryBuilder()
+                        .setKind("User")
+                        .setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("surnameLowerCase").trim()))
+                        .setLimit(slice.getPageSize())
+                        .build();
 
             }
-
-            query = Query.newEntityQueryBuilder()
-                    .setKind("User")
-                    .setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("surnameLowerCase").trim()))
-                    .setLimit(slice.getPageSize())
-                    .build();
 
         } else {
 

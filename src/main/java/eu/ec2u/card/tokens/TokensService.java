@@ -60,18 +60,29 @@ public class TokensService {
 
 		} else if (tokenNumber.isEmpty() && username.isEmpty()) {
 
-			if (!isSortingPropertyValid(sortingProperty)) {
+			if (sortingProperty.isEmpty() && sortingOrder.isEmpty()) {
 
-				throw new ToolApplication.WrongQueryArgumentsException(
-						"Sorting property parameter incorrect. Must be username or tokenNumber!");
+				query = Query.newEntityQueryBuilder()
+						.setKind("Token")
+						.setLimit(slice.getPageSize())
+						.build();
+
+            } else {
+
+				if (!isSortingPropertyValid(sortingProperty)) {
+
+					throw new ToolApplication.WrongQueryArgumentsException(
+							"Sorting property parameter incorrect. Must be username or tokenNumber!");
+
+				}
+
+				query = Query.newEntityQueryBuilder()
+						.setKind("Token")
+						.setLimit(slice.getPageSize())
+						.setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("username").trim()))
+						.build();
 
 			}
-
-			query = Query.newEntityQueryBuilder()
-					.setKind("Token")
-					.setLimit(slice.getPageSize())
-					.setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("username").trim()))
-					.build();
 
 		} else {
 
