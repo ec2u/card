@@ -9,7 +9,7 @@ interface Token {
     readonly username: string;
     readonly password: string;
     readonly id: number;
-    readonly tokenNumber: any;
+    readonly tokenNumber: number;
 }
 
 export function EditToken() {

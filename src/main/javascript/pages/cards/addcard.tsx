@@ -8,8 +8,8 @@ import "./addcard.css";
 interface Card {
     holderForename: string;
     holderSurname: string;
-    expiringDate: string;
-    virtualCardNumber: any;
+    expiringDate: Date;
+    virtualCardNumber: number;
     id: number | string;
 
 }
@@ -38,7 +38,7 @@ export function AddCard() {
         holderSurname: "",
         id: "",
         virtualCardNumber: 0,
-        expiringDate: newDate()
+        expiringDate: new Date
     } as Card);
 
     const [disable, setDisable] = useState<Boolean>(true);
@@ -127,8 +127,8 @@ export function AddCard() {
                     if (response.ok) {
                         navigate("/cards/")
                     } else {
-                        setapiErrors(response.statusText);
-                        window.alert(response.status + "\n " + response.statusText)
+                        setapiErrors(response.status + "\n" + response.statusText);
+                        window.alert("Something Went Wrong. !!!" + "\n" + response.status + "\n" + response.statusText)
 
                     }
                 })
@@ -163,7 +163,9 @@ export function AddCard() {
                 </section>
 
             </header>
-            <span>{apiErrors}</span>
+
+
+
             <form>
 
                 <div className={"start"}>
@@ -228,6 +230,9 @@ export function AddCard() {
                 </div>
 
             </form>
+            <dialog >
+                {apiErrors}
+            </dialog>
         </>
     );
 }

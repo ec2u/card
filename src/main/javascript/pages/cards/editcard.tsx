@@ -7,8 +7,8 @@ import './editcard.css'
 interface User {
     holderForename: string;
     holderSurname: string;
-    expiringDate: string;
-    virtualCardNumber: any;
+    expiringDate: Date;
+    virtualCardNumber: number;
     label: string;
     id: any;
 }
@@ -18,7 +18,7 @@ export function EditCard() {
         holderForename: "",
         holderSurname: "",
         virtualCardNumber: 0,
-        expiringDate: ""
+        expiringDate: new Date
 
     } as User);
 
