@@ -71,11 +71,9 @@ public class CardsService {
 
         } else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isPresent() && virtualCardNumber.isEmpty()) {
 
-			Timestamp expiringDateTimestamp = Timestamp.parseTimestamp(expiringDate.get());
-
 			query = Query.newEntityQueryBuilder()
 					.setKind("Card")
-					.setFilter(StructuredQuery.PropertyFilter.lt("expiringDate", expiringDateTimestamp))
+					.setFilter(StructuredQuery.PropertyFilter.lt("expiringDate", expiringDate.get().trim()))
 					.setOrderBy(sortingFromOptional(sortingOrder, "expiringDate"))
 					.setLimit(slice.getPageSize())
 					.build();
