@@ -28,7 +28,8 @@ export function VirtualCards() {
     const [timer, setTimer] = useState<number>(0);
     const [disable, setDisable] = useState<Boolean>(true)
 
-    const [sorting, setSorting] = useState<string>("desc")
+    const [sorting, setSorting] = useState<string>("desc");
+    const [sortingType, setSortingType] = useState<string>("")
 
 
     const fetchData = async (searchData: any) => {
@@ -127,6 +128,7 @@ export function VirtualCards() {
 
 
     const forenameSorting = () => {
+        setSortingType("forename")
 
         if (sorting === "desc") {
             setSorting("asc")

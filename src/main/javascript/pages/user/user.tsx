@@ -1,29 +1,21 @@
 import React, { createElement, useState } from "react";
-
-
-export const LinePattern="\\S+( \\S+)*";
-
-export interface User {
-
-    readonly admin: boolean;
-
-    readonly forename: string;
-    readonly surname: string;
-
-    readonly email: string;
-
-}
+import { LogOut } from 'lucide-react'
+import './user.css'
 
 export function CardUser() {
 
-    const [user, setUser]=useState();
 
-    return createElement("card-user", {},
 
-        <form>
+    return createElement("card-addcard", {},
+        <>
+            <header>
+                <span>Akhil Reddy Rondla</span>
+                <LogOut
+                    size={38}
 
-            <input type={"text"} value={user?.[0]} pattern={LinePattern}/>
-
-        </form>
-    );
+                    className={"logout-button"}
+                />
+            </header>
+        </>
+    )
 }

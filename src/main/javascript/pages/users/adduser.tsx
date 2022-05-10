@@ -86,7 +86,7 @@ export function AddUser() {
         .then((response) => {
           setLoading(false)
           if (response.ok) {
-            navigate("/cards/")
+            navigate("/users/")
           } else {
             setapiErrors(response.status + "\n" + response.statusText);
             window.alert("Something Went Wrong. !!!" + "\n" + response.status + "\n" + response.statusText)
