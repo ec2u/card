@@ -23,6 +23,11 @@ card-cards {
     display: grid;
     overflow: auto;
 
+    & tbody {
+      overflow-y: auto;
+      height: 80vh;
+    }
+
     & tr {
       display: grid;
       grid-template-columns: 200px 200px 210px 5fr 0fr;
@@ -70,7 +75,7 @@ card-cards {
 
     & input {
       font-size: 0.8em;
-      border: 1px solid black;
+      border: 1px solid lightgray;
       border-radius: 5px;
     }
     & input:focus {
