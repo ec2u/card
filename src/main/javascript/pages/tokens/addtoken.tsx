@@ -55,7 +55,7 @@ export function AddToken() {
         if (addtoken.username === "" ||
             addtoken.password === "" ||
             addtoken.tokenNumber === 0 ||
-            ((e.target.name = "tokenNumber") && !validateNumber(addtoken.tokenNumber)) ||
+            ((e.target.name === "tokenNumber") && !validateNumber(addtoken.tokenNumber)) ||
             value === "") {
 
             setDisable(true)
@@ -143,7 +143,7 @@ export function AddToken() {
                     <section>
                         <label>password</label>
                         <input
-                            type="text"
+                            type="password"
                             required
                             name="password"
                             value={addtoken.password}

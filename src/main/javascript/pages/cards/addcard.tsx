@@ -59,11 +59,10 @@ export function AddCard() {
     const validateNumber = (e: number) => {
 
         if (/^\d+$/.test(String(e).toLowerCase())) {
-            setNumberError("Valid number")
             return true;
         } else {
-            setNumberError("invalid number")
-            return (false)
+
+            return false;
         }
 
     }
@@ -87,12 +86,32 @@ export function AddCard() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         const value = e.target.value
+        let forename = addcard.holderForename
+        let surname = addcard.holderSurname
+        let cardNumber = addcard.virtualCardNumber
+        let date = addcard.expiringDate
+        switch (e.target.name) {
+            case "holderForename ":
+                forename = value
+                break
+            case "holderSurname":
+                surname = value
+                break
+            case "virtualCardNumber":
+                cardNumber = parseInt(value)
+                break
+            case "expiringDate":
+                date = new Date(value)
+                break
+
+        }
 
         if (addcard.holderForename === "" || addcard.holderSurname === "" ||
             addcard.virtualCardNumber === 0 ||
             value === "" ||
-            ((e.target.name = "virtualCardNumber") && !validateNumber(addcard.virtualCardNumber)) ||
-            addcard.expiringDate === null
+            ((e.target.name === "virtualCardNumber") && !validateNumber(addcard.virtualCardNumber)) ||
+            date < new Date()
+
         ) {
             setDisable(true)
 

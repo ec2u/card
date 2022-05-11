@@ -139,7 +139,7 @@ export function CardUsers() {
     fetchData("?sortingOrder=" + sorting + "&sortingProperty=email")
   }
 
-  const adminsorting = () => {
+  const handleAdminChange = () => {
     if (adminSorting === false) {
       setadminSorting(true)
     } else {
@@ -187,11 +187,7 @@ export function CardUsers() {
       <table onBlur={() => setClicked(false)}>
         <thead>
           <tr>
-            <th onClick={adminsorting}>
-              <input
-                type="checkbox"
-                className={"checkbox"}
-              /></th>
+            <th> admin </th>
             <th onClick={forenameSorting}>forename</th>
             <th onClick={surnameSorting}>surname</th>
             <th onClick={emailSorting}>email</th>
@@ -212,6 +208,13 @@ export function CardUsers() {
 
             <div className={"search-fields"}>
               <div className={"search-fields-start"}>
+
+
+                <input
+                  type="checkbox"
+                  className={"checkbox"}
+                  onClick={handleAdminChange}
+                />
                 <input
                   value={searchForename}
                   type="search"

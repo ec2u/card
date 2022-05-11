@@ -139,7 +139,7 @@ export function VirtualCards() {
     }
 
     const surnameSorting = () => {
-
+        setSortingType("surname")
         if (sorting === "desc") {
             setSorting("asc")
         } else {
@@ -236,7 +236,7 @@ export function VirtualCards() {
                                     onChange={handleSearchSurnameChange}
                                 />
                                 <input
-                                    type="search"
+                                    type="date"
                                     className={"search-date"}
                                     value={searchDate}
                                     onChange={handleSearchDateChange}
