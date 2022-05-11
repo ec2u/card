@@ -35,6 +35,7 @@ card-tokens {
       align-items: center;
     }
     & th {
+      cursor: pointer;
       color: rgb(161, 157, 157);
     }
     & .search-button {
