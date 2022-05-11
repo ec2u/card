@@ -29,7 +29,7 @@ card-users {
     }
     & tr {
       display: grid;
-      grid-template-columns: 80px 320px 320px 5fr 0fr;
+      grid-template-columns: 115px 320px 320px 5fr 0fr;
       text-align: left;
       padding: 0.1em;
       align-items: center;
@@ -44,8 +44,8 @@ card-users {
       color: black;
     }
     & .checkbox {
-      height: 1.5em;
-      width: 1.5em;
+      height: 1.2em;
+      width: 1.4em;
     }
 
     & tr:nth-child(even) {
@@ -66,6 +66,12 @@ card-users {
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1em;
+
+      & .checkbox {
+        margin-left: 10px;
+        height: 1.2em;
+        width: 1.2em;
+      }
 
       & input {
         font-size: 0.8em;

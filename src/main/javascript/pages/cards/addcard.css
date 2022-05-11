@@ -74,6 +74,9 @@ card-addcard {
       & input:required:invalid {
         border: 1px solid red;
       }
+      & input:invalid {
+        animation: shake 300ms;
+      }
     }
     & .forename {
       width: 9rem;
@@ -126,5 +129,17 @@ card-addcard {
   }
   100% {
     transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(4px);
+  }
+  50% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
   }
 }
