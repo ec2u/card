@@ -73,7 +73,7 @@ public class CardsService {
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Card")
-					.setFilter(StructuredQuery.PropertyFilter.lt("expiringDate", expiringDate.get().trim()))
+					.setFilter(StructuredQuery.PropertyFilter.le("expiringDate", expiringDate.get().trim()))
 					.setOrderBy(sortingFromOptional(sortingOrder, "expiringDate"))
 					.setLimit(slice.getPageSize())
 					.build();
