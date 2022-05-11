@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Service
 public class TokensService {
@@ -106,6 +107,14 @@ public class TokensService {
 	@Transactional
 	Token create(final Token token) {
 
+		final String tokensFieldsValidatorResult = tokensFieldsValidator(token);
+
+		if(!tokensFieldsValidatorResult.isEmpty()) {
+
+			throw new ToolApplication.WrongPostArgumentsException(tokensFieldsValidatorResult);
+
+		}
+
 		return Optional.of(new Tokens.TokenData())
 				.map(data -> data.transfer(token))
 				.map(data -> tokensRepository.save(data))
@@ -124,6 +133,14 @@ public class TokensService {
 
 	@Transactional
 	Token update(final long tokenNumber, final Token token) {
+
+		final String tokensFieldsValidatorResult = tokensFieldsValidator(token);
+
+		if(!tokensFieldsValidatorResult.isEmpty()) {
+
+			throw new ToolApplication.WrongPutArgumentsException(tokensFieldsValidatorResult);
+
+		}
 
 		return tokensRepository.findById(tokenNumber)
 				.map(data -> data.transfer(token))
@@ -148,7 +165,7 @@ public class TokensService {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	@SuppressWarnings("ALL")
-	private StructuredQuery.OrderBy sortingFromOptional(Optional<String> sortingOrder, String sortingProperty) {
+	private final StructuredQuery.OrderBy sortingFromOptional(final Optional<String> sortingOrder, final String sortingProperty) {
 
 		if(sortingOrder.isPresent()) {
 
@@ -171,10 +188,27 @@ public class TokensService {
 
 	}
 
-	private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
+	private boolean isSortingPropertyValid(final Optional<String> sortingProperty) {
 
 		return sortingProperty.map(s -> s.trim().equalsIgnoreCase("username") ||
 				s.trim().equalsIgnoreCase("tokenNumber")).orElse(true);
+
+	}
+
+	private String tokensFieldsValidator(final Token token) {
+
+		final Pattern tokenNumberPattern = Pattern.compile("^[0-9]+$");
+		final Pattern usernamePattern = Pattern.compile("^[a-zA-Z ]+$");
+
+		String result = "";
+
+		if (!tokenNumberPattern.matcher(Long.toString(token.getTokenNumber())).matches())
+			result += "The inserted token number is not valid, must contain only numbers without blanks. \n";
+
+		if (!usernamePattern.matcher(token.getUsername()).matches())
+			result += "The inserted username is not valid, must contain only letters . \n";
+
+		return result;
 
 	}
 

@@ -206,4 +206,21 @@ public class ToolApplication implements WebMvcConfigurer {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @ExceptionHandler(WrongDateFormatException.class)
+    public ResponseEntity<String> handle(final WrongDateFormatException e) {
+
+        return ResponseEntity.badRequest().body(e.getMessage());
+
+    }
+
+    public static final class WrongDateFormatException extends IllegalArgumentException {
+
+        public WrongDateFormatException(String errorMessage) {
+
+            super(errorMessage);
+
+        }
+
+    }
 }
