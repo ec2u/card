@@ -1,4 +1,4 @@
-import { ChevronRight, Plus, Search, X } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp, Plus, Search, X } from "lucide-react";
 import React, { createElement, useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import './users.css';
@@ -25,6 +25,7 @@ export function CardUsers() {
   const [disable, setDisable] = useState<Boolean>(true)
   const [sorting, setSorting] = useState<string>("desc");
   const [adminSorting, setadminSorting] = useState<Boolean>(true);
+  const [sortingType, setSortingType] = useState<string>("")
 
 
   const fetchData = async (searchData: any) => {
@@ -108,7 +109,7 @@ export function CardUsers() {
   }
 
   const forenameSorting = () => {
-
+    setSortingType("forename")
     if (sorting === "desc") {
       setSorting("asc")
     } else {
@@ -117,7 +118,7 @@ export function CardUsers() {
     fetchData("?sortingOrder=" + sorting + "&sortingProperty=forenameLowerCase")
   }
   const surnameSorting = () => {
-
+    setSortingType("surname")
     if (sorting === "desc") {
       setSorting("asc")
     } else {
@@ -128,7 +129,7 @@ export function CardUsers() {
 
 
   const emailSorting = () => {
-
+    setSortingType("email")
     if (sorting === "desc") {
       setSorting("asc")
     }
@@ -188,9 +189,15 @@ export function CardUsers() {
         <thead>
           <tr>
             <th> admin </th>
-            <th onClick={forenameSorting}>forename</th>
-            <th onClick={surnameSorting}>surname</th>
-            <th onClick={emailSorting}>email</th>
+            <th onClick={forenameSorting}>forename
+              {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+            </th>
+            <th onClick={surnameSorting}>surname
+              {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+            </th>
+            <th onClick={emailSorting}>email
+              {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+            </th>
             <th>
               {SearchIcon}
             </th>

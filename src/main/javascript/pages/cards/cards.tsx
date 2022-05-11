@@ -1,5 +1,5 @@
 
-import { ChevronRight, Plus, Search, X, ChevronDown } from 'lucide-react';
+import { ChevronRight, Plus, Search, X, ChevronDown, ChevronUp } from 'lucide-react';
 import React, { createElement, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './cards.css';
@@ -149,7 +149,7 @@ export function VirtualCards() {
     }
 
     const expiryDateSorting = () => {
-
+        setSortingType("expiringDate")
         if (sorting === "desc") {
             setSorting("asc")
         } else {
@@ -159,7 +159,7 @@ export function VirtualCards() {
     }
 
     const numberSorting = () => {
-
+        setSortingType("virtualCardNumber")
         if (sorting === "desc") {
             setSorting("asc")
         } else {
@@ -207,10 +207,18 @@ export function VirtualCards() {
             <table onBlur={() => setClicked(false)}>
                 <thead>
                     <tr>
-                        <th onClick={forenameSorting}>forename </th>
-                        <th onClick={surnameSorting} >surname</th>
-                        <th onClick={expiryDateSorting} >expiry date</th>
-                        <th onClick={numberSorting}>card number</th>
+                        <th onClick={forenameSorting}>forename
+                            {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                        </th>
+                        <th onClick={surnameSorting} >surname
+                            {sortingType === "surname" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                        </th>
+                        <th onClick={expiryDateSorting}> expiry date
+                            {sortingType === "expiringDate" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                        </th>
+                        <th onClick={numberSorting}>card number
+                            {sortingType === "virtualCardNumber" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                        </th>
                         <th>
                             {SearchIcon}
                         </th>

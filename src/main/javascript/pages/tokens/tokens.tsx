@@ -1,4 +1,4 @@
-import { ChevronRight, Plus, Search, X } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp, Plus, Search, X } from "lucide-react";
 import React, { createElement, useCallback, useEffect, useRef, useState } from "react";
 import './tokens.css';
 
@@ -21,7 +21,8 @@ export function CardTokens() {
     const [clicked, setClicked] = useState<Boolean>(false);
     const [timer, setTimer] = useState<number>(0);
     const [disable, setDisable] = useState<Boolean>(true);
-    const [sorting, setSorting] = useState<string>("asc")
+    const [sorting, setSorting] = useState<string>("asc");
+    const [sortingType, setSortingType] = useState<string>("")
 
 
 
@@ -85,6 +86,7 @@ export function CardTokens() {
     }
 
     const usernameSorting = () => {
+        setSortingType("username")
 
         if (sorting === "desc") {
             setSorting("asc")
@@ -97,6 +99,7 @@ export function CardTokens() {
     }
 
     const tokenNumberSorting = () => {
+        setSortingType("tokenNumber")
 
         if (sorting === "desc") {
             setSorting("asc")
@@ -146,9 +149,13 @@ export function CardTokens() {
 
                     <tr>
 
-                        <th onClick={usernameSorting}>username</th>
-                        <th >password</th>
-                        <th onClick={tokenNumberSorting}>token number</th>
+                        <th onClick={usernameSorting}>username
+                            {sortingType === "username" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                        </th>
+                        <th >password </th>
+                        <th onClick={tokenNumberSorting}>token number
+                            {sortingType === "tokenNumber" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                        </th>
                         <th>
                             {SearchIcon}
 
