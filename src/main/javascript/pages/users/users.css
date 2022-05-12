@@ -38,6 +38,10 @@ card-users {
       cursor: pointer;
       color: rgb(161, 157, 157);
     }
+    & th:hover {
+      color: black;
+    }
+
     & .search-button {
       cursor: pointer;
     }
@@ -65,7 +69,7 @@ card-users {
     & .search-fields {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      text-align: center;
       margin-bottom: 1em;
 
       & .checkbox {

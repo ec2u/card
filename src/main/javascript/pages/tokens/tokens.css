@@ -38,6 +38,9 @@ card-tokens {
       cursor: pointer;
       color: rgb(161, 157, 157);
     }
+    & th:hover {
+      color: black;
+    }
     & .search-button {
       cursor: pointer;
     }
