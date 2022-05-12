@@ -198,15 +198,11 @@ public class TokensService {
 	private String tokensFieldsValidator(final Token token) {
 
 		final Pattern tokenNumberPattern = Pattern.compile("^[0-9]+$");
-		final Pattern usernamePattern = Pattern.compile("^[a-zA-Z ]+$");
 
 		String result = "";
 
 		if (!tokenNumberPattern.matcher(Long.toString(token.getTokenNumber())).matches())
 			result += "The inserted token number is not valid, must contain only numbers without blanks. \n";
-
-		if (!usernamePattern.matcher(token.getUsername()).matches())
-			result += "The inserted username is not valid, must contain only letters . \n";
 
 		return result;
 
