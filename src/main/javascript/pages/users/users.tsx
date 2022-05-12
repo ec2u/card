@@ -24,8 +24,9 @@ export function CardUsers() {
   const [timer, setTimer] = useState<number>(0);
   const [disable, setDisable] = useState<Boolean>(true)
   const [sorting, setSorting] = useState<string>("desc");
-  const [adminSorting, setadminSorting] = useState<Boolean>(true);
-  const [sortingType, setSortingType] = useState<string>("")
+  const [adminSorting, setadminSorting] = useState<boolean>(true);
+  const [sortingType, setSortingType] = useState<string>("");
+
 
 
   const fetchData = async (searchData: any) => {
@@ -149,17 +150,21 @@ export function CardUsers() {
     fetchData("?isAdmin=" + adminSorting)
   }
 
-  const handleSearch = () => {
-    if (disable) {
 
-    } else {
-      setClicked(false);
-      setSearchForename("");
-      setSearchSurname("");
-      setSearchEmail("");
-      fetchData("")
-    }
+
+
+  const handleSearchClose = () => {
+    // if (disable) {
+
+    // } else {
+    setClicked(false);
+    setSearchForename("");
+    setSearchSurname("");
+    setSearchEmail("");
+    fetchData("")
+    // }
   }
+
 
   let SearchIcon =
     <div title={"search"}>
@@ -179,7 +184,7 @@ export function CardUsers() {
       <header>
 
         <a> Users </a>
-        <a href='/users/add' title="nwe user">
+        <a href='/users/add' title="new user">
           <Plus size={40} className={"button-plus"} />
         </a>
 
@@ -188,15 +193,16 @@ export function CardUsers() {
       <table onBlur={() => setClicked(false)}>
         <thead>
           <tr>
-            <th> admin </th>
+            <th>admin</th>
+
             <th onClick={forenameSorting}>forename
               {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
             </th>
             <th onClick={surnameSorting}>surname
-              {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+              {sortingType === "surname" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
             </th>
             <th onClick={emailSorting}>email
-              {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+              {sortingType === "email" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
             </th>
             <th>
               {SearchIcon}
@@ -216,12 +222,12 @@ export function CardUsers() {
             <div className={"search-fields"}>
               <div className={"search-fields-start"}>
 
-
                 <input
                   type="checkbox"
                   className={"checkbox"}
                   onClick={handleAdminChange}
                 />
+
                 <input
                   value={searchForename}
                   type="search"
@@ -243,8 +249,8 @@ export function CardUsers() {
               <div title="Close">
                 <X size={28}
                   className={"close-button"}
-                  color={disable ? 'lightgray' : 'black'}
-                  onMouseDown={handleSearch}
+                  // color={disable ? 'lightgray' : 'black'}
+                  onMouseDown={handleSearchClose}
                 />
               </div>
             </div>

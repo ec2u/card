@@ -16,6 +16,7 @@ import { CardTokens } from "./pages/tokens/tokens";
 import { TokenInspect } from "./pages/tokens/inspecttoken";
 import { EditToken } from "./pages/tokens/edittoken";
 import { AddToken } from "./pages/tokens/addtoken";
+import { LogIn } from './component/login';
 
 
 
@@ -24,7 +25,9 @@ export function CardRoutes() {
 
   return (
     <div>
+
       <BrowserRouter>
+
         <CardSidebar
           onCollapse={(sidebar: boolean) => {
             setSidebar(sidebar);
@@ -35,6 +38,8 @@ export function CardRoutes() {
           <Routes>
 
             <Route path="/user/" element={<CardUser />} />
+            <Route path="/login/" element={<LogIn />} />
+
             <Route path="/users/" element={<CardUsers />} />
             <Route path="/users/:id/" element={<InspectUser />} />
             <Route path="/edit/users/:id/" element={<EditUser />} />

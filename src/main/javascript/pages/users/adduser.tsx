@@ -21,8 +21,8 @@ export function AddUser() {
   } as Adduser);
   const [disable, setDisable] = useState<Boolean>(true);
   const [loading, setLoading] = useState<Boolean>(false);
-  const [emailerror, setEmailError] = useState<string>("");
-  const [apiErrors, setapiErrors] = useState<any>([]);
+  const [apiErrors, setapiErrors] = useState<string>("");
+  const [click, setClick] = useState<Boolean>(false)
   const navigate = useNavigate();
 
   const userData = {
@@ -35,10 +35,8 @@ export function AddUser() {
 
   const validateEmail = (e: string) => {
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$/.test(e)) {
-      setEmailError("Valid Email")
       return true;
     } else {
-      setEmailError("invalid Email")
       return false
     }
   }
@@ -67,6 +65,9 @@ export function AddUser() {
       [e.target.name]: value,
     }))
   }
+  const handleAPiError = () => {
+    setClick(!click)
+  }
 
 
   const handleSubmit = async () => {
@@ -89,7 +90,7 @@ export function AddUser() {
             navigate("/users/")
           } else {
             setapiErrors(response.status + "\n" + response.statusText);
-            window.alert("Something Went Wrong. !!!" + "\n" + response.status + "\n" + response.statusText)
+            handleAPiError();
 
           }
         })
@@ -99,6 +100,16 @@ export function AddUser() {
 
   };
 
+  const errorMessage =
+    <div className={"error-message"}>
+      <div>
+        Something Went Wrong ..!!! <span title="close" onClick={() => setClick(false)}> X </span>
+      </div>
+      <p>
+        {apiErrors}
+      </p>
+
+    </div>
 
 
 
@@ -127,7 +138,9 @@ export function AddUser() {
         </section>
 
       </header>
-      <span>{apiErrors} </span>
+      <span>
+        {click ? errorMessage : ""}
+      </span>
       <form>
 
         <div className={"start"}>
@@ -168,7 +181,7 @@ export function AddUser() {
 
 
             />
-            <span>{emailerror}</span>
+
           </section>
 
         </div>

@@ -25,6 +25,7 @@ export function AddToken() {
     const [loading, setLoading] = useState<Boolean>(false)
     const [numberError, setNumberError] = useState<string>("");
     const [apiErrors, setapiErrors] = useState<any>([]);
+    const [click, setClick] = useState<Boolean>(false)
     const navigate = useNavigate();
 
 
@@ -69,6 +70,10 @@ export function AddToken() {
         }));
     };
 
+    const handleAPiError = () => {
+        setClick(!click)
+    }
+
     const handleSubmit = async () => {
         if (disable) {
 
@@ -86,16 +91,27 @@ export function AddToken() {
                 .then((response) => {
                     setLoading(false)
                     if (response.ok) {
-                        navigate("/cards/")
+                        navigate("/tokens/")
                     } else {
                         setapiErrors(response.status + "\n" + response.statusText);
-                        window.alert("Something Went Wrong. !!!" + "\n" + response.status + "\n" + response.statusText)
+                        handleAPiError();
 
                     }
                 })
                 .catch(error => console.warn('error:', error))
         }
     }
+
+    const errorMessage =
+        <div className={"error-message"}>
+            <div>
+                Something Went Wrong ..!!! <span title="close" onClick={() => setClick(false)}> X </span>
+            </div>
+            <p>
+                {apiErrors}
+            </p>
+
+        </div>
 
 
     return createElement("card-addtoken", {},
@@ -123,7 +139,9 @@ export function AddToken() {
 
             </header>
 
-            <span>{apiErrors}</span>
+            <span>
+                {click ? errorMessage : ""}
+            </span>
             <form>
 
                 <div className={"start"}>

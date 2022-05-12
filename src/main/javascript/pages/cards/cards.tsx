@@ -173,8 +173,8 @@ export function VirtualCards() {
 
 
     let SearchIcon =
-        <div title={"search"} className={"search-icon"}>
-            <Search size={28} color="gray"
+        <div title={"search"} className={"button-search"}>
+            <Search size={28}
                 className={'button-search'}
                 onClick={() => setClicked(!clicked)}
             />

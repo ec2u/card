@@ -30,7 +30,7 @@ export function EditUser() {
   const [clicked, setClicked] = useState<Boolean>(false);
   const [disable, setDisable] = useState<Boolean>(true)
   const [loading, setLoading] = useState<Boolean>(false)
-  const [emailerror, setEmailError] = useState<string>("");
+
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -68,10 +68,10 @@ export function EditUser() {
 
   const validateEmail = (e: string) => {
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$/.test(e)) {
-      setEmailError("Valid Email")
+
       return true;
     } else {
-      setEmailError("invalid Email")
+
       return false
     }
   }
@@ -214,7 +214,7 @@ export function EditUser() {
               onChange={handleChange}
               onFocus={handleonFocus}
             />
-            <span>{emailerror}</span>
+
           </section>
 
         </div>

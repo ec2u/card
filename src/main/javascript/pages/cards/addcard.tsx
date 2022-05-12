@@ -44,7 +44,8 @@ export function AddCard() {
     const [disable, setDisable] = useState<Boolean>(true);
     const [loading, setLoading] = useState<Boolean>(false);
     const [apiErrors, setapiErrors] = useState<any>([]);
-    const [numberError, setNumberError] = useState<string>("");
+    const [click, setClick] = useState<Boolean>(false)
+
 
     const navigate = useNavigate();
 
@@ -126,6 +127,10 @@ export function AddCard() {
 
     };
 
+    const handleAPiError = () => {
+        setClick(!click)
+    }
+
 
     const handleSubmit = async () => {
         if (disable) {
@@ -147,7 +152,8 @@ export function AddCard() {
                         navigate("/cards/")
                     } else {
                         setapiErrors(response.status + "\n" + response.statusText);
-                        window.alert("Something Went Wrong. !!!" + "\n" + response.status + "\n" + response.statusText)
+                        handleAPiError();
+                        // window.alert("Something Went Wrong. !!!" + "\n" + response.status + "\n" + response.statusText)
 
                     }
                 })
@@ -155,6 +161,20 @@ export function AddCard() {
         }
 
     }
+
+    const errorMessage =
+        <div className={"error-message"}>
+            <div>
+                Something Went Wrong ..!!! <span title="close" onClick={() => setClick(false)}> X </span>
+            </div>
+            <p>
+                {apiErrors}
+            </p>
+
+        </div>
+
+
+
 
 
     return createElement("card-addcard", {},
@@ -183,9 +203,11 @@ export function AddCard() {
 
             </header>
 
+            <span>
+                {click ? errorMessage : ""}
+            </span>
 
-
-            <form>
+            <form onBlur={() => setClick(false)}>
 
                 <div className={"start"}>
 
@@ -243,7 +265,6 @@ export function AddCard() {
                             onChange={handleChange}
                             pattern="[0-9]*"
                         />
-                        <span>{numberError}</span>
                     </section>
 
                 </div>
