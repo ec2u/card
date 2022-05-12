@@ -2,16 +2,20 @@ card-addcard {
   width: 95%;
   display: grid;
   align-items: stretch;
+  overflow: auto;
 
   & header {
     width: 100%;
-    margin: 1.3em 0em;
+    margin: 1.4em 0em;
     display: flex;
+    flex-wrap: no-wrap;
     justify-content: space-between;
 
     & section {
       display: flex;
+      flex-wrap: no-wrap;
       gap: 0.5em;
+      grid-row-gap: 0px;
     }
     & a {
       text-decoration: none;
@@ -19,22 +23,30 @@ card-addcard {
       font-size: 1.4em;
     }
     & .cards-link:hover {
-      color: orange;
-      transform: translateX(-3px);
+      color: gray;
     }
   }
+
+  & .error {
+    background: rgb(209, 93, 93);
+    color: black;
+    height: 50px;
+  }
+
   & form {
     width: 100%;
     display: flex;
     text-align: left;
     justify-content: space-between;
-    overflow: auto;
+    overflow-y: auto;
+    grid-row-gap: 1em;
 
     & .start {
       width: 50%;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      grid-row-gap: 1em;
     }
     & section {
       display: flex;
@@ -45,12 +57,42 @@ card-addcard {
         color: rgb(161, 157, 157);
       }
       & input {
-        margin-top: 1em;
+        margin-top: 0.5em;
         border: 1px solid black;
         padding: 0.2em;
         border-radius: 0.3em;
         font-size: 0.9em;
       }
+      & input:focus {
+        outline: 2px solid gray;
+        box-shadow: 0 0 2px 4px lightgray;
+      }
+      & input:required:valid:not([value="0"]) {
+        border: 3px solid green;
+      }
+
+      & input:required:invalid {
+        border: 1px solid red;
+      }
+      & input:invalid {
+        animation: shake 300ms;
+      }
+    }
+    & .forename {
+      width: 9rem;
+      margin-left: 5px;
+    }
+    & .surname {
+      width: 9rem;
+      margin-left: 5px;
+    }
+    & .card-number {
+      width: 5rem;
+      margin-left: 5px;
+    }
+    & .expiry-date {
+      border: 1px solid lightgray;
+      margin-left: 5px;
     }
   }
   & .button-check {
@@ -59,11 +101,9 @@ card-addcard {
   }
   & .button-check:hover {
     color: green;
-    transform: translateY(-3px);
   }
   & .button-close:hover {
     color: red;
-    transform: translateY(-3px);
   }
 }
 
@@ -89,5 +129,17 @@ card-addcard {
   }
   100% {
     transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(4px);
+  }
+  50% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
   }
 }

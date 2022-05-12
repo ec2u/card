@@ -1,4 +1,4 @@
-import { ChevronRight, Plus, Search, X } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp, Plus, Search, X } from "lucide-react";
 import React, { createElement, useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import './users.css';
@@ -17,50 +17,158 @@ export function CardUsers() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<Boolean>(false);
   const [error, setError] = useState<any>(null);
-  const [search, setSearch] = useState<string>("");
+  const [searchForename, setSearchForename] = useState<string>();
+  const [searchSurname, setSearchSurname] = useState<string>();
+  const [searchEmail, setSearchEmail] = useState<string>("")
   const [clicked, setClicked] = useState<Boolean>(false);
+  const [timer, setTimer] = useState<number>(0);
+  const [disable, setDisable] = useState<Boolean>(true)
+  const [sorting, setSorting] = useState<string>("desc");
+  const [adminSorting, setadminSorting] = useState<Boolean>(true);
+  const [sortingType, setSortingType] = useState<string>("")
 
 
-  function useKey(key: number, cb: any) {
+  const fetchData = async (searchData: any) => {
+    setLoading(true)
 
-    const callbackRef = useRef(cb);
+    await fetch(`/users/` + searchData, {
+      headers: {
+        Accept: "application/json",
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => setUsers(data.contains))
+      .catch((error) => console.error(error))
+    setLoading(false)
   }
 
 
   useEffect(() => {
-
-    setLoading(true)
-    const fetchData = async () => {
-      await fetch("/users/", {
-        headers: {
-          Accept: "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => setUsers(data.contains))
-        .catch((error) => console.error(error))
-      setLoading(false)
-    }
-    fetchData();
+    fetchData("")
   }, []);
 
 
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value)
 
+  const searchSubmit = (e: string) => {
+    if (e === "") {
+      fetchData("");
+      setDisable(true)
+    } else {
+      fetchData("?forename=" + e);
+      setDisable(false)
+    }
   }
 
-  const inputRef = useRef<HTMLInputElement>(null);
 
+  const handleSearchForenameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchForename(e.target.value)
+    clearTimeout(timer)
+    let timerID = window.setTimeout(() => {
+      searchSubmit(e.target.value)
+    }, 1000);
+    setTimer(timerID)
+  }
+
+  const searchSubmitSurname = (e: string) => {
+    if (e === "") {
+      fetchData("");
+      setDisable(true)
+    } else {
+      fetchData("?surname=" + e);
+      setDisable(false)
+    }
+  }
+
+  const handleSearchSurnameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchSurname(e.target.value)
+    clearTimeout(timer)
+    let timerID = window.setTimeout(() => {
+      searchSubmitSurname(e.target.value)
+    }, 1000);
+    setTimer(timerID)
+  }
+
+  const searchEmailSubmit = (e: string) => {
+    if (e === "") {
+      fetchData("");
+      setDisable(true)
+    } else {
+      fetchData("?email=" + e)
+      setDisable(false)
+    }
+  }
+
+  const handleSearchEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchEmail(e.target.value)
+    clearTimeout(timer)
+    let timerID = window.setTimeout(() => {
+      searchEmailSubmit(e.target.value)
+
+    }, 1000);
+    setTimer(timerID)
+  }
+
+  const forenameSorting = () => {
+    setSortingType("forename")
+    if (sorting === "desc") {
+      setSorting("asc")
+    } else {
+      setSorting("desc")
+    }
+    fetchData("?sortingOrder=" + sorting + "&sortingProperty=forenameLowerCase")
+  }
+  const surnameSorting = () => {
+    setSortingType("surname")
+    if (sorting === "desc") {
+      setSorting("asc")
+    } else {
+      setSorting("desc")
+    }
+    fetchData("?sortingOrder=" + sorting + "&sortingProperty=surnameLowerCase")
+  }
+
+
+  const emailSorting = () => {
+    setSortingType("email")
+    if (sorting === "desc") {
+      setSorting("asc")
+    }
+    else {
+      setSorting("desc")
+    }
+
+    fetchData("?sortingOrder=" + sorting + "&sortingProperty=email")
+  }
+
+  const handleAdminChange = () => {
+    if (adminSorting === false) {
+      setadminSorting(true)
+    } else {
+      setadminSorting(false)
+    }
+    fetchData("?isAdmin=" + adminSorting)
+  }
+
+  const handleSearch = () => {
+    if (disable) {
+
+    } else {
+      setClicked(false);
+      setSearchForename("");
+      setSearchSurname("");
+      setSearchEmail("");
+      fetchData("")
+    }
+  }
 
   let SearchIcon =
     <div title={"search"}>
       <Search size={28}
-        onClick={() => setClicked(true)}
-
+        onClick={() => setClicked(!clicked)}
         className={"search-button"}
       />
     </div>
+
 
 
 
@@ -77,13 +185,19 @@ export function CardUsers() {
 
       </header>
 
-      <table>
+      <table onBlur={() => setClicked(false)}>
         <thead>
           <tr>
-
-            <th>forename</th>
-            <th>surname</th>
-            <th>email</th>
+            <th> admin </th>
+            <th onClick={forenameSorting}>forename
+              {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+            </th>
+            <th onClick={surnameSorting}>surname
+              {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+            </th>
+            <th onClick={emailSorting}>email
+              {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+            </th>
             <th>
               {SearchIcon}
             </th>
@@ -101,20 +215,36 @@ export function CardUsers() {
 
             <div className={"search-fields"}>
               <div className={"search-fields-start"}>
+
+
                 <input
-                  value={search}
+                  type="checkbox"
+                  className={"checkbox"}
+                  onClick={handleAdminChange}
+                />
+                <input
+                  value={searchForename}
                   type="search"
-                  className={"search-label"}
-                  onChange={(e) => setSearch(e.target.value)}
+                  className={"search-forename"}
+                  onChange={handleSearchForenameChange}
+                />
+                <input
+                  className={"search-surname"}
+                  type="search"
+                  value={searchSurname}
+                  onChange={handleSearchSurnameChange}
                 />
                 <input
                   type="search"
-                  className={"search-email"} />
+                  className={"search-email"}
+                  value={searchEmail}
+                  onChange={handleSearchEmailChange} />
               </div>
               <div title="Close">
                 <X size={28}
                   className={"close-button"}
-                  onClick={() => setClicked(false)}
+                  color={disable ? 'lightgray' : 'black'}
+                  onMouseDown={handleSearch}
                 />
               </div>
             </div>
@@ -130,27 +260,34 @@ export function CardUsers() {
           (
             <>
               <caption className="spinner"></caption>
-              {error}
+
             </>
 
 
           ) : (
 
-            <tbody>
-              {users.filter(user => user.surname.toLowerCase().includes(search.toLowerCase())).map((user) => {
+            <tbody >
+              {users.map((user) => {
+
 
                 return (
-                  <tr key={user.id} >
 
+                  <tr key={user.id} >
+                    <td><input className="checkbox"
+                      type="checkbox"
+                      checked={user.admin}
+                      disabled /> </td>
                     <td>{user.forename}</td>
                     <td>{user.surname}</td>
                     <td>{user.email}</td>
                     <td>
-                      <Link to={`${user.id}`} title={"inspect"}
-                      >
+                      <Link to={`${user.id}`} title={"inspect"}>
+
                         <ChevronRight size={40} className={"button-arrow"} />
+
                       </Link>
                     </td>
+
 
                   </tr>
                 );
@@ -164,5 +301,3 @@ export function CardUsers() {
   );
 
 }
-
-

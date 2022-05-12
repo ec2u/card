@@ -1,5 +1,6 @@
 package eu.ec2u.card.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import eu.ec2u.card.Tool.*;
 import eu.ec2u.card.users.Users.User;
@@ -48,6 +49,7 @@ public class Users extends Container<User> {
 
     }
 
+    @SuppressWarnings("ALL")
     @Entity(name="User")
     static final class UserData extends ResourceData {
 
@@ -64,11 +66,13 @@ public class Users extends Container<User> {
                     .map(data -> format("%s %s", data.forename, data.surname));
         }
 
-
         private boolean admin;
 
         private String forename;
         private String surname;
+
+        private String forenameLowerCase;
+        private String surnameLowerCase;
 
         private String email;
 
@@ -98,6 +102,9 @@ public class Users extends Container<User> {
 
             forename=user.getForename();
             surname=user.getSurname();
+
+            forenameLowerCase = user.getForename().toLowerCase();
+            surnameLowerCase = user.getSurname().toLowerCase();
 
             email=user.getEmail();
 

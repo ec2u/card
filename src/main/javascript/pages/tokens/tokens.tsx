@@ -1,4 +1,4 @@
-import { ChevronRight, Plus, Search, X } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp, Plus, Search, X } from "lucide-react";
 import React, { createElement, useCallback, useEffect, useRef, useState } from "react";
 import './tokens.css';
 
@@ -6,8 +6,8 @@ import './tokens.css';
 
 interface Token {
     readonly label: string;
-    readonly serviceOrUserName: string;
-    readonly serviceOrUserPassword: string;
+    readonly username: string;
+    readonly password: string;
     readonly id: number | string;
     readonly tokenNumber: number;
 }
@@ -17,54 +17,118 @@ export function CardTokens() {
     const [loading, setLoading] = useState<Boolean>(false);
     const [error, setError] = useState<any>(null);
     const [search, setSearch] = useState<string>("");
+    const [searchNumber, setsearchNumber] = useState<any>();
     const [clicked, setClicked] = useState<Boolean>(false);
+    const [timer, setTimer] = useState<number>(0);
+    const [disable, setDisable] = useState<Boolean>(true);
+    const [sorting, setSorting] = useState<string>("asc");
+    const [sortingType, setSortingType] = useState<string>("")
 
 
-    function useKey(key: number, cb: any) {
 
-        const callbackRef = useRef(cb);
+    const fetchData = async (searchData: any) => {
+        setLoading(true)
+
+        await fetch("/tokens/" + searchData, {
+            headers: {
+                Accept: "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => setTokens(data.contains))
+            .catch((error) => setError(error))
+        setLoading(false)
     }
 
 
     useEffect(() => {
-
-
-        setLoading(true)
-        const fetchData = async () => {
-            await fetch("/tokens/", {
-                headers: {
-                    Accept: "application/json",
-                },
-            })
-                .then((response) => response.json())
-                .then((data) => setTokens(data.contains))
-                .catch((error) => console.warn(error))
-            setLoading(false)
-        }
-        fetchData();
+        fetchData("")
     }, []);
 
 
-    const handleInput = (e: any) => {
-        setSearch(e.target.value)
 
-        if (e.keyCode === 27) {
-            setClicked(false)
+    const searchSubmit = (e: string) => {
+        if (e === "") {
+            fetchData("");
+            setDisable(true)
+        } else {
+            fetchData("?username=" + e);
+            setDisable(false)
         }
-
     }
 
-    const inputRef = useRef<HTMLInputElement>(null);
+    const handleSearchUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value)
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            searchSubmit(e.target.value)
+        }, 1000);
+        setTimer(timerID)
+    }
+
+    const hanldeSearchNumber = (e: string) => {
+        if (e === "") {
+            fetchData("");
+            setDisable(true)
+        } else {
+            fetchData("?tokenNumber=" + e);
+            setDisable(false)
+        }
+    }
+
+    const searchNumberSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setsearchNumber(e.target.value)
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            hanldeSearchNumber(e.target.value)
+        }, 1000);
+        setTimer(timerID)
+    }
+
+    const usernameSorting = () => {
+        setSortingType("username")
+
+        if (sorting === "desc") {
+            setSorting("asc")
+        }
+        else {
+            setSorting("desc")
+        }
+
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty=username")
+    }
+
+    const tokenNumberSorting = () => {
+        setSortingType("tokenNumber")
+
+        if (sorting === "desc") {
+            setSorting("asc")
+        }
+        else {
+            setSorting("desc")
+        }
+
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty=tokenNumber")
+    }
 
     let SearchIcon =
         <div title={"search"}>
             <Search size={28}
-                onClick={() => setClicked(true)}
+                onClick={() => setClicked(!clicked)}
                 className={"search-button"}
             />
         </div>
 
+    const handleSearch = () => {
+        if (disable) {
 
+        } else {
+            setClicked(false);
+            setSearch("");
+            setsearchNumber("")
+            fetchData("")
+        }
+    }
 
     return createElement('card-tokens', {},
 
@@ -85,9 +149,13 @@ export function CardTokens() {
 
                     <tr>
 
-                        <th>username</th>
-                        <th>password</th>
-                        <th>token number</th>
+                        <th onClick={usernameSorting}>username
+                            {sortingType === "username" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                        </th>
+                        <th >password </th>
+                        <th onClick={tokenNumberSorting}>token number
+                            {sortingType === "tokenNumber" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                        </th>
                         <th>
                             {SearchIcon}
 
@@ -105,18 +173,21 @@ export function CardTokens() {
                                     type="search"
                                     className={"search-username"}
                                     value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
+                                    onChange={handleSearchUsernameChange}
                                 />
                                 <input
                                     type="search"
                                     className={"search-token"}
+                                    value={searchNumber}
+                                    onChange={searchNumberSubmit}
                                 />
                             </div>
 
                             <div title="Close">
                                 <X size={28}
+                                    color={disable ? 'lightgray' : 'black'}
                                     className={"close-button"}
-                                    onClick={() => setClicked(false)}
+                                    onMouseDown={handleSearch}
                                 />
                             </div>
 
@@ -131,13 +202,13 @@ export function CardTokens() {
                     ) : (
 
                         <tbody>
-                            {tokens.filter(token => token.serviceOrUserName.toLowerCase().includes(search.toLowerCase())).map((token) => {
+                            {tokens.map((token) => {
 
                                 return (
                                     <tr key={token.id} >
 
-                                        <td>{token.serviceOrUserName}</td>
-                                        <td>{token.serviceOrUserPassword}</td>
+                                        <td>{token.username}</td>
+                                        <td>{token.password}</td>
                                         <td>{token.tokenNumber}</td>
                                         <td>
                                             <a href={`${token.id}`} title={"inspect"}

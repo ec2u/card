@@ -29,7 +29,6 @@ import javax.validation.ConstraintViolationException;
 
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.http.ResponseEntity.status;
 
 import static java.lang.String.format;
@@ -56,57 +55,91 @@ public class ToolApplication implements WebMvcConfigurer {
     //// Exception Handlers ////////////////////////////////////////////////////////////////////////////////////////////
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handle(final HttpMessageNotReadableException e) {
+    public ResponseEntity<Object> handle(final HttpMessageNotReadableException e) {
 
-        return status(BAD_REQUEST) // 400
-                .contentType(TEXT_PLAIN)
-                .body(Optional.ofNullable(e.getCause())
+        ApiError apiError = new ApiError(BAD_REQUEST);
+        apiError.setMessage(Optional.ofNullable(e.getCause())
 
-                        .filter(JacksonException.class::isInstance)
-                        .map(JacksonException.class::cast)
+                .filter(JacksonException.class::isInstance)
+                .map(JacksonException.class::cast)
 
-                        .map(p -> {
-
-
-                            final JsonLocation location=p.getLocation();
-                            final String message=p.getOriginalMessage();
-
-                            return format("(%d:%d) %s", location.getLineNr(), location.getColumnNr(), message);
+                .map(p -> {
 
 
-                        })
+                    final JsonLocation location=p.getLocation();
+                    final String message=p.getOriginalMessage();
 
-                        .orElseGet(e::getMessage)
-                );
+                    return format("(%d:%d) %s", location.getLineNr(), location.getColumnNr(), message);
+
+
+                })
+
+                .orElseGet(e::getMessage));
+
+        return buildResponseEntity(apiError);   // 400
+
+//        return status(BAD_REQUEST) // 400
+//                .contentType(TEXT_PLAIN)
+//                .body(Optional.ofNullable(e.getCause())
+//
+//                        .filter(JacksonException.class::isInstance)
+//                        .map(JacksonException.class::cast)
+//
+//                        .map(p -> {
+//
+//
+//                            final JsonLocation location=p.getLocation();
+//                            final String message=p.getOriginalMessage();
+//
+//                            return format("(%d:%d) %s", location.getLineNr(), location.getColumnNr(), message);
+//
+//
+//                        })
+//
+//                        .orElseGet(e::getMessage)
+//                );
 
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<Collection<String>> handle(final NoHandlerFoundException e) {
+    public ResponseEntity<Object> handle(final NoHandlerFoundException e) {
 
-        return status(NOT_FOUND).build(); // 404
+        ApiError apiError = new ApiError(NOT_FOUND);
+        apiError.setMessage(e.getMessage());
+
+        return buildResponseEntity(apiError);   // 404
 
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Collection<String>> handle(final NoSuchElementException e) {
+    public ResponseEntity<Object> handle(final NoSuchElementException e) {
 
-        return status(NOT_FOUND).build(); // 404
+        ApiError apiError = new ApiError(NOT_FOUND);    // 404
+        apiError.setMessage(e.getMessage());
+
+        return buildResponseEntity(apiError);
 
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<Collection<String>> handle(final HttpRequestMethodNotSupportedException e) {
+    public ResponseEntity<Object> handle(final HttpRequestMethodNotSupportedException e) {
 
-        return status(METHOD_NOT_ALLOWED).build(); // 405
+        ApiError apiError = new ApiError(METHOD_NOT_ALLOWED);    // 405
+        apiError.setMessage(e.getMessage());
+
+        return buildResponseEntity(apiError);
 
     }
 
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<String> handle(final IllegalStateException e) {
+    public ResponseEntity<Object> handle(final IllegalStateException e) {
 
         log.warn("conflict", e);
-        return status(CONFLICT).body(e.getMessage()); // 409
+
+        ApiError apiError = new ApiError(CONFLICT);    // 409
+        apiError.setMessage(e.getMessage());
+
+        return buildResponseEntity(apiError);
 
     }
 
@@ -140,12 +173,110 @@ public class ToolApplication implements WebMvcConfigurer {
 
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Collection<String>> handle(final Exception e) {
+    public ResponseEntity<Object> handle(final Exception e) {
 
         log.error("unhandled exception", e);
 
-        return status(INTERNAL_SERVER_ERROR).build(); // 500
+        ApiError apiError = new ApiError(INTERNAL_SERVER_ERROR);    // 405
+        apiError.setMessage(e.getMessage());
+
+        return buildResponseEntity(apiError);
 
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
+
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @ExceptionHandler(WrongQueryArgumentsException.class)
+    public ResponseEntity<Object> handle(final WrongQueryArgumentsException e) {
+
+        ApiError apiError = new ApiError(BAD_REQUEST);    // 400
+        apiError.setMessage(e.getMessage());
+
+        return buildResponseEntity(apiError);
+
+    }
+
+    public static final class WrongQueryArgumentsException extends IllegalArgumentException {
+
+        public WrongQueryArgumentsException(String errorMessage) {
+
+            super(errorMessage);
+
+        }
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @ExceptionHandler(WrongPostArgumentsException.class)
+    public ResponseEntity<Object> handle(final WrongPostArgumentsException e) {
+
+        ApiError apiError = new ApiError(BAD_REQUEST);    // 400
+        apiError.setMessage(e.getMessage());
+
+        return buildResponseEntity(apiError);
+
+    }
+
+    public static final class WrongPostArgumentsException extends IllegalArgumentException {
+
+        public WrongPostArgumentsException(String errorMessage) {
+
+            super(errorMessage);
+
+        }
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @ExceptionHandler(WrongPutArgumentsException.class)
+    public ResponseEntity<Object> handle(final WrongPutArgumentsException e) {
+
+        ApiError apiError = new ApiError(BAD_REQUEST);    // 400
+        apiError.setMessage(e.getMessage());
+
+        return buildResponseEntity(apiError);
+
+    }
+
+    public static final class WrongPutArgumentsException extends IllegalArgumentException {
+
+        public WrongPutArgumentsException(String errorMessage) {
+
+            super(errorMessage);
+
+        }
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @ExceptionHandler(WrongDateFormatException.class)
+    public ResponseEntity<Object> handle(final WrongDateFormatException e) {
+
+        ApiError apiError = new ApiError(BAD_REQUEST);    // 400
+        apiError.setMessage(e.getMessage());
+
+        return buildResponseEntity(apiError);
+
+    }
+
+    public static final class WrongDateFormatException extends IllegalArgumentException {
+
+        public WrongDateFormatException(String errorMessage) {
+
+            super(errorMessage);
+
+        }
+
+    }
 }

@@ -6,25 +6,22 @@ import './edittoken.css'
 
 interface Token {
     readonly label: string;
-    readonly serviceOrUserName: string;
-    readonly serviceOrUserPassword: string;
-    readonly id: number | string;
+    readonly username: string;
+    readonly password: string;
+    readonly id: number;
     readonly tokenNumber: number;
 }
 
 export function EditToken() {
     const [updatetoken, setUpdatetoken] = useState<Token>({
         label: "",
-        serviceOrUserName: "",
-        serviceOrUserPassword: "",
-        id: "",
+        username: "",
+        password: "",
         tokenNumber: 0,
-
-
     } as Token);
     const [dialog, setDialog] = useState<Boolean>(false);
     const [clicked, setClicked] = useState<Boolean>(false);
-    const [disable, setDisable] = useState<Boolean>(false);
+    const [disable, setDisable] = useState<Boolean>(true);
     const [loading, setLoading] = useState<Boolean>(false);
 
     const { id } = useParams();
@@ -43,8 +40,8 @@ export function EditToken() {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
 
-        if (value === "" || updatetoken.serviceOrUserName === "" ||
-            updatetoken.serviceOrUserPassword === "" ||
+        if (value === "" || updatetoken.username === "" ||
+            updatetoken.password === "" ||
             updatetoken.tokenNumber === 0) { setDisable(true) }
 
         else {
@@ -58,8 +55,8 @@ export function EditToken() {
     };
 
     const tokenData = {
-        serviceOrUserName: updatetoken.serviceOrUserName,
-        serviceOrUserPassword: updatetoken.serviceOrUserPassword,
+        username: updatetoken.username,
+        password: updatetoken.password,
         tokenNumber: updatetoken.tokenNumber,
         id: updatetoken.id,
         label: updatetoken.label
@@ -165,9 +162,9 @@ export function EditToken() {
                         <input
                             required
                             type='text'
-                            name="serviceOrUserName"
-                            className="username"
-                            value={updatetoken.serviceOrUserName}
+                            name="username"
+                            className={"username"}
+                            value={updatetoken.username}
                             onChange={handleChange}
                             onFocus={handleonFocus}
                         />
@@ -178,9 +175,9 @@ export function EditToken() {
                         <input
                             required
                             type='text'
-                            name="serviceOrUserPassword"
-                            className="password"
-                            value={updatetoken.serviceOrUserPassword}
+                            name="password"
+                            className={"password"}
+                            value={updatetoken.password}
                             onChange={handleChange}
                             onFocus={handleonFocus}
                         />
@@ -197,7 +194,7 @@ export function EditToken() {
                         <input
                             required
                             type='text'
-                            className="tokennumber"
+                            className={"token-number"}
                             name="tokenNumber"
                             value={updatetoken.tokenNumber}
                             onChange={handleChange}

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import eu.ec2u.card.Tool.Container;
 import eu.ec2u.card.Tool.Resource;
 import eu.ec2u.card.ToolSecurity.Profile;
+import eu.ec2u.card.cards.Cards;
 import eu.ec2u.card.events.EventsService;
 import eu.ec2u.card.tokens.Tokens.Token;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -22,28 +22,37 @@ import static org.springframework.http.ResponseEntity.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(Tokens.Id)
+@RequestMapping("")
 public final class TokensController {
 
 	@Autowired private TokensService tokens;
+
 	@Autowired private EventsService events;
 
-
-	@GetMapping("")
+	@RequestMapping(value = "/tokens", method = RequestMethod.GET)
 	@JsonView(Container.class)
 	ResponseEntity<Tokens> get(
 
-			@AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
+			@RequestParam Optional<String> username,
+			@RequestParam Optional<String> tokenNumber,
 			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
+			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
+			@RequestParam Optional<String> sortingOrder,
+			@RequestParam Optional<String> sortingProperty
 
 	) {
 
-		return ok().body(tokens.browse(PageRequest.of(page, size, Sort.by("serviceOrUserName"))));
+		return ok().body(tokens.browse(
+				username,
+				tokenNumber,
+				PageRequest.of(page, size),
+				sortingOrder,
+				sortingProperty
+		));
 
 	}
 
-	@PostMapping("")
+	@RequestMapping(value = "/tokens/", method = RequestMethod.POST)
 	ResponseEntity<Void> post(
 
 			@AuthenticationPrincipal final Profile profile,
@@ -55,7 +64,7 @@ public final class TokensController {
 
 	}
 
-	@GetMapping("{tokenNumber}")
+	@RequestMapping(value = "/tokens/{tokenNumber}", method = RequestMethod.GET)
 	@JsonView(Resource.class)
 	ResponseEntity<Token> get(
 
@@ -68,22 +77,7 @@ public final class TokensController {
 
 	}
 
-	@GetMapping("/filters")
-	@JsonView(Container.class)
-	ResponseEntity<Tokens> search(
-
-			@RequestParam(value= "usernamePrefix") Optional<String> usernamePrefix,
-			@RequestParam(value="tokenNumber") Optional<Long> tokenNumber,
-			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
-
-	) {
-
-		return ok().body(tokens.search(usernamePrefix, tokenNumber, PageRequest.of(page, size)));
-
-	}
-
-	@PutMapping("{tokenNumber}")
+	@RequestMapping(value = "/tokens/{tokenNumber}", method = RequestMethod.PUT)
 	ResponseEntity<Void> put(
 
 			@AuthenticationPrincipal final Profile profile,
@@ -96,7 +90,7 @@ public final class TokensController {
 
 	}
 
-	@DeleteMapping("{tokenNumber}")
+	@RequestMapping(value = "/tokens/{tokenNumber}", method = RequestMethod.DELETE)
 	ResponseEntity<Void> delete(
 
 			@AuthenticationPrincipal final Profile profile,

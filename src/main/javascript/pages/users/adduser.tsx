@@ -16,11 +16,13 @@ export function AddUser() {
   const [adduser, setAdduser] = useState({
     forename: "",
     surname: "",
-    email: ""
+    email: "",
+    admin: false
   } as Adduser);
   const [disable, setDisable] = useState<Boolean>(true);
   const [loading, setLoading] = useState<Boolean>(false);
   const [emailerror, setEmailError] = useState<string>("");
+  const [apiErrors, setapiErrors] = useState<any>([]);
   const navigate = useNavigate();
 
   const userData = {
@@ -32,7 +34,7 @@ export function AddUser() {
 
 
   const validateEmail = (e: string) => {
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(e)) {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$/.test(e)) {
       setEmailError("Valid Email")
       return true;
     } else {
@@ -41,6 +43,7 @@ export function AddUser() {
     }
   }
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
@@ -48,9 +51,10 @@ export function AddUser() {
 
     if (adduser.forename === "" ||
       adduser.surname === "" ||
-      ((e.target.name == "email") && !validateEmail(value.toString())) ||
-      ((e.target.name != "email") && !validateEmail(adduser.email)) ||
-      value === ""
+      value === "" ||
+      ((e.target.name === "email") && !validateEmail(value.toString())) ||
+      ((e.target.name != "email") && !validateEmail(adduser.email))
+
     ) {
       setDisable(true)
     }
@@ -79,10 +83,17 @@ export function AddUser() {
         },
         body: JSON.stringify(userData),
       })
-        .then(() => {
+        .then((response) => {
           setLoading(false)
-          navigate('/users')
+          if (response.ok) {
+            navigate("/users/")
+          } else {
+            setapiErrors(response.status + "\n" + response.statusText);
+            window.alert("Something Went Wrong. !!!" + "\n" + response.status + "\n" + response.statusText)
+
+          }
         })
+
         .catch(error => console.error('error:', error));
     }
 
@@ -116,7 +127,7 @@ export function AddUser() {
         </section>
 
       </header>
-
+      <span>{apiErrors} </span>
       <form>
 
         <div className={"start"}>
@@ -129,6 +140,7 @@ export function AddUser() {
               name="forename"
               value={adduser.forename}
               onChange={handleChange}
+              className={"forename"}
             />
           </section>
 
@@ -140,6 +152,7 @@ export function AddUser() {
               name="surname"
               value={adduser.surname}
               onChange={handleChange}
+              className={"surname"}
             />
           </section>
 
@@ -152,6 +165,7 @@ export function AddUser() {
               value={adduser.email}
               onChange={handleChange}
               className={'email'}
+
 
             />
             <span>{emailerror}</span>

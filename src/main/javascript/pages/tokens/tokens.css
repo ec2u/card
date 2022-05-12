@@ -5,7 +5,7 @@ card-tokens {
 
   & header {
     width: 100%;
-    margin: 1.3em 0em;
+    margin: 1.4em 0em;
     display: flex;
     flex-wrap: no-wrap;
     justify-content: space-between;
@@ -15,7 +15,6 @@ card-tokens {
     }
     & .button-plus:hover {
       color: green;
-      transform: translateY(-4px);
     }
   }
   & table {
@@ -23,15 +22,20 @@ card-tokens {
     border-collapse: collapse;
     display: grid;
     overflow-x: auto;
+    & tbody {
+      overflow-y: auto;
+      height: 80vh;
+    }
 
     & tr {
       display: grid;
-      grid-template-columns: 250px 210px 5fr 0fr;
+      grid-template-columns: 280px 250px 5fr 0fr;
       text-align: left;
       padding: 0.1em;
       align-items: center;
     }
     & th {
+      cursor: pointer;
       color: rgb(161, 157, 157);
     }
     & .search-button {
@@ -39,7 +43,6 @@ card-tokens {
     }
     & .search-button:hover {
       color: black;
-      transform: translateY(-4px);
     }
 
     & tr:nth-child(even) {
@@ -54,7 +57,6 @@ card-tokens {
     }
     & .button-arrow:hover {
       color: orange;
-      transform: translateX(3px);
     }
     & .search-fields {
       display: flex;
@@ -67,17 +69,20 @@ card-tokens {
         border: 1px solid black;
         border-radius: 5px;
       }
+      & input:focus {
+        outline: 2px solid gray;
+        box-shadow: 0 0 5px 5px lightgray;
+      }
       & .search-username {
-        width: 20em;
-        margin-left: 3px;
-        margin-right: 4em;
+        width: 10em;
+        margin-left: 5px;
+        margin-right: 17.8em;
       }
       & .search-token {
         width: 8em;
       }
       & .close-button:hover {
         color: red;
-        transform: translateY(-4px);
       }
     }
   }
@@ -97,35 +102,6 @@ card-tokens {
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
   will-change: transform;
-}
-
-.search-box {
-  position: fixed;
-  display: flex;
-  align-items: center;
-  top: 5%;
-  left: 40%;
-  transition: 0.2s ease-all;
-
-  & input {
-    padding: 0.6em;
-    width: 22em;
-    border: 1px solid gray;
-    box-shadow: 0 0 7px black;
-  }
-  & input:focus {
-    border: none;
-    box-shadow: 0 0 100px 1000px rgba(0, 0, 0, 0.3);
-  }
-  & .close-button {
-    position: absolute;
-    right: -13px;
-    top: -12px;
-    cursor: pointer;
-  }
-  & .close-button:hover {
-    color: red;
-  }
 }
 
 @keyframes spinner {

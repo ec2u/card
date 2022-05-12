@@ -15,11 +15,9 @@ import eu.ec2u.card.events.EventsService;
 import eu.ec2u.card.users.Users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import static org.springframework.http.ResponseEntity.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -27,37 +25,41 @@ import javax.validation.constraints.Min;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(Users.Id)
+@RequestMapping("")
 public final class UsersController {
 
     @Autowired private UsersService users;
+
     @Autowired private EventsService events;
 
-
-    @GetMapping("")
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
     @JsonView(Container.class)
     ResponseEntity<Users> get(
 
-            @AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
+            @RequestParam Optional<String> forename,
+            @RequestParam Optional<String> surname,
+            @RequestParam Optional<String> email,
+            @RequestParam Optional<Boolean> isAdmin,
             @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-            @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
+            @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
+            @RequestParam Optional<String> sortingOrder,
+            @RequestParam Optional<String> sortingProperty
 
     ) {
 
-
-        //if ( !profile.isReader(Users.Path) ) {
-        //
-        //    return status(FORBIDDEN).build();
-        //
-        //} else {
-
-        return ok().body(users.browse(PageRequest.of(page, size, Sort.by("surname"))));
-
-        //}
+        return ok().body(users.browse(
+                forename,
+                surname,
+                email,
+                isAdmin,
+                PageRequest.of(page, size),
+                sortingOrder,
+                sortingProperty
+        ));
 
     }
 
-    @PostMapping("")
+    @RequestMapping(value = "/users/", method = RequestMethod.POST)
     ResponseEntity<Void> post(
 
             @AuthenticationPrincipal final Profile profile,
@@ -75,7 +77,7 @@ public final class UsersController {
 
     }
 
-    @GetMapping("{id}")
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
     @JsonView(Resource.class)
     ResponseEntity<User> get(
 
@@ -92,23 +94,7 @@ public final class UsersController {
 
     }
 
-    @GetMapping("/filters")
-    @JsonView(Container.class)
-    ResponseEntity<Users> search(
-
-            @RequestParam(value="surnamePrefix") Optional<String> surnamePrefix,
-            @RequestParam(value="forenamePrefix") Optional<String> forenamePrefix,
-            @RequestParam(value="emailPrefix") Optional<String> emailPrefix,
-            @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-            @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
-
-    ) {
-
-        return ok().body(users.search(forenamePrefix, surnamePrefix, emailPrefix, PageRequest.of(page, size)));
-
-    }
-
-    @PutMapping("{id}")
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
     ResponseEntity<Void> put(
 
             @AuthenticationPrincipal final Profile profile,
@@ -127,7 +113,7 @@ public final class UsersController {
 
     }
 
-    @DeleteMapping("{id}")
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
     ResponseEntity<Void> delete(
 
             @AuthenticationPrincipal final Profile profile,
@@ -141,5 +127,7 @@ public final class UsersController {
 
         return noContent().location(events.trace(profile, delete, users.delete(id))).build();
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

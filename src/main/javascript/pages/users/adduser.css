@@ -2,10 +2,11 @@ card-adduser {
   width: 95%;
   display: grid;
   align-items: stretch;
+  overflow: auto;
 
   & header {
     width: 100%;
-    margin: 1.3em 0em;
+    margin: 1.4em 0em;
     display: flex;
     justify-content: space-between;
 
@@ -19,8 +20,7 @@ card-adduser {
       font-size: 1.4em;
     }
     & .users-link:hover {
-      color: orange;
-      transform: translateX(-3px);
+      color: gray;
     }
   }
   & form {
@@ -29,12 +29,14 @@ card-adduser {
     text-align: left;
     justify-content: space-between;
     overflow: auto;
+    grid-row-gap: 1em;
 
     & .start {
       width: 50%;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      grid-row-gap: 1em;
     }
     & section {
       display: flex;
@@ -45,11 +47,36 @@ card-adduser {
         color: rgb(161, 157, 157);
       }
       & input {
-        margin-top: 1em;
+        margin-top: 0.5em;
         border: 1px solid black;
         padding: 0.2em;
         border-radius: 0.3em;
         font-size: 0.9em;
+      }
+      & input:focus {
+        outline: 2px solid gray;
+        box-shadow: 0 0 5px 5px lightgray;
+      }
+      & input:required:valid {
+        border: 3px solid green;
+      }
+      & input:required:invalid {
+        border: 1px solid red;
+      }
+      & input:invalid {
+        animation: shake 300ms;
+      }
+      & .forename {
+        width: 10em;
+        margin-left: 5px;
+      }
+      & .surname {
+        width: 10em;
+        margin-left: 5px;
+      }
+      & .email {
+        width: 11em;
+        margin-left: 5px;
       }
       & .checkbox {
         height: 1.6em;
@@ -62,11 +89,9 @@ card-adduser {
   }
   & .button-check:hover {
     color: green;
-    transform: translateY(-3px);
   }
   & .button-close:hover {
     color: red;
-    transform: translateY(-3px);
   }
 }
 
@@ -92,6 +117,18 @@ card-adduser {
   }
   100% {
     transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(4px);
+  }
+  50% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
   }
 }
 

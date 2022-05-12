@@ -1,4 +1,5 @@
 import { Check, X } from "lucide-react";
+import { listenerCount } from "process";
 import React, { createElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./addcard.css";
@@ -13,18 +14,37 @@ interface Card {
 
 }
 
+const newDate = () => {
+    var today, dd, mm, yyyy;
+    today = new Date();
+    dd = today.getDate() + 1;
+    mm = today.getMonth() + 1;
+    yyyy = today.getFullYear();
+
+    if (mm < 10)
+        mm = '0' + mm.toString();
+    if (dd < 10)
+        dd = '0' + dd.toString();
+
+    return yyyy + "-" + mm + "-" + dd
+}
+
 
 export function AddCard() {
+
+
     const [addcard, setAddcard] = useState({
         holderForename: "",
         holderSurname: "",
         id: "",
         virtualCardNumber: 0,
-        expiringDate: new Date()
+        expiringDate: new Date
     } as Card);
 
     const [disable, setDisable] = useState<Boolean>(true);
     const [loading, setLoading] = useState<Boolean>(false);
+    const [apiErrors, setapiErrors] = useState<any>([]);
+    const [numberError, setNumberError] = useState<string>("");
 
     const navigate = useNavigate();
 
@@ -36,13 +56,63 @@ export function AddCard() {
     };
 
 
+    const validateNumber = (e: number) => {
+
+        if (/^\d+$/.test(String(e).toLowerCase())) {
+            return true;
+        } else {
+
+            return false;
+        }
+
+    }
+    let disableDates = () => {
+        var today, dd, mm, yyyy;
+        today = new Date();
+        dd = today.getDate() + 1;
+        mm = today.getMonth() + 1;
+        yyyy = today.getFullYear();
+
+        if (mm < 10)
+            mm = '0' + mm.toString();
+        if (dd < 10)
+            dd = '0' + dd.toString();
+
+        return yyyy + "-" + mm + "-" + dd
+
+    }
+
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
-
         const value = e.target.value
+        let forename = addcard.holderForename
+        let surname = addcard.holderSurname
+        let cardNumber = addcard.virtualCardNumber
+        let date = addcard.expiringDate
+        switch (e.target.name) {
+            case "holderForename ":
+                forename = value
+                break
+            case "holderSurname":
+                surname = value
+                break
+            case "virtualCardNumber":
+                cardNumber = parseInt(value)
+                break
+            case "expiringDate":
+                date = new Date(value)
+                break
 
-        if (addcard.holderForename === "" || addcard.holderSurname === ""
-            || addcard.virtualCardNumber === 0 || value === "") {
+        }
+
+        if (addcard.holderForename === "" || addcard.holderSurname === "" ||
+            addcard.virtualCardNumber === 0 ||
+            value === "" ||
+            ((e.target.name === "virtualCardNumber") && !validateNumber(addcard.virtualCardNumber)) ||
+            date < new Date()
+
+        ) {
             setDisable(true)
 
         } else {
@@ -71,23 +141,27 @@ export function AddCard() {
                 },
                 body: JSON.stringify(userData),
             })
-                .then(() => {
+                .then((response) => {
                     setLoading(false)
-                    navigate('/cards/');
+                    if (response.ok) {
+                        navigate("/cards/")
+                    } else {
+                        setapiErrors(response.status + "\n" + response.statusText);
+                        window.alert("Something Went Wrong. !!!" + "\n" + response.status + "\n" + response.statusText)
 
+                    }
                 })
-                .catch(error => console.warn('error:', error));
+                .catch(error => console.warn("error:", error))
         }
-    }
 
+    }
 
 
     return createElement("card-addcard", {},
         <>
             <header>
                 <section>
-                    <a href="/cards/" className={"cards-link"} title="Cards">Cards </a>
-                    <a>&#8250;</a>
+                    <a href="/cards/" className={"cards-link"} title="Cards">Cards &#8250;</a>
                     <a> New Card</a>
                 </section>
 
@@ -109,6 +183,8 @@ export function AddCard() {
 
             </header>
 
+
+
             <form>
 
                 <div className={"start"}>
@@ -116,7 +192,7 @@ export function AddCard() {
                     <section>
                         <label>forename</label>
                         <input
-                            className={"input"}
+                            className={"forename"}
                             type="text"
                             required
                             name="holderForename"
@@ -128,7 +204,7 @@ export function AddCard() {
                     <section>
                         <label>surname</label>
                         <input
-                            className={"input"}
+                            className={"surname"}
                             type="text"
                             required
                             name="holderSurname"
@@ -140,14 +216,17 @@ export function AddCard() {
                     <section>
                         <label>expiry date</label>
                         <input
-                            className={"input"}
+                            className={"expiry-date"}
                             type="date"
+                            value={addcard.expiringDate}
                             required
                             name="expiringDate"
                             onChange={handleChange}
-                        // className={'expiringdate'}
+                            min={disableDates()}
                         />
+
                     </section>
+
 
                 </div>
 
@@ -156,19 +235,23 @@ export function AddCard() {
                     <section>
                         <label>card number</label>
                         <input
-                            className={"input"}
+                            className={"card-number"}
                             required
-                            // className="number"
                             type="text"
                             name="virtualCardNumber"
                             value={addcard.virtualCardNumber}
                             onChange={handleChange}
+                            pattern="[0-9]*"
                         />
+                        <span>{numberError}</span>
                     </section>
 
                 </div>
 
             </form>
+            <dialog >
+                {apiErrors}
+            </dialog>
         </>
     );
 }

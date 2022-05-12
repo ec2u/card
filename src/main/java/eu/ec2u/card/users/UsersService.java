@@ -1,33 +1,128 @@
 package eu.ec2u.card.users;
 
+import com.google.cloud.datastore.*;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import eu.ec2u.card.ToolApplication;
 import eu.ec2u.card.users.Users.User;
 import eu.ec2u.card.users.Users.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @Service
 public class UsersService {
 
-    @Autowired private UsersRepository users;
+    @Autowired private UsersRepository usersRepository;
 
-    Users browse(final Pageable slice) {
+    @Autowired private DatastoreTemplate datastoreTemplate;
+
+    @SuppressWarnings("ALL")
+    Users browse(
+
+            final Optional<String> forename,
+            final Optional<String> surname,
+            final Optional<String> email,
+            final Optional<Boolean> isAdmin,
+            final Pageable slice,
+            final Optional<String> sortingOrder,
+            final Optional<String> sortingProperty
+
+    ) {
+
+        // Queries are designed to work with only one parameter at time!
 
         final Users users = new Users();
-
         users.setPath(Users.Id);
 
-        users.setContains(this.users.findAll(slice)
-                .map(UserData::transfer)
-                .getContent()
-        );
+        Query<Entity> query = null;
+
+        if (forename.isPresent() && surname.isEmpty() && email.isEmpty() && isAdmin.isEmpty()) {
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setFilter(StructuredQuery.CompositeFilter.and(
+                            StructuredQuery.PropertyFilter.ge("forenameLowerCase", forename.get().trim().toLowerCase()),
+                            StructuredQuery.PropertyFilter.lt("forenameLowerCase", forename.get().trim().toLowerCase() + "\ufffd")
+                    ))
+                    .setOrderBy(sortingFromOptional(sortingOrder, "forenameLowerCase"))
+                    .setLimit(slice.getPageSize())
+                    .build();
+
+        } else if (forename.isEmpty() && surname.isPresent() && email.isEmpty() && isAdmin.isEmpty()) {
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setFilter(StructuredQuery.CompositeFilter.and(
+                            StructuredQuery.PropertyFilter.ge("surnameLowerCase", surname.get().trim().toLowerCase()),
+                            StructuredQuery.PropertyFilter.lt("surnameLowerCase", surname.get().trim().toLowerCase() + "\ufffd")
+                    ))
+                    .setOrderBy(sortingFromOptional(sortingOrder, "surnameLowerCase"))
+                    .setLimit(slice.getPageSize())
+                    .build();
+
+        } else if (forename.isEmpty() && surname.isEmpty() && email.isPresent() && isAdmin.isEmpty()) {
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setFilter(StructuredQuery.CompositeFilter.and(
+                            StructuredQuery.PropertyFilter.ge("email", email.get().trim().toLowerCase()),
+                            StructuredQuery.PropertyFilter.lt("email", email.get().trim().toLowerCase() + "\ufffd")
+                    ))
+                    .setOrderBy(sortingFromOptional(sortingOrder, "email"))
+                    .setLimit(slice.getPageSize())
+                    .build();
+
+        } else if(forename.isEmpty() && surname.isEmpty() && email.isEmpty() && isAdmin.isPresent()) {
+
+            query = Query.newEntityQueryBuilder()
+                    .setKind("User")
+                    .setFilter(StructuredQuery.PropertyFilter.eq("admin", isAdmin.get()))
+                    .setLimit(slice.getPageSize())
+                    .build();
+
+        } else if (forename.isEmpty() && surname.isEmpty() && email.isEmpty() && isAdmin.isEmpty()) {
+
+            if (sortingProperty.isEmpty() && sortingOrder.isEmpty()) {
+
+                query = Query.newEntityQueryBuilder()
+                        .setKind("User")
+                        .setLimit(slice.getPageSize())
+                        .build();
+
+            } else {
+
+                if (!isSortingPropertyValid(sortingProperty)) {
+
+                    throw new ToolApplication.WrongQueryArgumentsException(
+                            "Sorting property parameter incorrect. Must be forenameLowerCase, surnameLowerCase or email!");
+
+                }
+
+                query = Query.newEntityQueryBuilder()
+                        .setKind("User")
+                        .setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("surnameLowerCase").trim()))
+                        .setLimit(slice.getPageSize())
+                        .build();
+
+            }
+
+        } else {
+
+            throw new ToolApplication.WrongQueryArgumentsException(
+                    "Queries are designed to work with only one parameter at time!");
+
+        }
+
+        List<User> userList = new ArrayList<>();
+
+        this.datastoreTemplate.query(query, UserData.class)
+                .toList()
+                .forEach(userData -> userList.add(userData.transfer()));
+
+        users.setContains(userList);
 
         return users;
 
@@ -36,17 +131,25 @@ public class UsersService {
     @Transactional
     User create(final User user) {
 
-        return Optional.of(new UserData())
-                .map(data -> data.transfer(user))
-                .map(data -> users.save(data))
-                .map(UserData::transfer)
-                .orElseThrow(NoSuchElementException::new);
+        final String usersFieldsValidatorResult = usersFieldsValidator(user);
+
+        if(!usersFieldsValidatorResult.isEmpty()) {
+
+            throw new ToolApplication.WrongPostArgumentsException(usersFieldsValidatorResult);
+
+        }
+
+            return Optional.of(new UserData())
+                    .map(data -> data.transfer(user))
+                    .map(data -> usersRepository.save(data))
+                    .map(UserData::transfer)
+                    .orElseThrow(NoSuchElementException::new);
 
     }
 
     User relate(final long id) {
 
-        return users.findById(id)
+        return usersRepository.findById(id)
                 .map(UserData::transfer)
                 .orElseThrow(NoSuchElementException::new);
 
@@ -55,51 +158,86 @@ public class UsersService {
     @Transactional
     User update(final long id, final User user) {
 
-        return users.findById(id)
-                .map(data -> data.transfer(user))
-                .map(data -> users.save(data))
-                .map(UserData::transfer)
-                .orElseThrow(NoSuchElementException::new);
+        final String usersFieldsValidatorResult = usersFieldsValidator(user);
+
+        if(!usersFieldsValidatorResult.isEmpty()) {
+
+            throw new ToolApplication.WrongPutArgumentsException(usersFieldsValidatorResult);
+
+        }
+
+            return usersRepository.findById(id)
+                    .map(data -> data.transfer(user))
+                    .map(data -> usersRepository.save(data))
+                    .map(UserData::transfer)
+                    .orElseThrow(NoSuchElementException::new);
 
     }
 
     @Transactional
     User delete(final long id) {
 
-        return users.findById(id)
+        return usersRepository.findById(id)
                 .map(data -> {
-
-                    users.delete(data);
-
+                    usersRepository.delete(data);
                     return data;
-
-                })
-                .map(UserData::transfer)
+                }).map(UserData::transfer)
                 .orElseThrow(NoSuchElementException::new);
 
     }
 
-    Users search(
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            final Optional<String> forenamePrefix,
-            final Optional<String> surnamePrefix,
-            final Optional<String> emailPrefix,
-            final Pageable slice
+    @SuppressWarnings("ALL")
+    private final StructuredQuery.OrderBy sortingFromOptional(Optional<String> sortingOrder, String sortingProperty) {
 
-    ) {
+        if(sortingOrder.isPresent()) {
 
-        final Users users = new Users();
+            if (sortingOrder.get().trim().equalsIgnoreCase("asc")) {
 
-        users.setPath(Users.Id);
+                return StructuredQuery.OrderBy.asc(sortingProperty);
 
-        users.setContains(this.users.findAll(slice)
-                .map(UserData::transfer)
-                .filter(user -> user.getSurname().startsWith(surnamePrefix.orElse(user.getSurname())))
-                .filter(user -> user.getForename().startsWith(forenamePrefix.orElse(user.getForename())))
-                .filter(user -> user.getEmail().startsWith(emailPrefix.orElse(user.getEmail())))
-                .toList());
+            } else if (sortingOrder.get().trim().equalsIgnoreCase("desc")) {
 
-        return users;
+                return StructuredQuery.OrderBy.desc(sortingProperty);
+
+            } else throw new ToolApplication.WrongQueryArgumentsException(
+                    "Specified sorting order is invalid, must be asc or desc!");
+
+        } else {
+
+            return StructuredQuery.OrderBy.asc(sortingProperty);
+
+        }
+
+    }
+
+    private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
+
+        return sortingProperty.map(s -> s.trim().equalsIgnoreCase("forenameLowerCase") ||
+                s.trim().equalsIgnoreCase("surnameLowerCase") ||
+                s.trim().equalsIgnoreCase("email")).orElse(true);
+
+    }
+
+    private String usersFieldsValidator(final User user) {
+
+        final Pattern forenamePattern = Pattern.compile("^[a-zA-Z ]+$");
+        final Pattern surnamePattern = Pattern.compile("^[a-zA-Z ]+$");
+        final Pattern emailPattern = Pattern.compile("^[a-z0-9.]+@[a-z0-9.]+$");
+
+        String result = "";
+
+        if (!forenamePattern.matcher(user.getForename()).matches())
+            result += "The inserted forename is not valid, must contain only letters and blanks. \n";
+
+        if (!surnamePattern.matcher(user.getSurname()).matches())
+            result += "The inserted surname is not valid, must contain only letters and blanks. \n";
+
+        if (!emailPattern.matcher(user.getEmail()).matches())
+            result += "The inserted email is not valid, must be lower case, \n must contain @ and no blanks. \n";
+
+        return result;
 
     }
 

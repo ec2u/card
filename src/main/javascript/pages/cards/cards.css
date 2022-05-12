@@ -2,9 +2,10 @@ card-cards {
   width: 95.3%;
   display: grid;
   text-align: left;
+  overflow: auto;
 
   & header {
-    margin: 1.3em 0em;
+    margin: 1.4em 0em;
     display: flex;
     flex-wrap: no-wrap;
     justify-content: space-between;
@@ -14,15 +15,18 @@ card-cards {
     }
     & .button-plus:hover {
       color: green;
-      transform: translateY(-4px);
     }
   }
   & table {
     width: 100%;
     border-collapse: collapse;
     display: grid;
-
     overflow: auto;
+
+    & tbody {
+      overflow-y: auto;
+      height: 80vh;
+    }
 
     & tr {
       display: grid;
@@ -34,16 +38,19 @@ card-cards {
     }
     & th {
       color: rgb(161, 157, 157);
+      cursor: pointer;
     }
     & td {
       text-align: left;
+    }
+    & .down-arrow {
+      color: black;
     }
     & .button-arrow {
       color: black;
     }
     & .button-arrow:hover {
       color: orange;
-      transform: translateX(3px);
     }
     & .button-search {
       cursor: pointer;
@@ -51,7 +58,6 @@ card-cards {
     }
     & .button-search:hover {
       color: black;
-      transform: translateY(-4px);
     }
 
     & tr:nth-child(even) {
@@ -69,25 +75,37 @@ card-cards {
 
     & input {
       font-size: 0.8em;
-      border: 1px solid black;
+      border: 1px solid lightgray;
       border-radius: 5px;
     }
+    & input:focus {
+      outline: 2px solid gray;
+      box-shadow: 0 0 5px 5px lightgray;
+    }
 
-    & .search-label {
+    & .search-forename {
       margin-left: 5px;
-      margin-right: 8em;
-      width: 20em;
+      margin-right: 5em;
+      width: 9em;
+    }
+    & .search-surname {
+      margin-left: 5px;
+      margin-right: 5em;
+      width: 9em;
     }
     & .search-date {
-      margin-right: 8em;
+      margin-right: 7.5em;
       width: 7em;
+      border: 1px solid lightgray;
     }
     & .search-number {
       width: 5em;
     }
+    & .close-button {
+      cursor: pointer;
+    }
     & .close-button:hover {
       color: red;
-      transform: translateY(-4px);
     }
     & .button-search {
       margin-left: 30px;

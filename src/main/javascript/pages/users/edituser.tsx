@@ -28,8 +28,9 @@ export function EditUser() {
   });
   const [dialog, setDialog] = useState<Boolean>(false);
   const [clicked, setClicked] = useState<Boolean>(false);
-  const [disable, setDisable] = useState<Boolean>(false)
+  const [disable, setDisable] = useState<Boolean>(true)
   const [loading, setLoading] = useState<Boolean>(false)
+  const [emailerror, setEmailError] = useState<string>("");
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -63,13 +64,26 @@ export function EditUser() {
     })
       .then(data => navigate('/users/'))
   };
+  console.log(id)
+
+  const validateEmail = (e: string) => {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$/.test(e)) {
+      setEmailError("Valid Email")
+      return true;
+    } else {
+      setEmailError("invalid Email")
+      return false
+    }
+  }
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
 
     if (value === "" || updateuser.forename === "" ||
-      updateuser.surname === "" || updateuser.email === ""
+      updateuser.surname === "" ||
+      ((e.target.name == "email") && !validateEmail(value.toString())) ||
+      ((e.target.name != "email") && !validateEmail(updateuser.email))
     ) {
       setDisable(true)
     }
@@ -169,7 +183,7 @@ export function EditUser() {
               required
               type='text'
               name="forename"
-              className="forename"
+              className={"forename"}
               value={updateuser.forename}
               onChange={handleChange}
               onFocus={handleonFocus}
@@ -182,7 +196,7 @@ export function EditUser() {
               required
               type='text'
               name="surname"
-              className="surname"
+              className={"surname"}
               value={updateuser.surname}
               onChange={handleChange}
               onFocus={handleonFocus}
@@ -194,12 +208,13 @@ export function EditUser() {
             <input
               required
               type='email'
-              className="email"
+              className={"email"}
               name="email"
               value={updateuser.email}
               onChange={handleChange}
               onFocus={handleonFocus}
             />
+            <span>{emailerror}</span>
           </section>
 
         </div>
@@ -208,7 +223,7 @@ export function EditUser() {
           <section>
             <label className="label-admin"> admin</label>
             <input
-              className="checkbox"
+              className={"checkbox"}
               name='admin'
               type="checkbox"
               checked={updateuser.admin}

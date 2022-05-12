@@ -5,11 +5,8 @@ import eu.ec2u.card.Tool.*;
 import eu.ec2u.card.tokens.Tokens.Token;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.Optional;
-
 import javax.validation.constraints.*;
-
 import static eu.ec2u.card.ToolConfiguration.LinePattern;
 import static eu.ec2u.card.ToolConfiguration.LineSize;
 
@@ -31,15 +28,16 @@ public class Tokens extends Container<Token> {
 		@NotNull
 		@Size(max=LineSize)
 		@Pattern(regexp=LinePattern)
-		private String serviceOrUserName;
+		private String username;
 
 		@NotNull
 		@Size(max=LineSize)
 		@Pattern(regexp=LinePattern)
-		private String serviceOrUserPassword;
+		private String password;
 
 	}
 
+	@SuppressWarnings("ALL")
 	@Entity(name="Token")
 	static final class TokenData extends ResourceData {
 
@@ -53,17 +51,17 @@ public class Tokens extends Container<Token> {
 		@Override
 		protected Optional<String> getLabel() {
 			return Optional.of(this)
-					.filter(data -> data.serviceOrUserName != null)
-					.filter(data -> data.serviceOrUserPassword != null)
-					.map(data -> format("%s %s", data.serviceOrUserName, data.serviceOrUserPassword));
+					.filter(data -> data.username != null)
+					.filter(data -> data.password != null)
+					.map(data -> format("%s %s", data.username, data.password));
 		}
 
-		private long tokenNumber;
+		private String tokenNumber;
 
-		private String serviceOrUserName;
+		private String username;
+		private String usernameLowerCase;
 
-		private String serviceOrUserPassword;
-
+		private String password;
 
 
 		Token transfer() {
@@ -72,11 +70,11 @@ public class Tokens extends Container<Token> {
 
 			transfer(token, this);
 
-			token.setTokenNumber(tokenNumber);
+			token.setTokenNumber(Long.parseLong(tokenNumber));
 
-			token.setServiceOrUserName(serviceOrUserName);
+			token.setUsername(username);
 
-			token.setServiceOrUserPassword(serviceOrUserPassword);
+			token.setPassword(password);
 
 			return token;
 
@@ -86,11 +84,12 @@ public class Tokens extends Container<Token> {
 
 			transfer(this, token);
 
-			tokenNumber = token.getTokenNumber();
+			tokenNumber = String.valueOf(token.getTokenNumber());
 
-			serviceOrUserName = token.getServiceOrUserName();
+			username = token.getUsername();
+			usernameLowerCase = token.getUsername().toLowerCase();
 
-			serviceOrUserPassword = token.getServiceOrUserPassword();
+			password = token.getPassword();
 
 			return this;
 

@@ -6,8 +6,8 @@ import "./addtoken.css";
 
 interface Token {
     readonly label: string;
-    readonly serviceOrUserName: string;
-    readonly serviceOrUserPassword: string;
+    readonly username: string;
+    readonly password: string;
     readonly id: number | string;
     readonly tokenNumber: number;
 
@@ -16,28 +16,46 @@ interface Token {
 
 export function AddToken() {
     const [addtoken, setAddtoken] = useState({
-        serviceOrUserName: "",
-        serviceOrUserPassword: "",
+        username: "",
+        password: "",
         id: "",
         tokenNumber: 0,
     } as Token);
     const [disable, setDisable] = useState<Boolean>(true)
     const [loading, setLoading] = useState<Boolean>(false)
+    const [numberError, setNumberError] = useState<string>("");
+    const [apiErrors, setapiErrors] = useState<any>([]);
     const navigate = useNavigate();
 
+
+
     const tokenData = {
-        serviceOrUserName: addtoken.serviceOrUserName,
-        serviceOrUserPassword: addtoken.serviceOrUserPassword,
+        username: addtoken.username,
+        password: addtoken.password,
         tokenNumber: addtoken.tokenNumber,
     };
+
+    const validateNumber = (e: number) => {
+
+        if (/^\d+$/.test(String(e).toLowerCase())) {
+            setNumberError("Valid number")
+            return true;
+        } else {
+            setNumberError("invalid number")
+            return (false)
+        }
+
+    }
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         const value = e.target.value
 
-        if (addtoken.serviceOrUserName === "" ||
-            addtoken.serviceOrUserPassword === "" ||
-            addtoken.tokenNumber ||
+        if (addtoken.username === "" ||
+            addtoken.password === "" ||
+            addtoken.tokenNumber === 0 ||
+            ((e.target.name === "tokenNumber") && !validateNumber(addtoken.tokenNumber)) ||
             value === "") {
 
             setDisable(true)
@@ -65,9 +83,15 @@ export function AddToken() {
                 },
                 body: JSON.stringify(tokenData),
             })
-                .then(() => {
+                .then((response) => {
                     setLoading(false)
-                    navigate('/tokens/');
+                    if (response.ok) {
+                        navigate("/cards/")
+                    } else {
+                        setapiErrors(response.status + "\n" + response.statusText);
+                        window.alert("Something Went Wrong. !!!" + "\n" + response.status + "\n" + response.statusText)
+
+                    }
                 })
                 .catch(error => console.warn('error:', error))
         }
@@ -78,8 +102,7 @@ export function AddToken() {
         <>
             <header>
                 <section>
-                    <a href="/tokens/" className={"tokens-link"} title="Tokens">Tokens </a>
-                    <a>&#8250;</a>
+                    <a href="/tokens/" className={"tokens-link"} title="Tokens">Tokens &#8250;</a>
                     <a> New Token</a>
                 </section>
 
@@ -100,6 +123,7 @@ export function AddToken() {
 
             </header>
 
+            <span>{apiErrors}</span>
             <form>
 
                 <div className={"start"}>
@@ -109,20 +133,22 @@ export function AddToken() {
                         <input
                             type="text"
                             required
-                            name="serviceOrUserName"
-                            value={addtoken.serviceOrUserName}
+                            name="username"
+                            value={addtoken.username}
                             onChange={handleChange}
+                            className={"username"}
                         />
                     </section>
 
                     <section>
                         <label>password</label>
                         <input
-                            type="text"
+                            type="password"
                             required
-                            name="serviceOrUserPassword"
-                            value={addtoken.serviceOrUserPassword}
+                            name="password"
+                            value={addtoken.password}
                             onChange={handleChange}
+                            className={"password"}
                         />
                     </section>
 
@@ -141,7 +167,9 @@ export function AddToken() {
                             name="tokenNumber"
                             value={addtoken.tokenNumber}
                             onChange={handleChange}
+                            pattern="[0-9]*"
                         />
+                        <span>{numberError}</span>
                     </section>
 
                 </div>

@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -22,30 +21,44 @@ import static eu.ec2u.card.events.Events.Action.*;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @RestController
-@RequestMapping(Cards.Id)
+@RequestMapping("")
 public final class CardsController {
 
-	@Autowired
-	private CardsService cards;
+	@Autowired private CardsService cards;
 
-	@Autowired
-	private EventsService events;
+	@Autowired private EventsService events;
 
-	@GetMapping("")
+	@RequestMapping(value = "/cards", method = RequestMethod.GET)
 	@JsonView(Container.class)
 	ResponseEntity<Cards> get(
 
-			@AuthenticationPrincipal final Saml2AuthenticatedPrincipal principal,
-			@Valid @RequestParam(required = false, defaultValue = "0") @Min(0) final int page,
-			@Valid @RequestParam(required = false, defaultValue = "25") @Min(1) @Max(ContainerSize) final int size
+			@RequestParam Optional<String> forename,
+			@RequestParam Optional<String> surname,
+			@RequestParam Optional<String> expiringDate,
+			@RequestParam Optional<String> virtualCardNumber,
+			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
+			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
+			@RequestParam Optional<String> sortingOrder,
+			@RequestParam Optional<String> sortingProperty
 
 	) {
-		return ok().body(cards.browse(PageRequest.of(page, size, Sort.by("holderSurname"))));
+
+		return ok().body(cards.browse(
+				forename,
+				surname,
+				expiringDate,
+				virtualCardNumber,
+				PageRequest.of(page, size, Sort.by("holderSurname")),
+				sortingOrder,
+				sortingProperty
+		));
+
 	}
 
-	@PostMapping("")
+	@RequestMapping(value = "/cards/", method = RequestMethod.POST)
 	ResponseEntity<Void> post(
 
 			@AuthenticationPrincipal final ToolSecurity.Profile profile,
@@ -55,7 +68,7 @@ public final class CardsController {
 		return noContent().location(events.trace(profile, create, cards.create(card))).build();
 	}
 
-	@GetMapping("{id}")
+	@RequestMapping(value = "/cards/{id}", method = RequestMethod.GET)
 	@JsonView(Resource.class)
 	ResponseEntity<Card> get(
 
@@ -66,24 +79,7 @@ public final class CardsController {
 		return ok().body(cards.relate(id));
 	}
 
-	@GetMapping("/filters")
-	@JsonView(Container.class)
-	ResponseEntity<Cards> search(
-
-			@RequestParam(value="forenamePrefix") Optional<String> forenamePrefix,
-			@RequestParam(value = "surnamePrefix") Optional<String> surnamePrefix,
-			@RequestParam(value = "expiryDate") Optional<String> expiryDate,
-			@RequestParam(value = "cardNumber") Optional<Long> cardNumber,
-			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size
-
-	) {
-
-		return ok().body(cards.search(forenamePrefix, surnamePrefix, expiryDate, cardNumber, PageRequest.of(page, size)));
-
-	}
-
-	@PutMapping("{id}")
+	@RequestMapping(value = "/cards/{id}", method = RequestMethod.PUT)
 	ResponseEntity<Void> put(
 
 			@AuthenticationPrincipal final ToolSecurity.Profile profile,
@@ -94,7 +90,7 @@ public final class CardsController {
 		return noContent().location(events.trace(profile, update, cards.update(id, card))).build();
 	}
 
-	@DeleteMapping("{id}")
+	@RequestMapping(value = "/cards/{id}", method = RequestMethod.DELETE)
 	ResponseEntity<Void> delete(
 
 			@AuthenticationPrincipal final Profile profile,

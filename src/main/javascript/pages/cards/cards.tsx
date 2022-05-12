@@ -1,6 +1,6 @@
 
-import { ChevronRight, Plus, Search, X } from 'lucide-react';
-import React, { createElement, useEffect, useRef, useState } from 'react'
+import { ChevronRight, Plus, Search, X, ChevronDown, ChevronUp } from 'lucide-react';
+import React, { createElement, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './cards.css';
 
@@ -11,8 +11,9 @@ interface Card {
     holderSurname: string;
     expiringDate: Date;
     virtualCardNumber: number;
-    id: any;
+    id: number | string;
 }
+
 
 export function VirtualCards() {
 
@@ -20,14 +21,21 @@ export function VirtualCards() {
     const [loading, setLoading] = useState<Boolean>(false);
     const [error, setError] = useState<any>(null);
     const [clicked, setClicked] = useState<Boolean>(false);
-    const [search, setSearch] = useState<string>("");
+    const [searchForename, setSearchForename] = useState<string>("");
+    const [searchSurname, setSearchSurname] = useState<string>("");
+    const [searchDate, setSearchDate] = useState<any>("");
+    const [searchNumber, setSearchNumber] = useState<string>("");
+    const [timer, setTimer] = useState<number>(0);
+    const [disable, setDisable] = useState<Boolean>(true)
+
+    const [sorting, setSorting] = useState<string>("desc");
+    const [sortingType, setSortingType] = useState<string>("")
 
 
-
-    const fetchData = async (searchdata: string) => {
+    const fetchData = async (searchData: any) => {
         setLoading(true)
 
-        await fetch('/cards/' + searchdata, {
+        await fetch(`/cards/` + searchData, {
             headers: {
                 Accept: 'application/json',
             }
@@ -36,35 +44,153 @@ export function VirtualCards() {
             .then(data => setCards(data.contains))
             .catch((error) => setError(error))
 
-        // error handle
-        // .catch((error) => setError(error))
-
         setLoading(false)
     }
 
     useEffect(() => {
-
-        fetchData("");
+        fetchData("")
     }, [])
 
 
-    const searchSubmit = () => {
-        if (search === "") {
+    const searchForenameSubmit = (e: string) => {
+        if (e === "") {
             fetchData("");
+            setDisable(true)
         } else {
-            fetchData("filters?surnamePrefix=" + search);
+            fetchData("?forename=" + e);
+            setDisable(false)
         }
     }
-    const inputRef = useRef<HTMLInputElement>(null);
+    const handleSearchForenameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchForename(e.target.value)
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            searchForenameSubmit(e.target.value)
+        }, 1000);
+        setTimer(timerID)
+    }
+
+    const searchSurnameSubmit = (e: string) => {
+        if (e === "") {
+            fetchData("");
+            setDisable(true)
+        } else {
+            fetchData("?surname=" + e);
+            setDisable(false)
+        }
+    }
+    const handleSearchSurnameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchSurname(e.target.value)
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            searchSurnameSubmit(e.target.value)
+        }, 1000);
+        setTimer(timerID)
+    }
+
+    const searchDateSubmit = (e: string) => {
+        if (e === "") {
+            fetchData("");
+            setDisable(true)
+        } else {
+            fetchData("?expiringDate=" + e);
+            setDisable(false)
+        }
+    }
+
+    const handleSearchDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchDate(e.target.value)
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            searchDateSubmit(e.target.value)
+        }, 1000);
+        setTimer(timerID)
+    }
+
+    const searchNumberSubmit = (e: any) => {
+        if (e === "") {
+            fetchData("");
+            setDisable(true)
+        } else {
+            fetchData("?virtualCardNumber=" + e);
+            setDisable(false)
+        }
+    }
+
+    const handleSearchNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchNumber(e.target.value)
+        clearTimeout(timer)
+        let timerID = window.setTimeout(() => {
+            searchNumberSubmit(e.target.value)
+        }, 1000);
+        setTimer(timerID)
+    }
+
+
+    const forenameSorting = () => {
+        setSortingType("forename")
+
+        if (sorting === "desc") {
+            setSorting("asc")
+        } else {
+            setSorting("desc")
+        }
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty=holderForenameLowerCase")
+    }
+
+    const surnameSorting = () => {
+        setSortingType("surname")
+        if (sorting === "desc") {
+            setSorting("asc")
+        } else {
+            setSorting("desc")
+        }
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty=holderSurnameLowerCase")
+    }
+
+    const expiryDateSorting = () => {
+        setSortingType("expiringDate")
+        if (sorting === "desc") {
+            setSorting("asc")
+        } else {
+            setSorting("desc")
+        }
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty=expiringDate")
+    }
+
+    const numberSorting = () => {
+        setSortingType("virtualCardNumber")
+        if (sorting === "desc") {
+            setSorting("asc")
+        } else {
+            setSorting("desc")
+        }
+        fetchData("?sortingOrder=" + sorting + "&sortingProperty=virtualCardNumber")
+    }
+
+
+
 
 
     let SearchIcon =
         <div title={"search"} className={"search-icon"}>
             <Search size={28} color="gray"
                 className={'button-search'}
-                onClick={() => setClicked(true)}
+                onClick={() => setClicked(!clicked)}
             />
         </div>
+
+    const handleSearch = () => {
+        if (disable) {
+
+        } else {
+            setClicked(false);
+            setSearchForename("");
+            setSearchSurname("");
+            setSearchNumber("")
+            fetchData("")
+        }
+    }
 
     return createElement('card-cards', {},
         <>
@@ -81,14 +207,20 @@ export function VirtualCards() {
             <table onBlur={() => setClicked(false)}>
                 <thead>
                     <tr>
-                        <th>forename</th>
-                        <th>surname</th>
-                        <th>expiry date</th>
-                        <th>card number</th>
+                        <th onClick={forenameSorting}>forename
+                            {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                        </th>
+                        <th onClick={surnameSorting} >surname
+                            {sortingType === "surname" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                        </th>
+                        <th onClick={expiryDateSorting}> expiry date
+                            {sortingType === "expiringDate" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                        </th>
+                        <th onClick={numberSorting}>card number
+                            {sortingType === "virtualCardNumber" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                        </th>
                         <th>
                             {SearchIcon}
-
-
                         </th>
                     </tr>
                 </thead>
@@ -100,25 +232,35 @@ export function VirtualCards() {
                             <div className={"search-fields-start"}>
                                 <input
                                     type="search"
-                                    className={"search-label"}
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
+                                    className={"search-forename"}
+                                    value={searchForename}
+                                    onChange={handleSearchForenameChange}
+
+                                />
+                                <input
+                                    className={"search-surname"}
+                                    type="search"
+                                    value={searchSurname}
+                                    onChange={handleSearchSurnameChange}
                                 />
                                 <input
                                     type="date"
                                     className={"search-date"}
+                                    value={searchDate}
+                                    onChange={handleSearchDateChange}
                                 />
                                 <input
+                                    type="search"
                                     className={"search-number"}
+                                    value={searchNumber}
+                                    onChange={handleSearchNumberChange}
+                                    pattern="[0-9]*"
                                 />
                             </div>
                             <div >
-                                <Search size={28}
-                                    className={'button-search'}
-                                    onClick={searchSubmit}
-                                />
                                 <X size={30}
-                                    onClick={() => setClicked(false)}
+                                    color={disable ? 'lightgray' : 'black'}
+                                    onMouseDown={handleSearch}
                                     className={"close-button"}
                                 />
                             </div>
@@ -128,7 +270,7 @@ export function VirtualCards() {
                 </caption>
 
                 {loading ? (<caption className={'spinner'}></caption>) : (
-                    <tbody>
+                    <tbody >
 
                         {cards.map((card) => {
                             return (

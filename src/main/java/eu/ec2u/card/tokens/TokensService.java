@@ -1,5 +1,10 @@
 package eu.ec2u.card.tokens;
 
+import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.Query;
+import com.google.cloud.datastore.StructuredQuery;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import eu.ec2u.card.ToolApplication;
 import eu.ec2u.card.tokens.Tokens.Token;
 import eu.ec2u.card.tokens.Tokens.TokenData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,24 +12,93 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Service
-@SuppressWarnings("ALL")
 public class TokensService {
 
-	@Autowired private TokensRepository tokens;
+	@Autowired private TokensRepository tokensRepository;
 
+	@Autowired private DatastoreTemplate datastoreTemplate;
 
-	Tokens browse(final Pageable slice) {
+	@SuppressWarnings("ALL")
+	Tokens browse(
+
+			final Optional<String> username,
+			final Optional<String> tokenNumber,
+			final Pageable slice,
+			final Optional<String> sortingOrder,
+			final Optional<String> sortingProperty
+
+	) {
+
+		// Queries are designed to work with only one parameter at time!
 
 		final Tokens tokens = new Tokens();
-
 		tokens.setPath(Tokens.Id);
 
-		tokens.setContains(this.tokens.findAll(slice)
-				.map(Tokens.TokenData::transfer)
-				.getContent()
-		);
+		Query<Entity> query = null;
+
+		if (tokenNumber.isPresent() && username.isEmpty()) {
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Token")
+					.setFilter(StructuredQuery.PropertyFilter.eq("tokenNumber", tokenNumber.get()))
+					.setLimit(slice.getPageSize())
+					.setOrderBy(sortingFromOptional(sortingOrder, "tokenNumber"))
+					.build();
+
+        } else if (tokenNumber.isEmpty() && username.isPresent()) {
+
+			query = Query.newEntityQueryBuilder()
+					.setKind("Token")
+					.setFilter(StructuredQuery.CompositeFilter.and(
+									StructuredQuery.PropertyFilter.ge("usernameLowerCase", username.get().toLowerCase()),
+									StructuredQuery.PropertyFilter.lt("usernameLowerCase", username.get().toLowerCase() + "\ufffd")))
+					.setLimit(slice.getPageSize())
+					.setOrderBy(sortingFromOptional(sortingOrder, "usernameLowerCase"))
+					.build();
+
+		} else if (tokenNumber.isEmpty() && username.isEmpty()) {
+
+			if (sortingProperty.isEmpty() && sortingOrder.isEmpty()) {
+
+				query = Query.newEntityQueryBuilder()
+						.setKind("Token")
+						.setLimit(slice.getPageSize())
+						.build();
+
+            } else {
+
+				if (!isSortingPropertyValid(sortingProperty)) {
+
+					throw new ToolApplication.WrongQueryArgumentsException(
+							"Sorting property parameter incorrect. Must be username or tokenNumber!");
+
+				}
+
+				query = Query.newEntityQueryBuilder()
+						.setKind("Token")
+						.setLimit(slice.getPageSize())
+						.setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("username").trim()))
+						.build();
+
+			}
+
+		} else {
+
+			throw new ToolApplication.WrongQueryArgumentsException(
+					"Queries are designed to work with only one parameter at time!");
+
+		}
+
+		List<Token> tokenList = new ArrayList<>();
+
+		this.datastoreTemplate.query(query, TokenData.class)
+				.toList()
+				.forEach(tokenData -> tokenList.add(tokenData.transfer()));
+
+		tokens.setContains(tokenList);
 
 		return tokens;
 
@@ -32,63 +106,105 @@ public class TokensService {
 
 	@Transactional
 	Token create(final Token token) {
+
+		final String tokensFieldsValidatorResult = tokensFieldsValidator(token);
+
+		if(!tokensFieldsValidatorResult.isEmpty()) {
+
+			throw new ToolApplication.WrongPostArgumentsException(tokensFieldsValidatorResult);
+
+		}
+
 		return Optional.of(new Tokens.TokenData())
 				.map(data -> data.transfer(token))
-				.map(data -> tokens.save(data))
+				.map(data -> tokensRepository.save(data))
 				.map(Tokens.TokenData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+
 	}
 
 	Token relate(final long tokenNumber) {
-		return tokens.findById(tokenNumber)
+
+		return tokensRepository.findById(tokenNumber)
 				.map(TokenData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+
 	}
 
 	@Transactional
 	Token update(final long tokenNumber, final Token token) {
-		return tokens.findById(tokenNumber)
+
+		final String tokensFieldsValidatorResult = tokensFieldsValidator(token);
+
+		if(!tokensFieldsValidatorResult.isEmpty()) {
+
+			throw new ToolApplication.WrongPutArgumentsException(tokensFieldsValidatorResult);
+
+		}
+
+		return tokensRepository.findById(tokenNumber)
 				.map(data -> data.transfer(token))
-				.map(data -> tokens.save(data))
+				.map(data -> tokensRepository.save(data))
 				.map(TokenData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+
 	}
 
 	@Transactional
 	Token delete(final long tokenNumber) {
-		return tokens.findById(tokenNumber)
+
+		return tokensRepository.findById(tokenNumber)
 				.map(data -> {
-
-					tokens.delete(data);
-
+					tokensRepository.delete(data);
 					return data;
-
-				})
-				.map(TokenData::transfer)
+				}).map(TokenData::transfer)
 				.orElseThrow(NoSuchElementException::new);
+
 	}
 
-	Tokens search(
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			final Optional<String> usernamePrefix,
-			final Optional<Long> tokenNumber,
-			final Pageable slice
+	@SuppressWarnings("ALL")
+	private final StructuredQuery.OrderBy sortingFromOptional(final Optional<String> sortingOrder, final String sortingProperty) {
 
-	) {
+		if(sortingOrder.isPresent()) {
 
-		final Tokens tokens = new Tokens();
+			if (sortingOrder.get().trim().equalsIgnoreCase("asc")) {
 
-		tokens.setPath(Tokens.Id);
+				return StructuredQuery.OrderBy.asc(sortingProperty);
 
-		List<Token> tokenList = new ArrayList<>();
+			} else if (sortingOrder.get().trim().equalsIgnoreCase("desc")) {
 
-		tokens.setContains(this.tokens.findAll(slice)
-				.map(TokenData::transfer)
-				.filter(token -> token.getTokenNumber() == tokenNumber.orElse(token.getTokenNumber()))
-				.filter(token -> token.getServiceOrUserName().startsWith(usernamePrefix.orElse(token.getServiceOrUserName())))
-				.toList());
+				return StructuredQuery.OrderBy.desc(sortingProperty);
 
-		return tokens;
+			} else throw new ToolApplication.WrongQueryArgumentsException(
+					"Specified sorting order is invalid, must be asc or desc!");
+
+		} else {
+
+			return StructuredQuery.OrderBy.asc(sortingProperty);
+
+		}
+
+	}
+
+	private boolean isSortingPropertyValid(final Optional<String> sortingProperty) {
+
+		return sortingProperty.map(s -> s.trim().equalsIgnoreCase("username") ||
+				s.trim().equalsIgnoreCase("tokenNumber")).orElse(true);
+
+	}
+
+	private String tokensFieldsValidator(final Token token) {
+
+		final Pattern tokenNumberPattern = Pattern.compile("^[0-9]+$");
+
+		String result = "";
+
+		if (!tokenNumberPattern.matcher(Long.toString(token.getTokenNumber())).matches())
+			result += "The inserted token number is not valid, must contain only numbers without blanks. \n";
+
+		return result;
 
 	}
 
