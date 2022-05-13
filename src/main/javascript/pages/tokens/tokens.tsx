@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, ChevronUp, Plus, Search, X } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp, Plus, Search, X, XCircle } from "lucide-react";
 import React, { createElement, useCallback, useEffect, useRef, useState } from "react";
 import './tokens.css';
 
@@ -87,28 +87,40 @@ export function CardTokens() {
 
     const usernameSorting = () => {
         setSortingType("username")
+        if (sorting === "asc") {
+            let sort = "asc"
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=username")
 
-        if (sorting === "desc") {
-            setSorting("asc")
-        }
-        else {
             setSorting("desc")
-        }
 
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty=username")
+        } else if (sorting === "desc") {
+            let sort = "desc"
+            setSorting("")
+            fetchData("?sortingOrder=" + sort + " &sortingProperty=username")
+
+        } else {
+            setSorting("asc")
+            fetchData("")
+        }
     }
 
     const tokenNumberSorting = () => {
         setSortingType("tokenNumber")
+        if (sorting === "asc") {
+            let sort = "asc"
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=tokenNumber")
 
-        if (sorting === "desc") {
-            setSorting("asc")
-        }
-        else {
             setSorting("desc")
-        }
 
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty=tokenNumber")
+        } else if (sorting === "desc") {
+            let sort = "desc"
+            setSorting("")
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=tokenNumber")
+
+        } else {
+            setSorting("asc")
+            fetchData("")
+        }
     }
 
     let SearchIcon =
@@ -150,11 +162,11 @@ export function CardTokens() {
                     <tr>
 
                         <th onClick={usernameSorting}>username
-                            {sortingType === "username" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                            {sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown />}
                         </th>
                         <th >password </th>
                         <th onClick={tokenNumberSorting}>token number
-                            {sortingType === "tokenNumber" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                            {sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown />}
                         </th>
                         <th>
                             {SearchIcon}
@@ -184,7 +196,7 @@ export function CardTokens() {
                             </div>
 
                             <div title="Close">
-                                <X size={28}
+                                <XCircle size={28}
                                     color={disable ? 'lightgray' : 'black'}
                                     className={"close-button"}
                                     onMouseDown={handleSearch}
