@@ -39,7 +39,7 @@ function cards($esi, $tenant)
 
                     'code' => $student->cards[$i]->europeanStudentCardNumber,
                     "test" => $esc["tst"],
-                    "expiry" => $student->expiryDate,
+                    "expiry" => substr($student->expiryDate, 0, 10),
 
                     "esi" => $student->europeanStudentIdentifier,
                     "level" => $student->emailAddress,
