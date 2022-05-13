@@ -9,9 +9,7 @@ function cards($esi, $tenant) // !!! exception handling
     $hei = $tenant["hei"];
     $esc = $tenant["esc"];
 
-
     $curl = curl_init();
-
 
     curl_setopt($curl, CURLOPT_URL,
         $esc["api"] . "/students/" . $esi
@@ -25,30 +23,47 @@ function cards($esi, $tenant) // !!! exception handling
 
     $result = curl_exec($curl);
 
+    if ($result === false)
+    {
+	    return array('errorCode' => '006',
+		    	 'description' => curl_error($curl)
+		 );
+    }
+
     curl_close($curl);
 
     $student = json_decode($result);
 
-    array(
+    if (is_null($student) || !property_exists($student, 'europeanStudentIdentifier'))
+    {
+	    return array('errorCode' => '007',
+		         'description' => property_exists($student->error_description) ? $student->error_description : "Unknown Error during ESC interaction"
+	    );
+    }
 
-        'code' => "!!!",
-        "test" => $esc["tst"],
-        "expiry" => $student['expiry'],
+    $cards = array();
 
-        "esi" => $student['esi'],
-        "level" => $student['academicLevel'],
-        "name" => $student['name'],
-        "photo" => null,        // TBD
+    for ($i = 0; $i < count($student->cards); $i++)
+    {
+	    $cards[$i] = array(
 
-        "hei" => $hei
+	        'code' => $student->cards[$i]->europeanStudentCardNumber,
+	        "test" => $esc["tst"],
+        	"expiry" => $student->expiryDate,
+	        "esi" => $student->europeanStudentIdentifier,
+	        "level" => $student->emailAddress,
+	        "name" => $student->name,
+	        "photo" => null,        // TBD
 
-    )
+	        "hei" => $hei
 
+    	);
+    }
 
-    return $student; // !!! loop
+    return $cards; 
 
 
 }
 
-
+?>
 

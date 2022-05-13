@@ -6,28 +6,37 @@
 return [
 
     "unipv.it" => [
-
         "hei" => [
-
             "pic" => 999893752,
             "schac" => "unipv.it",
-
-            "name" => "Università di Pavia/",
+            "name" => "Università di Pavia",
             "home" => "https://www.unipv.it/",
             "logo" => "https://www.collegiocairoli.it/img/logotipo-unipv.png", // !!! official link
-
             "iso" => "IT",
             "country" => "Italy"
-
         ],
-
         "esc" => [
             "api" => "https://api-sandbox.europeanstudentcard.eu/v1/",
             "tst" => "http://pp.esc.gg/",
             "key" => "YnALmYvdcwWwzzdVtJScuNQpi6u0evpi", // !!! from file/env
         ]
-
-    ]
+    ],
+    "aai-test.garr.it" => [	// TBD: to be removed, just for test
+        "hei" => [
+            "pic" => 999893752,
+            "schac" => "aai-test.garr.it",	// TBD: to be removed, just for test
+            "name" => "Garr - Test",
+            "home" => "https://www.unipv.it/",
+            "logo" => "https://www.collegiocairoli.it/img/logotipo-unipv.png", // !!! official link
+            "iso" => "IT",
+            "country" => "Italy"
+        ],
+        "esc" => [
+            "api" => "https://api-sandbox.europeanstudentcard.eu/v1/",
+            "tst" => "http://pp.esc.gg/",
+            "key" => "YnALmYvdcwWwzzdVtJScuNQpi6u0evpi", // !!! from file/env
+        ]
+    ],
 
 ];
 
