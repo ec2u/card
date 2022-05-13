@@ -4,7 +4,9 @@
  */
 
 require_once('esc.php');
-$tenants = include_once('tenants.php');
+
+$conf = "/etc/ec2u-card/"; // !!! from setup module
+$tenants = json_decode(file_get_contents($conf . "tenants.json"), JSON_OBJECT_AS_ARRAY); // !!! exception handling
 
 
 if (!isset($_SERVER['REMOTE_USER']) || $_SERVER['REMOTE_USER'] == "") {
