@@ -5,19 +5,29 @@ title: Expose ESIs through eduGAIN
 | Context | The EC2U Consortium and its partners are going to develop a range of user-facing applications requiring global, unique and neutral user identification for authorisation and recording purposes |
 | --- | --- |
 | Challenges | • How to avoid relying on service-specific identifiers to be reconciled on a case-by-case basis when performing cross-service activities? |
-| Solution | • Identify users using a standard https://ec2u.atlassian.net/wiki/pages/resumedraft.action?draftId=11436704 systematically exposed through local ‣ Providers |
+| Solution | • Identify users using a standard https://ec2u.atlassian.net/wiki/pages/resumedraft.action?draftId=11436704 systematically exposed through local Providers |
 
-After issuing a card for a Student or Staff member, the corresponding ESI needs to be exposed though EduGain. In the following will be described how such publishing can be done. Be aware that what described here can be slightly different from what you need to do in your environment because it depends on the architecture used by each HEI for managing user digital identities.
+After issuing a card for a Student or Staff member, the corresponding ESI needs to be exposed though eduGAIN. In the
+following will be described how such publishing can be done. Be aware that what described here can be slightly different
+from what you need to do in your environment because it depends on the architecture used by each HEI for managing user
+digital identities.
 
-We will suppose that the HEI manages digital identities by using a LDAP server and the HEI is also a EduGain member.
+We will suppose that the HEI manages digital identities by using a LDAP server and the HEI is also a eduGAIN member.
 
-# How to verify if my HEI is an EduGain member?
+# Is my HEI is an eduGAIN member?
 
-The eduGAINs technical site [https://technical.edugain.org](https://technical.edugain.org/entities) provides many information and tools that are useful for members. Browsing the Entity Database, indeed, it is simple to verify whether or not your HEI is a EduGain member. If not, your institution needs to join eduGain project before exposing the ESI. Administrators of service providers registered in eduGAIN interfederation can also check the service by using  eduGAIN Access Check service [https://access-check.edugain.org/](https://access-check.edugain.org/)
+The eduGAINs technical site [https://technical.edugain.org](https://technical.edugain.org/entities) provides many
+information and tools that are useful for members. Browsing the Entity Database, indeed, it is simple to verify whether
+or not your HEI is a eduGAIN member. If not, your institution needs to join eduGain project before exposing the ESI.
+Administrators of service providers registered in eduGAIN interfederation can also check the service by using eduGAIN
+Access Check service [https://access-check.edugain.org/](https://access-check.edugain.org/)
 
 # Attributes required from Higher Education Institutions
 
-To allow sharing European Student Identifier through EduGain, a couple of attributes need to be defined  and released from the Identity Management System of the Higher Education Institute.  [https://wiki.geant.org/display/SM/Attributes+required+from+Higher+Education+Institutions](https://wiki.geant.org/display/SM/Attributes+required+from+Higher+Education+Institutions) shows a list of all attributes that are required.
+To allow sharing European Student Identifier through eduGAIN, a couple of attributes need to be defined and released from
+the Identity Management System of the Higher Education
+Institute.  [https://wiki.geant.org/display/SM/Attributes+required+from+Higher+Education+Institutions](https://wiki.geant.org/display/SM/Attributes+required+from+Higher+Education+Institutions)
+shows a list of all attributes that are required.
 
 Mainly, two of them are really mandatory:
 
@@ -26,26 +36,40 @@ Mainly, two of them are really mandatory:
 
 # Extending the Digital Identity Management System
 
-In order to manage all `schac` attributes (such as `schacPersonalUniqueCode` and `schacHomeOrganization`) required for sharing ESI throught EduGain, the Digital Identity Management System used in the HEI needs to be extended with the proper LDIF schema, named SCHAC. The original file can be download from [https://wiki.refeds.org/display/STAN/SCHAC+Releases](https://wiki.refeds.org/display/STAN/SCHAC+Releases) , but according to the experiences faced at University of Pavia, some little changes were required to adapt the original schema to be used in OpenLDAP (which is the system currently used at UniPV for managing digital identities). The modified schema is provided below. The schema defines 9 different Object Classes (`schacPersonalCharacteristics`, `schacContactLocation`, `schacEmployeeInfo`, `schacLinkageIdentifiers`, `schacEntryMetadata`, `schacEntryConfidentiality`, `schacUserEntitlements`, `schacGroupMembership`, `schacExperimentalOC`)  and 21 Attributes Types (two of them are `schacPersonalUniqueCode` and  `schacHomeOrganization`).
+In order to manage all `schac` attributes (such as `schacPersonalUniqueCode` and `schacHomeOrganization`) required for
+sharing ESI throught eduGAIN, the Digital Identity Management System used in the HEI needs to be extended with the proper
+LDIF schema, named SCHAC. The original file can be download
+from [https://wiki.refeds.org/display/STAN/SCHAC+Releases](https://wiki.refeds.org/display/STAN/SCHAC+Releases) , but
+according to the experiences faced at University of Pavia, some little changes were required to adapt the original schema
+to be used in OpenLDAP (which is the system currently used at UniPV for managing digital identities). The modified schema
+is provided below. The schema defines 9 different Object Classes (`schacPersonalCharacteristics`, `schacContactLocation`
+, `schacEmployeeInfo`, `schacLinkageIdentifiers`, `schacEntryMetadata`, `schacEntryConfidentiality`
+, `schacUserEntitlements`, `schacGroupMembership`, `schacExperimentalOC`)  and 21 Attributes Types (two of them
+are `schacPersonalUniqueCode` and  `schacHomeOrganization`).
 
-After loading the file into the Digital Identity Management System managed by the HEI, all those entries representing people (students and staff members) involved in a mobility process need to be extended according to the following two rules:
+After loading the file into the Digital Identity Management System managed by the HEI, all those entries representing
+people (students and staff members) involved in a mobility process need to be extended according to the following two
+rules:
 
 - the entry needs to implement the Object Classes `SchacLinkageIdentifiers` and `schacContactLocation`
 - the entry needs to define `schacPersonalUniqueCode` and `schacHomeOrganization` attributes
 
 # Accessing MyAcademicID services
 
-After sharing attributes through EduGain, all MyAcademicID services will be able to get the ESI without any further changes. Indeed, making an access to [https://phdhub.eu/](https://phdhub.eu/) , which is one of the services provided by MyAcademicID network, all information about the student identifier is retrieved.
-![[image-20210720-093126.png]]
+After sharing attributes through eduGAIN, all MyAcademicID services will be able to get the ESI without any further
+changes. Indeed, making an access to [https://phdhub.eu/](https://phdhub.eu/) , which is one of the services provided by
+MyAcademicID network, all information about the student identifier is retrieved.
+![[![image-20210720-093126](images/image-20210720-093126.png)]]
+
 # The SCHAC LDIF File for OpenLDAP
 
 ```java
 #
-dn: cn=schema
-#
-#objectIdentifier: TERENA 1.3.6.1.4.1.25178
-#objectIdentifier: schac TERENA:1
-#objectIdentifier: schacExperimental schac:0
+        dn:cn=schema
+        #
+        #objectIdentifier:TERENA1.3.6.1.4.1.25178
+        #objectIdentifier:schac TERENA:1
+        #objectIdentifier:schacExperimental schac:0
 #objectIdentifier: schacObjectClass schac:1
 #objectIdentifier: schacAttributeType schac:2
 #objectIdentifier: schacExpObjClass schacExperimental:1

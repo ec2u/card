@@ -2,16 +2,21 @@
 title: Interact with the ESC Router
 ---
 
-The Centralized Registry provides several functions, all of them provided as a REST Service. In a nutshell, the Registry holds student and card information and offers an easy way to verify card validity. See [Verify the Validity of a European Student Card](https://www.notion.so/Verify-the-Validity-of-a-European-Student-Card-a6bbb3899b2c41059415f7d987762ad4)
+The Centralized Registry provides several functions, all of them provided as a REST Service. In a nutshell, the Registry
+holds student and card information and offers an easy way to verify card validity.
+See [Verify the Validity of a European Student Card](verify-european-student-cards/index.md)
 
-Before HEIs can interact with the Centralized Registry, they should register themselves on [https://router.europeanstudentcard.eu/](https://router.europeanstudentcard.eu/). After registration, an API key is released and will be used for authenticate HEIs over the REST services.
+Before HEIs can interact with the Centralized Registry, they should register themselves
+on [https://router.europeanstudentcard.eu/](https://router.europeanstudentcard.eu/). After registration, an API key is
+released and will be used for authenticate HEIs over the REST services.
 
 # URI
 
 There are two different Centralized Registries for both production and test environments:
 
-- Sandbox : **[https://api-sandbox.europeanstudentcard.eu/v1](https://api-sandbox.europeanstudentcard.eu/v1)** for integrations and qualifications tests.
-- Production : **[https://api.europeanstudentcard.eu/v1](https://api.europeanstudentcard.eu/v1)** for real data only.
+- Sandbox : **[https://api-sandbox.europeanstudentcard.eu/v1](https://api-sandbox.europeanstudentcard.eu/v1)** for
+  integrations and qualifications tests.
+- Production : **[https://api.europeanstudentcard.eu/v1](https://api.europeanstudentcard.eu/v1)** for real data only.
 
 # REST APIs
 
