@@ -18,4 +18,26 @@ card-addcard {
       color: red;
     }
   }
+  & section {
+    display: flex;
+    justify-content: space-between;
+
+    & .fields {
+      display: flex;
+      flex-direction: column;
+    }
+    & .edit-icon {
+      margin-top: 30px;
+    }
+    & .edit-icon:hover {
+      color: green;
+    }
+    & label {
+      color: gray;
+      margin-top: 30px;
+    }
+    & span {
+      margin-top: 8px;
+    }
+  }
 }

@@ -3,6 +3,7 @@ card-adduser {
   display: grid;
   align-items: stretch;
   overflow: auto;
+  pointer-events: auto;
 
   & header {
     width: 100%;
@@ -19,6 +20,10 @@ card-adduser {
       color: black;
       font-size: 1.4em;
     }
+    & .users-link {
+      pointer-events: none;
+    }
+
     & .users-link:hover {
       color: gray;
     }
