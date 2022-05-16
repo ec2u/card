@@ -8,7 +8,7 @@ import QRCode from "qrcode";
 import { createContext, createElement, ReactNode, useContext, useEffect } from "react";
 
 
-const Profile="/v1";
+const API="/v1";
 const Login="/Shibboleth.sso/Login?target={}";
 const Logout="/Shibboleth.sso/Logout?return={}";
 
@@ -80,7 +80,7 @@ export function CardProfile({
 
         if ( !profile ) {
 
-            fetch(Profile, {
+            fetch(API, {
 
                 headers: { Accept: "application/json" }
 
@@ -117,7 +117,11 @@ export function CardProfile({
 
                 } else {
 
-                    // !!! notify
+                    // !!! 409 incomplete eduGAIN profile / unknown tenant / bad ESC credentials
+                    // !!! 502 ESC unreachable
+
+                    // !!! 400
+                    // !!! 500
 
                 }
 
