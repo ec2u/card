@@ -11,15 +11,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
 public class TokensService {
 
-	@Autowired private TokensRepository tokensRepository;
+	@Autowired
+	private TokensRepository tokensRepository;
 
-	@Autowired private DatastoreTemplate datastoreTemplate;
+	@Autowired
+	private DatastoreTemplate datastoreTemplate;
 
 	@SuppressWarnings("ALL")
 	Tokens browse(
@@ -32,7 +38,9 @@ public class TokensService {
 
 	) {
 
-		// Queries are designed to work with only one parameter at time!
+		/* Queries are designed to work with only one parameter at time!
+		 *  Sorting on queries' results with a sorting property different from filtering property is not possible due
+		 * to Datastore features. */
 
 		final Tokens tokens = new Tokens();
 		tokens.setPath(Tokens.Id);
@@ -48,13 +56,14 @@ public class TokensService {
 					.setOrderBy(sortingFromOptional(sortingOrder, "tokenNumber"))
 					.build();
 
-        } else if (tokenNumber.isEmpty() && username.isPresent()) {
+		} else if (tokenNumber.isEmpty() && username.isPresent()) {
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Token")
 					.setFilter(StructuredQuery.CompositeFilter.and(
-									StructuredQuery.PropertyFilter.ge("usernameLowerCase", username.get().toLowerCase()),
-									StructuredQuery.PropertyFilter.lt("usernameLowerCase", username.get().toLowerCase() + "\ufffd")))
+							StructuredQuery.PropertyFilter.ge("usernameLowerCase", username.get().toLowerCase()),
+							StructuredQuery.PropertyFilter.lt("usernameLowerCase", username.get().toLowerCase() +
+									"\ufffd")))
 					.setLimit(slice.getPageSize())
 					.setOrderBy(sortingFromOptional(sortingOrder, "usernameLowerCase"))
 					.build();
@@ -68,7 +77,7 @@ public class TokensService {
 						.setLimit(slice.getPageSize())
 						.build();
 
-            } else {
+			} else {
 
 				if (!isSortingPropertyValid(sortingProperty)) {
 
@@ -105,11 +114,11 @@ public class TokensService {
 	}
 
 	@Transactional
-	Token create(final Token token) {
+	Token create(Token token) {
 
-		final String tokensFieldsValidatorResult = tokensFieldsValidator(token);
+		String tokensFieldsValidatorResult = tokensFieldsValidator(token);
 
-		if(!tokensFieldsValidatorResult.isEmpty()) {
+		if (!tokensFieldsValidatorResult.isEmpty()) {
 
 			throw new ToolApplication.WrongPostArgumentsException(tokensFieldsValidatorResult);
 
@@ -123,7 +132,7 @@ public class TokensService {
 
 	}
 
-	Token relate(final long tokenNumber) {
+	Token relate(long tokenNumber) {
 
 		return tokensRepository.findById(tokenNumber)
 				.map(TokenData::transfer)
@@ -132,11 +141,11 @@ public class TokensService {
 	}
 
 	@Transactional
-	Token update(final long tokenNumber, final Token token) {
+	Token update(long tokenNumber, Token token) {
 
-		final String tokensFieldsValidatorResult = tokensFieldsValidator(token);
+		String tokensFieldsValidatorResult = tokensFieldsValidator(token);
 
-		if(!tokensFieldsValidatorResult.isEmpty()) {
+		if (!tokensFieldsValidatorResult.isEmpty()) {
 
 			throw new ToolApplication.WrongPutArgumentsException(tokensFieldsValidatorResult);
 
@@ -151,7 +160,7 @@ public class TokensService {
 	}
 
 	@Transactional
-	Token delete(final long tokenNumber) {
+	Token delete(long tokenNumber) {
 
 		return tokensRepository.findById(tokenNumber)
 				.map(data -> {
@@ -165,9 +174,10 @@ public class TokensService {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	@SuppressWarnings("ALL")
-	private final StructuredQuery.OrderBy sortingFromOptional(final Optional<String> sortingOrder, final String sortingProperty) {
+	private final StructuredQuery.OrderBy sortingFromOptional(final Optional<String> sortingOrder,
+															  final String sortingProperty) {
 
-		if(sortingOrder.isPresent()) {
+		if (sortingOrder.isPresent()) {
 
 			if (sortingOrder.get().trim().equalsIgnoreCase("asc")) {
 
@@ -177,8 +187,10 @@ public class TokensService {
 
 				return StructuredQuery.OrderBy.desc(sortingProperty);
 
-			} else throw new ToolApplication.WrongQueryArgumentsException(
-					"Specified sorting order is invalid, must be asc or desc!");
+			} else {
+				throw new ToolApplication.WrongQueryArgumentsException(
+						"Specified sorting order is invalid, must be asc or desc!");
+			}
 
 		} else {
 
@@ -188,21 +200,22 @@ public class TokensService {
 
 	}
 
-	private boolean isSortingPropertyValid(final Optional<String> sortingProperty) {
+	private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
 
 		return sortingProperty.map(s -> s.trim().equalsIgnoreCase("username") ||
 				s.trim().equalsIgnoreCase("tokenNumber")).orElse(true);
 
 	}
 
-	private String tokensFieldsValidator(final Token token) {
+	private String tokensFieldsValidator(Token token) {
 
-		final Pattern tokenNumberPattern = Pattern.compile("^[0-9]+$");
+		Pattern tokenNumberPattern = Pattern.compile("^[0-9]+$");
 
 		String result = "";
 
-		if (!tokenNumberPattern.matcher(Long.toString(token.getTokenNumber())).matches())
+		if (!tokenNumberPattern.matcher(Long.toString(token.getTokenNumber())).matches()) {
 			result += "The inserted token number is not valid, must contain only numbers without blanks. \n";
+		}
 
 		return result;
 
