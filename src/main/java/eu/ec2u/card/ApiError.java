@@ -36,8 +36,8 @@ public class ApiError {
 
 		this();
 		this.status = status;
-		this.message = "Unexpected error";
-		this.debugMessage = ex.getLocalizedMessage();
+		message = "Unexpected error";
+		debugMessage = ex.getLocalizedMessage();
 
 	}
 
@@ -46,14 +46,13 @@ public class ApiError {
 		this();
 		this.status = status;
 		this.message = message;
-		this.debugMessage = ex.getLocalizedMessage();
+		debugMessage = ex.getLocalizedMessage();
 
 	}
 
 }
 
 abstract class ApiSubError {
-
 
 }
 

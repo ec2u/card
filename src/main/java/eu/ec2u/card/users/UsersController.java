@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import static org.springframework.http.ResponseEntity.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -28,106 +29,106 @@ import java.util.Optional;
 @RequestMapping("")
 public final class UsersController {
 
-    @Autowired private UsersService users;
+	@Autowired
+	private UsersService users;
 
-    @Autowired private EventsService events;
+	@Autowired
+	private EventsService events;
 
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
-    @JsonView(Container.class)
-    ResponseEntity<Users> get(
+	@RequestMapping(value = "/users", method = RequestMethod.GET)
+	@JsonView(Container.class)
+	ResponseEntity<Users> get(
 
-            @RequestParam Optional<String> forename,
-            @RequestParam Optional<String> surname,
-            @RequestParam Optional<String> email,
-            @RequestParam Optional<Boolean> isAdmin,
-            @Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-            @Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
-            @RequestParam Optional<String> sortingOrder,
-            @RequestParam Optional<String> sortingProperty
+			@RequestParam Optional<String> forename,
+			@RequestParam Optional<String> surname,
+			@RequestParam Optional<String> email,
+			@RequestParam Optional<Boolean> isAdmin,
+			@Valid @RequestParam(required = false, defaultValue = "0") @Min(0) int page,
+			@Valid @RequestParam(required = false, defaultValue = "25") @Min(1) @Max(ContainerSize) int size,
+			@RequestParam Optional<String> sortingOrder,
+			@RequestParam Optional<String> sortingProperty
 
-    ) {
+	) {
 
-        return ok().body(users.browse(
-                forename,
-                surname,
-                email,
-                isAdmin,
-                PageRequest.of(page, size),
-                sortingOrder,
-                sortingProperty
-        ));
+		return ok().body(users.browse(
+				forename,
+				surname,
+				email,
+				isAdmin,
+				PageRequest.of(page, size),
+				sortingOrder,
+				sortingProperty
+		));
 
-    }
+	}
 
-    @RequestMapping(value = "/users/", method = RequestMethod.POST)
-    ResponseEntity<Void> post(
+	@RequestMapping(value = "/users/", method = RequestMethod.POST)
+	ResponseEntity<Void> post(
 
-            @AuthenticationPrincipal final Profile profile,
-            @Valid @RequestBody final User user
+			@AuthenticationPrincipal Profile profile,
+			@Valid @RequestBody User user
 
-    ) {
+	) {
 
-        // restrict admin creation to admins
+		// restrict admin creation to admins
 
-        //if ( !profile.isEditor(Users.ID) || user.isAdmin() && !profile.isAdmin() ) {
-        //    throw new HttpException(FORBIDDEN);
-        //}
+		//if ( !profile.isEditor(Users.ID) || user.isAdmin() && !profile.isAdmin() ) {
+		//    throw new HttpException(FORBIDDEN);
+		//}
 
-        return created(events.trace(profile, create, users.create(user))).build();
+		return created(events.trace(profile, create, users.create(user))).build();
 
-    }
+	}
 
-    @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
-    @JsonView(Resource.class)
-    ResponseEntity<User> get(
+	@RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
+	@JsonView(Resource.class)
+	ResponseEntity<User> get(
 
-            @AuthenticationPrincipal final Profile profile,
-            @PathVariable final long id
+			@AuthenticationPrincipal Profile profile,
+			@PathVariable long id
 
-    ) {
+	) {
 
-        //if ( !profile.isReader(Users.ID+id) ) {
-        //    throw new HttpException(FORBIDDEN);
-        //}
+		//if ( !profile.isReader(Users.ID+id) ) {
+		//    throw new HttpException(FORBIDDEN);
+		//}
 
-        return ok().body(users.relate(id));
+		return ok().body(users.relate(id));
 
-    }
+	}
 
-    @RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
-    ResponseEntity<Void> put(
+	@RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
+	ResponseEntity<Void> put(
 
-            @AuthenticationPrincipal final Profile profile,
-            @PathVariable final long id,
-            @Valid @RequestBody final User user
+			@AuthenticationPrincipal Profile profile,
+			@PathVariable long id,
+			@Valid @RequestBody User user
 
-    ) {
+	) {
 
-        // restrict admin granting to admins
+		// restrict admin granting to admins
 
-        //if ( !profile.isEditor(Users.ID+id) || user.isAdmin() && !profile.isAdmin() ) {
-        //    throw new HttpException(FORBIDDEN);
-        //}
+		//if ( !profile.isEditor(Users.ID+id) || user.isAdmin() && !profile.isAdmin() ) {
+		//    throw new HttpException(FORBIDDEN);
+		//}
 
-        return noContent().location(events.trace(profile, update, users.update(id, user))).build();
+		return noContent().location(events.trace(profile, update, users.update(id, user))).build();
 
-    }
+	}
 
-    @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
-    ResponseEntity<Void> delete(
+	@RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
+	ResponseEntity<Void> delete(
 
-            @AuthenticationPrincipal final Profile profile,
-            @PathVariable final long id
+			@AuthenticationPrincipal Profile profile,
+			@PathVariable long id
 
-    ) {
+	) {
 
-        //if ( !profile.isEditor(Users.ID+id) ) {
-        //    throw new HttpException(FORBIDDEN);
-        //}
+		//if ( !profile.isEditor(Users.ID+id) ) {
+		//    throw new HttpException(FORBIDDEN);
+		//}
 
-        return noContent().location(events.trace(profile, delete, users.delete(id))).build();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
+		return noContent().location(events.trace(profile, delete, users.delete(id))).build();
+	}
 
 }
