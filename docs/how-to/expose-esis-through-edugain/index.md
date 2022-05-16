@@ -14,7 +14,7 @@ digital identities.
 
 We will suppose that the HEI manages digital identities by using a LDAP server and the HEI is also a eduGAIN member.
 
-# Is my HEI is an eduGAIN member?
+# Is my HEI an eduGAIN member?
 
 The eduGAINs technical site [https://technical.edugain.org](https://technical.edugain.org/entities) provides many
 information and tools that are useful for members. Browsing the Entity Database, indeed, it is simple to verify whether
@@ -59,7 +59,8 @@ rules:
 After sharing attributes through eduGAIN, all MyAcademicID services will be able to get the ESI without any further
 changes. Indeed, making an access to [https://phdhub.eu/](https://phdhub.eu/) , which is one of the services provided by
 MyAcademicID network, all information about the student identifier is retrieved.
-![[![image-20210720-093126](images/image-20210720-093126.png)]]
+
+![image-20210720-093126](images/image-20210720-093126.png)
 
 # The SCHAC LDIF File for OpenLDAP
 
