@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 @Service
 public class CardsService {
-	
+
 	@Autowired
 	private CardsRepository cardsRepository;
 
@@ -30,13 +30,13 @@ public class CardsService {
 
 	Cards browse(
 
-			final Optional<String> forename,
-			final Optional<String> surname,
-			final Optional<String> expiringDate,
-			final Optional<String> virtualCardNumber,
-			final Pageable slice,
-			final Optional<String> sortingOrder,
-			final Optional<String> sortingProperty
+			Optional<String> forename,
+			Optional<String> surname,
+			Optional<String> expiringDate,
+			Optional<String> virtualCardNumber,
+			Pageable slice,
+			Optional<String> sortingOrder,
+			Optional<String> sortingProperty
 
 	) {
 
@@ -44,10 +44,10 @@ public class CardsService {
 		 * Sorting on queries' results with a sorting property different from filtering property is not possible due
 		 * to Datastore features. */
 
-		final Cards cards = new Cards();
+		Cards cards = new Cards();
 		cards.setPath(Cards.Id);
 
-		Query<Entity> query = null;
+		Query<Entity> query;
 
 		if (forename.isPresent() && surname.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
 
@@ -93,7 +93,7 @@ public class CardsService {
 					.setLimit(slice.getPageSize())
 					.build();
 
-		} else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
+		} else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isEmpty()) {
 
 			if (sortingProperty.isEmpty() && sortingOrder.isEmpty()) {
 
@@ -131,7 +131,7 @@ public class CardsService {
 
 		List<Card> cardList = new ArrayList<>();
 
-		this.datastoreTemplate.query(query, CardData.class)
+		datastoreTemplate.query(query, CardData.class)
 				.toList()
 				.forEach(cardData -> cardList.add(cardData.transfer()));
 
@@ -201,8 +201,8 @@ public class CardsService {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private final StructuredQuery.OrderBy sortingFromOptional(final Optional<String> sortingOrder,
-															  final String sortingProperty) {
+	private StructuredQuery.OrderBy sortingFromOptional(Optional<String> sortingOrder,
+														String sortingProperty) {
 
 		if (sortingOrder.isPresent()) {
 
