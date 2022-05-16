@@ -58,7 +58,7 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
         strictPort: true,
 
         proxy: {
-            "^/v\\d+|/.*$|/Shibboleth.sso/.*$": {
+            "^/v\\d+$|/Shibboleth.sso/.*$": {
                 target: "https://card.ec2u.eu/",
                 changeOrigin: true
             }

@@ -12,7 +12,7 @@ const API="/v1";
 const Login="/Shibboleth.sso/Login?target={}";
 const Logout="/Shibboleth.sso/Logout?return={}";
 
-const Context=createContext<[undefined | Profile, (action?: null) => void]>([undefined, () => {}]);
+const Context=createContext<[undefined | Profile | Error, (action?: null) => void]>([undefined, () => {}]);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,6 +63,22 @@ export interface Card {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+export interface Error {
+
+    readonly status: number;
+    readonly reason: string;
+
+}
+
+
+export function isError(value: unknown): value is Error {
+    return typeof value === "object" && value !== null && "status" in value && "reason" in value;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export function CardProfile({
 
     children
@@ -73,12 +89,12 @@ export function CardProfile({
 
 }) {
 
-    const [profile, setProfile]=useStorage<undefined | Profile>(localStorage, "profile", undefined);
+    const [profile, setProfile]=useStorage<undefined | Profile | Error>(localStorage, "profile", undefined);
 
 
     useEffect(() => {
 
-        if ( !profile ) {
+        if ( !profile || isError(profile) ) {
 
             fetch(API, {
 
@@ -115,13 +131,22 @@ export function CardProfile({
 
                     setProfile({});
 
+
+                } else if ( response.status === 409 ) {
+
+                    response.json().then((reason: string) => {
+
+                        setProfile({ status: response.status, reason });
+
+                    });
+
+                } else if ( response.status === 502 ) {
+
+                    setProfile({ status: response.status, reason: "esc-unreachable" });
+
                 } else {
 
-                    // !!! 409 incomplete eduGAIN profile / unknown tenant / bad ESC credentials
-                    // !!! 502 ESC unreachable
-
-                    // !!! 400
-                    // !!! 500
+                    setProfile({ status: response.status, reason: "internal" });
 
                 }
 
@@ -180,6 +205,6 @@ export function CardProfile({
 }
 
 
-export function useProfile<P>(): [undefined | Profile, (profile?: null) => void] {
+export function useProfile(): [undefined | Profile | Error, (profile?: null) => void] {
     return useContext(Context);
 }
