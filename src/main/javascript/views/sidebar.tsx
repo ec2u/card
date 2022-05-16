@@ -51,7 +51,7 @@ export const CardSidebar = (props: any) => {
         <div className=" items-name">
           <Link to="/user/" className="items-logo">
             <User size={60} />
-            <span>Name</span>
+            <span>Akhil</span>
           </Link>
         </div>
       </section>

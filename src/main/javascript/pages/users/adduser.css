@@ -3,6 +3,7 @@ card-adduser {
   display: grid;
   align-items: stretch;
   overflow: auto;
+  pointer-events: auto;
 
   & header {
     width: 100%;
@@ -19,8 +20,36 @@ card-adduser {
       color: black;
       font-size: 1.4em;
     }
+    & .users-link {
+      pointer-events: none;
+    }
+
     & .users-link:hover {
       color: gray;
+    }
+  }
+  & .error-message {
+    background: rgb(220, 215, 215);
+    font-size: 1em;
+    color: black;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    padding: 0.4em;
+    border: 2px solid gray;
+    margin-bottom: 1em;
+    & div {
+      display: flex;
+      justify-content: space-between;
+      & span {
+        color: red;
+        cursor: pointer;
+      }
+    }
+
+    & p {
+      color: red;
+      margin-top: 10px;
     }
   }
   & form {

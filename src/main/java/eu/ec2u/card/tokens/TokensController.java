@@ -3,31 +3,32 @@ package eu.ec2u.card.tokens;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.ec2u.card.Tool.Container;
 import eu.ec2u.card.Tool.Resource;
+import static eu.ec2u.card.ToolConfiguration.ContainerSize;
 import eu.ec2u.card.ToolSecurity.Profile;
-import eu.ec2u.card.cards.Cards;
+import static eu.ec2u.card.events.Events.Action.*;
 import eu.ec2u.card.events.EventsService;
 import eu.ec2u.card.tokens.Tokens.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import static org.springframework.http.ResponseEntity.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import static eu.ec2u.card.ToolConfiguration.ContainerSize;
-import static eu.ec2u.card.events.Events.Action.*;
-import static org.springframework.http.ResponseEntity.*;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("")
 public final class TokensController {
 
-	@Autowired private TokensService tokens;
+	@Autowired
+	private TokensService tokens;
 
-	@Autowired private EventsService events;
+	@Autowired
+	private EventsService events;
 
 	@RequestMapping(value = "/tokens", method = RequestMethod.GET)
 	@JsonView(Container.class)
@@ -35,8 +36,8 @@ public final class TokensController {
 
 			@RequestParam Optional<String> username,
 			@RequestParam Optional<String> tokenNumber,
-			@Valid @RequestParam(required=false, defaultValue="0") @Min(0) final int page,
-			@Valid @RequestParam(required=false, defaultValue="25") @Min(1) @Max(ContainerSize) final int size,
+			@Valid @RequestParam(required = false, defaultValue = "0") @Min(0) int page,
+			@Valid @RequestParam(required = false, defaultValue = "25") @Min(1) @Max(ContainerSize) int size,
 			@RequestParam Optional<String> sortingOrder,
 			@RequestParam Optional<String> sortingProperty
 
@@ -55,8 +56,8 @@ public final class TokensController {
 	@RequestMapping(value = "/tokens/", method = RequestMethod.POST)
 	ResponseEntity<Void> post(
 
-			@AuthenticationPrincipal final Profile profile,
-			@Valid @RequestBody final Token token
+			@AuthenticationPrincipal Profile profile,
+			@Valid @RequestBody Token token
 
 	) {
 
@@ -68,8 +69,8 @@ public final class TokensController {
 	@JsonView(Resource.class)
 	ResponseEntity<Token> get(
 
-			@AuthenticationPrincipal final Profile profile,
-			@PathVariable final long tokenNumber
+			@AuthenticationPrincipal Profile profile,
+			@PathVariable long tokenNumber
 
 	) {
 
@@ -80,9 +81,9 @@ public final class TokensController {
 	@RequestMapping(value = "/tokens/{tokenNumber}", method = RequestMethod.PUT)
 	ResponseEntity<Void> put(
 
-			@AuthenticationPrincipal final Profile profile,
-			@PathVariable final long tokenNumber,
-			@Valid @RequestBody final Token token
+			@AuthenticationPrincipal Profile profile,
+			@PathVariable long tokenNumber,
+			@Valid @RequestBody Token token
 
 	) {
 
@@ -93,8 +94,8 @@ public final class TokensController {
 	@RequestMapping(value = "/tokens/{tokenNumber}", method = RequestMethod.DELETE)
 	ResponseEntity<Void> delete(
 
-			@AuthenticationPrincipal final Profile profile,
-			@PathVariable final long tokenNumber
+			@AuthenticationPrincipal Profile profile,
+			@PathVariable long tokenNumber
 
 	) {
 

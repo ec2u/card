@@ -38,6 +38,10 @@ card-users {
       cursor: pointer;
       color: rgb(161, 157, 157);
     }
+    & th:hover {
+      color: black;
+    }
+
     & .search-button {
       cursor: pointer;
     }
@@ -65,14 +69,8 @@ card-users {
     & .search-fields {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      text-align: center;
       margin-bottom: 1em;
-
-      & .checkbox {
-        margin-left: 10px;
-        height: 1.2em;
-        width: 1.2em;
-      }
 
       & input {
         font-size: 0.8em;
@@ -85,7 +83,7 @@ card-users {
       }
       & .search-forename {
         width: 12em;
-        margin-left: 4.2em;
+        margin-left: 6.2em;
         margin-right: 4.5em;
       }
       & .search-surname {

@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, ChevronUp, Plus, Search, X } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp, Plus, Search, X, XCircle } from "lucide-react";
 import React, { createElement, useCallback, useEffect, useRef, useState } from "react";
 import './tokens.css';
 
@@ -13,16 +13,20 @@ interface Token {
 }
 
 export function CardTokens() {
+    let searchUsername_data = sessionStorage.getItem('searchUsernameToken');
+    let searchtokenNumber_data = sessionStorage.getItem('searchtokenNumberToken');
     const [tokens, setTokens] = useState<Token[]>([]);
     const [loading, setLoading] = useState<Boolean>(false);
     const [error, setError] = useState<any>(null);
-    const [search, setSearch] = useState<string>("");
-    const [searchNumber, setsearchNumber] = useState<any>();
+    const [searchUsername, setSearchUsername] = useState<string>(searchUsername_data != null ? searchUsername_data : "");
+    const [searchNumber, setsearchNumber] = useState<any>(searchtokenNumber_data != null ? searchtokenNumber_data : "");
     const [clicked, setClicked] = useState<Boolean>(false);
     const [timer, setTimer] = useState<number>(0);
     const [disable, setDisable] = useState<Boolean>(true);
     const [sorting, setSorting] = useState<string>("asc");
     const [sortingType, setSortingType] = useState<string>("")
+
+
 
 
 
@@ -42,7 +46,20 @@ export function CardTokens() {
 
 
     useEffect(() => {
-        fetchData("")
+        let search = sessionStorage.getItem('searching')
+        if (search) {
+            setClicked(true)
+            switch (search) {
+                case "username":
+                    searchSubmit(searchUsername);
+                    break;
+                case "tokennumber":
+                    hanldeSearchNumber(searchNumber);
+                    break;
+            }
+            sessionStorage.removeItem('searching')
+        } else
+            fetchData("")
     }, []);
 
 
@@ -58,7 +75,9 @@ export function CardTokens() {
     }
 
     const handleSearchUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value)
+        setSearchUsername(e.target.value)
+        sessionStorage.setItem('searchUsernameToken', e.target.value);
+        sessionStorage.setItem('searching', "username")
         clearTimeout(timer)
         let timerID = window.setTimeout(() => {
             searchSubmit(e.target.value)
@@ -78,6 +97,8 @@ export function CardTokens() {
 
     const searchNumberSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
         setsearchNumber(e.target.value)
+        sessionStorage.setItem('searchtokenNumberToken', e.target.value);
+        sessionStorage.setItem('searching', "tokennumber")
         clearTimeout(timer)
         let timerID = window.setTimeout(() => {
             hanldeSearchNumber(e.target.value)
@@ -87,34 +108,53 @@ export function CardTokens() {
 
     const usernameSorting = () => {
         setSortingType("username")
+        if (sorting === "asc") {
+            let sort = "asc"
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=username")
 
-        if (sorting === "desc") {
-            setSorting("asc")
-        }
-        else {
             setSorting("desc")
-        }
 
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty=username")
+        } else if (sorting === "desc") {
+            let sort = "desc"
+            setSorting("")
+            fetchData("?sortingOrder=" + sort + " &sortingProperty=username")
+
+        } else {
+            setSorting("asc")
+            fetchData("")
+        }
     }
 
     const tokenNumberSorting = () => {
         setSortingType("tokenNumber")
+        if (sorting === "asc") {
+            let sort = "asc"
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=tokenNumber")
 
-        if (sorting === "desc") {
-            setSorting("asc")
-        }
-        else {
             setSorting("desc")
-        }
 
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty=tokenNumber")
+        } else if (sorting === "desc") {
+            let sort = "desc"
+            setSorting("")
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=tokenNumber")
+
+        } else {
+            setSorting("asc")
+            fetchData("")
+        }
     }
 
     let SearchIcon =
         <div title={"search"}>
             <Search size={28}
-                onClick={() => setClicked(!clicked)}
+                onClick={() => {
+                    setClicked(!clicked)
+                    setSearchUsername("");
+                    setsearchNumber("")
+                    sessionStorage.removeItem('searchUsernameToken');
+                    sessionStorage.removeItem('searchtokenNumberToken');
+                    fetchData("")
+                }}
                 className={"search-button"}
             />
         </div>
@@ -124,9 +164,10 @@ export function CardTokens() {
 
         } else {
             setClicked(false);
-            setSearch("");
+            setSearchUsername("");
             setsearchNumber("")
-            fetchData("")
+            sessionStorage.removeItem('searchUsernameToken');
+            sessionStorage.removeItem('searchtokenNumberToken');
         }
     }
 
@@ -150,11 +191,11 @@ export function CardTokens() {
                     <tr>
 
                         <th onClick={usernameSorting}>username
-                            {sortingType === "username" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                            {sortingType === "username" ? sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown /> : ""}
                         </th>
                         <th >password </th>
                         <th onClick={tokenNumberSorting}>token number
-                            {sortingType === "tokenNumber" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                            {sortingType === "tokenNumber" ? sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown /> : ""}
                         </th>
                         <th>
                             {SearchIcon}
@@ -172,7 +213,7 @@ export function CardTokens() {
                                 <input
                                     type="search"
                                     className={"search-username"}
-                                    value={search}
+                                    value={searchUsername}
                                     onChange={handleSearchUsernameChange}
                                 />
                                 <input
@@ -184,7 +225,7 @@ export function CardTokens() {
                             </div>
 
                             <div title="Close">
-                                <X size={28}
+                                <XCircle size={28}
                                     color={disable ? 'lightgray' : 'black'}
                                     className={"close-button"}
                                     onMouseDown={handleSearch}

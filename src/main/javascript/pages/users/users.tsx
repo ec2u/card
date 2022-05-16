@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, ChevronUp, Plus, Search, X } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp, Plus, Search, X, XCircle } from "lucide-react";
 import React, { createElement, useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import './users.css';
@@ -14,18 +14,23 @@ interface User {
 }
 
 export function CardUsers() {
+
+  let searchForename_data = sessionStorage.getItem('searchForenameCard');
+  let searchSurname_data = sessionStorage.getItem('searchSurnameCard');
+  let searchEmail_data = sessionStorage.getItem('searchEmailCard');
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<Boolean>(false);
   const [error, setError] = useState<any>(null);
-  const [searchForename, setSearchForename] = useState<string>();
-  const [searchSurname, setSearchSurname] = useState<string>();
-  const [searchEmail, setSearchEmail] = useState<string>("")
+  const [searchForename, setSearchForename] = useState<string>(searchForename_data != null ? searchForename_data : "");
+  const [searchSurname, setSearchSurname] = useState<string>(searchSurname_data != null ? searchSurname_data : "");
+  const [searchEmail, setSearchEmail] = useState<string>(searchEmail_data != null ? searchEmail_data : "");
   const [clicked, setClicked] = useState<Boolean>(false);
   const [timer, setTimer] = useState<number>(0);
   const [disable, setDisable] = useState<Boolean>(true)
-  const [sorting, setSorting] = useState<string>("desc");
-  const [adminSorting, setadminSorting] = useState<Boolean>(true);
+  const [sorting, setSorting] = useState<string>("asc");
+  const [adminSorting, setadminSorting] = useState<string>("true");
   const [sortingType, setSortingType] = useState<string>("")
+
 
 
   const fetchData = async (searchData: any) => {
@@ -44,12 +49,29 @@ export function CardUsers() {
 
 
   useEffect(() => {
-    fetchData("")
+    let search = sessionStorage.getItem('searching')
+    if (search) {
+      setClicked(true)
+      switch (search) {
+        case "forename":
+          searchForenameSubmit(searchForename);
+          break;
+        case "surname":
+          searchSubmitSurname(searchSurname);
+          break;
+        case "email":
+          searchEmailSubmit(searchEmail);
+          break;
+      }
+      sessionStorage.removeItem('searching')
+    } else
+      fetchData("")
   }, []);
 
 
 
-  const searchSubmit = (e: string) => {
+  const searchForenameSubmit = (e: string) => {
+
     if (e === "") {
       fetchData("");
       setDisable(true)
@@ -61,10 +83,13 @@ export function CardUsers() {
 
 
   const handleSearchForenameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     setSearchForename(e.target.value)
+    sessionStorage.setItem('searchForenameCard', e.target.value);
+    sessionStorage.setItem('searching', "forename")
     clearTimeout(timer)
     let timerID = window.setTimeout(() => {
-      searchSubmit(e.target.value)
+      searchForenameSubmit(e.target.value)
     }, 1000);
     setTimer(timerID)
   }
@@ -80,7 +105,10 @@ export function CardUsers() {
   }
 
   const handleSearchSurnameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     setSearchSurname(e.target.value)
+    sessionStorage.setItem('searchSurnameCard', e.target.value);
+    sessionStorage.setItem('searching', "surname")
     clearTimeout(timer)
     let timerID = window.setTimeout(() => {
       searchSubmitSurname(e.target.value)
@@ -99,7 +127,10 @@ export function CardUsers() {
   }
 
   const handleSearchEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     setSearchEmail(e.target.value)
+    sessionStorage.setItem('searchEmailCard', e.target.value);
+    sessionStorage.setItem('searching', "email")
     clearTimeout(timer)
     let timerID = window.setTimeout(() => {
       searchEmailSubmit(e.target.value)
@@ -110,46 +141,84 @@ export function CardUsers() {
 
   const forenameSorting = () => {
     setSortingType("forename")
-    if (sorting === "desc") {
-      setSorting("asc")
-    } else {
+    if (sorting === "asc") {
+      let sort = "asc"
+      fetchData("?sortingOrder=" + sort + "&sortingProperty=forenameLowerCase")
+
       setSorting("desc")
+
+    } else if (sorting === "desc") {
+      let sort = "desc"
+      setSorting("")
+      fetchData("?sortingOrder=" + sort + "&sortingProperty=forenameLowerCase")
+
+    } else {
+      setSorting("asc")
+      fetchData("")
     }
-    fetchData("?sortingOrder=" + sorting + "&sortingProperty=forenameLowerCase")
+
   }
   const surnameSorting = () => {
     setSortingType("surname")
-    if (sorting === "desc") {
-      setSorting("asc")
-    } else {
+    if (sorting === "asc") {
+      let sort = "asc"
+      fetchData("?sortingOrder=" + sort + "&sortingProperty=forenameLowerCase")
+
       setSorting("desc")
+
+    } else if (sorting === "desc") {
+      let sort = "desc"
+      setSorting("")
+      fetchData("?sortingOrder=" + sort + "&sortingProperty=forenameLowerCase")
+
+    } else {
+      setSorting("asc")
+      fetchData("")
     }
-    fetchData("?sortingOrder=" + sorting + "&sortingProperty=surnameLowerCase")
   }
 
 
   const emailSorting = () => {
     setSortingType("email")
-    if (sorting === "desc") {
-      setSorting("asc")
-    }
-    else {
-      setSorting("desc")
-    }
+    if (sorting === "asc") {
+      let sort = "asc"
+      fetchData("?sortingOrder=" + sort + "&sortingProperty=forenameLowerCase")
 
-    fetchData("?sortingOrder=" + sorting + "&sortingProperty=email")
+      setSorting("desc")
+
+    } else if (sorting === "desc") {
+      let sort = "desc"
+      setSorting("")
+      fetchData("?sortingOrder=" + sort + "&sortingProperty=forenameLowerCase")
+
+    } else {
+      setSorting("asc")
+      fetchData("")
+    }
   }
 
   const handleAdminChange = () => {
-    if (adminSorting === false) {
-      setadminSorting(true)
+    if (adminSorting === "true") {
+      let sort = "true"
+      fetchData("?isAdmin=" + sort)
+
+      setadminSorting("false")
+
+    } else if (adminSorting === "false") {
+      let sort = "false"
+      setadminSorting("")
+      fetchData("?isAdmin=" + sort)
+
     } else {
-      setadminSorting(false)
+      setadminSorting("true")
+      fetchData("")
     }
-    fetchData("?isAdmin=" + adminSorting)
   }
 
-  const handleSearch = () => {
+
+
+
+  const handleSearchClose = () => {
     if (disable) {
 
     } else {
@@ -157,14 +226,27 @@ export function CardUsers() {
       setSearchForename("");
       setSearchSurname("");
       setSearchEmail("");
-      fetchData("")
+      fetchData("");
+      sessionStorage.removeItem('searchForenameCard');
+      sessionStorage.removeItem('searchSurnameCard');
+      sessionStorage.removeItem('searchEmailCard');
     }
   }
+
 
   let SearchIcon =
     <div title={"search"}>
       <Search size={28}
-        onClick={() => setClicked(!clicked)}
+        onClick={() => {
+          setClicked(!clicked)
+          setSearchForename("");
+          setSearchSurname("");
+          setSearchEmail("");
+          fetchData("")
+          sessionStorage.removeItem('searchForenameCard');
+          sessionStorage.removeItem('searchSurnameCard');
+          sessionStorage.removeItem('searchEmailCard');
+        }}
         className={"search-button"}
       />
     </div>
@@ -179,24 +261,26 @@ export function CardUsers() {
       <header>
 
         <a> Users </a>
-        <a href='/users/add' title="nwe user">
+        <a href='/users/add' title="new user">
           <Plus size={40} className={"button-plus"} />
         </a>
 
       </header>
 
-      <table onBlur={() => setClicked(false)}>
+      <table>
         <thead>
           <tr>
-            <th> admin </th>
+            <th onClick={handleAdminChange} >admin
+              {adminSorting ? adminSorting === "true" ? "" : <ChevronUp /> : <ChevronDown />}</th>
+
             <th onClick={forenameSorting}>forename
-              {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+              {sortingType === "forename" ? sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown /> : ""}
             </th>
             <th onClick={surnameSorting}>surname
-              {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+              {sortingType === "surname" ? sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown /> : ""}
             </th>
             <th onClick={emailSorting}>email
-              {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+              {sortingType === "email" ? sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown /> : ""}
             </th>
             <th>
               {SearchIcon}
@@ -218,11 +302,6 @@ export function CardUsers() {
 
 
                 <input
-                  type="checkbox"
-                  className={"checkbox"}
-                  onClick={handleAdminChange}
-                />
-                <input
                   value={searchForename}
                   type="search"
                   className={"search-forename"}
@@ -241,10 +320,10 @@ export function CardUsers() {
                   onChange={handleSearchEmailChange} />
               </div>
               <div title="Close">
-                <X size={28}
+                <XCircle size={28}
                   className={"close-button"}
                   color={disable ? 'lightgray' : 'black'}
-                  onMouseDown={handleSearch}
+                  onMouseDown={handleSearchClose}
                 />
               </div>
             </div>

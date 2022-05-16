@@ -1,6 +1,5 @@
 package eu.ec2u.card.cards;
 
-import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.StructuredQuery;
@@ -14,36 +13,41 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
 public class CardsService {
 
-	@Autowired private CardsRepository cardsRepository;
+	@Autowired
+	private CardsRepository cardsRepository;
 
-	@Autowired private DatastoreTemplate datastoreTemplate;
+	@Autowired
+	private DatastoreTemplate datastoreTemplate;
 
-	@SuppressWarnings("ALL")
 	Cards browse(
 
-			final Optional<String> forename,
-			final Optional<String> surname,
-			final Optional<String> expiringDate,
-			final Optional<String> virtualCardNumber,
-			final Pageable slice,
-			final Optional<String> sortingOrder,
-			final Optional<String> sortingProperty
+			Optional<String> forename,
+			Optional<String> surname,
+			Optional<String> expiringDate,
+			Optional<String> virtualCardNumber,
+			Pageable slice,
+			Optional<String> sortingOrder,
+			Optional<String> sortingProperty
 
 	) {
 
-		// Queries are designed to work with only one parameter at time!
+		/* Queries are designed to work with only one parameter at time!
+		 * Sorting on queries' results with a sorting property different from filtering property is not possible due
+		 * to Datastore features. */
 
-		final Cards cards = new Cards();
+		Cards cards = new Cards();
 		cards.setPath(Cards.Id);
 
-		Query<Entity> query = null;
+		Query<Entity> query;
 
 		if (forename.isPresent() && surname.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
 
@@ -51,25 +55,27 @@ public class CardsService {
 					.setKind("Card")
 					.setFilter(StructuredQuery.CompositeFilter.and(
 							StructuredQuery.PropertyFilter.ge("holderForenameLowerCase", forename.get().toLowerCase()),
-							StructuredQuery.PropertyFilter.lt("holderForenameLowerCase", forename.get().toLowerCase() + "\ufffd")
+							StructuredQuery.PropertyFilter.lt("holderForenameLowerCase",
+									forename.get().toLowerCase() + "\ufffd")
 					))
 					.setOrderBy(sortingFromOptional(sortingOrder, "holderForenameLowerCase"))
 					.setLimit(slice.getPageSize())
 					.build();
 
-        } else if (forename.isEmpty() && surname.isPresent() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
+		} else if (forename.isEmpty() && surname.isPresent() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Card")
 					.setFilter(StructuredQuery.CompositeFilter.and(
 							StructuredQuery.PropertyFilter.ge("holderSurnameLowerCase", surname.get().toLowerCase()),
-							StructuredQuery.PropertyFilter.lt("holderSurnameLowerCase", surname.get().toLowerCase() + "\ufffd")
+							StructuredQuery.PropertyFilter.lt("holderSurnameLowerCase", surname.get().toLowerCase() +
+									"\ufffd")
 					))
 					.setOrderBy(sortingFromOptional(sortingOrder, "holderSurnameLowerCase"))
 					.setLimit(slice.getPageSize())
 					.build();
 
-        } else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isPresent() && virtualCardNumber.isEmpty()) {
+		} else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isPresent() && virtualCardNumber.isEmpty()) {
 
 			query = Query.newEntityQueryBuilder()
 					.setKind("Card")
@@ -87,9 +93,9 @@ public class CardsService {
 					.setLimit(slice.getPageSize())
 					.build();
 
-		} else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
+		} else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isEmpty()) {
 
-			if(sortingProperty.isEmpty() && sortingOrder.isEmpty()) {
+			if (sortingProperty.isEmpty() && sortingOrder.isEmpty()) {
 
 				query = Query.newEntityQueryBuilder()
 						.setKind("Card")
@@ -102,13 +108,15 @@ public class CardsService {
 
 					throw new ToolApplication.WrongQueryArgumentsException(
 							"Sorting property parameter incorrect." +
-									" Must be holderForenameLowerCase, holderSurnameLowerCase, expiringDate or virtualCardNumber!");
+									" Must be holderForenameLowerCase, holderSurnameLowerCase, expiringDate or " +
+									"virtualCardNumber!");
 
 				}
 
 				query = Query.newEntityQueryBuilder()
 						.setKind("Card")
-						.setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("holderSurnameLowerCase").trim()))
+						.setOrderBy(sortingFromOptional(sortingOrder,
+								sortingProperty.orElse("holderSurnameLowerCase").trim()))
 						.setLimit(slice.getPageSize())
 						.build();
 
@@ -123,7 +131,7 @@ public class CardsService {
 
 		List<Card> cardList = new ArrayList<>();
 
-		this.datastoreTemplate.query(query, CardData.class)
+		datastoreTemplate.query(query, CardData.class)
 				.toList()
 				.forEach(cardData -> cardList.add(cardData.transfer()));
 
@@ -134,11 +142,11 @@ public class CardsService {
 	}
 
 	@Transactional
-	Card create(final Card card) {
+	Card create(Card card) {
 
-		final String cardsFieldsValidatorResult = cardsFieldsValidator(card);
+		String cardsFieldsValidatorResult = cardsFieldsValidator(card);
 
-		if(!cardsFieldsValidatorResult.isEmpty()) {
+		if (!cardsFieldsValidatorResult.isEmpty()) {
 
 			throw new ToolApplication.WrongPostArgumentsException(cardsFieldsValidatorResult);
 
@@ -152,7 +160,7 @@ public class CardsService {
 
 	}
 
-	Card relate(final long id) {
+	Card relate(long id) {
 
 		return cardsRepository.findById(id)
 				.map(CardData::transfer)
@@ -161,11 +169,11 @@ public class CardsService {
 	}
 
 	@Transactional
-	Card update(final long id, final Card card) {
+	Card update(long id, Card card) {
 
-		final String cardsFieldsValidatorResult = cardsFieldsValidator(card);
+		String cardsFieldsValidatorResult = cardsFieldsValidator(card);
 
-		if(!cardsFieldsValidatorResult.isEmpty()) {
+		if (!cardsFieldsValidatorResult.isEmpty()) {
 
 			throw new ToolApplication.WrongPutArgumentsException(cardsFieldsValidatorResult);
 
@@ -180,7 +188,7 @@ public class CardsService {
 	}
 
 	@Transactional
-	Card delete(final long id) {
+	Card delete(long id) {
 
 		return cardsRepository.findById(id).map(data -> {
 					cardsRepository.delete(data);
@@ -193,10 +201,10 @@ public class CardsService {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	@SuppressWarnings("ALL")
-	private final StructuredQuery.OrderBy sortingFromOptional(final Optional<String> sortingOrder, final String sortingProperty) {
+	private StructuredQuery.OrderBy sortingFromOptional(Optional<String> sortingOrder,
+														String sortingProperty) {
 
-		if(sortingOrder.isPresent()) {
+		if (sortingOrder.isPresent()) {
 
 			if (sortingOrder.get().trim().equalsIgnoreCase("asc")) {
 
@@ -206,8 +214,10 @@ public class CardsService {
 
 				return StructuredQuery.OrderBy.desc(sortingProperty);
 
-			} else throw new ToolApplication.WrongQueryArgumentsException(
-					"Specified sorting order is invalid, must be asc or desc!");
+			} else {
+				throw new ToolApplication.WrongQueryArgumentsException(
+						"Specified sorting order is invalid, must be asc or desc!");
+			}
 
 		} else {
 
@@ -217,7 +227,7 @@ public class CardsService {
 
 	}
 
-	private boolean isSortingPropertyValid(final Optional<String> sortingProperty) {
+	private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
 
 		return sortingProperty.map(s -> s.trim().equalsIgnoreCase("holderForenameLowerCase") ||
 				s.trim().equalsIgnoreCase("holderSurnameLowerCase") ||
@@ -226,25 +236,29 @@ public class CardsService {
 
 	}
 
-	private String cardsFieldsValidator(final Card card) {
+	private String cardsFieldsValidator(Card card) {
 
-		final Pattern holderForenamePattern = Pattern.compile("^[a-zA-Z ]+$");
-		final Pattern holderSurnamePattern = Pattern.compile("^[a-zA-Z ]+$");
-		final Pattern virtualCardNumberPattern = Pattern.compile("^[0-9]+$");
+		Pattern holderForenamePattern = Pattern.compile("^[a-zA-Z ]+$");
+		Pattern holderSurnamePattern = Pattern.compile("^[a-zA-Z ]+$");
+		Pattern virtualCardNumberPattern = Pattern.compile("^[0-9]+$");
 
 		String result = "";
 
-		if (!holderForenamePattern.matcher(card.getHolderForename()).matches())
+		if (!holderForenamePattern.matcher(card.getHolderForename()).matches()) {
 			result += "The inserted holder forename is not valid, must contain only letters and blanks. \n";
+		}
 
-		if (!holderSurnamePattern.matcher(card.getHolderSurname()).matches())
+		if (!holderSurnamePattern.matcher(card.getHolderSurname()).matches()) {
 			result += "The inserted holder surname is not valid, must contain only letters and blanks. \n";
+		}
 
-		if (!virtualCardNumberPattern.matcher(Long.toString(card.getVirtualCardNumber())).matches())
+		if (!virtualCardNumberPattern.matcher(Long.toString(card.getVirtualCardNumber())).matches()) {
 			result += "The inserted virtual card number is not valid, must contain only numbers without blanks. \n";
+		}
 
-		if (card.getExpiringDate().isBefore(LocalDate.now()))
+		if (card.getExpiringDate().isBefore(LocalDate.now())) {
 			result += "The inserted date must follow today's. \n";
+		}
 
 		return result;
 

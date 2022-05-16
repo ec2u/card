@@ -1,5 +1,5 @@
 
-import { ChevronRight, Plus, Search, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronRight, Plus, Search, XCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import React, { createElement, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './cards.css';
@@ -16,19 +16,22 @@ interface Card {
 
 
 export function VirtualCards() {
-
+    let searchForename_data = sessionStorage.getItem('searchForenameCard');
+    let searchSurname_data = sessionStorage.getItem('searchSurnameCard');
+    let searchExpiryDate_data = sessionStorage.getItem('searchExpiryDateCard');
+    let searchCardNumber_data = sessionStorage.getItem('searchCardNumber');
     const [cards, setCards] = useState<Card[]>([]);
     const [loading, setLoading] = useState<Boolean>(false);
     const [error, setError] = useState<any>(null);
     const [clicked, setClicked] = useState<Boolean>(false);
-    const [searchForename, setSearchForename] = useState<string>("");
-    const [searchSurname, setSearchSurname] = useState<string>("");
-    const [searchDate, setSearchDate] = useState<any>("");
-    const [searchNumber, setSearchNumber] = useState<string>("");
+    const [searchForename, setSearchForename] = useState<string>(searchForename_data != null ? searchForename_data : "");
+    const [searchSurname, setSearchSurname] = useState<string>(searchSurname_data != null ? searchSurname_data : "");
+    const [searchDate, setSearchDate] = useState<any>(searchExpiryDate_data != null ? searchExpiryDate_data : "");
+    const [searchNumber, setSearchNumber] = useState<any>(searchCardNumber_data != null ? searchCardNumber_data : "");
     const [timer, setTimer] = useState<number>(0);
     const [disable, setDisable] = useState<Boolean>(true)
 
-    const [sorting, setSorting] = useState<string>("desc");
+    const [sorting, setSorting] = useState<string>("asc");
     const [sortingType, setSortingType] = useState<string>("")
 
 
@@ -48,7 +51,26 @@ export function VirtualCards() {
     }
 
     useEffect(() => {
-        fetchData("")
+        let search = sessionStorage.getItem('searching')
+        if (search) {
+            setClicked(true)
+            switch (search) {
+                case "forename":
+                    searchForenameSubmit(searchForename);
+                    break;
+                case "surname":
+                    searchSurnameSubmit(searchSurname);
+                    break;
+                case "expiringDate":
+                    searchDateSubmit(searchDate);
+                    break;
+                case "cardnumber":
+                    searchDateSubmit(searchNumber);
+                    break;
+            }
+            sessionStorage.removeItem('searching')
+        } else
+            fetchData("")
     }, [])
 
 
@@ -63,6 +85,8 @@ export function VirtualCards() {
     }
     const handleSearchForenameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchForename(e.target.value)
+        sessionStorage.setItem('searchForenameCard', e.target.value);
+        sessionStorage.setItem('searching', "forename")
         clearTimeout(timer)
         let timerID = window.setTimeout(() => {
             searchForenameSubmit(e.target.value)
@@ -81,6 +105,8 @@ export function VirtualCards() {
     }
     const handleSearchSurnameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchSurname(e.target.value)
+        sessionStorage.setItem('searchSurnameCard', e.target.value);
+        sessionStorage.setItem('searching', "surname")
         clearTimeout(timer)
         let timerID = window.setTimeout(() => {
             searchSurnameSubmit(e.target.value)
@@ -100,6 +126,8 @@ export function VirtualCards() {
 
     const handleSearchDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchDate(e.target.value)
+        sessionStorage.setItem('searchExpiryDateCard', e.target.value);
+        sessionStorage.setItem('searching', "expiringDate")
         clearTimeout(timer)
         let timerID = window.setTimeout(() => {
             searchDateSubmit(e.target.value)
@@ -119,6 +147,8 @@ export function VirtualCards() {
 
     const handleSearchNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchNumber(e.target.value)
+        sessionStorage.setItem('searchCardNumber', e.target.value);
+        sessionStorage.setItem('searching', "cardnumber")
         clearTimeout(timer)
         let timerID = window.setTimeout(() => {
             searchNumberSubmit(e.target.value)
@@ -129,43 +159,78 @@ export function VirtualCards() {
 
     const forenameSorting = () => {
         setSortingType("forename")
+        if (sorting === "asc") {
+            let sort = "asc"
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=holderForenameLowerCase")
 
-        if (sorting === "desc") {
-            setSorting("asc")
-        } else {
             setSorting("desc")
+
+        } else if (sorting === "desc") {
+            let sort = "desc"
+            setSorting("")
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=holderForenameLowerCase")
+
+        } else {
+            setSorting("asc")
+            fetchData("")
         }
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty=holderForenameLowerCase")
     }
 
     const surnameSorting = () => {
         setSortingType("surname")
-        if (sorting === "desc") {
-            setSorting("asc")
-        } else {
+        if (sorting === "asc") {
+            let sort = "asc"
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=holderSurnameLowerCase")
+
             setSorting("desc")
+
+        } else if (sorting === "desc") {
+            let sort = "desc"
+            setSorting("")
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=holderSurnameLowerCase")
+
+        } else {
+            setSorting("asc")
+            fetchData("")
         }
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty=holderSurnameLowerCase")
     }
 
     const expiryDateSorting = () => {
         setSortingType("expiringDate")
-        if (sorting === "desc") {
-            setSorting("asc")
-        } else {
+        if (sorting === "asc") {
+            let sort = "asc"
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=expiringDate")
+
             setSorting("desc")
+
+        } else if (sorting === "desc") {
+            let sort = "desc"
+            setSorting("")
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=expiringDate")
+
+        } else {
+            setSorting("asc")
+            fetchData("")
         }
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty=expiringDate")
     }
 
     const numberSorting = () => {
         setSortingType("virtualCardNumber")
-        if (sorting === "desc") {
-            setSorting("asc")
-        } else {
+        if (sorting === "asc") {
+            let sort = "asc"
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=virtualCardNumber")
+
             setSorting("desc")
+
+        } else if (sorting === "desc") {
+            let sort = "desc"
+            setSorting("")
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=virtualCardNumber")
+
+        } else {
+            setSorting("asc")
+            fetchData("")
         }
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty=virtualCardNumber")
     }
 
 
@@ -173,10 +238,20 @@ export function VirtualCards() {
 
 
     let SearchIcon =
-        <div title={"search"} className={"search-icon"}>
-            <Search size={28} color="gray"
+        <div title={"search"} className={"button-search"}>
+            <Search size={28}
                 className={'button-search'}
-                onClick={() => setClicked(!clicked)}
+                onClick={() => {
+                    setClicked(!clicked)
+                    setSearchForename("");
+                    setSearchSurname("");
+                    setSearchNumber("")
+                    fetchData("")
+                    sessionStorage.removeItem('searchForenameCard');
+                    sessionStorage.removeItem('searchSurnameCard');
+                    sessionStorage.removeItem('searchExpiryDateCard');
+                    sessionStorage.removeItem('searchCardNumber');
+                }}
             />
         </div>
 
@@ -189,6 +264,10 @@ export function VirtualCards() {
             setSearchSurname("");
             setSearchNumber("")
             fetchData("")
+            sessionStorage.removeItem('searchForenameCard');
+            sessionStorage.removeItem('searchSurnameCard');
+            sessionStorage.removeItem('searchEmailCard');
+            sessionStorage.removeItem('searchCardNumber');
         }
     }
 
@@ -208,16 +287,16 @@ export function VirtualCards() {
                 <thead>
                     <tr>
                         <th onClick={forenameSorting}>forename
-                            {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                            {sortingType === "forename" ? sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown /> : ""}
                         </th>
                         <th onClick={surnameSorting} >surname
-                            {sortingType === "surname" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                            {sortingType === "surname" ? sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown /> : ""}
                         </th>
                         <th onClick={expiryDateSorting}> expiry date
-                            {sortingType === "expiringDate" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                            {sortingType === "expiringDate" ? sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown /> : ""}
                         </th>
                         <th onClick={numberSorting}>card number
-                            {sortingType === "virtualCardNumber" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                            {sortingType === "virtualCardNumber" ? sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown /> : ""}
                         </th>
                         <th>
                             {SearchIcon}
@@ -258,7 +337,7 @@ export function VirtualCards() {
                                 />
                             </div>
                             <div >
-                                <X size={30}
+                                <XCircle size={30}
                                     color={disable ? 'lightgray' : 'black'}
                                     onMouseDown={handleSearch}
                                     className={"close-button"}

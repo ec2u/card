@@ -27,10 +27,29 @@ card-addcard {
     }
   }
 
-  & .error {
-    background: rgb(209, 93, 93);
+  & .error-message {
+    background: rgb(220, 215, 215);
+    font-size: 1em;
     color: black;
-    height: 50px;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    padding: 0.4em;
+    border: 2px solid gray;
+    margin-bottom: 1em;
+    & div {
+      display: flex;
+      justify-content: space-between;
+      & span {
+        color: red;
+        cursor: pointer;
+      }
+    }
+
+    & p {
+      color: red;
+      margin-top: 10px;
+    }
   }
 
   & form {
