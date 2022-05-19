@@ -20,6 +20,9 @@ card-addtoken {
       color: black;
       font-size: 1.4em;
     }
+    & .tokens-link {
+      pointer-events: none;
+    }
     & .tokens-link:hover {
       color: gray;
     }

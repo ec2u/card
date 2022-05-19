@@ -22,6 +22,9 @@ card-addcard {
       color: black;
       font-size: 1.4em;
     }
+    & .cards-link {
+      pointer-events: none;
+    }
     & .cards-link:hover {
       color: gray;
     }
