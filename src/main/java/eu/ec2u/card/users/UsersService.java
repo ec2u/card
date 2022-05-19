@@ -1,6 +1,7 @@
 package eu.ec2u.card.users;
 
 import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.EntityQuery;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
@@ -12,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
@@ -27,16 +25,12 @@ public class UsersService {
 	@Autowired
 	private DatastoreTemplate datastoreTemplate;
 
-	@SuppressWarnings("ALL")
 	Users browse(
 
-			final Optional<String> forename,
-			final Optional<String> surname,
-			final Optional<String> email,
-			final Optional<Boolean> isAdmin,
-			final Pageable slice,
-			final Optional<String> sortingOrder,
-			final Optional<String> sortingProperty
+			Map<String, Object> notNullParamHashMap,
+			Pageable slice,
+			Optional<String> sortingOrder,
+			Optional<String> sortingProperty
 
 	) {
 
@@ -44,96 +38,41 @@ public class UsersService {
 		 * Sorting on queries' results with a sorting property different from filtering property is not possible due
 		 * to Datastore features. */
 
-		final Users users = new Users();
+		Users users = new Users();
 		users.setPath(Users.Id);
 
-		Query<Entity> query = null;
+		EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("User").setLimit(slice.getPageSize());
 
-		if (forename.isPresent() && surname.isEmpty() && email.isEmpty() && isAdmin.isEmpty()) {
+		if (notNullParamHashMap.isEmpty() && sortingOrder.isPresent() && sortingProperty.isPresent()) {
 
-			query = Query.newEntityQueryBuilder()
-					.setKind("User")
-					.setFilter(StructuredQuery.CompositeFilter.and(
-							StructuredQuery.PropertyFilter.ge("forenameLowerCase",
-									forename.get().trim().toLowerCase()),
-							StructuredQuery.PropertyFilter.lt("forenameLowerCase",
-									forename.get().trim().toLowerCase() + "\ufffd")
-					))
-					.setOrderBy(sortingFromOptional(sortingOrder, "forenameLowerCase"))
-					.setLimit(slice.getPageSize())
-					.build();
+			builder = builder.setOrderBy(sortingHelper(sortingOrder.get(), sortingProperty.get()));
 
-		} else if (forename.isEmpty() && surname.isPresent() && email.isEmpty() && isAdmin.isEmpty()) {
+		} else if (!notNullParamHashMap.isEmpty() && sortingOrder.isEmpty()) {
 
-			query = Query.newEntityQueryBuilder()
-					.setKind("User")
-					.setFilter(StructuredQuery.CompositeFilter.and(
-							StructuredQuery.PropertyFilter.ge("surnameLowerCase", surname.get().trim().toLowerCase()),
-							StructuredQuery.PropertyFilter.lt("surnameLowerCase",
-									surname.get().trim().toLowerCase() + "\ufffd")
-					))
-					.setOrderBy(sortingFromOptional(sortingOrder, "surnameLowerCase"))
-					.setLimit(slice.getPageSize())
-					.build();
+			Map.Entry<String, Object> firstEntry = notNullParamHashMap.entrySet().stream().findFirst().get();
 
-		} else if (forename.isEmpty() && surname.isEmpty() && email.isPresent() && isAdmin.isEmpty()) {
+			if (firstEntry.getKey().equals("isAdmin")) {
 
-			query = Query.newEntityQueryBuilder()
-					.setKind("User")
-					.setFilter(StructuredQuery.CompositeFilter.and(
-							StructuredQuery.PropertyFilter.ge("email", email.get().trim().toLowerCase()),
-							StructuredQuery.PropertyFilter.lt("email", email.get().trim().toLowerCase() + "\ufffd")
-					))
-					.setOrderBy(sortingFromOptional(sortingOrder, "email"))
-					.setLimit(slice.getPageSize())
-					.build();
-
-		} else if (forename.isEmpty() && surname.isEmpty() && email.isEmpty() && isAdmin.isPresent()) {
-
-			query = Query.newEntityQueryBuilder()
-					.setKind("User")
-					.setFilter(StructuredQuery.PropertyFilter.eq("admin", isAdmin.get()))
-					.setLimit(slice.getPageSize())
-					.build();
-
-		} else if (forename.isEmpty() && surname.isEmpty() && email.isEmpty() && isAdmin.isEmpty()) {
-
-			if (sortingProperty.isEmpty() && sortingOrder.isEmpty()) {
-
-				query = Query.newEntityQueryBuilder()
-						.setKind("User")
-						.setLimit(slice.getPageSize())
-						.build();
+				builder = builder.setFilter(StructuredQuery.PropertyFilter.eq("admin",
+						(Boolean) firstEntry.getValue()));
 
 			} else {
 
-				if (!isSortingPropertyValid(sortingProperty)) {
-
-					throw new ToolApplication.WrongQueryArgumentsException(
-							"Sorting property parameter incorrect. Must be forenameLowerCase, surnameLowerCase or " +
-									"email!");
-
-				}
-
-				query = Query.newEntityQueryBuilder()
-						.setKind("User")
-						.setOrderBy(sortingFromOptional(sortingOrder,
-								sortingProperty.orElse("surnameLowerCase").trim()))
-						.setLimit(slice.getPageSize())
-						.build();
+				builder = builder.setFilter(StructuredQuery.CompositeFilter.and(
+						StructuredQuery.PropertyFilter.ge(firstEntry.getKey(),
+								((String) firstEntry.getValue()).trim().toLowerCase()),
+						StructuredQuery.PropertyFilter.lt(firstEntry.getKey(),
+								((String) firstEntry.getValue()).trim().toLowerCase() + "\ufffd")));
 
 			}
 
-		} else {
-
-			throw new ToolApplication.WrongQueryArgumentsException(
-					"Queries are designed to work with only one parameter at time!");
-
 		}
+
+		Query<Entity> query = builder.build();
 
 		List<User> userList = new ArrayList<>();
 
-		this.datastoreTemplate.query(query, UserData.class)
+		datastoreTemplate.query(query, UserData.class)
 				.toList()
 				.forEach(userData -> userList.add(userData.transfer()));
 
@@ -203,37 +142,22 @@ public class UsersService {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	@SuppressWarnings("ALL")
-	private final StructuredQuery.OrderBy sortingFromOptional(Optional<String> sortingOrder, String sortingProperty) {
+	private StructuredQuery.OrderBy sortingHelper(
 
-		if (sortingOrder.isPresent()) {
+			String sortingOrder,
+			String sortingProperty
 
-			if (sortingOrder.get().trim().equalsIgnoreCase("asc")) {
+	) {
 
-				return StructuredQuery.OrderBy.asc(sortingProperty);
-
-			} else if (sortingOrder.get().trim().equalsIgnoreCase("desc")) {
-
-				return StructuredQuery.OrderBy.desc(sortingProperty);
-
-			} else {
-				throw new ToolApplication.WrongQueryArgumentsException(
-						"Specified sorting order is invalid, must be asc or desc!");
-			}
-
-		} else {
+		if (sortingOrder.equals("asc")) {
 
 			return StructuredQuery.OrderBy.asc(sortingProperty);
 
+		} else {
+
+			return StructuredQuery.OrderBy.desc(sortingProperty);
+
 		}
-
-	}
-
-	private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
-
-		return sortingProperty.map(s -> s.trim().equalsIgnoreCase("forenameLowerCase") ||
-				s.trim().equalsIgnoreCase("surnameLowerCase") ||
-				s.trim().equalsIgnoreCase("email")).orElse(true);
 
 	}
 

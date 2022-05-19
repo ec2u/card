@@ -3,6 +3,7 @@ package eu.ec2u.card.tokens;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.ec2u.card.Tool.Container;
 import eu.ec2u.card.Tool.Resource;
+import eu.ec2u.card.ToolApplication;
 import static eu.ec2u.card.ToolConfiguration.ContainerSize;
 import eu.ec2u.card.ToolSecurity.Profile;
 import static eu.ec2u.card.events.Events.Action.*;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -43,9 +46,53 @@ public final class TokensController {
 
 	) {
 
+		Map<String, Optional<?>> paramHashMap = Map.of(
+				"username", username,
+				"tokenNumber", tokenNumber
+		);
+
+		Map<String, Object> notNullParamHashMap = new HashMap<>();
+		paramHashMap.forEach((s, o) -> o.ifPresent(value -> notNullParamHashMap.put(s, value)));
+
+		// Avoiding sortingOrder without sortingProperty or sortingProperty without sortingOrder
+		if ((sortingOrder.isPresent() && sortingProperty.isEmpty()) ||
+				(sortingOrder.isEmpty() && sortingProperty.isPresent())) {
+
+			throw new ToolApplication.WrongQueryArgumentsException(
+					"In order to sort you must insert sortingOrder and sortingProperty both!"
+			);
+
+		}
+
+		// Checking sortingOrder
+		if (!isSortingOrderValid(sortingOrder)) {
+
+			throw new ToolApplication.WrongQueryArgumentsException(
+					"sortingOrder is not valid, must be asc or desc!"
+			);
+
+		}
+
+		// Checking sortingProperty
+		if (!isSortingPropertyValid(sortingProperty)) {
+
+			throw new ToolApplication.WrongQueryArgumentsException(
+					"sortingProperty is not valid, must be username or tokenNumber!"
+			);
+
+		}
+
+		// Avoiding querying and sorting in the same time
+		if (!notNullParamHashMap.isEmpty() && sortingOrder.isPresent()) {
+
+			throw new ToolApplication.WrongQueryArgumentsException(
+					"Sorting and querying are not allowed in the same get request!"
+			);
+
+		}
+
 		return ok().body(tokens.browse(
-				username,
-				tokenNumber,
+				notNullParamHashMap,
 				PageRequest.of(page, size),
 				sortingOrder,
 				sortingProperty
@@ -100,6 +147,38 @@ public final class TokensController {
 	) {
 
 		return noContent().location(events.trace(profile, delete, tokens.delete(tokenNumber))).build();
+
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private boolean isSortingOrderValid(Optional<String> sortingOrder) {
+
+		if (sortingOrder.isEmpty()) {
+
+			return true;
+
+		} else {
+
+			return sortingOrder.get().trim().equalsIgnoreCase("asc")
+					|| sortingOrder.get().trim().equalsIgnoreCase("desc");
+
+		}
+
+	}
+
+	private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
+
+		if (sortingProperty.isEmpty()) {
+
+			return true;
+
+		} else {
+
+			return sortingProperty.get().trim().equalsIgnoreCase("username")
+					|| sortingProperty.get().trim().equalsIgnoreCase("tokenNumber");
+
+		}
 
 	}
 

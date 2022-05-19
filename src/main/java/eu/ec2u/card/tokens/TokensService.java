@@ -1,6 +1,7 @@
 package eu.ec2u.card.tokens;
 
 import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.EntityQuery;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
@@ -12,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
@@ -27,14 +25,12 @@ public class TokensService {
 	@Autowired
 	private DatastoreTemplate datastoreTemplate;
 
-	@SuppressWarnings("ALL")
 	Tokens browse(
 
-			final Optional<String> username,
-			final Optional<String> tokenNumber,
-			final Pageable slice,
-			final Optional<String> sortingOrder,
-			final Optional<String> sortingProperty
+			Map<String, Object> notNullParamHashMap,
+			Pageable slice,
+			Optional<String> sortingOrder,
+			Optional<String> sortingProperty
 
 	) {
 
@@ -42,68 +38,32 @@ public class TokensService {
 		 *  Sorting on queries' results with a sorting property different from filtering property is not possible due
 		 * to Datastore features. */
 
-		final Tokens tokens = new Tokens();
+		Tokens tokens = new Tokens();
 		tokens.setPath(Tokens.Id);
 
-		Query<Entity> query = null;
+		EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("Token").setLimit(slice.getPageSize());
 
-		if (tokenNumber.isPresent() && username.isEmpty()) {
+		if (notNullParamHashMap.isEmpty() && sortingOrder.isPresent() && sortingProperty.isPresent()) {
 
-			query = Query.newEntityQueryBuilder()
-					.setKind("Token")
-					.setFilter(StructuredQuery.PropertyFilter.eq("tokenNumber", tokenNumber.get()))
-					.setLimit(slice.getPageSize())
-					.setOrderBy(sortingFromOptional(sortingOrder, "tokenNumber"))
-					.build();
+			builder = builder.setOrderBy(sortingHelper(sortingOrder.get(), sortingProperty.get()));
 
-		} else if (tokenNumber.isEmpty() && username.isPresent()) {
+		} else if (!notNullParamHashMap.isEmpty() && sortingOrder.isEmpty()) {
 
-			query = Query.newEntityQueryBuilder()
-					.setKind("Token")
-					.setFilter(StructuredQuery.CompositeFilter.and(
-							StructuredQuery.PropertyFilter.ge("usernameLowerCase", username.get().toLowerCase()),
-							StructuredQuery.PropertyFilter.lt("usernameLowerCase", username.get().toLowerCase() +
-									"\ufffd")))
-					.setLimit(slice.getPageSize())
-					.setOrderBy(sortingFromOptional(sortingOrder, "usernameLowerCase"))
-					.build();
+			Map.Entry<String, Object> firstEntry = notNullParamHashMap.entrySet().stream().findFirst().get();
 
-		} else if (tokenNumber.isEmpty() && username.isEmpty()) {
-
-			if (sortingProperty.isEmpty() && sortingOrder.isEmpty()) {
-
-				query = Query.newEntityQueryBuilder()
-						.setKind("Token")
-						.setLimit(slice.getPageSize())
-						.build();
-
-			} else {
-
-				if (!isSortingPropertyValid(sortingProperty)) {
-
-					throw new ToolApplication.WrongQueryArgumentsException(
-							"Sorting property parameter incorrect. Must be username or tokenNumber!");
-
-				}
-
-				query = Query.newEntityQueryBuilder()
-						.setKind("Token")
-						.setLimit(slice.getPageSize())
-						.setOrderBy(sortingFromOptional(sortingOrder, sortingProperty.orElse("username").trim()))
-						.build();
-
-			}
-
-		} else {
-
-			throw new ToolApplication.WrongQueryArgumentsException(
-					"Queries are designed to work with only one parameter at time!");
+			builder = builder.setFilter(StructuredQuery.CompositeFilter.and(
+					StructuredQuery.PropertyFilter.ge(firstEntry.getKey(),
+							((String) firstEntry.getValue()).trim().toLowerCase()),
+					StructuredQuery.PropertyFilter.lt(firstEntry.getKey(),
+							((String) firstEntry.getValue()).trim().toLowerCase() + "\ufffd")));
 
 		}
+		
+		Query<Entity> query = builder.build();
 
 		List<Token> tokenList = new ArrayList<>();
 
-		this.datastoreTemplate.query(query, TokenData.class)
+		datastoreTemplate.query(query, TokenData.class)
 				.toList()
 				.forEach(tokenData -> tokenList.add(tokenData.transfer()));
 
@@ -173,37 +133,22 @@ public class TokensService {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	@SuppressWarnings("ALL")
-	private final StructuredQuery.OrderBy sortingFromOptional(final Optional<String> sortingOrder,
-															  final String sortingProperty) {
+	private StructuredQuery.OrderBy sortingHelper(
 
-		if (sortingOrder.isPresent()) {
+			String sortingOrder,
+			String sortingProperty
 
-			if (sortingOrder.get().trim().equalsIgnoreCase("asc")) {
+	) {
 
-				return StructuredQuery.OrderBy.asc(sortingProperty);
-
-			} else if (sortingOrder.get().trim().equalsIgnoreCase("desc")) {
-
-				return StructuredQuery.OrderBy.desc(sortingProperty);
-
-			} else {
-				throw new ToolApplication.WrongQueryArgumentsException(
-						"Specified sorting order is invalid, must be asc or desc!");
-			}
-
-		} else {
+		if (sortingOrder.equals("asc")) {
 
 			return StructuredQuery.OrderBy.asc(sortingProperty);
 
+		} else {
+
+			return StructuredQuery.OrderBy.desc(sortingProperty);
+
 		}
-
-	}
-
-	private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
-
-		return sortingProperty.map(s -> s.trim().equalsIgnoreCase("username") ||
-				s.trim().equalsIgnoreCase("tokenNumber")).orElse(true);
 
 	}
 
