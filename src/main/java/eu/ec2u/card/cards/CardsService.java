@@ -1,6 +1,7 @@
 package eu.ec2u.card.cards;
 
 import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.EntityQuery;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
@@ -13,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
@@ -30,10 +28,7 @@ public class CardsService {
 
 	Cards browse(
 
-			Optional<String> forename,
-			Optional<String> surname,
-			Optional<String> expiringDate,
-			Optional<String> virtualCardNumber,
+			Map<String, Object> notNullParamHashMap,
 			Pageable slice,
 			Optional<String> sortingOrder,
 			Optional<String> sortingProperty
@@ -47,88 +42,26 @@ public class CardsService {
 		Cards cards = new Cards();
 		cards.setPath(Cards.Id);
 
-		Query<Entity> query;
+		EntityQuery.Builder builder = Query.newEntityQueryBuilder().setKind("Card").setLimit(slice.getPageSize());
 
-		if (forename.isPresent() && surname.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
+		if (notNullParamHashMap.isEmpty() && sortingOrder.isPresent() && sortingProperty.isPresent()) {
 
-			query = Query.newEntityQueryBuilder()
-					.setKind("Card")
-					.setFilter(StructuredQuery.CompositeFilter.and(
-							StructuredQuery.PropertyFilter.ge("holderForenameLowerCase", forename.get().toLowerCase()),
-							StructuredQuery.PropertyFilter.lt("holderForenameLowerCase",
-									forename.get().toLowerCase() + "\ufffd")
-					))
-					.setOrderBy(sortingFromOptional(sortingOrder, "holderForenameLowerCase"))
-					.setLimit(slice.getPageSize())
-					.build();
+			builder = builder.setOrderBy(sortingHelper(sortingOrder.get(), sortingProperty.get()));
 
-		} else if (forename.isEmpty() && surname.isPresent() && expiringDate.isEmpty() && virtualCardNumber.isEmpty()) {
+		} else if (!notNullParamHashMap.isEmpty() && sortingOrder.isEmpty()) {
 
-			query = Query.newEntityQueryBuilder()
-					.setKind("Card")
-					.setFilter(StructuredQuery.CompositeFilter.and(
-							StructuredQuery.PropertyFilter.ge("holderSurnameLowerCase", surname.get().toLowerCase()),
-							StructuredQuery.PropertyFilter.lt("holderSurnameLowerCase", surname.get().toLowerCase() +
-									"\ufffd")
-					))
-					.setOrderBy(sortingFromOptional(sortingOrder, "holderSurnameLowerCase"))
-					.setLimit(slice.getPageSize())
-					.build();
+			Map.Entry<String, Object> firstEntry = notNullParamHashMap.entrySet().stream().findFirst().get();
 
-		} else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isPresent() && virtualCardNumber.isEmpty()) {
-
-			query = Query.newEntityQueryBuilder()
-					.setKind("Card")
-					.setFilter(StructuredQuery.PropertyFilter.le("expiringDate", expiringDate.get().trim()))
-					.setOrderBy(sortingFromOptional(sortingOrder, "expiringDate"))
-					.setLimit(slice.getPageSize())
-					.build();
-
-		} else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isEmpty() && virtualCardNumber.isPresent()) {
-
-			query = Query.newEntityQueryBuilder()
-					.setKind("Card")
-					.setFilter(StructuredQuery.PropertyFilter.eq("virtualCardNumber", virtualCardNumber.get()))
-					.setOrderBy(sortingFromOptional(sortingOrder, "virtualCardNumber"))
-					.setLimit(slice.getPageSize())
-					.build();
-
-		} else if (forename.isEmpty() && surname.isEmpty() && expiringDate.isEmpty()) {
-
-			if (sortingProperty.isEmpty() && sortingOrder.isEmpty()) {
-
-				query = Query.newEntityQueryBuilder()
-						.setKind("Card")
-						.setLimit(slice.getPageSize())
-						.build();
-
-			} else {
-
-				if (!isSortingPropertyValid(sortingProperty)) {
-
-					throw new ToolApplication.WrongQueryArgumentsException(
-							"Sorting property parameter incorrect." +
-									" Must be holderForenameLowerCase, holderSurnameLowerCase, expiringDate or " +
-									"virtualCardNumber!");
-
-				}
-
-				query = Query.newEntityQueryBuilder()
-						.setKind("Card")
-						.setOrderBy(sortingFromOptional(sortingOrder,
-								sortingProperty.orElse("holderSurnameLowerCase").trim()))
-						.setLimit(slice.getPageSize())
-						.build();
-
-			}
-
-		} else {
-
-			throw new ToolApplication.WrongQueryArgumentsException(
-					"Queries are designed to work with only one parameter at time!");
+			builder = builder.setFilter(StructuredQuery.CompositeFilter.and(
+					StructuredQuery.PropertyFilter.ge(firstEntry.getKey(),
+							((String) firstEntry.getValue()).trim().toLowerCase()),
+					StructuredQuery.PropertyFilter.lt(firstEntry.getKey(),
+							((String) firstEntry.getValue()).trim().toLowerCase() + "\ufffd")));
 
 		}
 
+		Query<Entity> query = builder.build();
+		
 		List<Card> cardList = new ArrayList<>();
 
 		datastoreTemplate.query(query, CardData.class)
@@ -201,38 +134,22 @@ public class CardsService {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private StructuredQuery.OrderBy sortingFromOptional(Optional<String> sortingOrder,
-														String sortingProperty) {
+	private StructuredQuery.OrderBy sortingHelper(
 
-		if (sortingOrder.isPresent()) {
+			String sortingOrder,
+			String sortingProperty
 
-			if (sortingOrder.get().trim().equalsIgnoreCase("asc")) {
+	) {
 
-				return StructuredQuery.OrderBy.asc(sortingProperty);
-
-			} else if (sortingOrder.get().trim().equalsIgnoreCase("desc")) {
-
-				return StructuredQuery.OrderBy.desc(sortingProperty);
-
-			} else {
-				throw new ToolApplication.WrongQueryArgumentsException(
-						"Specified sorting order is invalid, must be asc or desc!");
-			}
-
-		} else {
+		if (sortingOrder.equals("asc")) {
 
 			return StructuredQuery.OrderBy.asc(sortingProperty);
 
+		} else {
+
+			return StructuredQuery.OrderBy.desc(sortingProperty);
+
 		}
-
-	}
-
-	private boolean isSortingPropertyValid(Optional<String> sortingProperty) {
-
-		return sortingProperty.map(s -> s.trim().equalsIgnoreCase("holderForenameLowerCase") ||
-				s.trim().equalsIgnoreCase("holderSurnameLowerCase") ||
-				s.trim().equalsIgnoreCase("virtualCardNumber") ||
-				s.trim().equalsIgnoreCase("expiringDate")).orElse(true);
 
 	}
 
