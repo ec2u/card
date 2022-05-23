@@ -107,6 +107,7 @@ export function CardTokens() {
     }
 
     const usernameSorting = () => {
+        setSearchUsername("")
         setSortingType("username")
         if (sorting === "asc") {
             let sort = "asc"
@@ -126,6 +127,7 @@ export function CardTokens() {
     }
 
     const tokenNumberSorting = () => {
+        setsearchNumber("")
         setSortingType("tokenNumber")
         if (sorting === "asc") {
             let sort = "asc"
@@ -184,7 +186,7 @@ export function CardTokens() {
 
             </header>
 
-            <table onBlur={() => setClicked(false)}>
+            <table>
 
                 <thead>
 

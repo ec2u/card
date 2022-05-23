@@ -14,25 +14,14 @@ interface Card {
 
 }
 
-const newDate = () => {
-    var today, dd, mm, yyyy;
-    today = new Date();
-    dd = today.getDate() + 1;
-    mm = today.getMonth() + 1;
-    yyyy = today.getFullYear();
-
-    if (mm < 10)
-        mm = '0' + mm.toString();
-    if (dd < 10)
-        dd = '0' + dd.toString();
-
-    return yyyy + "-" + mm + "-" + dd
-}
 
 
 export function AddCard() {
 
-
+    let Forename_data = sessionStorage.getItem('ForenameCard');
+    let Surname_data = sessionStorage.getItem('SurnameCard');
+    let ExpiryDate_data = sessionStorage.getItem('ExpiryDateCard');
+    let CardNumber_data = sessionStorage.getItem('CardNumber');
     const [addcard, setAddcard] = useState({
         holderForename: "",
         holderSurname: "",

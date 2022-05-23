@@ -158,6 +158,7 @@ export function VirtualCards() {
 
 
     const forenameSorting = () => {
+        setSearchForename("")
         setSortingType("forename")
         if (sorting === "asc") {
             let sort = "asc"
@@ -177,6 +178,7 @@ export function VirtualCards() {
     }
 
     const surnameSorting = () => {
+        setSearchSurname("")
         setSortingType("surname")
         if (sorting === "asc") {
             let sort = "asc"
@@ -196,7 +198,9 @@ export function VirtualCards() {
     }
 
     const expiryDateSorting = () => {
+        setSearchDate("")
         setSortingType("expiringDate")
+
         if (sorting === "asc") {
             let sort = "asc"
             fetchData("?sortingOrder=" + sort + "&sortingProperty=expiringDate")
@@ -215,6 +219,7 @@ export function VirtualCards() {
     }
 
     const numberSorting = () => {
+        setSearchNumber("")
         setSortingType("virtualCardNumber")
         if (sorting === "asc") {
             let sort = "asc"
@@ -283,7 +288,7 @@ export function VirtualCards() {
 
             </header>
 
-            <table onBlur={() => setClicked(false)}>
+            <table>
                 <thead>
                     <tr>
                         <th onClick={forenameSorting}>forename

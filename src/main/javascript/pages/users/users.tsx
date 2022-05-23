@@ -83,7 +83,7 @@ export function CardUsers() {
 
 
   const handleSearchForenameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
+
     setSearchForename(e.target.value)
     sessionStorage.setItem('searchForenameCard', e.target.value);
     sessionStorage.setItem('searching', "forename")
@@ -105,7 +105,7 @@ export function CardUsers() {
   }
 
   const handleSearchSurnameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
+
     setSearchSurname(e.target.value)
     sessionStorage.setItem('searchSurnameCard', e.target.value);
     sessionStorage.setItem('searching', "surname")
@@ -127,7 +127,7 @@ export function CardUsers() {
   }
 
   const handleSearchEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
+
     setSearchEmail(e.target.value)
     sessionStorage.setItem('searchEmailCard', e.target.value);
     sessionStorage.setItem('searching', "email")
@@ -140,6 +140,7 @@ export function CardUsers() {
   }
 
   const forenameSorting = () => {
+    setSearchForename("")
     setSortingType("forename")
     if (sorting === "asc") {
       let sort = "asc"
@@ -159,6 +160,7 @@ export function CardUsers() {
 
   }
   const surnameSorting = () => {
+    setSearchSurname("")
     setSortingType("surname")
     if (sorting === "asc") {
       let sort = "asc"
@@ -179,6 +181,7 @@ export function CardUsers() {
 
 
   const emailSorting = () => {
+    setSearchEmail("")
     setSortingType("email")
     if (sorting === "asc") {
       let sort = "asc"
