@@ -22,10 +22,6 @@ card-tokens {
     border-collapse: collapse;
     display: grid;
     overflow-x: auto;
-    & tbody {
-      overflow-y: auto;
-      height: 80vh;
-    }
 
     & tr {
       display: grid;

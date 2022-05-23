@@ -1,5 +1,6 @@
 card-users {
   width: 95.3%;
+  height: 100%;
   display: grid;
   align-items: stretch;
 
@@ -19,13 +20,13 @@ card-users {
   }
   & table {
     width: 100%;
+    height: 100%;
     border-collapse: collapse;
     display: grid;
     overflow-x: auto;
 
     & tbody {
-      overflow-y: auto;
-      height: 80vh;
+      height: 98vh;
     }
     & tr {
       display: grid;
