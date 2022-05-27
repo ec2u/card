@@ -1,6 +1,18 @@
 <?php
 /*
- * Copyright © 2022 EC2U Consortium. All rights reserved.
+ * Copyright © 2020-2022 EC2U Alliance
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 function cards($esi, $tenant)
@@ -35,14 +47,17 @@ function cards($esi, $tenant)
             $cards = array();
 
             for ($i = 0; $i < count($student->cards); $i++) {
+
+                $code = $student->cards[$i]->europeanStudentCardNumber;
+
                 $cards[$i] = array(
 
-                    'code' => $student->cards[$i]->europeanStudentCardNumber,
-                    "test" => $esc["tst"],
+                    'code' => $code,
+                    "test" => $esc["tst"] . $code, // !!! test for trailing slash in tst
                     "expiry" => substr($student->expiryDate, 0, 10),
 
                     "esi" => $student->europeanStudentIdentifier,
-                    "level" => $student->emailAddress,
+                    "level" => $student->academicLevel,
                     "name" => $student->name,
                     "photo" => null, // !!! TBD
 
