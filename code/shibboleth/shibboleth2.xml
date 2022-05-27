@@ -10,27 +10,16 @@
 
     <OutOfProcess tranLogFormat="%u|%s|%IDP|%i|%ac|%t|%attr|%n|%b|%E|%S|%SS|%L|%UA|%a"/>
 
-    <!--
-    By default, in-memory StorageService, ReplayCache, ArtifactMap, and SessionCache
-    are used. See example-shibboleth2.xml for samples of explicitly configuring them.
-    -->
-
-    <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
-    <!--<ApplicationDefaults entityID="https://ec2u.unipv.it/shibboleth"-->
-    <!-- LS -->
-
-    <ApplicationDefaults entityID="https://card.ec2u.eu/shibboleth"
+    <ApplicationDefaults entityID="https://card.ec2u.eu/"
                          REMOTE_USER="eppn subject-id pairwise-id persistent-id"
                          cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1">
 
-        <!--
-        Controls session lifetimes, address checks, cookie handling, and the protocol handlers.
+        <!-- Controls session lifetimes, address checks, cookie handling, and the protocol handlers.
         Each Application has an effectively unique handlerURL, which defaults to "/Shibboleth.sso"
         and should be a relative path, with the SP computing the full value based on the virtual
         host. Using handlerSSL="true" will force the protocol to be https. You should also set
         cookieProps to "https" for SSL-only sites. Note that while we default checkAddress to
-        "false", this makes an assertion stolen in transit easier for attackers to misuse.
-        -->
+        "false", this makes an assertion stolen in transit easier for attackers to misuse. -->
 
         <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
                   checkAddress="false" handlerSSL="true" cookieProps="https">
@@ -39,33 +28,43 @@
             <!-- <SSO discoveryProtocol="SAMLDS" discoveryURL="https://service.seamlessaccess.org/ds"> SAML2 </SSO> -->
 
             <!-- SAML and local-only logout. -->
+
             <Logout>SAML2 Local</Logout>
 
             <!-- Administrative logout. -->
+
             <LogoutInitiator type="Admin" Location="/Logout/Admin" acl="127.0.0.1 ::1"/>
 
             <!-- Extension service that generates "approximate" metadata based on SP configuration. -->
-            <!-- LS 14.07.2021 -->
+
             <Handler type="MetadataGenerator" Location="/Metadata" signing="false">
 
                 <mdui:UIInfo>
-                    <mdui:DisplayName xml:lang="it">Sistema di Gestione delle Carte EC2U - Università degli Studi di
-                        Pavia
+
+                    <mdui:DisplayName xml:lang="it">
+                        EC2U Virtual Card - Università degli Studi di Pavia
                     </mdui:DisplayName>
-                    <mdui:DisplayName xml:lang="en">EC2U Card Managament System - University of Pavia</mdui:DisplayName>
-                    <mdui:Description xml:lang="it">Il sistema permette di accedere alla tua carta EC2U virtuale
+
+                    <mdui:DisplayName xml:lang="en">
+                        EC2U Virtual Card - University of Pavia
+                    </mdui:DisplayName>
+
+                    <mdui:Description xml:lang="it">
+                        Il sistema permette di accedere alle carte mobili virtuali EC2U
                     </mdui:Description>
-                    <mdui:Description xml:lang="en">The sistem allows you to get your EC2U virtual card
+
+                    <mdui:Description xml:lang="en">
+                        The system publishes mobile-based EC2U virtual cards
                     </mdui:Description>
-                    <mdui:InformationURL xml:lang="it">https://card.ec2u.eu/index.php/pages/information.php?lang=it
-                    </mdui:InformationURL>
-                    <mdui:InformationURL xml:lang="en">https://card.ec2u.eu/index.php/pages/information.php?lang=en
-                    </mdui:InformationURL>
-                    <mdui:PrivacyStatementURL xml:lang="it">https://card.ec2u.eu/pages/privacy.php?lang=it
-                    </mdui:PrivacyStatementURL>
-                    <mdui:PrivacyStatementURL xml:lang="en">https://card.ec2u.eu/pages/privacy.php?lang=en
-                    </mdui:PrivacyStatementURL>
-                    <mdui:Logo width="103" height="70">https://card.ec2u.eu/img/ec2uLogo.png</mdui:Logo>
+
+                    <mdui:InformationURL xml:lang="it">https://card.ec2u.eu/about</mdui:InformationURL>
+                    <mdui:InformationURL xml:lang="en">https://card.ec2u.eu/about</mdui:InformationURL>
+
+                    <mdui:PrivacyStatementURL xml:lang="it">https://card.ec2u.eu/privacy</mdui:PrivacyStatementURL>
+                    <mdui:PrivacyStatementURL xml:lang="en">https://card.ec2u.eu/privacy</mdui:PrivacyStatementURL>
+
+                    <mdui:Logo width="256" height="256">https://card.ec2u.eu/assets/ec2u.png</mdui:Logo>
+
                 </mdui:UIInfo>
 
                 <md:AttributeConsumingService index="1">
@@ -103,47 +102,51 @@
 
 
                 <md:Organization>
+
                     <md:OrganizationName xml:lang="it">EC2U - European Campus of City-Universities</md:OrganizationName>
                     <md:OrganizationName xml:lang="en">EC2U - European Campus of City-Universities</md:OrganizationName>
-                    <md:OrganizationDisplayName xml:lang="it">Servizio erogato dall'Università degli Studi di Pavia
+
+                    <md:OrganizationDisplayName xml:lang="it">
+                        EC2U - European Campus of City-Universities (c/o Università degli Studi di Pavia)
                     </md:OrganizationDisplayName>
-                    <md:OrganizationDisplayName xml:lang="en">Service provided by University of Pavia
+
+                    <md:OrganizationDisplayName xml:lang="en">
+                        EC2U - European Campus of City-Universities (c/o University of Pavia)
                     </md:OrganizationDisplayName>
+
                     <md:OrganizationURL xml:lang="it">https://web.unipv.it</md:OrganizationURL>
                     <md:OrganizationURL xml:lang="en">https://web-en.unipv.it</md:OrganizationURL>
+
                 </md:Organization>
 
                 <md:ContactPerson contactType="technical">
-                    <md:GivenName>Luigi</md:GivenName>
-                    <md:SurName>Santangelo</md:SurName>
-                    <md:EmailAddress>mailto:card.ec2u@unipv.it</md:EmailAddress>
+                    <md:GivenName>EC2U Connect Centre</md:GivenName>
+                    <md:EmailAddress>cc@ml.ec2u.eu</md:EmailAddress>
                 </md:ContactPerson>
 
             </Handler>
 
 
             <!-- Status reporting service. -->
-            <Handler type="Status" Location="/Status" acl="193.204.40.105 127.0.0.1 ::1"/>
+
+            <Handler type="Status" Location="/Status" acl="127.0.0.1 ::1"/>
 
             <!-- Session diagnostic service. -->
+
             <Handler type="Session" Location="/Session" showAttributeValues="true"/>
 
             <!-- JSON feed of discovery information. -->
+
             <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
 
         </Sessions>
 
-        <!--
-        Allows overriding of error template information/filenames. You can
+        <!-- Allows overriding of error template information/filenames. You can
         also add your own attributes with values that can be plugged into the
-        templates, e.g., helpLocation below.
-        -->
-        <!-- LS -->
-        <Errors supportContact="luigi.santangelo@unipv.it"
-                helpLocation="/about.html"
-                styleSheet="/shibboleth-sp/main.css"/>
+        templates, e.g., helpLocation below. -->
 
-        <!-- sezione inserita da LS 01.02.2021 -->
+        <Errors supportContact="cc@ml.ec2u.eu"/>
+
         <MetadataProvider type="XML" url="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml"
                           legacyOrgName="true" backingFilePath="edugain2idem-test-metadata-sha256.xml"
                           maxRefreshDelay="7200">
@@ -151,36 +154,16 @@
             <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000"/>
         </MetadataProvider>
 
-        <!-- Example of remotely supplied batch of signed metadata. -->
-        <!--
-        <MetadataProvider type="XML" validate="true"
-	            url="http://federation.org/federation-metadata.xml"
-              backingFilePath="federation-metadata.xml" maxRefreshDelay="7200">
-            <MetadataFilter type="RequireValidUntil" maxValidityInterval="2419200"/>
-            <MetadataFilter type="Signature" certificate="fedsigner.pem" verifyBackup="false"/>
-            <DiscoveryFilter type="Blacklist" matcher="EntityAttributes" trimTags="true" 
-              attributeName="http://macedir.org/entity-category"
-              attributeNameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
-              attributeValue="http://refeds.org/category/hide-from-discovery" />
-        </MetadataProvider>
-        -->
-
-        <!-- Example of remotely supplied "on-demand" signed metadata. -->
-        <!--
-        <MetadataProvider type="MDQ" validate="true" cacheDirectory="mdq"
-	            baseUrl="http://mdq.federation.org" ignoreTransport="true">
-            <MetadataFilter type="RequireValidUntil" maxValidityInterval="2419200"/>
-            <MetadataFilter type="Signature" certificate="mdqsigner.pem" />
-        </MetadataProvider>
-        -->
-
         <!-- Map to extract attributes from SAML assertions. -->
+
         <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>
 
         <!-- Default filtering policy for recognized attributes, lets other data pass. -->
+
         <AttributeFilter type="XML" validate="true" path="attribute-policy.xml"/>
 
         <!-- Simple file-based resolvers for separate signing/encryption keys. -->
+
         <CredentialResolver type="File" use="signing"
                             key="certs_2021/card-sp-signing-key.pem" certificate="certs_2021/card-sp-signing-cert.pem"/>
         <CredentialResolver type="File" use="encryption"
@@ -189,9 +172,11 @@
     </ApplicationDefaults>
 
     <!-- Policies that determine how to process and authenticate runtime messages. -->
+
     <SecurityPolicyProvider type="XML" validate="true" path="security-policy.xml"/>
 
     <!-- Low-level configuration about protocols and bindings available for use. -->
+
     <ProtocolProvider type="XML" validate="true" reloadChanges="false" path="protocols.xml"/>
 
 </SPConfig>
