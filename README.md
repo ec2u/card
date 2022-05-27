@@ -35,5 +35,4 @@ dynamically retrieved from central ESC facilities on the basis of a personal ide
 
 # License
 
-This project is licensed under the Apache 2.0 License – see [LICENSE](https://github.com/ec2u/card/blob/main/LICENSE)
-file for details.
+This project is licensed under the Apache 2.0 License – see [LICENSE](LICENSE) file for details.

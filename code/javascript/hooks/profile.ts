@@ -1,17 +1,5 @@
 /*
- * Copyright © 2020-2022 EC2U Alliance
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright © 2022 EC2U Consortium. All rights reserved.
  */
 
 import { useStorage } from "@ec2u/card/hooks/storage";
@@ -20,11 +8,11 @@ import QRCode from "qrcode";
 import { createContext, createElement, ReactNode, useContext, useEffect } from "react";
 
 
-const Profile="/profile";
+const API="/v1";
 const Login="/Shibboleth.sso/Login?target={}";
 const Logout="/Shibboleth.sso/Logout?return={}";
 
-const Context=createContext<[undefined | Profile, (action?: null) => void]>([undefined, () => {}]);
+const Context=createContext<[undefined | Profile | Error, (action?: null) => void]>([undefined, () => {}]);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,13 +47,33 @@ export interface Card {
     readonly hei: {
 
         readonly pic: number;
+        readonly schac: string;
+
         readonly name: string;
+        readonly home: string;
+        readonly logo: string;
 
         readonly iso: string;
         readonly country: string;
 
     };
 
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+export interface Error {
+
+    readonly status: number;
+    readonly reason: string;
+
+}
+
+
+export function isError(value: unknown): value is Error {
+    return typeof value === "object" && value !== null && "status" in value && "reason" in value;
 }
 
 
@@ -81,14 +89,14 @@ export function CardProfile({
 
 }) {
 
-    const [profile, setProfile]=useStorage<undefined | Profile>(localStorage, "profile", undefined);
+    const [profile, setProfile]=useStorage<undefined | Profile | Error>(localStorage, "profile", undefined);
 
 
     useEffect(() => {
 
-        if ( !profile ) {
+        if ( !profile || isError(profile) ) {
 
-            fetch(Profile, {
+            fetch(API, {
 
                 headers: { Accept: "application/json" }
 
@@ -123,9 +131,22 @@ export function CardProfile({
 
                     setProfile({});
 
+
+                } else if ( response.status === 409 ) {
+
+                    response.json().then((reason: string) => {
+
+                        setProfile({ status: response.status, reason });
+
+                    });
+
+                } else if ( response.status === 502 ) {
+
+                    setProfile({ status: response.status, reason: "esc-unreachable" });
+
                 } else {
 
-                    // !!! notify
+                    setProfile({ status: response.status, reason: "internal" });
 
                 }
 
@@ -184,6 +205,6 @@ export function CardProfile({
 }
 
 
-export function useProfile<P>(): [undefined | Profile, (profile?: null) => void] {
+export function useProfile(): [undefined | Profile | Error, (profile?: null) => void] {
     return useContext(Context);
 }

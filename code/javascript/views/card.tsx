@@ -1,20 +1,8 @@
 /*
- * Copyright © 2020-2022 EC2U Alliance
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright © 2022 EC2U Consortium. All rights reserved.
  */
 
-import { Card, useProfile } from "@ec2u/card/hooks/profile";
+import { Card, isError, useProfile } from "@ec2u/card/hooks/profile";
 import { page } from "@ec2u/card/index";
 import { ChevronLeft, ChevronRight, Heart, LogIn, LogOut, RefreshCw, User } from "lucide-react";
 import React, { createElement, useEffect, useRef, useState } from "react";
@@ -72,7 +60,7 @@ export function CardCard() {
 
         fit();
 
-        card.current?.scroll(0, 0); // ;( hide controls
+        card.current?.scroll(1, 1); // ;( hide controls
 
     });
 
@@ -98,7 +86,7 @@ export function CardCard() {
     }
 
     function doCycle(delta: number) {
-        if ( profile?.cards?.length ) { setIndex((index+delta)%(profile?.cards?.length)); }
+        if ( !isError(profile) && profile?.cards?.length ) { setIndex((index+delta)%(profile?.cards?.length)); }
     }
 
 
@@ -121,32 +109,71 @@ export function CardCard() {
 
             </div>
 
-            : !profile.user ? <div>
+            : isError(profile) ? <div>
 
-                    <span>Log in to access your ESC&nbsp;cards</span>
+                    <span>:-(</span>
+
+                    {
+
+                        profile.status === 409 && profile.reason.startsWith("edugain-") ? <>
+
+                                <span>Your eduGAIN profile doesn't contain some required field</span>
+                                <span><a href={"/contacts"}>Contact</a> your local IT staff to complete&nbsp;it</span>
+
+                            </>
+
+                            : profile.status === 409 && profile.reason === "tenant-undefined" ? <>
+
+                                    <span>Your organization is not registered</span>
+                                    <span><a href={"/contacts"}>Contact</a> your local IT staff to activate&nbsp;it</span>
+
+                                </>
+
+                                : profile.status === 502 ? <>
+
+                                        <span>Unable to contact ESC to get card details</span>
+                                        <span>Please try again later and if the issue
+                                            persists <a href={"/contacts"}>report</a> itto your local IT staff
+                                        </span>
+
+                                    </>
+
+                                    : <>
+                                        <span>Internal error</span>
+                                        <span>Please <a href={"/contacts"}>report</a> it to your local IT staff</span>
+                                        <span>Thanks!</span>
+                                    </>
+
+                    }
 
                 </div>
 
-                : !profile.cards?.length ? <div>
+                : !profile.user ? <div>
 
-                        <span>Your eduGAIN profile isn't associated with an ESC&nbsp;card</span>
-                        <span>Contact your local mobility office to get&nbsp;one</span>
+                        <span>Log in to access your ESC&nbsp;cards</span>
 
                     </div>
 
-                    : <>
+                    : !profile.cards?.length ? <div>
 
-                        <main>
-                            {CardData(profile.cards[index])}
-                        </main>
+                            <span>Your eduGAIN profile isn't associated with an ESC&nbsp;card</span>
+                            <span>Contact your local mobility office to get&nbsp;one</span>
 
-                        <aside>
-                            {CardPhoto(profile.cards[index])}
-                            {CardQR(profile.cards[index])}
-                            {CardHologram()}
-                        </aside>
+                        </div>
 
-                    </>
+                        : <>
+
+                            <main>
+                                {CardData(profile.cards[index])}
+                            </main>
+
+                            <aside>
+                                {CardPhoto(profile.cards[index])}
+                                {CardQR(profile.cards[index])}
+                                {CardHologram()}
+                            </aside>
+
+                        </>
         }
 
     </>);
@@ -163,14 +190,14 @@ export function CardCard() {
 
             {!profile ? <button title={"Loading"} className={"spin"}><RefreshCw/></button>
 
-                : !profile.user ? <button title={"Log in"} onClick={doLogIn}><LogIn/></button>
+                : isError(profile) || !profile.user ? <button title={"Log in"} onClick={doLogIn}><LogIn/></button>
 
                     : <button title={"Log out"} onClick={doLogOut}><LogOut style={{ transform: "scaleX(-1)" }}/></button>
             }
 
             <button title={"About"} onClick={doFlip}><Heart/></button>
 
-            {profile?.cards && profile.cards.length > 1 && <>
+            {!isError(profile) && profile?.cards && profile.cards.length > 1 && <>
                 <button title={"Previous card"} onClick={() => doCycle(-1)}><ChevronLeft/></button>
                 <button title={"Next card"} onClick={() => doCycle(+1)}><ChevronRight/></button>
             </>}

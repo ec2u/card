@@ -8,7 +8,7 @@ title:  Add eduGAIN Single Sign-On To Your App
 | Solution | Authenticate users using a SAML 2.0 single sign-on protocol leveraging existing local eduGAIN Federated Identity Providers |
 
 
-![[image-20210217-184153.png]]
+![image-20210217-184153](images/image-20210217-184153.png)
 # Background
 
 Access to resources secured with SAML SSO services is performed according to the following workflow:
@@ -26,24 +26,18 @@ Access to resources secured with SAML SSO services is performed according to the
 11. the **App Backend** authorises the request on the basis of the user profile and generates a response
 12. the **Authentication Middleware** forwards the response to the **App Frontend** in the user browser
 
-[Detailed workflows](https://www.switch.ch/aai/demo/) and [demos](https://wayf-test.switch.ch/SWITCHaai/WAYF?entityID=https%3A%2F%2Faai-demo.switch.ch%2Fshibboleth&return=https%3A%2F%2Faai-demo.switch.ch%2FShibboleth.sso%2FLogin%3FSAMLDS%3D1%26target%3Dss%253Amem%253Ad1210ea31d576286d319e8a3ed921370b281f2b3f915fa54fb86942abe42077a) based on the Shibbolet framework are made available by [SWITCH](https://www.switch.ch/aai/).
+[Detailed workflows](https://www.switch.ch/aai/demo/)
+and [demos](https://wayf-test.switch.ch/SWITCHaai/WAYF?entityID=https%3A%2F%2Faai-demo.switch.ch%2Fshibboleth&return=https%3A%2F%2Faai-demo.switch.ch%2FShibboleth.sso%2FLogin%3FSAMLDS%3D1%26target%3Dss%253Amem%253Ad1210ea31d576286d319e8a3ed921370b281f2b3f915fa54fb86942abe42077a)
+based on the Shibbolet framework are kindly made available by [SWITCH](https://www.switch.ch/aai/).
 
 # Procedure
 
 ## Configure the Backend
 
 1. Wrap the **App Backend** inside an **Authentication Middleware**
-    1. the easiest approach is probably to place an authentication proxy in front of the **App Backend** using tools like Apache HTTPd and Shibbolet
-    2. for deployment environments not supporting this option or in order to get more control on the configuration the middleware may be integrated with the backend code using platform-specific frameworks and libraries
 2. Set up your backend code to perform user authorisation on the basis of SAML identity attributes attached by the middleware to incoming HTTP requests (retrieval technicalities are platform-specific)
 
-Representative authorisation frameworks and providers for major backend stacks are listed below.
-
-| server stack | auth middleware | auth provider |
-| --- | --- | --- |
-| HTTP Proxy | Apache HTTTP Server | Shibboleth Service Provider |
-| Node.js | Passport | https://github.com/node-saml/passport-saml |
-| Java |  | ‣  |
+> ⚠️ Due to the requirement of supporting SAML Discovery Service extension, the only currently practical approach is  to place a Shibboleth-based authentication proxy in front of the **App Backend**: see again the xecellent [SWITCH](https://www.switch.ch/aai/guides/sp/installation/) installation guides…
 
 ## Connect Identity Services
 
@@ -63,8 +57,15 @@ Representative authorisation frameworks and providers for major backend stacks a
 
 ## Service Registration
 
-1. Register the application with the selected host identity federation following the specific procedure (e.g. [IDEM](https://www.idem.garr.it/partecipare/registra-un-servizio) or [HAKA](https://wiki.eduuni.fi/display/CSCHAKA/Joining+and+registrations)); keep handy the service metadata or the URL of the SAML API Metadata API
-2. Register the application with the selected discovery service following the specific procedure (e.g. [SeamlessAccess](https://airtable.com/shrW1gq06nMazByEt) or [eduTEAMS](https://wiki.geant.org/display/eduTEAMS/Registering+services+on+the+eduTEAMS+Service)); having previously completed the registration process with the host identity federation will streamline the registration process with the discovery service
+1. Register the application with the selected host identity federation following the specific procedure (
+   e.g. [IDEM](https://www.idem.garr.it/partecipare/registra-un-servizio)
+   or [HAKA](https://wiki.eduuni.fi/display/CSCHAKA/Joining+and+registrations)); keep handy the service metadata or the
+   URL of the SAML API Metadata API
+2. Register the application with the selected discovery service following the specific procedure (
+   e.g. [SeamlessAccess](https://airtable.com/shrW1gq06nMazByEt)
+   or [eduTEAMS](https://wiki.geant.org/display/eduTEAMS/Registering+services+on+the+eduTEAMS+Service)); having
+   previously completed the registration process with the host identity federation will streamline the registration
+   process with the discovery service
 
 ## Service Release
 

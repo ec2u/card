@@ -1,0 +1,20 @@
+{
+    "example.edu": {
+        "hei": {
+            "pic": 12345678,
+            "schac": "example.edu",
+            "name": "Example University",
+            "home": "https://www.example.edu/",
+            "logo": "https://www.example.edu/assets/logo.svg",
+            "iso": "EU",
+            "country": "Europe"
+        },
+        "esc": {
+            "api": "https://sandbox.europeanstudentcard.eu/v1/",
+            "tst": "http://esc.gg/",
+            "key": "############################"
+        }
+    }
+}
+
+
