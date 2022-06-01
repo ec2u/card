@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { useLocale } from "@ec2u/card/hooks/locale";
 import Slugger from "github-slugger";
 import { Root } from "hast";
 import { headingRank } from "hast-util-heading-rank";
@@ -59,13 +60,33 @@ const page=Object.freeze({
 });
 
 
+const localizations: { [locale: string]: { [label: string]: string } }={
+
+    "en": {
+        "language": "English",
+        "/about": "About",
+        "/privacy": "Privacy",
+        "/contacts": "Contacts"
+    },
+
+    "it": {
+        "language": "Italiano",
+        "/about": "Info",
+        "/privacy": "Privacy",
+        "/contacts": "Contatti"
+    }
+
+};
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export function CardPage() {
 
     const location=useLocation();
-    const [menu, setMenu]=useState(false);
 
+    const [locale, setLocale]=useLocale();
+    const [menu, setMenu]=useState(false);
     const [status, setStatus]=useState<number>();
     const [content, setContent]=useState<string>();
 
@@ -73,6 +94,20 @@ export function CardPage() {
     const path=location.pathname;
     const hash=location.hash;
 
+    const localization=localizations[locale] || localizations["en"];
+
+    useEffect(() => {
+
+        const lang=/^\?(\w+)\b/.exec(location.search)?.[1];
+
+        if ( lang ) {
+
+            setLocale(lang || locale);
+            history.replaceState(history.state, document.title, path+hash);
+
+        }
+
+    });
 
     useEffect(() => {
 
@@ -81,7 +116,7 @@ export function CardPage() {
 
         if ( path.match(/^\/([-\w]+\/)*([-\w]*)$/) ) { // path is route
 
-            fetch(`${path}${path.endsWith("/") ? "index.md" : ".md"}`)
+            fetch(`${path}${path.endsWith("/") ? `index.${locale}.md` : `.${locale}.md`}`)
 
                 .then(response => response.text().then(content => {
 
@@ -100,8 +135,18 @@ export function CardPage() {
 
         }
 
-    }, [path]);
+    }, [path, locale]);
 
+
+    function doChangeLocale(locale: string) {
+
+        setLocale(locale);
+
+        if ( location.search ) {
+
+        }
+
+    }
 
 
     return createElement("card-page", {
@@ -131,12 +176,19 @@ export function CardPage() {
 
             <section>
 
-                <NavLink to={"/about"}>About</NavLink>
-                <NavLink to={"/privacy"}>Privacy</NavLink>
-                <NavLink to={"/contacts"}>Contacts</NavLink>
+                <select value={locale}
 
+                    onChange={e => doChangeLocale(e.target.value)}
+
+                >{Object.keys(localizations).map(entry =>
+                    <option key={entry} value={entry}>{localizations[entry].language}</option>
+                )}</select>
 
             </section>
+
+            <section>{["/about", "/privacy", "/contacts"].map(entry =>
+                <NavLink key={entry} to={entry}>{localization[entry]}</NavLink>
+            )}</section>
 
             <section>{content &&
 
