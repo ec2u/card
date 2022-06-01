@@ -1,5 +1,17 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  Copyright © 2022 EC2U Consortium. All rights reserved.
+  Copyright © 2020-2022 EC2U Alliance
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <SPConfig xmlns="urn:mace:shibboleth:3.0:native:sp:config"
@@ -41,27 +53,33 @@
 
                 <mdui:UIInfo>
 
-                    <mdui:DisplayName xml:lang="it">
-                        EC2U Virtual Card - Università degli Studi di Pavia
-                    </mdui:DisplayName>
-
                     <mdui:DisplayName xml:lang="en">
                         EC2U Virtual Card - University of Pavia
                     </mdui:DisplayName>
 
-                    <mdui:Description xml:lang="it">
-                        Il sistema permette di accedere alle carte mobili virtuali EC2U
-                    </mdui:Description>
+                    <mdui:DisplayName xml:lang="it">
+                        EC2U Virtual Card - Università degli Studi di Pavia
+                    </mdui:DisplayName>
 
                     <mdui:Description xml:lang="en">
-                        The system publishes mobile-based EC2U virtual cards
+                        The EC2U Virtual Card is a lightweight mobile-based academic identification card based on the
+                        European Student Card standard. It supports cardholder identity and academic status verification
+                        within the EC2U Alliance and enables cardholders to easily access local academic, public or
+                        commercial services.
                     </mdui:Description>
 
-                    <mdui:InformationURL xml:lang="it">https://card.ec2u.eu/about</mdui:InformationURL>
-                    <mdui:InformationURL xml:lang="en">https://card.ec2u.eu/about</mdui:InformationURL>
+                    <mdui:Description xml:lang="it">
+                        La EC2U Virtual Card è una carta di riconoscimento accademica virtuale per dispositivi mobili
+                        basata sullo standard European Student Card. Supporta la verifica dell'identità e dello status
+                        accademico del titolare nell'ambito dell'Alleanza EC2U e permette un facile accesso ai locali
+                        servizi accademici, pubblici o commerciali.
+                    </mdui:Description>
 
-                    <mdui:PrivacyStatementURL xml:lang="it">https://card.ec2u.eu/privacy</mdui:PrivacyStatementURL>
-                    <mdui:PrivacyStatementURL xml:lang="en">https://card.ec2u.eu/privacy</mdui:PrivacyStatementURL>
+                    <mdui:InformationURL xml:lang="en">https://card.ec2u.eu/about?en</mdui:InformationURL>
+                    <mdui:InformationURL xml:lang="it">https://card.ec2u.eu/about?it</mdui:InformationURL>
+
+                    <mdui:PrivacyStatementURL xml:lang="en">https://card.ec2u.eu/privacy?en</mdui:PrivacyStatementURL>
+                    <mdui:PrivacyStatementURL xml:lang="it">https://card.ec2u.eu/privacy?it</mdui:PrivacyStatementURL>
 
                     <mdui:Logo width="256" height="256">https://card.ec2u.eu/assets/ec2u.png</mdui:Logo>
 
