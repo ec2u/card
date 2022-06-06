@@ -1,3 +1,23 @@
+# Review eduGAIN Profile
+
+- required attributes
+  - cn
+  - mail
+  - schacPersonalUniqueCode
+  - schacHomeOrganisation
+
+# …
+
+## Review Legal Matters
+
+- about
+- privacy
+  - template @ https://wiki.refeds.org/display/CODE/Privacy+policy+guidelines+for+Service+Providers
+- contacts
+
+## Configure Tenants
+
+```json
 {
     "example.edu": {
         "hei": {
@@ -16,5 +36,10 @@
         }
     }
 }
+```
 
+## Deploy
 
+# Register with eduGAIN
+
+- as service provider
