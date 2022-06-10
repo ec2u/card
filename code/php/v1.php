@@ -82,14 +82,6 @@ function user()
 
     $user = array();
 
-//    if (!isset($_SERVER["schacPersonalUniqueCode"]) || $_SERVER["schacPersonalUniqueCode"] == "") {
-//        return "edugain-undefined-schacPersonalUniqueCode";
-//    }
-//
-//     $user["esi"] = $_SERVER["schacPersonalUniqueCode"];
-
-    $user["esi"] = "urn:schac:personalUniqueCode:int:esi:unipv.it:999001"; // TBD: to be removed
-
     if (!isset($_SERVER["cn"]) || $_SERVER["cn"] == "") {
         return "edugain-undefined-cn";
     }
@@ -102,11 +94,21 @@ function user()
 
     $user["email"] = $_SERVER["mail"];
 
+//    if (!isset($_SERVER["schacPersonalUniqueCode"]) || $_SERVER["schacPersonalUniqueCode"] == "") {
+//        return "edugain-undefined-schacPersonalUniqueCode";
+//    }
+//
+//     $user["esi"] = $_SERVER["schacPersonalUniqueCode"];
+
+    $user["esi"] = "urn:schac:personalUniqueCode:int:esi:unipv.it:999001"; // TBD: to be removed
+
     if (!isset($_SERVER["schacHomeOrganisation"]) || $_SERVER["schacHomeOrganisation"] == "") {
         return "edugain-undefined-schacHomeOrganisation";
     }
 
     $user["schac"] = $_SERVER["schacHomeOrganisation"];
+
+    // !!! eduPersonScopedAffiliation
 
     return $user;
 

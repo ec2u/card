@@ -5,6 +5,7 @@
   - mail
   - schacPersonalUniqueCode
   - schacHomeOrganisation
+  - eduPersonPrimaryAffiliation
 
 # …
 
