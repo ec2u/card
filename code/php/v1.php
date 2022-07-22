@@ -94,13 +94,11 @@ function user()
 
     $user["email"] = $_SERVER["mail"];
 
-//    if (!isset($_SERVER["schacPersonalUniqueCode"]) || $_SERVER["schacPersonalUniqueCode"] == "") {
-//        return "edugain-undefined-schacPersonalUniqueCode";
-//    }
-//
-//     $user["esi"] = $_SERVER["schacPersonalUniqueCode"];
+    if (!isset($_SERVER["schacPersonalUniqueCode"]) || $_SERVER["schacPersonalUniqueCode"] == "") {
+        return "edugain-undefined-schacPersonalUniqueCode";
+    }
 
-    $user["esi"] = "urn:schac:personalUniqueCode:int:esi:unipv.it:999001"; // TBD: to be removed
+    $user["esi"] = $_SERVER["schacPersonalUniqueCode"];
 
     if (!isset($_SERVER["schacHomeOrganisation"]) || $_SERVER["schacHomeOrganisation"] == "") {
         return "edugain-undefined-schacHomeOrganisation";
