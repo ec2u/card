@@ -16,7 +16,7 @@
 
 import { Card, isError, useProfile } from "@ec2u/card/hooks/profile";
 import { page } from "@ec2u/card/index";
-import { ChevronLeft, ChevronRight, Heart, LogIn, LogOut, RefreshCw, User } from "lucide-react";
+import { ChevronLeft, ChevronRight, Info, LogIn, LogOut, RefreshCw, User } from "lucide-react";
 import React, { createElement, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./card.css";
@@ -207,7 +207,7 @@ export function CardCard() {
                     : <button title={"Log out"} onClick={doLogOut}><LogOut style={{ transform: "scaleX(-1)" }}/></button>
             }
 
-            <button title={"About"} onClick={doFlip}><Heart/></button>
+            <button title={"About"} onClick={doFlip}><Info/></button>
 
             {!isError(profile) && profile?.cards && profile.cards.length > 1 && <>
                 <button title={"Previous card"} onClick={() => doCycle(-1)}><ChevronLeft/></button>

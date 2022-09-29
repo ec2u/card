@@ -101,11 +101,11 @@ card-card {
     & > main {
 
         text-align: right;
-        white-space: nowrap;
 
         & > .data {
 
             display: inline-block;
+            margin: 0;
             transform-origin: top right;
 
             & > * {
@@ -120,6 +120,7 @@ card-card {
 
                 &:not(:first-child) {
                     margin-top: 0.5rem;
+                    margin-bottom: 0.1em;
                 }
 
             }
