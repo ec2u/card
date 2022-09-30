@@ -167,16 +167,23 @@ card-card {
 
     & > aside {
 
-        --ratio: 0.8;
-        --unit: calc((var(--height) - 2 * var(--padding)) / (4 + (4 + 5) / var(--ratio)));
+        /* see card.svg */
+
+        --photo-ratio: calc(4 / 5);
+        --holo-ratio: calc(4 / 3);
+
+        --aside-height: calc(var(--height) - 2 * var(--padding));
+        --photo-height: calc(((1 + var(--holo-ratio)) * (var(--aside-height) - var(--padding)) + var(--padding)) / (var(--photo-ratio) + (1 + var(--holo-ratio))));
+        --code-size: calc(var(--aside-height) - var(--photo-height) - var(--padding));
 
         display: grid;
 
         grid-column: 3;
         grid-row: 1;
 
-        grid-template-columns: calc(4 * var(--unit)) calc(5 * var(--unit));
-        grid-template-rows: calc((4 + 5) / var(--ratio) * var(--unit)) calc(4 * var(--unit));
+        grid-template-columns: var(--code-size) calc(var(--holo-ratio) * var(--code-size));
+        grid-template-rows: var(--photo-height) var(--code-size);
+        grid-gap: var(--padding);
 
         & > .photo {
 
@@ -209,8 +216,7 @@ card-card {
             background-position: center;
             background-repeat: no-repeat;
 
-            transform: scale(0.9);
-            transform-origin: bottom left;
+            transform: scale(0.975); /* compensate border clippings */
 
         }
 
@@ -223,8 +229,7 @@ card-card {
             background-position: center;
             background-repeat: no-repeat;
 
-            transform: scale(0.95);
-            transform-origin: bottom right;
+            transform: scale(0.975); /* compensate border clippings */
 
         }
 

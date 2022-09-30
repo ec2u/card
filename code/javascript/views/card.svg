@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  - Copyright © 2020-2022 EC2U Alliance
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  -     http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -->
+
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="34 3 470 446" width="470" height="446">
+  <defs/>
+  <g id="Canvas_1" fill="none" stroke="none" stroke-dasharray="none" fill-opacity="1" stroke-opacity="1">
+    <title>Canvas 1</title>
+    <rect fill="white" x="34" y="3" width="470" height="446"/>
+    <g id="Canvas_1_Layer_1">
+      <title>Layer 1</title>
+      <g id="Graphic_2">
+        <rect x="90.70866" y="56.692914" width="197.00788" height="243.77953" fill="white"/>
+        <rect x="90.70866" y="56.692914" width="197.00788" height="243.77953" stroke="gray" stroke-linecap="round"
+              stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_3">
+        <rect x="90.70866" y="311.81103" width="85.03937" height="83.62206" fill="white"/>
+        <rect x="90.70866" y="311.81103" width="85.03937" height="83.62206" stroke="gray" stroke-linecap="round"
+              stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_4">
+        <rect x="185.6693" y="311.81103" width="102.04725" height="83.62206" fill="white"/>
+        <rect x="185.6693" y="311.81103" width="102.04725" height="83.62206" stroke="gray" stroke-linecap="round"
+              stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_5">
+        <text transform="translate(69.77953 172.95215)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="9" fill="black" x="0" y="9">F</tspan>
+        </text>
+      </g>
+      <g id="Graphic_6">
+        <text transform="translate(68.86153 347.99152)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="9" fill="black" x="8442136e-19" y="9">Q</tspan>
+        </text>
+      </g>
+      <g id="Graphic_7">
+        <text transform="translate(129.89385 405.10237)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="9" fill="black" x="8442136e-19" y="9">Q</tspan>
+        </text>
+      </g>
+      <g id="Graphic_8">
+        <text transform="translate(176.57824 405.10237)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="9" fill="black" x="0" y="9">P</tspan>
+        </text>
+      </g>
+      <g id="Graphic_9">
+        <text transform="translate(225.60492 405.10237)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="9" fill="black" x="0" y="9">4/3 Q</tspan>
+        </text>
+      </g>
+      <g id="Graphic_10">
+        <text transform="translate(69.36103 300.22048)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="9" fill="black" x="0" y="9">P</tspan>
+        </text>
+      </g>
+      <g id="Graphic_11">
+        <text transform="translate(179.0426 35.181103)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="9" fill="black" x="7460699e-20" y="9">4/5 F</tspan>
+        </text>
+      </g>
+      <g id="Graphic_12">
+        <text transform="translate(314.97638 172.95215)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="9" fill="black" x="0" y="9">F= [ (1+4/3)(H-P) + P ] / [ 4/5 +
+            (1+4/3) ]
+          </tspan>
+        </text>
+      </g>
+      <g id="Graphic_13">
+        <text transform="translate(314.97638 347.99152)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="9" fill="black" x="0" y="9">Q=H-F-P</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+</svg>
