@@ -50,6 +50,21 @@ export function CardCard() {
     const data=useRef<HTMLDListElement>(null);
 
 
+    function size() {
+
+        if ( card.current ) {
+
+            const vw=window.innerWidth/100;
+            const vh=window.innerHeight/100;
+
+            card.current.style.setProperty("--vw", `${vw}px`);
+            card.current.style.setProperty("--vh", `${vh}px`);
+            card.current.style.setProperty("--vmin", `${Math.min(vw, vh)}px`);
+            card.current.style.setProperty("--vmax", `${Math.max(vw, vh)}px`);
+        }
+
+    }
+
     function fit() {
 
         if ( data.current ) {
@@ -70,17 +85,20 @@ export function CardCard() {
 
     useEffect(() => {
 
+        size();
         fit();
-
-        card.current?.scroll(1, 1); // ;( hide controls
 
     });
 
     useEffect(() => {
 
+        window.addEventListener("resize", size);
         window.addEventListener("resize", fit);
 
-        return () => window.removeEventListener("resize", fit);
+        return () => {
+            window.removeEventListener("resize", size);
+            window.removeEventListener("resize", fit);
+        };
 
     }, []);
 
@@ -145,7 +163,7 @@ export function CardCard() {
 
                                         <span>Unable to contact ESC to get card details</span>
                                         <span>Please try again later and if the issue
-                                            persists <a href={"/contacts"}>report</a> itto your local IT staff
+                                            persists <a href={"/contacts"}>report</a> it to your local IT staff
                                         </span>
 
                                     </>

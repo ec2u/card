@@ -16,14 +16,14 @@
 
 card-card {
 
-    --max-size: 20cm;
-    --aspect: calc(9 / 16);
+    --photo-aspect: calc(4 / 5);
+    --holo-aspect: calc(4 / 3);
 
-    --width: calc(min(100vmax, var(--max-size)));
-    --height: calc(min(100vmin, var(--max-size) * var(--aspect)));
+    --width: calc(100 * var(--vw, 1vw));
+    --height: calc(100 * var(--vh, 1vh));
 
-    --padding: calc(2.5 * var(--height) / 100);
-    --logo: calc(20 * var(--height) / 100);
+    --padding: calc(2.5 * var(--vmin));
+    --logo: calc(20 * var(--vmin));
 
     width: var(--width);
     height: var(--height);
@@ -32,15 +32,12 @@ card-card {
     align-items: stretch;
     justify-items: stretch;
 
-    grid-template-columns: min-content 1fr min-content;
-    grid-template-rows: 1fr;
     grid-gap: calc(2 * var(--padding));
 
     box-sizing: border-box;
     padding: var(--padding);
     overflow: hidden;
     border-style: solid;
-    margin: auto !important;
 
     & > * {
         overflow: hidden;
@@ -49,22 +46,16 @@ card-card {
     & > nav {
 
         display: grid;
-        grid-template-columns: min-content;
-        grid-template-rows: min-content 1fr;
         grid-row-gap: calc(2 * var(--padding));
 
         align-items: stretch;
         justify-items: stretch;
 
-        grid-column: 1;
-        grid-row: 1;
-
         & > .logo {
 
             grid-area: 1 / 1;
             width: var(--logo);
-
-            aspect-ratio: 1;
+            height: var(--logo);
 
             background-position: 0 0;
             background-size: contain;
@@ -107,9 +98,6 @@ card-card {
 
     & > div {
 
-        grid-column: 2 / span 2;
-        grid-row: 1;
-
         padding: 0.75em 1.5em;
 
         align-self: center;
@@ -121,16 +109,13 @@ card-card {
         grid-gap: 0.5em;
 
         text-align: center;
-        font-size: calc(7.5 * var(--height) / 100);
+        font-size: calc(7.5 * var(--vmin));
 
     }
 
     & > main {
 
-        grid-column: 2;
-        grid-row: 1;
-
-        padding-left: 1.5rem;
+        padding-left: 2.5rem;
 
         text-align: right;
 
@@ -152,8 +137,9 @@ card-card {
 
                 &:not(:first-child) {
                     margin-top: 0.5rem;
-                    margin-bottom: 0.1em;
                 }
+
+                margin-bottom: 0.1em;
 
             }
 
@@ -167,28 +153,17 @@ card-card {
 
     & > aside {
 
-        /* see card.svg */
-
-        --photo-ratio: calc(4 / 5);
-        --holo-ratio: calc(4 / 3);
-
-        --aside-height: calc(var(--height) - 2 * var(--padding));
-        --photo-height: calc(((1 + var(--holo-ratio)) * (var(--aside-height) - var(--padding)) + var(--padding)) / (var(--photo-ratio) + (1 + var(--holo-ratio))));
-        --code-size: calc(var(--aside-height) - var(--photo-height) - var(--padding));
-
         display: grid;
 
-        grid-column: 3;
-        grid-row: 1;
-
-        grid-template-columns: var(--code-size) calc(var(--holo-ratio) * var(--code-size));
-        grid-template-rows: var(--photo-height) var(--code-size);
         grid-gap: var(--padding);
 
-        & > .photo {
+        & > * {
 
-            grid-column: 1 / span 2;
-            grid-row: 1;
+            transform: scale(0.97); /* compensate border clippings */
+
+        }
+
+        & > .photo {
 
             display: grid;
 
@@ -209,35 +184,156 @@ card-card {
 
         & > .qr {
 
-            grid-column: 1;
-            grid-row: 2;
-
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
-
-            transform: scale(0.975); /* compensate border clippings */
 
         }
 
         & > .hologram {
 
-            grid-column: 2;
-            grid-row: 2;
-
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
-
-            transform: scale(0.975); /* compensate border clippings */
 
         }
 
     }
 
     @media only screen and (orientation: portrait) {
-        transform-origin: left center;
-        transform: rotate(90deg) translate(-50vh, -50vw);
+
+        grid-template-columns: min-content 1fr;
+        grid-template-rows: 1fr min-content;
+
+        & > nav {
+
+            grid-column: 1;
+            grid-row: 1;
+
+            grid-template-columns: min-content;
+            grid-template-rows: min-content min-content;
+
+        }
+
+        & > div {
+
+            grid-column: 1 / span 2;
+            grid-row: 2;
+
+        }
+
+        & > main {
+
+            grid-column: 2;
+            grid-row: 1;
+
+        }
+
+        & > aside {
+
+            grid-column: 1 / span 2;
+            grid-row: 2;
+
+            /* see card.svg */
+
+            --aside-width: calc(var(--width) - 2 * var(--padding));
+            --photo-height: calc(((1 + 1 / var(--holo-aspect)) * (var(--aside-width) - var(--padding)) + var(--padding)) / (1 + var(--photo-aspect) * (1 + 1 / var(--holo-aspect))));
+            --code-size: calc((var(--photo-height) - var(--padding)) / (1 + 1 / var(--holo-aspect)));
+
+            grid-template-columns: var(--code-size) calc(var(--photo-aspect) * var(--photo-height));
+            grid-template-rows: var(--code-size) calc(var(--code-size) / var(--holo-aspect));
+
+            & > .photo {
+
+                grid-column: 2;
+                grid-row: 1 / span 2;
+
+            }
+
+            & > .qr {
+
+                grid-column: 1;
+                grid-row: 1;
+
+            }
+
+            & > .hologram {
+
+                grid-column: 1;
+                grid-row: 2;
+
+            }
+
+        }
+
+    }
+
+    @media only screen and (orientation: landscape) {
+
+        grid-template-columns: min-content 1fr min-content;
+        grid-template-rows: 1fr;
+
+        & > nav {
+
+            grid-column: 1;
+            grid-row: 1;
+
+            grid-template-columns: min-content;
+            grid-template-rows: min-content 1fr;
+
+        }
+
+        & > div {
+
+            grid-column: 2 / span 2;
+            grid-row: 1;
+
+        }
+
+        & > main {
+
+            grid-column: 2;
+            grid-row: 1;
+
+        }
+
+        & > aside {
+
+            grid-column: 3;
+            grid-row: 1;
+
+            /* see card.svg */
+
+            --aside-height: calc(var(--height) - 2 * var(--padding));
+            --photo-height: calc(((1 + var(--holo-aspect)) * (var(--aside-height) - var(--padding)) + var(--padding)) / (var(--photo-aspect) + (1 + var(--holo-aspect))));
+            --code-size: calc(var(--aside-height) - var(--photo-height) - var(--padding));
+
+            grid-template-columns: var(--code-size) calc(var(--holo-aspect) * var(--code-size));
+            grid-template-rows: var(--photo-height) var(--code-size);
+
+            & > .photo {
+
+                grid-column: 1 / span 2;
+                grid-row: 1;
+
+            }
+
+            & > .qr {
+
+                grid-column: 1;
+                grid-row: 2;
+
+            }
+
+            & > .hologram {
+
+                grid-column: 2;
+                grid-row: 2;
+
+            }
+
+        }
+
     }
 
 }
