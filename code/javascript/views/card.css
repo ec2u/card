@@ -16,6 +16,14 @@
 
 card-card {
 
+    /* dynamically redefined by card.tsx */
+
+    --vw: 1vw;
+    --vh: 1vh;
+
+    --vmin: 1vmin;
+    --vmax: 1vmax;
+
     --photo-aspect: calc(4 / 5);
     --holo-aspect: calc(4 / 3);
 
@@ -51,9 +59,9 @@ card-card {
         align-items: stretch;
         justify-items: stretch;
 
-        & > .logo {
+        & > .logo,
+        & > .home {
 
-            grid-area: 1 / 1;
             width: var(--logo);
             height: var(--logo);
 
@@ -67,9 +75,22 @@ card-card {
 
         }
 
-        & > .menu {
+        & > .logo {
+
+            grid-area: 1 / 1;
+
+        }
+
+        & > .home {
 
             grid-area: 2 / 1;
+
+        }
+
+
+        & > .menu {
+
+            grid-area: 3 / 1;
             align-self: end;
 
             display: grid;
@@ -211,7 +232,7 @@ card-card {
             grid-row: 1;
 
             grid-template-columns: min-content;
-            grid-template-rows: min-content min-content;
+            grid-template-rows: min-content min-content min-content;
 
         }
 
@@ -279,7 +300,7 @@ card-card {
             grid-row: 1;
 
             grid-template-columns: min-content;
-            grid-template-rows: min-content 1fr;
+            grid-template-rows: min-content min-content 1fr;
 
         }
 

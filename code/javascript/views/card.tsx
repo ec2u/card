@@ -129,6 +129,7 @@ export function CardCard() {
         <nav>
 
             {CardLogo()}
+            {!isError(profile) && profile?.cards?.length && CardHome(profile.cards[index])}
             {CardMenu()}
 
         </nav>
@@ -210,8 +211,24 @@ export function CardCard() {
 
 
     function CardLogo() {
-        return <a className={"logo"} target={"_blank"} href={"https://www.ec2u.eu/"}
+        return <a className={"logo"} target={"_blank"} href={"https://www.ec2u.eu/"} title={"EC2U Alliance"}
             style={{ backgroundImage: `url('${page.icon}')` }}
+        />;
+    }
+
+    function CardHome({
+
+        hei: {
+
+            name,
+            home,
+            logo
+
+        }
+
+    }: Card) {
+        return <a className={"home"} target={"_blank"} href={home} title={name}
+            style={{ backgroundImage: `url('${logo}')` }}
         />;
     }
 
