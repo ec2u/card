@@ -38,9 +38,9 @@ card-card {
 
     box-sizing: border-box;
     padding: var(--padding);
-    margin: auto;
     overflow: hidden;
     border-style: solid;
+    margin: auto !important;
 
     & > * {
         overflow: hidden;
@@ -130,7 +130,7 @@ card-card {
         grid-column: 2;
         grid-row: 1;
 
-        padding-left: 1rem;
+        padding-left: 1.5rem;
 
         text-align: right;
 
@@ -231,8 +231,8 @@ card-card {
     }
 
     @media only screen and (orientation: portrait) {
-        transform: translateX(100vw) rotate(90deg);
-        transform-origin: 0 0;
+        transform-origin: left center;
+        transform: rotate(90deg) translate(-50vh, -50vw);
     }
 
 }
