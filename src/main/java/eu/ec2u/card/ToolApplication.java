@@ -4,14 +4,18 @@
 
 package eu.ec2u.card;
 
-
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonLocation;
+import static java.lang.String.format;
+import static java.util.stream.Collectors.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import org.springframework.http.ResponseEntity;
+import static org.springframework.http.ResponseEntity.status;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -22,17 +26,10 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.*;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-
-import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.ResponseEntity.status;
-
-import static java.lang.String.format;
-import static java.util.stream.Collectors.*;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Slf4j
 @Configuration
@@ -40,243 +37,233 @@ import static java.util.stream.Collectors.*;
 @SpringBootApplication
 public class ToolApplication implements WebMvcConfigurer {
 
-    public static void main(final String... args) {
-        SpringApplication.run(ToolApplication.class, args);
-    }
+	public static void main(String... args) {
 
+		SpringApplication.run(ToolApplication.class, args);
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	}
 
-    @Override public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(new ToolLoader());
-    }
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
 
-    //// Exception Handlers ////////////////////////////////////////////////////////////////////////////////////////////
+		registry.addInterceptor(new ToolLoader());
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Object> handle(final HttpMessageNotReadableException e) {
+	}
 
-        ApiError apiError = new ApiError(BAD_REQUEST);
-        apiError.setMessage(Optional.ofNullable(e.getCause())
 
-                .filter(JacksonException.class::isInstance)
-                .map(JacksonException.class::cast)
+	//// Exception Handlers
+	// //////////////////////////////////////////////////////////////////////////////////////////
 
-                .map(p -> {
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<Object> handle(HttpMessageNotReadableException exception) {
 
+		ApiError apiError = new ApiError(BAD_REQUEST);
+		apiError.setMessage(Optional.ofNullable(exception.getCause())
 
-                    final JsonLocation location=p.getLocation();
-                    final String message=p.getOriginalMessage();
+				.filter(JacksonException.class::isInstance)
+				.map(JacksonException.class::cast)
+				.map(p -> {
 
-                    return format("(%d:%d) %s", location.getLineNr(), location.getColumnNr(), message);
+					JsonLocation location = p.getLocation();
+					String message = p.getOriginalMessage();
 
+					return format("(%d:%d) %s", location.getLineNr(), location.getColumnNr(), message);
 
-                })
+				})
 
-                .orElseGet(e::getMessage));
+				.orElseGet(exception::getMessage));
 
-        return buildResponseEntity(apiError);   // 400
+		return buildResponseEntity(apiError);   // 400
 
-//        return status(BAD_REQUEST) // 400
-//                .contentType(TEXT_PLAIN)
-//                .body(Optional.ofNullable(e.getCause())
-//
-//                        .filter(JacksonException.class::isInstance)
-//                        .map(JacksonException.class::cast)
-//
-//                        .map(p -> {
-//
-//
-//                            final JsonLocation location=p.getLocation();
-//                            final String message=p.getOriginalMessage();
-//
-//                            return format("(%d:%d) %s", location.getLineNr(), location.getColumnNr(), message);
-//
-//
-//                        })
-//
-//                        .orElseGet(e::getMessage)
-//                );
+	}
 
-    }
+	@ExceptionHandler(NoHandlerFoundException.class)
+	public ResponseEntity<Object> handle(NoHandlerFoundException exception) {
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<Object> handle(final NoHandlerFoundException e) {
+		ApiError apiError = new ApiError(NOT_FOUND);
+		apiError.setMessage(exception.getMessage());
 
-        ApiError apiError = new ApiError(NOT_FOUND);
-        apiError.setMessage(e.getMessage());
+		return buildResponseEntity(apiError);   // 404
 
-        return buildResponseEntity(apiError);   // 404
+	}
 
-    }
+	@ExceptionHandler(NoSuchElementException.class)
+	public ResponseEntity<Object> handle(NoSuchElementException exception) {
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Object> handle(final NoSuchElementException e) {
+		ApiError apiError = new ApiError(NOT_FOUND);    // 404
+		apiError.setMessage(exception.getMessage());
 
-        ApiError apiError = new ApiError(NOT_FOUND);    // 404
-        apiError.setMessage(e.getMessage());
+		return buildResponseEntity(apiError);
 
-        return buildResponseEntity(apiError);
+	}
 
-    }
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	public ResponseEntity<Object> handle(HttpRequestMethodNotSupportedException exception) {
 
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<Object> handle(final HttpRequestMethodNotSupportedException e) {
+		ApiError apiError = new ApiError(METHOD_NOT_ALLOWED);    // 405
+		apiError.setMessage(exception.getMessage());
 
-        ApiError apiError = new ApiError(METHOD_NOT_ALLOWED);    // 405
-        apiError.setMessage(e.getMessage());
+		return buildResponseEntity(apiError);
 
-        return buildResponseEntity(apiError);
+	}
 
-    }
+	@ExceptionHandler(IllegalStateException.class)
+	public ResponseEntity<Object> handle(IllegalStateException exception) {
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<Object> handle(final IllegalStateException e) {
+		log.warn("conflict", exception);
 
-        log.warn("conflict", e);
+		ApiError apiError = new ApiError(CONFLICT);    // 409
+		apiError.setMessage(exception.getMessage());
 
-        ApiError apiError = new ApiError(CONFLICT);    // 409
-        apiError.setMessage(e.getMessage());
+		return buildResponseEntity(apiError);
 
-        return buildResponseEntity(apiError);
+	}
 
-    }
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Object> handle(MethodArgumentNotValidException exception) {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handle(final MethodArgumentNotValidException e) {
+		ResponseEntity<Object> responseEntity = status(UNPROCESSABLE_ENTITY) // 422
+				.contentType(APPLICATION_JSON)
+				.body(exception.getBindingResult().getAllErrors().stream().collect(toMap(
 
-        return status(UNPROCESSABLE_ENTITY) // 422
-                .contentType(APPLICATION_JSON)
-                .body(e.getBindingResult().getAllErrors().stream().collect(toMap(
+						error -> ((FieldError) error).getField(), // !!! cast
+						error -> Optional.ofNullable(error.getDefaultMessage()).orElse("")
 
-                        error -> ((FieldError)error).getField(), // !!! cast
-                        error -> Optional.ofNullable(error.getDefaultMessage()).orElse("")
+				)));
 
-                )));
+		ApiError apiError = new ApiError(responseEntity.getStatusCode());
+		apiError.setMessage(exception.getLocalizedMessage());
 
-    }
+		return buildResponseEntity(apiError);
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handle(final ConstraintViolationException e) {
+	}
 
-        return status(UNPROCESSABLE_ENTITY) // 422
-                .contentType(APPLICATION_JSON)
-                .body(e.getConstraintViolations().stream().collect(groupingBy(
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<Object> handle(ConstraintViolationException exception) {
 
-                        violation -> violation.getPropertyPath().toString(),
-                        mapping(ConstraintViolation::getMessage, toSet())
+		ResponseEntity<Object> responseEntity = status(UNPROCESSABLE_ENTITY) // 422
+				.contentType(APPLICATION_JSON)
+				.body(exception.getConstraintViolations().stream().collect(groupingBy(
 
-                )));
+						violation -> violation.getPropertyPath().toString(),
+						mapping(ConstraintViolation::getMessage, toSet())
 
-    }
+				)));
 
+		ApiError apiError = new ApiError(responseEntity.getStatusCode());
+		apiError.setMessage(exception.getLocalizedMessage());
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handle(final Exception e) {
+		return buildResponseEntity(apiError);
 
-        log.error("unhandled exception", e);
+	}
 
-        ApiError apiError = new ApiError(INTERNAL_SERVER_ERROR);    // 405
-        apiError.setMessage(e.getMessage());
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<Object> handle(Exception exception) {
 
-        return buildResponseEntity(apiError);
+		log.error("unhandled exception", exception);
 
-    }
+		ApiError apiError = new ApiError(INTERNAL_SERVER_ERROR);    // 405
+		apiError.setMessage(exception.getMessage());
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
+		return buildResponseEntity(apiError);
 
-    private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
+	}
 
-        return new ResponseEntity<>(apiError, apiError.getStatus());
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    }
+	private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
+		return new ResponseEntity<>(apiError, apiError.getStatus());
 
-    @ExceptionHandler(WrongQueryArgumentsException.class)
-    public ResponseEntity<Object> handle(final WrongQueryArgumentsException e) {
+	}
 
-        ApiError apiError = new ApiError(BAD_REQUEST);    // 400
-        apiError.setMessage(e.getMessage());
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        return buildResponseEntity(apiError);
+	@ExceptionHandler(WrongQueryArgumentsException.class)
+	public ResponseEntity<Object> handle(WrongQueryArgumentsException exception) {
 
-    }
+		ApiError apiError = new ApiError(BAD_REQUEST);    // 400
+		apiError.setMessage(exception.getMessage());
 
-    public static final class WrongQueryArgumentsException extends IllegalArgumentException {
+		return buildResponseEntity(apiError);
 
-        public WrongQueryArgumentsException(String errorMessage) {
+	}
 
-            super(errorMessage);
+	public static final class WrongQueryArgumentsException extends IllegalArgumentException {
 
-        }
+		public WrongQueryArgumentsException(String errorMessage) {
 
-    }
+			super(errorMessage);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
+		}
 
-    @ExceptionHandler(WrongPostArgumentsException.class)
-    public ResponseEntity<Object> handle(final WrongPostArgumentsException e) {
+	}
 
-        ApiError apiError = new ApiError(BAD_REQUEST);    // 400
-        apiError.setMessage(e.getMessage());
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        return buildResponseEntity(apiError);
+	@ExceptionHandler(WrongPostArgumentsException.class)
+	public ResponseEntity<Object> handle(WrongPostArgumentsException exception) {
 
-    }
+		ApiError apiError = new ApiError(BAD_REQUEST);    // 400
+		apiError.setMessage(exception.getMessage());
 
-    public static final class WrongPostArgumentsException extends IllegalArgumentException {
+		return buildResponseEntity(apiError);
 
-        public WrongPostArgumentsException(String errorMessage) {
+	}
 
-            super(errorMessage);
+	public static final class WrongPostArgumentsException extends IllegalArgumentException {
 
-        }
+		public WrongPostArgumentsException(String errorMessage) {
 
-    }
+			super(errorMessage);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
+		}
 
-    @ExceptionHandler(WrongPutArgumentsException.class)
-    public ResponseEntity<Object> handle(final WrongPutArgumentsException e) {
+	}
 
-        ApiError apiError = new ApiError(BAD_REQUEST);    // 400
-        apiError.setMessage(e.getMessage());
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        return buildResponseEntity(apiError);
+	@ExceptionHandler(WrongPutArgumentsException.class)
+	public ResponseEntity<Object> handle(WrongPutArgumentsException exception) {
 
-    }
+		ApiError apiError = new ApiError(BAD_REQUEST);    // 400
+		apiError.setMessage(exception.getMessage());
 
-    public static final class WrongPutArgumentsException extends IllegalArgumentException {
+		return buildResponseEntity(apiError);
 
-        public WrongPutArgumentsException(String errorMessage) {
+	}
 
-            super(errorMessage);
+	public static final class WrongPutArgumentsException extends IllegalArgumentException {
 
-        }
+		public WrongPutArgumentsException(String errorMessage) {
 
-    }
+			super(errorMessage);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
+		}
 
-    @ExceptionHandler(WrongDateFormatException.class)
-    public ResponseEntity<Object> handle(final WrongDateFormatException e) {
+	}
 
-        ApiError apiError = new ApiError(BAD_REQUEST);    // 400
-        apiError.setMessage(e.getMessage());
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        return buildResponseEntity(apiError);
+	@ExceptionHandler(WrongDateFormatException.class)
+	public ResponseEntity<Object> handle(WrongDateFormatException exception) {
 
-    }
+		ApiError apiError = new ApiError(BAD_REQUEST);    // 400
+		apiError.setMessage(exception.getMessage());
 
-    public static final class WrongDateFormatException extends IllegalArgumentException {
+		return buildResponseEntity(apiError);
 
-        public WrongDateFormatException(String errorMessage) {
+	}
 
-            super(errorMessage);
+	public static final class WrongDateFormatException extends IllegalArgumentException {
 
-        }
+		public WrongDateFormatException(String errorMessage) {
 
-    }
+			super(errorMessage);
+
+		}
+
+	}
 }

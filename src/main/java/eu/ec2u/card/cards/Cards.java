@@ -5,9 +5,13 @@ import eu.ec2u.card.Tool.Container;
 import eu.ec2u.card.Tool.Resource;
 import eu.ec2u.card.Tool.ResourceData;
 import eu.ec2u.card.ToolApplication;
+import static eu.ec2u.card.ToolConfiguration.LinePattern;
+import static eu.ec2u.card.ToolConfiguration.LineSize;
 import eu.ec2u.card.cards.Cards.Card;
+import static java.lang.String.format;
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -15,16 +19,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
-import static eu.ec2u.card.ToolConfiguration.LinePattern;
-import static eu.ec2u.card.ToolConfiguration.LineSize;
-import static java.lang.String.format;
-
 @Getter
 @Setter
 public class Cards extends Container<Card> {
 
 	static final String Id = "/cards/";
-
+	
 	@Getter
 	@Setter
 	static final class Card extends Resource {
@@ -94,7 +94,7 @@ public class Cards extends Container<Card> {
 						"The inserted date is not valid, must be in ISO yyyy-mm-dd format. \n"
 				);
 
-            }
+			}
 
 			card.setVirtualCardNumber(Long.parseLong(virtualCardNumber));
 
@@ -118,7 +118,7 @@ public class Cards extends Container<Card> {
 		}
 
 	}
-	
+
 }
 
 

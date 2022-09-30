@@ -72,12 +72,6 @@ card-users {
       text-align: center;
       margin-bottom: 1em;
 
-      & .checkbox {
-        margin-left: 10px;
-        height: 1.2em;
-        width: 1.2em;
-      }
-
       & input {
         font-size: 0.8em;
         border: 1px solid black;
@@ -89,7 +83,7 @@ card-users {
       }
       & .search-forename {
         width: 12em;
-        margin-left: 4.2em;
+        margin-left: 6.2em;
         margin-right: 4.5em;
       }
       & .search-surname {
