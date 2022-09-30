@@ -40,6 +40,9 @@ card-cards {
       color: rgb(161, 157, 157);
       cursor: pointer;
     }
+    & th:hover {
+      color: black;
+    }
     & td {
       text-align: left;
     }

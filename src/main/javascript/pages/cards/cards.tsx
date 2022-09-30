@@ -1,5 +1,5 @@
 
-import { ChevronRight, Plus, Search, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronRight, Plus, Search, XCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import React, { createElement, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './cards.css';
@@ -28,7 +28,7 @@ export function VirtualCards() {
     const [timer, setTimer] = useState<number>(0);
     const [disable, setDisable] = useState<Boolean>(true)
 
-    const [sorting, setSorting] = useState<string>("desc");
+    const [sorting, setSorting] = useState<string>("asc");
     const [sortingType, setSortingType] = useState<string>("")
 
 
@@ -129,43 +129,78 @@ export function VirtualCards() {
 
     const forenameSorting = () => {
         setSortingType("forename")
+        if (sorting === "asc") {
+            let sort = "asc"
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=holderForenameLowerCase")
 
-        if (sorting === "desc") {
-            setSorting("asc")
-        } else {
             setSorting("desc")
+
+        } else if (sorting === "desc") {
+            let sort = "desc"
+            setSorting("")
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=holderForenameLowerCase")
+
+        } else {
+            setSorting("asc")
+            fetchData("")
         }
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty=holderForenameLowerCase")
     }
 
     const surnameSorting = () => {
         setSortingType("surname")
-        if (sorting === "desc") {
-            setSorting("asc")
-        } else {
+        if (sorting === "asc") {
+            let sort = "asc"
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=holderSurnameLowerCase")
+
             setSorting("desc")
+
+        } else if (sorting === "desc") {
+            let sort = "desc"
+            setSorting("")
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=holderSurnameLowerCase")
+
+        } else {
+            setSorting("asc")
+            fetchData("")
         }
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty=holderSurnameLowerCase")
     }
 
     const expiryDateSorting = () => {
         setSortingType("expiringDate")
-        if (sorting === "desc") {
-            setSorting("asc")
-        } else {
+        if (sorting === "asc") {
+            let sort = "asc"
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=expiringDate")
+
             setSorting("desc")
+
+        } else if (sorting === "desc") {
+            let sort = "desc"
+            setSorting("")
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=expiringDate")
+
+        } else {
+            setSorting("asc")
+            fetchData("")
         }
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty=expiringDate")
     }
 
     const numberSorting = () => {
         setSortingType("virtualCardNumber")
-        if (sorting === "desc") {
-            setSorting("asc")
-        } else {
+        if (sorting === "asc") {
+            let sort = "asc"
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=virtualCardNumber")
+
             setSorting("desc")
+
+        } else if (sorting === "desc") {
+            let sort = "desc"
+            setSorting("")
+            fetchData("?sortingOrder=" + sort + "&sortingProperty=virtualCardNumber")
+
+        } else {
+            setSorting("asc")
+            fetchData("")
         }
-        fetchData("?sortingOrder=" + sorting + "&sortingProperty=virtualCardNumber")
     }
 
 
@@ -173,8 +208,8 @@ export function VirtualCards() {
 
 
     let SearchIcon =
-        <div title={"search"} className={"search-icon"}>
-            <Search size={28} color="gray"
+        <div title={"search"} className={"button-search"}>
+            <Search size={28}
                 className={'button-search'}
                 onClick={() => setClicked(!clicked)}
             />
@@ -208,16 +243,16 @@ export function VirtualCards() {
                 <thead>
                     <tr>
                         <th onClick={forenameSorting}>forename
-                            {sortingType === "forename" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                            {sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown />}
                         </th>
                         <th onClick={surnameSorting} >surname
-                            {sortingType === "surname" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                            {sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown />}
                         </th>
                         <th onClick={expiryDateSorting}> expiry date
-                            {sortingType === "expiringDate" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                            {sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown />}
                         </th>
                         <th onClick={numberSorting}>card number
-                            {sortingType === "virtualCardNumber" ? sorting === "asc" ? <ChevronUp /> : <ChevronDown /> : ""}
+                            {sorting ? sorting === "asc" ? "" : <ChevronUp /> : <ChevronDown />}
                         </th>
                         <th>
                             {SearchIcon}
@@ -258,7 +293,7 @@ export function VirtualCards() {
                                 />
                             </div>
                             <div >
-                                <X size={30}
+                                <XCircle size={30}
                                     color={disable ? 'lightgray' : 'black'}
                                     onMouseDown={handleSearch}
                                     className={"close-button"}

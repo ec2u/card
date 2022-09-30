@@ -1,6 +1,7 @@
 import React, { createElement, useState } from "react";
 import { LogOut } from 'lucide-react'
 import './user.css'
+import { Link } from "react-router-dom";
 
 export function CardUser() {
 
@@ -10,12 +11,18 @@ export function CardUser() {
         <>
             <header>
                 <span>Akhil Reddy Rondla</span>
-                <LogOut
-                    size={38}
+                <Link to='/login/'>
+                    <LogOut
+                        size={38}
+                        className={"logout-button"}
+                    /></Link>
 
-                    className={"logout-button"}
-                />
             </header>
+            <section>
+                <label></label>
+                <span></span>
+
+            </section>
         </>
     )
 }
