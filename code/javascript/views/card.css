@@ -65,7 +65,7 @@ card-card {
             width: var(--logo);
             height: var(--logo);
 
-            background-position: 0 0;
+            background-position: center;
             background-size: contain;
             background-repeat: no-repeat;
 
