@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-- `npm run start` — dev server (proxies `/v1` and `/Shibboleth.sso/*` to production so login works locally).
+- `npm run watch` — dev server (proxies `/v1` and `/Shibboleth.sso/*` to production so login works locally).
 - `npm run build` — production build into `code/static/`.
 - `npm run clean` — remove `code/static/`.
 
