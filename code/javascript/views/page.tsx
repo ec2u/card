@@ -55,7 +55,7 @@ const page=Object.freeze({
      */
     copy: (document.querySelector("meta[name=copyright]") as HTMLMetaElement)?.content || "",
 
-    meta: `v${import.meta.env.card_version}+${import.meta.env.card_instant.substring(0, 10).replace(/-/g, "")}`
+    meta: `v${import.meta.env.card_version.substring(0, 10).replace(/-/g, "")}`
 
 });
 

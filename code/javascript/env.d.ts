@@ -28,7 +28,6 @@ interface ImportMeta {
 interface ImportMetaEnv extends Readonly<Record<string, boolean | string>> {
 
     readonly card_version: string;
-    readonly card_instant: string;
 
     readonly MODE: string;
     readonly BASE_URL: string;

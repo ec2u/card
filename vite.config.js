@@ -19,20 +19,16 @@ import {resolve} from "path";
 import reactRefresh from "@vitejs/plugin-react-refresh";
 import postcssNesting from "postcss-nesting";
 
-const env=resolve("code/environment/");
 const src=resolve("code/javascript/");
 const out=resolve("code/static/");
 
-process.env.card_version=process.env.npm_package_version;
-process.env.card_instant=new Date().toISOString();
+process.env.card_version=new Date().toISOString();
 
 export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 
     root: src,
 
     publicDir: "files",
-
-    envDir: env,
     envPrefix: "card_",
 
     plugins: [reactRefresh()],

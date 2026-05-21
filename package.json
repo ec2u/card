@@ -1,6 +1,5 @@
 {
     "private": true,
-    "version": "0.1.0",
     "scripts": {
         "setup": "npm install && npm audit fix",
         "watch": "vite --open",
