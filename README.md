@@ -1,6 +1,6 @@
-# EC2U Virtual Card
+# EC2U Digital Card
 
-The EC2U Virtual Card is a lightweight mobile-based academic identification card built on top of two mature and 
+The EC2U Digital Card is a lightweight mobile-based academic identification card built on top of two mature and 
 widespread identity management systems:
 
 * the [European Student Card](https://europeanstudentcard.eu/) (ESC) framework 
@@ -9,10 +9,10 @@ widespread identity management systems:
 
 ## Users
 
-Faculty, students and staff registered with eduGAIN may be easily provided with a virtual card and 
+Faculty, students and staff registered with eduGAIN may be easily provided with a Digital Card and 
 access it using personal credentials issued by their home institution.
 
-Cardholders can demonstrate their academic affiliation and status by presenting their virtual card to local
+Cardholders can demonstrate their academic affiliation and status by presenting their Digital Card to local
 academic, public or commercial service providers.
 
 Service providers may verify card integrity and validity by scanning its QR code
@@ -21,7 +21,7 @@ and automatically retrieve authoritative data about the card and its holder from
 
 ## Privacy
 
-The EC2U Virtual Card doesn't permanently store any personal information: all data required to render virtual cards are 
+The EC2U Digital Card doesn't permanently store any personal information: all data required to render Digital Cards are 
 dynamically retrieved from central ESC facilities on the basis of a personal identification codes provided by the
  eduGAIN identity federation; both systems store personal information in compliance with the European General Data 
  Protection Regulation (GDPR).

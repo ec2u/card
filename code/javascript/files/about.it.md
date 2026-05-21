@@ -18,7 +18,7 @@ quattro diverse regioni dell'Unione europea:
 
 # Servizio
 
-La EC2U Virtual Card è una carta di riconoscimento accademica virtuale per dispositivi mobili basata su due sistemi di
+La EC2U Digital Card è una carta di riconoscimento accademica virtuale per dispositivi mobili basata su due sistemi di
 gestione delle identità maturi e diffusi:
 
 - il servizio [European Student Card ](https://europeanstudentcard.eu/) (ESC)

@@ -4,11 +4,11 @@ title: Informativa sul trattamento dei dati personali
 
 # Nome del servizio
 
-EC2U Virtual Card - Università di Pavia
+EC2U Digital Card - Università di Pavia
 
 # Descrizione del servizio
 
-La EC2U Virtual Card è una carta di riconoscimento accademica virtuale per dispositivi mobili basata sullo standard
+La EC2U Digital Card è una carta di riconoscimento accademica virtuale per dispositivi mobili basata sullo standard
 European Student Card. Supporta la verifica dell'identità e dello stato accademico del titolare nell’ambito dell'Alleanza
 EC2U e consente ai titolari di accedere facilmente ai servizi accademici, pubblici o commerciali locali.
 

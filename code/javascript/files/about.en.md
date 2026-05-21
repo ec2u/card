@@ -18,7 +18,7 @@ the European Union:
 
 # Service
 
-The EC2U Virtual Card is a lightweight mobile-based academic identification card built on top of two mature and
+The EC2U Digital Card is a lightweight mobile-based academic identification card built on top of two mature and
 widespread identity management systems:
 
 - the [European Student Card](https://europeanstudentcard.eu/) (ESC) framework
@@ -26,18 +26,18 @@ widespread identity management systems:
 
 # Users
 
-Faculty, students and staff registered with eduGAIN may be easily provided with a virtual card and access it using
+Faculty, students and staff registered with eduGAIN may be easily provided with a Digital Card and access it using
 personal credentials issued by their home institution.
 
-Cardholders can demonstrate their academic affiliation and status by presenting their virtual card to local academic, public or commercial service providers.
+Cardholders can demonstrate their academic affiliation and status by presenting their Digital Card to local academic, public or commercial service providers.
 
 Service providers may verify card integrity and validity by scanning its QR code and automatically retrieve authoritative data about the card and its holder from to the central ESC server.
 
 # Management
 
-Mobility operators at partner universities issue and manage virtual cards directly on the central ESC management system using their institutional accounts.
+Mobility operators at partner universities issue and manage Digital Cards directly on the central ESC management system using their institutional accounts.
 
-Partner universities may opt to delegate the EC2U Connect Centre to operate on their behalf on the central ESC management system, in order to retrieve card details required to render virtual cards on mobile devices.
+Partner universities may opt to delegate the EC2U Connect Centre to operate on their behalf on the central ESC management system, in order to retrieve card details required to render Digital Cards on mobile devices.
 
 # Support
 
@@ -47,4 +47,4 @@ Partner universities may opt to delegate the EC2U Connect Centre to operate on t
 
 # Privacy
 
-The EC2U Virtual Card doesn't permanently store any personal cardholder information: all data required to render virtual cards are dynamically retrieved from central ESC facilities on the basis of a personal identification codes provided by the eduGAIN identity federation; both systems store personal information in compliance with the European General Data Protection Regulation (GDPR).
+The EC2U Digital Card doesn't permanently store any personal cardholder information: all data required to render Digital Cards are dynamically retrieved from central ESC facilities on the basis of a personal identification codes provided by the eduGAIN identity federation; both systems store personal information in compliance with the European General Data Protection Regulation (GDPR).
