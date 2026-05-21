@@ -3,8 +3,8 @@ title: About
 ---
 
 The [EC2U European Campus of City‑Universities](https://www.ec2u.eu/) is a multi‑cultural and multi‑lingual Alliance of
-seven long‑standing, education and research‑led, locally and globally engaged universities from four diverse regions of
-the European Union:
+nine long‑standing, education and research‑led, locally and globally engaged universities from four diverse regions
+of the European Union:
 
 - University of Coimbra - Portugal
 - Alexandru Ioan Cuza University of Iaşi - Romania
@@ -29,15 +29,19 @@ widespread identity management systems:
 Faculty, students and staff registered with eduGAIN may be easily provided with a Digital Card and access it using
 personal credentials issued by their home institution.
 
-Cardholders can demonstrate their academic affiliation and status by presenting their Digital Card to local academic, public or commercial service providers.
+Cardholders can demonstrate their academic affiliation and status by presenting their Digital Card to local academic,
+public or commercial service providers.
 
-Service providers may verify card integrity and validity by scanning its QR code and automatically retrieve authoritative data about the card and its holder from to the central ESC server.
+Service providers may verify card integrity and validity by scanning its QR code and automatically retrieve
+authoritative data about the card and its holder from to the central ESC server.
 
 # Management
 
-Mobility operators at partner universities issue and manage Digital Cards directly on the central ESC management system using their institutional accounts.
+Mobility operators at partner universities issue and manage Digital Cards directly on the central ESC management system
+using their institutional accounts.
 
-Partner universities may opt to delegate the EC2U Connect Centre to operate on their behalf on the central ESC management system, in order to retrieve card details required to render Digital Cards on mobile devices.
+Partner universities may opt to delegate the EC2U Connect Centre to operate on their behalf on the central ESC
+management system, in order to retrieve card details required to render Digital Cards on mobile devices.
 
 # Support
 
@@ -47,4 +51,7 @@ Partner universities may opt to delegate the EC2U Connect Centre to operate on t
 
 # Privacy
 
-The EC2U Digital Card doesn't permanently store any personal cardholder information: all data required to render Digital Cards are dynamically retrieved from central ESC facilities on the basis of a personal identification codes provided by the eduGAIN identity federation; both systems store personal information in compliance with the European General Data Protection Regulation (GDPR).
+The EC2U Digital Card doesn't permanently store any personal cardholder information: all data required to render Digital
+Cards are dynamically retrieved from central ESC facilities on the basis of a personal identification codes provided by
+the eduGAIN identity federation; both systems store personal information in compliance with the European General Data
+Protection Regulation (GDPR).

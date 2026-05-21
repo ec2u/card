@@ -3,8 +3,8 @@ title: Info
 ---
 
 [EC2U European Campus of City-Universities](https://www.ec2u.eu/) è un'alleanza multiculturale e multilingue composta da
-sette università storiche, orientate all’istruzione e alla ricerca, impegnate a livello locale e globale e provenienti da
-quattro diverse regioni dell'Unione europea:
+nove università storiche, orientate all’istruzione e alla ricerca, impegnate a livello locale e globale e provenienti
+da quattro diverse regioni dell'Unione europea:
 
 - Università di Coimbra - Portogallo
 - Alexandru Ioan Cuza Università di Iaşi - Romania
@@ -57,4 +57,5 @@ dispositivi mobili.
 La carta virtuale EC2U non memorizza in modo permanente alcuna informazione personale sul titolare della carta: tutti i
 dati necessari per la visualizzazione delle carte virtuali vengono recuperati dinamicamente dalle strutture centrali ESC
 sulla base di un codice di identificazione personale fornito dalla federazione di identità eduGAIN; entrambi i sistemi
-memorizzano le informazioni personali in conformità con il Regolamento Generale Europeo sulla Protezione dei Dati (GDPR).
+memorizzano le informazioni personali in conformità con il Regolamento Generale Europeo sulla Protezione dei Dati
+(GDPR).
