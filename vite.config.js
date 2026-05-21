@@ -16,13 +16,16 @@
 
 import {defineConfig} from "vite";
 import {resolve} from "path";
+import {readFileSync} from "fs";
 import reactRefresh from "@vitejs/plugin-react-refresh";
 import postcssNesting from "postcss-nesting";
 
 const src=resolve("code/javascript/");
 const out=resolve("code/static/");
+const samples=resolve("code/samples/");
 
 process.env.card_version=new Date().toISOString();
+
 
 export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 
@@ -31,7 +34,7 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
     publicDir: "files",
     envPrefix: "card_",
 
-    plugins: [reactRefresh()],
+    plugins: [reactRefresh(), mockBackend()],
 
     css: {
         postcss: {
@@ -62,15 +65,62 @@ export default defineConfig(({ mode }) => ({ // https://vitejs.dev/config/
 
         host: "127.0.0.1",
         port: 3000,
-        strictPort: true,
-
-        proxy: {
-            "^/v\\d+$|/Shibboleth.sso/.*$": {
-                target: "https://card.ec2u.eu/",
-                changeOrigin: true
-            }
-        }
+        strictPort: true
 
     }
 
 }));
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function mockBackend() {
+
+    return {
+
+        name: "card-mock-backend",
+
+        configureServer(server) {
+
+            const SessionCookie="card-dev-session";
+
+
+            server.middlewares.use("/v1", (req, res) => {
+                if ( hasSession(req) ) {
+                    res.setHeader("Content-Type", "application/json");
+                    res.end(readFileSync(resolve(samples, "profile.json"), "utf8"));
+                } else {
+                    res.statusCode=401;
+                    res.end();
+                }
+            });
+
+            server.middlewares.use("/Shibboleth.sso/Login", (req, res) => {
+                redirect(res, queryParam(req, "target") ?? "/", `${SessionCookie}=1; Path=/`);
+            });
+
+            server.middlewares.use("/Shibboleth.sso/Logout", (req, res) => {
+                redirect(res, queryParam(req, "return") ?? "/", `${SessionCookie}=; Path=/; Max-Age=0`);
+            });
+
+
+            function hasSession(req) {
+                return (req.headers.cookie ?? "").split(";").map(s => s.trim()).includes(`${SessionCookie}=1`);
+            }
+
+            function queryParam(req, name) {
+                return new URL(req.url, "http://localhost").searchParams.get(name);
+            }
+
+            function redirect(res, location, cookie) {
+                res.statusCode=302;
+                res.setHeader("Location", location);
+                if ( cookie ) { res.setHeader("Set-Cookie", cookie); }
+                res.end();
+            }
+
+        }
+
+    };
+
+}
