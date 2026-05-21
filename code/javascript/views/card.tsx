@@ -83,6 +83,7 @@ export function CardCard() {
 
     }
 
+
     useEffect(() => {
 
         size();
@@ -256,7 +257,6 @@ export function CardCard() {
 
         expiry,
 
-        esi,
         level,
         name,
 
@@ -268,13 +268,10 @@ export function CardCard() {
         return <dl ref={data} className={"data"}>
 
             <dt>Name</dt>
-            <dd>{name}<br/>{esi
-                .replace("urn:schac:personalUniqueCode:int:esi:", "")
-                .replace(":", " · ")
-            }</dd>
+            <dd>{name}</dd>
 
             <dt>Institution</dt>
-            <dd>{hei.name}<br/>{hei.pic}</dd>
+            <dd>{hei.name}</dd>
 
             <dt>Country</dt>
             <dd>{hei.country} · {hei.iso}</dd>
