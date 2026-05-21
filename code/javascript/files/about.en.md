@@ -7,12 +7,14 @@ seven long‑standing, education and research‑led, locally and globally engage
 the European Union:
 
 - University of Coimbra - Portugal
-- Alexandru Ioan Cuza University of Iasi - Romania
-- University of Jena - Germany
+- Alexandru Ioan Cuza University of Iaşi - Romania
+- Friedrich Schiller University Jena - Germany
+- Johannes Kepler University Linz - Austria
 - University of Pavia - Italy
 - University of Poitiers - France (Coordinator)
 - University of Salamanca - Spain
 - University of Turku - Finland
+- Umeå University - Sweden
 
 # Service
 

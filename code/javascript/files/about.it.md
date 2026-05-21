@@ -7,12 +7,14 @@ sette università storiche, orientate all’istruzione e alla ricerca, impegnate
 quattro diverse regioni dell'Unione europea:
 
 - Università di Coimbra - Portogallo
-- Alexandru Ioan Cuza Università di Iasi - Romania
-- Università di Jena - Germania
+- Alexandru Ioan Cuza Università di Iaşi - Romania
+- Università Friedrich Schiller di Jena - Germania
+- Università Johannes Kepler di Linz - Austria
 - Università di Pavia - Italia
 - Università di Poitiers - Francia (Coordinatore)
 - Università di Salamanca - Spagna
 - Università di Turku - Finlandia
+- Università di Umeå - Svezia
 
 # Servizio
 
